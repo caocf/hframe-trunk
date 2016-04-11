@@ -1,0 +1,51 @@
+@CHARSET "GB18030";
+
+		.tab_title_div {
+		
+			/*
+			
+			text-align: center;
+			*/
+		}
+
+		.tab_title {
+			/*
+			border:1px solid #ccc;
+			
+			float:left;
+			padding: 8px;
+			padding-left:15px;
+			padding-right:15px;
+			cursor: pointer;
+			background-color: #eee;
+			*/
+		}
+		.tab_title_current {
+			/*
+			float:left;
+			border:1px solid #aaa;
+			padding: 8px;
+			padding-left:15px;
+			padding-right:15px;	
+			cursor: pointer;
+			background-color: #fff;
+			
+			*/
+			
+		}
+		
+		.tab_content{
+			/*
+			
+			clear:left;
+			*/
+			display: none;
+		}
+		
+		.tab_content_current{
+			display: block;
+			/*
+			clear:left;
+			
+			*/
+		}

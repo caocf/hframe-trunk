@@ -1,0 +1,98 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+    <properties resource="properties/dataSource.properties"></properties>
+    <!-- <classPathEntry location="E:\\Users\\zhangqh6\\.m2\\repository\\mysql\\mysql-connector-java\\5.1.21\\mysql-connector-java-5.1.21.jar"/> -->
+    <context id="default" targetRuntime="MyBatis3">
+        
+        <plugin type="org.mybatis.generator.plugins.RenameExampleClassPlugin">
+            <property name="searchString" value="Example$" />
+            <property name="replaceString" value="_Example" />
+        </plugin>
+
+        <plugin type="com.hframe.generator.mybatis.plugins.PaginationPlugin"></plugin>
+        <plugin type="com.hframe.generator.mybatis.plugins.JointQueryPlugin"></plugin>
+        <plugin type="com.hframe.generator.mybatis.plugins.MapperAnnotationPlugin"></plugin>
+        <plugin type="com.hframe.generator.mybatis.plugins.NoParamConstructorPlugin"></plugin>
+
+        <commentGenerator type="com.hframe.generator.mybatis.override.MybatisCommentGenerator">
+            <property name="suppressAllComments" value="true" />
+            <property name="suppressDate" value="false" />
+        </commentGenerator>
+        <jdbcConnection driverClass="${jdbc.driverClass}" connectionURL="${jdbc.url}" userId="${jdbc.user}" password="${jdbc.password}">
+        </jdbcConnection>
+        <javaTypeResolver >
+            <property name="forceBigDecimals" value="false" />
+        </javaTypeResolver>
+        <!-- BO 瀵硅薄瀹炰綋 -->
+        <javaModelGenerator targetPackage="com.hframe.domain.model" targetProject="hframe-core/src/main/java">
+            <property name="constructorBased" value="true"/>
+            <property name="enableSubPackages" value="false"/>
+            <property name="immutable" value="true"/>
+            <!--<property name="rootClass" value="com.foo.louis.Hello"/> -->
+            <property name="trimStrings" value="true"/>
+        </javaModelGenerator>
+
+        <!-- mapper閰嶇疆鏂囦欢 -->
+        <sqlMapGenerator targetPackage="mapper" targetProject="hframe-core/src/main/resources">
+            <property name="enableSubPackages" value="false"/>
+        </sqlMapGenerator>
+        <!-- DAO 瀵硅薄瀹炰綋 -->
+        <javaClientGenerator targetPackage="com.hframe.dao" targetProject="hframe-core/src/main/java" type="XMLMAPPER">
+            <property name="enableInsert" value="true"/>
+            <property name="enableSubPackages" value=""/>
+            <property name="exampleMethodVisibility" value="false"/>
+            <property name="methodNameCalculator" value=""/>
+            <property name="rootInterface" value=""/>
+        </javaClientGenerator>
+
+        <!-- 琛ㄥ悕  schema="louis" -->
+        <table schema="" tableName="hfcfg_login_page"><property name="chineseName" value="鐧婚檰椤�"></property></table>
+        <table schema="" tableName="hfcfg_page_template"><property name="chineseName" value="椤甸潰妯℃澘"></property></table>
+        <table schema="" tableName="hfcfg_program_skin"><property name="chineseName" value="鐨偆"></property></table>
+        <table schema="" tableName="hfcfg_program_template"><property name="chineseName" value="椤圭洰妯℃澘"></property></table>
+
+        <table schema="" tableName="hfmd_entity"><property name="chineseName" value="瀹炰綋"></property></table>
+        <table schema="" tableName="hfmd_entity_attr"><property name="chineseName" value="瀹炰綋灞炴��"></property></table>
+        <table schema="" tableName="hfmd_entity_rel"><property name="chineseName" value="瀹炰綋鍏崇郴"></property></table>
+        <table schema="" tableName="hfmd_enum"><property name="chineseName" value="鏋氫妇"></property></table>
+        <table schema="" tableName="hfmd_enum_class"><property name="chineseName" value="鏋氫妇缁�"></property></table>
+
+        <table schema="" tableName="hfpm_data_field"><property name="chineseName" value="鏁版嵁鍒�"></property></table>
+        <table schema="" tableName="hfpm_data_set"><property name="chineseName" value="鏁版嵁闆�"></property></table>
+        <table schema="" tableName="hfpm_entity_bind_rule"><property name="chineseName" value="瀹炰綋鎹嗙粦瑙勫垯"></property></table>
+        <table schema="" tableName="hfpm_entity_permission"><property name="chineseName" value="瀹炰綋鏉冮檺"></property></table>
+        <table schema="" tableName="hfpm_field_show_type"><property name="chineseName" value="鍒楀睍绀虹被鍨�"></property></table>
+        <table schema="" tableName="hfpm_module"><property name="chineseName" value="妯″潡"></property></table>
+        <table schema="" tableName="hfpm_page"><property name="chineseName" value="椤甸潰"></property></table>
+        <table schema="" tableName="hfpm_page_cfg"><property name="chineseName" value="椤甸潰閰嶇疆"></property></table>
+        <table schema="" tableName="hfpm_page_component"><property name="chineseName" value="椤甸潰缁勪欢"></property> </table>
+        <table schema="" tableName="hfpm_page_entity_rel"><property name="chineseName" value="椤甸潰鍏宠仈瀹炰綋"></property></table>
+        <table schema="" tableName="hfpm_page_event"><property name="chineseName" value="椤甸潰浜嬩欢"></property></table>
+        <table schema="" tableName="hfpm_page_event_attr"><property name="chineseName" value="浜嬩欢灞炴��"></property></table>
+        <table schema="" tableName="hfpm_program"><property name="chineseName" value="椤圭洰"></property></table>
+        <table schema="" tableName="hfpm_program_cfg"><property name="chineseName" value="椤圭洰閰嶇疆"></property></table>
+
+        <table schema="" tableName="hfus_entity_attr"><property name="chineseName" value="甯哥敤瀹炰綋灞炴��"></property></table>
+        <table schema="" tableName="hfus_entity_type_relat_entity_attr"><property name="chineseName" value="甯哥敤瀹炰綋绫诲瀷鍏宠仈灞炴��"></property></table>
+        <table schema="" tableName="hfus_page_event"><property name="chineseName" value="甯哥敤椤甸潰浜嬩欢"></property></table>
+        <table schema="" tableName="hfus_program_entity_attr"><property name="chineseName" value="甯哥敤椤圭洰瀹炰綋灞炴��"></property></table>
+        <table schema="" tableName="hfus_word_store"><property name="chineseName" value="鍗曡瘝搴�"></property></table>
+
+
+        <!--
+        <table schema="" tableName="v_test"
+               domainObjectName="QTest"
+               enableInsert="false"
+               enableUpdateByPrimaryKey="false"
+               enableDeleteByPrimaryKey="false"
+               enableDeleteByExample="false"
+               enableUpdateByExample="false">
+        </table>
+ -->
+
+
+    </context>
+</generatorConfiguration>

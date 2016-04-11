@@ -1,0 +1,16 @@
+一、maven工程搭建与模块划分
+
+二、common模块util工具整合
+1.Email类应该如何放，MailUtils是否属于什么类别的UTIL工具类
+2.Common包中除UTIL外，存在另外的包需要处理
+二、common模块整合autoSystem中工具类
+已整合：VelocityUtil FileUtil FileOperate dom4jUtil
+
+三、springMVC+mybatis框架整合
+    dataSource.properties等配置文件
+
+四、mybatis generator整合
+
+五、原creator整合，并更名为generator（整合失败）
+
+六、针对于sql反向工程整合

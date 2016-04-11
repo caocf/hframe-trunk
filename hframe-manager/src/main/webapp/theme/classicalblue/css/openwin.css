@@ -1,0 +1,25 @@
+/* 打开窗口样式 */
+.x-window-tl .x-window-header{color:#15428b;font:bold;padding:5px 0 4px 0;}
+.x-window-tc{background:transparent url(../images/openwin/top-bottom.png) repeat-x 0 0;overflow:hidden; height:28px; padding-top:8px; color:#2F5188; font-weight:bold;zoom:1;}
+.x-window-tl{background:transparent url(../images/openwin/left-corners.png) no-repeat 0 0;padding-left:6px;zoom:1;z-index:1;position:relative;}
+.x-window-tr{background:transparent url(../images/openwin/right-corners.png) no-repeat right 0;padding-right:6px;}
+.x-window-bc{background:transparent url(../images/openwin/top-bottom.png) repeat-x 0 bottom;zoom:1;}
+.x-window-bc{padding-bottom:6px;zoom:1;font-size:0;line-height:0;}
+.x-window-bl{background:transparent url(../images/openwin/left-corners.png) no-repeat 0 bottom;padding-left:6px;zoom:1;}
+.x-window-br{background:transparent url(../images/openwin/right-corners.png) no-repeat right bottom;padding-right:6px;zoom:1;}
+.x-window-mc{border:1px solid #99bbe8;padding:0;margin:0;font:normal;background:#dfe8f6;}
+.x-window-ml{background:transparent url(../images/openwin/left-right.png) repeat-y 0 0;padding-left:6px;zoom:1;}
+.x-window-mr{background:transparent url(../images/openwin/left-right.png) repeat-y right 0;padding-right:6px;zoom:1;}
+
+.x-window-ts{width:294px;}
+.x-window-mask{position:absolute;filter:progid:DXImageTransform.Microsoft.Alpha(style=4,opacity=80);opacity:0.8;background:#CCCCCC;top:0px;left:0px;width:100%;height:100%;zIndex:1000}
+.x-window-maskmt{position:absolute;filter:progid:DXImageTransform.Microsoft.Alpha(style=4,opacity=50);opacity:0.8;background:#CCCCCC;top:0px;left:0px;width:100%;height:100%;zIndex:1000}
+.x-window-success{background:transparent url(../images/openwin/pop_success.png) no-repeat 0 0;width:280px;height:160px;}
+.x-window-success-word{ top:26px; left:110px; width:160px; height:130px;position:relative;}
+.x-window-success-button{text-align:center;}
+.x-window-prompt{background:transparent url(../images/openwin/pop_prompt.png) no-repeat 0 0;width:280px;height:160px;}
+.x-window-prompt-word{ top:26px; left:110px; width:160px; height:130px;position:relative;}
+.x-window-prompt-button{text-align:center;}
+.x-window-alarm{background:transparent url(../images/openwin/pop_alarm.png) no-repeat 0 0;width:280px;height:160px;}
+.x-window-alarm-word{ top:26px; left:110px; width:160px; height:130px;position:relative;}
+.x-window-alarm-button{text-align:center;}

@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript">
+alert("fdsa");
+var _shape='<div id="{id}" name="{name}" style="position: absolute;left:{left}px;top: {top}px;width: {width}px;height: {height}px;border:1px solid blue;">xxxxx</div>';
+
+
+function stuffShape(AStr, arr){
+  var re = /\{(\w+)\}/g;
+  return AStr.replace(re, function(a,b){return arr[b]});
+}
+
+
+window.onload=function(){
+alert("fda");
+var arrVal=new Array();
+arrVal["id"]="content";
+arrVal["name"]="name";
+arrVal["left"]="10";
+arrVal["top"]="100";
+arrVal["width"]="400";
+arrVal["height"]="50";
+test=stuffShape(_shape,arrVal);
+alert(test);
+document.write(test);
+}
+</script>
+</head>
+<body>
+fdsafds
+
+</body>
+</html>

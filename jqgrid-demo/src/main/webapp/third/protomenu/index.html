@@ -1,0 +1,112 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml-strict.dtd">
+<html>
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<meta name="keywords" content="JS代码,菜单导航,JS广告代码,JS特效代码" />
+<meta name="description" content="此代码内容为Proto.Menu网页右键菜单，属于站长常用代码，更多菜单导航代码请访问" />
+<title>Proto.Menu网页右键菜单_懒人图库</title>
+<link rel="stylesheet" href="proto.menu.0.6.css" type="text/css" media="screen" />
+<style type="text/css"> 
+<!-- 
+body{height:100%; margin:0px;} 
+--> 
+</style> 
+
+    
+    <script type="text/javascript" src="prototype_trunk.js"></script>
+    
+    <script type="text/javascript" src="proto.menu.0.6.js"></script>
+    
+    <script type="text/javascript">
+    /**
+      Element.addMethods({
+        getNumStyle: function(element, style) {
+          var value = $(element).getStyle(style);
+          return value === null ? null : parseInt(value);
+        }
+      })
+      */
+      document.observe('dom:loaded', function(){
+        var myMenuItems = [
+          {
+            name: 'New',
+            className: 'new',
+            callback: function(e) {
+              var tagName = e.element().tagName.toLowerCase(),
+                  x = e.screenX,
+                  y = e.screenY;
+              alert('you clicked on <' + tagName + '> element at x: ' + x + ', and y: ' + y);
+            }
+          },{
+            separator: true
+          },{
+            name: 'Edit',
+            className: 'edit', 
+            callback: function() {
+              alert('Forward function called');
+            }
+          },{
+            name: 'Copy',
+            className: 'copy', 
+            callback: function() {
+              alert('Copy function called');
+            }
+          },{
+            name: 'Delete', 
+            disabled: true,
+            className: 'delete'
+          },{
+            separator: true
+          },{
+            name: 'Save',
+            className: 'save',
+            callback: function() {
+              alert('Saving...');
+            }
+          },{
+            separator: true
+          },{
+            name: 'Save as .xsl',
+            className: 'xsl',
+            callback: function() {
+              alert('Saving as .xsl');
+            }
+          },{
+            name: 'Save as .doc',
+            className: 'doc',
+            callback: function() {
+              alert('Saving as .doc');
+            }
+          },{
+            name: 'Save as .pdf',
+            className: 'pdf',
+            callback: function() {
+              alert('Saving as .pdf');
+            }
+          },{
+            separator: true
+          },{
+            name: 'Send to...',
+            disabled: true,
+            className: 'send'
+          }
+        ]
+        
+        new Proto.Menu({
+          selector: '#test',//一切css选择器都可以使用的
+          className: 'menu desktop',
+          menuItems: myMenuItems
+        })
+      })
+	  
+    </script>
+  </head>
+<body>
+<div style="height: 400px;background-color: green;" >
+</div>
+<div style="height: 400px;background-color: blue;" id="test">
+</div>
+
+</body>
+</html>

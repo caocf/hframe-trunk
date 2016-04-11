@@ -1,0 +1,545 @@
+@import url("openwin.css");/*弹出DIV窗口样式，耗内存，不用请注释*/
+@import url("other.css");/*用户自定义样式，没有请注释*/
+
+/* 黑色主题主框架样式定义*/ 
+body{font-family:Arial,"宋体";margin:0px; padding:0px;background-color:#FFFFFF;overflow:auto;}
+.group{ width:100%;clear:both;}
+#top01{background:url(../images/topbg_01.gif) top repeat-x; height:50px;}
+.top01bg{background:url(../images/topbg_02.gif) top right no-repeat;height:50px;position: relative;}
+.logo { background:url(../images/logo_01.gif) top no-repeat;height:50px;width:482px;float:left;}
+.top_right{width:400px;float:right;padding:28px 20px 0 0;line-height:16px; color:#FFF;}
+#expand {top: 28px;right: 255px;background-image: url(../images/top_01.gif);background-repeat: no-repeat;background-position: left center;}
+#exit {background-image: url(../images/top_04.gif);background-repeat: no-repeat;background-position: left center;top: 28px;right: 0px;}
+#password {background-image: url(../images/top_02.gif);background-repeat: no-repeat;background-position: left center;top: 28px;right: 85px;}
+#post {background-image: url(../images/top_03.gif);background-repeat: no-repeat;background-position: left center;top: 28px;right: 170px;}
+#main { margin:0; padding:0; clear:both;}
+.left {float:left; word-wrap:break-word; border-right:1px solid #000;}
+#right1 {float:right;word-wrap:break-word;height:autobackground-color:#dfecf5; display:block;}
+#desktop{ width:100%;height:100%;background:url(../images/desktop_bg.gif) bottom right repeat-x;padding-left:8px;}
+.title_bg {background:url(../images/left_bg.gif) top repeat-x; padding-top:4px;min-height: 100%;_height:100%; list-style:none;}
+#copyright{ background:url(../images/footer_01.gif) repeat-x;text-align:center; padding-top:10px; height:30px; color:#fff;}
+
+.time { height:51px; background-color:#ffffff; background:url(../images/data_01.gif) no-repeat; padding-left:60px; padding-top:8px; line-height:20px;margin:0px 2px;}
+.dlxx { height:60px; background-color:#ffffff; background:url(../images/yh_01.gif) no-repeat; padding-left:60px; padding-top:8px; line-height:18px;margin:6px 2px;}
+.title_h {height:100%;}
+.title_bg { background:(../images/outlook/left_bg.gif repeat-x bottom)}
+.desktop_bg {background:url(images/desktop_ys.gif) no-repeat bottom right;}
+
+/*导航下拉菜单样式开始*/
+#nav {padding:0;margin:0;list-style:none;height:30px;position:relative;z-index:500;font-family:arial;background-color: #fff;background-image: url(../images/menu_01.gif);background-repeat: repeat-x;}
+#nav li.top {display:block; float:left;}
+#nav li.top img{float:left; margin-top:6px; margin-right:4px;}
+#nav li a.top_link {display:block; float:left; height:30px; line-height:27px; color:#000; text-decoration:none; font-size:11px; font-weight:bold; padding:0 0 0 12px; cursor:pointer;background: url(../images/blank.gif);}
+#nav li a.top_link span {float:left; display:block; padding:0 24px 0 6px; height:30px;background:url(../images/blank.gif) right top;}
+#nav li a.top_link span.down {float:left; display:block; padding:0 24px 0 6px; height:30px; background:url(../images/blanka.gif) no-repeat right top;}
+#nav li a.top_link:hover {color:#000; background: url(../images/blank_over.gif) no-repeat;}
+#nav li a.top_link:hover span {background:url(../images/blank_over.gif) no-repeat right top;}
+#nav li a.top_link:hover span.down {background:url(../images/blank_overa.gif) no-repeat right top;}
+#nav li:hover > a.top_link {color:#000;background: url(../images/blank_over.gif) no-repeat;}
+#nav li:hover > a.top_link span {background:url(../images/blank_over.gif) no-repeat right top;}
+#nav li:hover > a.top_link span.down {background:url(../images/blank_overa.gif) no-repeat right top;}
+#nav li:hover {position:relative; z-index:200;}
+#nav ul, 
+#nav li:hover ul ul,
+#nav li:hover ul li:hover ul ul,
+#nav li:hover ul li:hover ul li:hover ul ul,
+#nav li:hover ul li:hover ul li:hover ul li:hover ul ul
+{position:absolute; left:-9999px; top:-9999px; width:0; height:0; margin:0; padding:0; list-style:none;}
+#nav li:hover ul.sub
+{left:0; top:29px; background: #fff; padding:3px; border:1px solid #a9aaac; white-space:nowrap; width:105px; height:auto; z-index:300;}
+#nav li:hover ul.sub li
+{display:block; height:20px; position:relative; float:left; width:105px; font-weight:normal;}
+#nav li:hover ul.sub li a
+{display:block; font-size:11px; height:20px; width:105px; line-height:20px; text-indent:5px; color:#000; text-decoration:none;}
+#nav li ul.sub li a.fly{background:#fff url(../images/arrow.gif) 100px 7px no-repeat;}
+#nav li:hover ul.sub li a:hover {background:#a9aaac; color:#000;}
+#nav li:hover ul.sub li a.fly:hover{background:#a9aaac url(../images/arrow_over.gif) 100px 7px no-repeat; color:#000;}
+#nav li:hover ul li:hover > a.fly {background:#a9aaac url(../images/arrow_over.gif) 100px 7px no-repeat; color:#000;} 
+#nav li:hover ul li:hover ul,
+#nav li:hover ul li:hover ul li:hover ul,
+#nav li:hover ul li:hover ul li:hover ul li:hover ul,
+#nav li:hover ul li:hover ul li:hover ul li:hover ul li:hover ul
+{left:105px; top:-4px; background: #fff; padding:3px; border:1px solid #a9aaac; white-space:nowrap; width:90px; z-index:400; height:auto;}
+/*导航下拉菜单样式结束*/
+/*展开菜单样式开始*/
+.font_title {font-family: Arial;font-size: 14px;font-weight: bold; color:#000;}
+.font_td {font-family: Arial;font-size: 12px;font-weight: bold;}
+.font_td_c {font-family: Arialf;font-size: 12px;text-indent: 2em;}
+.height01 {line-height: 22px;}
+.height02 {line-height: 20px;height: 66px; padding:0; margin:0; color:#333; padding:0 40px 0 0;}
+.height01 a{color:#000; text-decoration:none;}
+.height01 a:hover{color:#535353; text-decoration:underline;}
+/*展开菜单样式结束*/
+
+
+/*------------------------------平台组件样式开始------------------------------*/
+
+/*-----------AIWait样式-----------*/
+/*AIWait进度条样式*/
+.AIAPPFRAME_WAIT_MAIN_CSS{position:absolute; z-index:500; left:0; top:0; width:90%; height:98%; clip:rect(0,100%,100%,0); background-color:transparent; layer-background-color:white;visibility:hidden}
+.AIAPPFRAME_WAIT_DIV_CSS{background:url(../images/aiwait/load_bg.gif) no-repeat;width:280px;height:80px;color:#000000;}
+.AIAPPFRAME_WAIT_LOAD_CSS{background:url(../images/aiwait/loading.gif) no-repeat;width:32px;height:32px;}
+
+/*AIWait文件上传进度条样式*/
+.AIAPPFRAME_UPLOAD_MAIN_CSS{position:absolute; z-index:500; left:0; top:0; width:100%; height:98%; clip:rect(0,100%,100%,0); background-color:transparent; layer-background-color:white;visibility:hidden}
+.AIAPPFRAME_UPLOAD_DIV_CSS{background:url(../images/aiwait/load_bg.gif) no-repeat;width:280px;height:80px;color:#000000;}
+.AIAPPFRAME_UPLOAD_LOAD_CSS{background:url(../images/aiwait/loading.gif) no-repeat;width:32px;height:32px;}
+.prog-border{height:15px;width:380px;background:#fff;border:1px solid #000;margin:0;padding: 0;}
+.prog-bar{height:11px;margin:2px;padding:0px;background:#00ff00;}
+
+/*-----------AIButton样式-----------*/
+/*正常按钮*/
+.AIButton .AIBtnLeft {background:url(../images/button/button_left.gif) no-repeat 0 0; height:22px; width:10px; vertical-align:bottom;}
+.AIButton .AIBtnCenter {background:url(../images/button/button_bg.gif) repeat-x 0 0; height:22px; color:#000000; vertical-align:bottom;}
+.AIButton .AIBtnRight {background:url(../images/button/button_right.gif) no-repeat 0 0; height:22px; width:10px; vertical-align:bottom;}
+.AIButton .AIBtnText {line-height:22px;}
+/*鼠标滑动*/
+.AIButtonHover .AIBtnLeft {background:url(../images/button/button_left.gif) no-repeat 0 -22px; height:22px; width:10px; vertical-align:bottom;}
+.AIButtonHover .AIBtnCenter {background:url(../images/button/button_bg.gif) repeat-x 0 -22px; height:22px; color:#1b1b1b; vertical-align:bottom;}
+.AIButtonHover .AIBtnRight {background:url(../images/button/button_right.gif) no-repeat 0 -22px; height:22px; width:10px; vertical-align:bottom;}
+.AIButtonHover .AIBtnText {line-height:22px;}
+/*不可用按钮*/
+.AIButtonDisabled .AIBtnLeft {background:url(../images/button/button_left.gif) no-repeat 0 -44px; height:22px; width:10px; vertical-align:bottom;}
+.AIButtonDisabled .AIBtnCenter {background:url(../images/button/button_bg.gif) repeat-x 0 -44px; height:22px; color:#999999; vertical-align:bottom;}
+.AIButtonDisabled .AIBtnRight {background:url(../images/button/button_right.gif) no-repeat 0 -44px; height:22px; width:10px; vertical-align:bottom;}
+.AIButtonDisabled .AIBtnText {line-height:22px;}
+
+/*-----------套框样式-----------*/
+/*AIContentFrame窗口布局样式*/
+.AIContentFrame_head_bg{height:20px;background:url(../images/content/title_bg1.gif);color:fff;}
+.AIContentFrame_head_left{width:6px;height:20px;background:url(../images/content/title_left1.gif) left top;padding-right:20px;background-repeat:no-repeat}
+.AIContentFrame_head_right{width:6px;height:20px;background:url(../images/content/title_right1.gif) right top;padding-left:20px;background-repeat:no-repeat}
+.AIContentFrame_main{border:1 solid #999999;background-color:#FFFFFF;}
+
+/*AIContractFrame窗口布局样式*/
+.AIContractFrame{text-align:center}
+.AIContract{ width:98%}
+.line_start{padding:3px}
+.line_end{padding:0}
+.t-bot-ml{background:url(../images/content/m-l.gif) no-repeat;padding-left:6px;overflow:hidden;zoom:1;}
+.t-bot-mc{background:url(../images/content/m-c.gif) repeat-x;text-align:left; height:25px;}
+.t-bot-mt{color:#fff; font-weight:bold; text-align:left;padding:6px 0 0 10px;margin-right:10px;white-space: nowrap; word-break: keep-all;width:80px;height:25px;float:left;}
+.t-bot-mm{background:#f4f4f4; text-align:left;border:1 solid #000000;border-width:0 1 0 1;}
+.t-bot-mr{background:url(../images/content/m-r.gif) no-repeat right top;padding-right:6px;overflow:hidden;}
+.t-bot-bl{background:url(../images/content/b-l.gif) no-repeat;height:6px;padding-left:3px;overflow:hidden;zoom:1;}
+.t-bot-bc{background:url(../images/content/b-c.gif) repeat-x; height:6px;overflow:hidden;}
+.t-bot-br{background:url(../images/content/b-r.gif) no-repeat right;height:6px;padding-right:3px;overflow:hidden;}
+.t-bot-mc-right{float:left;text-align:right;white-space: nowrap; word-break: keep-all;margin:2px 0 0 2px;}
+.t-bot-mc-word{float:left;color:#fff;width:60%;text-align:center;padding-top:4px;}
+.t-bot-mc-left{float:left;color:#fff;text-align:left;padding-top:4px;}
+.t-bot-mc-button{float:right;text-align:right; white-space: nowrap; word-break: keep-all;}
+
+/*-----------dbdate样式-----------*/
+/**dbdate,dbdatetime样式**/
+.dbform_dbdate_span_style{font-family: "Arial";border-bottom:#333333 1px solid; border-left: #333333 1px solid; border-right:  #333333  1px solid; border-top: #333333 1px solid;border-collapse: collapse}
+
+/**dbdate输入框样式*/
+.dbform_dbdate_input_style{font-family: "Arial";border-bottom:#999999 1px solid; border-left:#999999 1px solid; border-right:#999999  0px solid; border-top:#999999 1px solid;border-collapse: collapse}
+
+/*dbdate按钮样式*/
+.dbform_dbdate_btn_style{width:20px;height:20px;cursor:pointer;background:url(../images/tool/calendar.gif) no-repeat;border:0;}
+
+/* 控制单元格显示格式 */
+.DBDate-CalHead {cursor:default; text-align:center; font:bold arial; color:white;}
+.DBDate-CalCell {cursor:hand; text-align:center;}
+.DBDate-CellAnchor {text-decoration:none; font:arial;}
+
+/* 控制星期显示格式*/
+.DBDate-WeekHead {cursor:default; font:arial; text-align:center; color:#f4f4f4;}
+.DBDate-WeekCol {cursor:default; font:bold arial; text-align:center; color:gray; background:#f4f4f4;}
+
+/* 月份导航 */
+.DBDate-MonthNav {vertical-align:middle; height:22; width:18; font:fixedsys; color:black;}
+
+/* 日历 */
+.DBDate-CalHead {cursor:default; text-align:center; font:bold arial; color:white;}
+.DBDate-CalCell {cursor:hand; text-align:center;}
+.DBDate-CellAnchor {text-decoration:none; font:arial;}
+
+/* 控制星期显示格式*/
+.DBDate-WeekHead {cursor:default; font:arial; text-align:center; color:#f4f4f4;}
+.DBDate-WeekCol {cursor:default; font:bold arial; text-align:center; color:gray; background:#f4f4f4;}
+
+/* 月份导航 */
+.DBDate-MonthNav {vertical-align:middle; height:22; width:18; font:fixedsys; color:black;}
+
+/* 日历 */
+.DBDate-CalTop {text-align:center;}
+.DBDate-CalMiddle {}
+.DBDate-CalBottom {text-align:center;}
+
+/* 标题 */
+.DBDate-CalTitle {vertical-align:middle; font:arial; color:black;}
+
+/* 今天显示 */
+.DBDate-Today {text-decoration:none; font:bold sans-serif; color:black;}
+A.DBDate-Today:hover {color:yellow}
+A.DBDate-Today:active {color:red}
+
+/* 标题 */
+.DBDate-CalTitle {vertical-align:middle; font:arial; color:black;}
+
+/* 今天显示 */
+.DBDate-Today {text-decoration:none; font:bold sans-serif; color:black;}
+A.DBDate-Today:hover {color:yellow}
+A.DBDate-Today:active {color:red}
+
+/*-----------AIDBForm样式-----------*/
+/* AIDBForm样式 */
+.dbform_disable_style{background: #eeeeee;border-bottom:#999999 1px solid; border-left:#999999 1px solid; border-right:#999999  1px solid; border-top:#999999 1px solid;border-collapse: collapse}
+.dbform_inputfield_style{border-bottom:#999999 1px solid; border-left:#999999 1px solid; border-right:#999999  1px solid; border-top:#999999 1px solid;border-collapse: collapse}
+.dbform_lable_style{background: #eeeeee;border-bottom:#C8C8C8 1px solid;border-left: #999999 1px solid; border-right: #C8C8C8 1px solid;border-top: #999999 1px solid;}
+.dbform_password_style{border-bottom:#999999 1px solid; border-left:#999999 1px solid; border-right:#999999  1px solid; border-top:#999999 1px solid;border-collapse: collapse}
+.dbform_checkbox_style{ border:0}
+.dbform_textarea_style{border-bottom:#999999 1px solid; border-left:#999999 1px solid; border-right:#999999  1px solid; border-top:#999999 1px solid;border-collapse: collapse}
+.DBForm_tdDis{height:20;border-top:1 solid #B1BAC2;border-left:1 solid #B1BAC2;border-right:1 solid white;border-bottom:1 solid white;background:#f4f4f4;padding-top:5;padding-left:5}
+.DBForm_tdTit{padding-right:0;padding-left:30;}
+
+/*----DBOpenWin Css-----*/
+.dbform_dbopenwin_editor_style{border-bottom:#999999 1px solid; border-left:#999999 1px solid; border-right:#999999  1px solid; border-top:#999999 1px solid;border-collapse: collapse}
+.dbform_dbopenwind_btn_style{background: #eeeeee;
+  border-bottom: #999999 1pt solid; border-left: #999999 1pt solid; border-right: #999999 1pt solid; border-top: #999999 1pt solid;}
+
+
+/*----DBFile Css-----*/
+.dbform_dbfile_btn_style{background: #eeeeee; border-bottom: #999999 1pt solid; border-left: #999999 1pt solid; border-right: #999999 1pt solid; border-top: #999999 1pt solid;}
+
+/**dblist相关*/
+.dbform_listbox_input_style{border-bottom:#999999 1px solid; border-left:#999999 1px solid; border-right:#999999  1px solid; border-top:#999999 1px solid;border-collapse: collapse}
+.dbform_listbox_list_style{border-bottom:#999999 1px solid; border-left:#999999 1px solid; border-right:#999999  1px solid; border-top:#999999 1px solid;border-collapse: collapse;}
+.dbform_listbox_input_disable_style{background: #f4f4f4;border-bottom:#999999 1px solid; border-left:#999999 1px solid; border-right:#999999  1px solid; border-top:#999999 1px solid;border-collapse: collapse;}
+.selectspan{height:20px;border:1px solid #cecece;}
+
+/* DBListBox相关的css样式 */
+
+/*下拉框正常情况下的CSS样式*/
+.DBListBox_normal_style{border-bottom:#999999 1px solid;border-left:#999999 1px solid;border-right:#999999  1px solid;border-top:#999999 1px solid;border-collapse: collapse;}
+/*下拉框不可用的情况下的CSS样式*/
+.DBListBox_disabled_style{background: #f4f4f4;border-bottom:#999999 1px solid;border-left:#999999 1px solid;border-right:#999999  1px solid;border-top:#999999 1px solid;border-collapse: collapse;}
+
+/*-----------CrossGrid样式-----------*/
+/* CrossGrid页面样式 */
+/*表格固定行头抬头部分样式*/
+.CrossGridRowHead_Name{BACKGROUND-COLOR: #ffdddd;}
+/*表格固定行头数值部分样式*/
+.CrossGridRowHead_Value{BACKGROUND-COLOR: #efe1ff;}
+/*表格固定列头的样式*/
+.CrossGridColHead{BACKGROUND-COLOR: #ecffec;}
+/* 数据区域样式*/
+.CrossGrid_Data{BACKGROUND-COLOR: #FFFFFF;}
+/* 选中行/列样式*/
+.CrossGrid_Row{BACKGROUND-COLOR: #e5e5e5;}
+
+/*-----------DBGrid样式-----------*/
+/* DBGrid样式 */
+/**---------------------------------------------
+新样式 样式说明 对应老样式
+G-TableHead 表格表头样式 DBGrid_TableHead
+G-TableBody 表格数据区域样式 DBGrid_TableBody
+G-TableFoot 表格脚区域样式 DBGrid_TableFoot
+G-ScrollBar 滚动条样式 DBGrid_ScrollBar
+GH-Head  表格头区域样式 DBGrid_THead
+GH-TR 表格头TR样式 DBGrid_THead_Tr
+GH-TD 表格头TD样式 DBGrid_THead_Td
+GH-S 表格头多选单元格样式 无
+GH-S-C  表格头的多选Checkbox样式 DBGrid_MultiSelect_HeadCheckbox
+GH-Seq 表格头的序号 DBGrid_Head_RowSequence
+GD-One 奇数行样式 DBGrid_Data_Tr
+GD-Two 偶数行样式 DBGrid_Data_Tr
+GD-TD 表格数据区域TD样式 DBGrid_Data_Td
+GD-S 表格数据行多选单元格样式 DBGrid_Data_Tr_Head
+GD-S-C  表格数据行的多选Checkbox样式 DBGrid_MultiSelect_Checkbox
+GD-Seq 表格数据的序号 DBGrid_Data_RowSequence
+GD-SelectRow 选中行样式 DBGrid_Data_SelectRow
+GD-CurrentRow 当前行样式 DBGrid_Data_CurrentRow
+GD-CurrentCell 当前单元格样式 DBGrid_Data_CurrentCell
+GD-Total-TR  合计行样式 DBGrid_Data_Tr_Total
+GD-Total-TD  合计行单元格样式 DBGrid_Data_Td_Total
+GH-SORT-ASC 抬头升序排序样式 无
+GH-SORT-DESC 抬头降序排序样式 无
+------------------------------------------------------   **/
+.td_hover{background:url(../images/grid/td_hover.gif);}
+.title_hover{height:20px;color:#000000;text-align:center;border:#999999 solid;border-width:0 1 1 0;background:url(../images/grid/title_hover.gif);display:block;}
+/*最外层区域样式*/
+.G-TableOuterDiv{background:#eeeeee;}
+.G-TableHead{height:20px;color:#000000;TABLE-LAYOUT: fixed;border-COLLAPSE: collapse;background:url(../images/grid/title_bg.gif);display:block;}
+/*表格数据区域样式*/
+.G-TableBody{border:#000000;background-color:#eeeeee;}
+/*表格脚区域样式*/
+.G-TableFoot{background:url(../images/grid/bottom_bg.gif);border-top:1 solid #b5b5b5;height:26px;}
+/*表格头区域样式*/
+.GH-Head{height:20px;color:#000000;text-align:center;border:#000000 solid;border-width:0 1 0 0;background:#fdfdfd;}
+/*表格头TR样式*/
+.GH-TR{} 
+/*表格头TD样式*/
+.GH-TD{height:20px;color:#000000;text-align:center;border:#b5b5b5 solid;border-width:0 1 1 0;background:url(../images/grid/title_bg.gif);display:block;}
+/*合计行样式*/
+.GD-Total-TR{border:#b5b5b5 solid;border-width:0 1 1 0;}
+/*合计行单元格样式*/
+.GD-Total-TD{border:#b5b5b5 solid;border-width:0 1 1 0;}  
+/*表格数据行多选单元格样式*/
+.GD-S{text-align:center;border:#b5b5b5 solid;border-width:0 1 1 0;display:block;}
+/*表格头多选单元格样式*/
+.GH-S{height:20px;color:#000000;border:#b5b5b5 solid;border-width:0 1 1 0;TABLE-LAYOUT: fixed;border-COLLAPSE: collapse;background:url(../images/grid/title_bg.gif);display:block;}
+/*表格头的多选Checkbox样式*/
+.GH-S-C{border:0;}
+/*表格数据行的多选Checkbox样式*/
+.GD-S-C{border:0;width:25px;}
+/*表格头的序号*/
+.GH-Seq{height:20px;color:#000000;border:#b5b5b5 solid;border-width:0 1 1 0;TABLE-LAYOUT: fixed;border-COLLAPSE: collapse;background:url(../images/grid/title_bg.gif);display:block;}
+/*表格数据的序号*/
+.GD-Seq{text-align:center;border:#b5b5b5 solid;border-width:0 1 1 0;display:block;}
+/*奇数行样式*/
+.GD-One{background-color:#FFFFFF;border:#000000 solid;border-width:1 1 1 1;}
+/*偶数行样式*/
+.GD-Two{background-color:#f4f4f4;border:#000000 solid;border-width:1 1 1 1;}
+/*表格数据区域TD样式*/
+.GD-TD{background-color: ;border:#b5b5b5 solid;border-width:0 1 1 0;word-break:break-all;}
+/*选中行样式*/
+.GD-SelectRow{}
+/*当前行样式*/
+.GD-CurrentRow{background-color:#d9d9d9}
+/*当前单元格样式*/
+.GD-CurrentCell{background-color:#b5b5b5;border:#b5b5b5 solid;border-width:0 1 1 0;word-break:break-all;}
+/*DBGrid滚动条样式*/
+.G-ScrollBar{overflow:auto;SCROLLBAR-FACE-COLOR:#eeeeee;SCROLLBAR-HIGHLIGHT-COLOR:#000000;SCROLLBAR-SHADOW-COLOR:#000000;SCROLLBAR-3DLIGHT-COLOR:#f9f9f9;SCROLLBAR-ARROW-COLOR:#000000;SCROLLBAR-TRACK-COLOR:#f9f9f9;SCROLLBAR-DARKSHADOW-COLOR:#f9f9f9;}
+/*抬头升序排序样式*/
+.GH-SORT-ASC{float:right;width:13px;height:14px;background:url(../images/grid/sort_u.gif);background-repeat:no-repeat;}
+/*抬头降序排序样式*/
+.GH-SORT-DESC{float:right;width:13px;height:14px;background:url(../images/grid/sort_d.gif);background-repeat:no-repeat;}
+.GH-SORT{float:right;width:13px;height:14px;background:url(../images/grid/sort.gif);background-repeat:no-repeat;}
+.TABLE_TREE_BUTTON{width:16;height:16;font-size: 12px;border-RIGHT: #000000 1px solid; PADDING-RIGHT: 2px; border-TOP: #000000 1px solid; PADDING-LEFT: 2px; FONT-SIZE: 12px; FILTER: progid:DXImageTransform.Microsoft.Gradient(GradientType=0, StartColorStr=#ffffff, EndColorStr=#C3DAF5); border-LEFT: #000000 1px solid; CURSOR: hand; COLOR: black; PADDING-TOP: 2px; border-BOTTOM: #000000 1px solid}
+input.table-page{border:1px solid #8A8A8A;width:2em;height:1.2em;text-align:center;font-size:9pt;position:relative;top:-1px;padding-top:0;}
+#page-first{width:16px;background:url(../images/grid/button_begin.gif) no-repeat left 1px;}
+#page-prev{width:16px;background:url(../images/grid/button_prv.gif) no-repeat left 1px;}
+#page-next{width:16px;background:url(../images/grid/button_next.gif) no-repeat left 1px;}
+#page-last{width:16px;background:url(../images/grid/button_end.gif) no-repeat left 1px;}
+#page-go{width:15px;background:url(../images/grid/button_go.gif) no-repeat left top;}
+
+/*-----------outlook样式-----------*/
+/*outlook菜单样式*/
+.title00{height:25px;cursor:pointer;background:url(../images/outlook/left_icon0.gif) repeat-x;text-align:center; padding-top:6px;text-decoration:none; border-top:1px #000000 solid; color:#fff; font-weight:bold;}
+.title00:hover{background:url(../images/outlook/left_icon_hover0.gif) repeat-x}
+
+.title01{height:25px;cursor:pointer;background:url(../images/outlook/left_icon0.gif) repeat-x;text-align:center; padding-top:6px;text-decoration:none; border-top:1px #000000 solid; color:#fff; font-weight:bold;}
+.title01:hover{background:url(../images/outlook/left_icon_hover0.gif) repeat-x}
+.title02{height:25px;cursor:pointer;background:url(../images/outlook/left_icon0.gif) repeat-x;text-align:center; padding-top:6px;text-decoration:none; border-top:1px #000000 solid; color:#fff; font-weight:bold;}
+.title02:hover{background:url(../images/outlook/left_icon_hover0.gif) repeat-x}
+.title03{height:25px;cursor:pointer;background:url(../images/outlook/left_icon0.gif) repeat-x;text-align:center; padding-top:6px;text-decoration:none; border-top:1px #000000 solid; color:#fff; font-weight:bold;}
+.title03:hover{background:url(../images/outlook/left_icon_hover0.gif) repeat-x}
+.title04{height:25px;cursor:pointer;background:url(../images/outlook/left_icon0.gif) repeat-x;text-align:center; padding-top:6px;text-decoration:none; border-top:1px #000000 solid; color:#fff; font-weight:bold;}
+.title04:hover{background:url(../images/outlook/left_icon_hover0.gif) repeat-x}
+.title05{height:25px;cursor:pointer;background:url(../images/outlook/left_icon0.gif) repeat-x;text-align:center; padding-top:6px;text-decoration:none; border-top:1px #000000 solid; color:#fff; font-weight:bold;}
+.title05:hover{background:url(../images/outlook/left_icon_hover0.gif) repeat-x}
+.title06{height:25px;cursor:pointer;background:url(../images/outlook/left_icon0.gif) repeat-x;text-align:center; padding-top:6px;text-decoration:none; border-top:1px #000000 solid; color:#fff; font-weight:bold;}
+.title06:hover{background:url(../images/outlook/left_icon_hover0.gif) repeat-x}
+.title07{height:25px;cursor:pointer;background:url(../images/outlook/left_icon0.gif) repeat-x;text-align:center; padding-top:6px;text-decoration:none; border-top:1px #000000 solid; color:#fff; font-weight:bold;}
+.title07:hover{background:url(../images/outlook/left_icon_hover0.gif) repeat-x}
+.title08{height:25px;cursor:pointer;background:url(../images/outlook/left_icon0.gif) repeat-x;text-align:center; padding-top:6px;text-decoration:none; border-top:1px #000000 solid; color:#fff; font-weight:bold;}
+.title08:hover{background:url(../images/outlook/left_icon_hover0.gif) repeat-x}
+.title09{height:25px;cursor:pointer;background:url(../images/outlook/left_icon0.gif) repeat-x;text-align:center; padding-top:6px;text-decoration:none; border-top:1px #000000 solid; color:#fff; font-weight:bold;}
+.title09:hover{background:url(../images/outlook/left_icon_hover0.gif) repeat-x}
+.title10{height:25px;cursor:pointer;background:url(../images/outlook/left_icon0.gif) repeat-x;text-align:center; padding-top:6px;text-decoration:none; border-top:1px #000000 solid; color:#fff; font-weight:bold;}
+.title10:hover{background:url(../images/outlook/left_icon_hover0.gif) repeat-xsub}
+.content{ height:100%;overflow:auto;padding:0px;margin:0px;}
+a.li {display:block; height:20px;padding-left:20px;text-decoration: none;padding-top:3px;}
+a.li:hover {background:url(../images/outlook/tab_hoverbg.gif) repeat-x;height:20px;}
+
+/*-----------PopMenu样式-----------*/
+/*PopMenu弹出菜单样式*/
+.aipopmenu_backdiv{background:#f8f8f8;border:1 solid #b5b5b5;padding:1px;filter:alpha(opacity=90);}
+.aipopmenu_menu{padding-left:16px;height:22px;}
+.aipopmenu_overmenu{padding-left:16px;height:22px;background:url(../images/popmenu/overmenu_bg.gif) repeat-x;color:#666666;cursor:pointer;}
+.aipopmenu_sepa{width:100%;border:1px solid #f0f0f0}
+.aipopmenu_disablemenutext{color:#c0c0c0;}
+
+/*-----------Tab样式-----------*/
+/*Tab标签页样式*/
+OL LI {margin: 10px}
+#con {margin: 0px; overflow:hidden; width:100%; height:100%}
+#tags {background: url(../images/top_menu2.gif) repeat-x;padding:1px 0 0 8px; margin: 0px; width:100%; height:25px}
+#tags LI {background: url(../images/tagleft.gif) no-repeat left bottom; float: left; margin-right: 1px; list-style-type: none; height: 26px}
+#tags LI A {padding:0px 12px 0px 12px;background: url(../images/tagright.gif) no-repeat right bottom; float: left;color: #000000;line-height: 26px;height: 26px; text-decoration: none}
+#tags LI.emptyTag {background: none transparent scroll repeat 0% 0%; width: 4px}
+#tags LI.selectTag {background-position: left top; margin-bottom: -1px; position: relative; height: 24px}
+#tags LI.selectTag A {background-position: right top; color: #000000; line-height: 24px; height: 24px}
+#tagContent {background: #FFFFFF;width:100%;}
+.tagContent {DISPLAY: none;background: #FFFFFF;width:100%;height:100%}
+#tagContent div.selectTag {DISPLAY: block}
+
+/*更多按钮*/
+.tab_moreButton{background:url(../images/tab/more_tab.gif) left top  no-repeat;width:14px;height:26px;cursor:hand;margin-left:-1px;}
+.tab_moreButton_hover{background:url(../images/tab/more_tab.gif) left top  no-repeat;background-position:-13px 0px;width:14px;height:25px;cursor:hand;margin-left:-1px;}
+.tab_b_moreButton{background:url(../images/tab/more_tab.gif) left bottom  no-repeat;width:14px;height:26px;cursor:hand;margin-left:-1px;}
+.tab_b_moreButton_hover{background:url(../images/tab/more_tab.gif) left bottom  no-repeat;background-position:-13px 0px;width:14px;height:26px;cursor:hand;margin-left:-1px;}
+.tab_vv_moreButton{background:url(../images/tab/more_v_tab.gif) top right no-repeat;width:26px;height:14px;cursor:hand;margin-top:-2px;}
+.tab_vv_moreButton_hover{background:url(../images/tab/more_v_tab.gif) top right no-repeat;background-position:0px -13px;width:26px;height:14px;cursor:hand;margin-top:-2px;}
+
+/*下拉菜单*/
+.tab_pop_table{height:22px;background-color: #ffffff; border: 1 solid #000000;width:100px;filter:alpha(opacity=90);padding:0 5px 0 5px;}
+.tab_pop_menu{height:22px;padding:0 5px 0 5px;}
+.tab_pop_menuover{height:22px;background:url(../images/popmenu/overmenu_bg.gif) repeat-x;color:#666666;cursor:pointer;padding:0 5px 0 5px;}
+
+/*左右间隔*/
+.scrollDiv{width:40px;height:25px;}
+.scrollDiv_vv{height:41px;width:25px;}
+
+/*关闭按钮样式*/
+.TAB_ITEM_CLOSE_BUTTON{width:16px;height:16px;cursor:hand;float:right;background:url(../images/tool/close.gif) no-repeat;background-position:0px -32px;font-size:12px;margin:4px 2px 0 3px;}
+.TAB_ITEM_CLOSE_BUTTON_CURRENT{width:16px;height:16px;cursor:hand;float:right;background:url(../images/tool/close.gif) no-repeat;background-position:0px -16px;font-size:12px;margin:4px 2px 0 3px;}
+.TAB_ITEM_CLOSE_BUTTON_HOVER{width:16px;height:16px;cursor:hand;float:right;background:url(../images/tool/close.gif) no-repeat;background-position:0px 0px;font-size:12px;margin:4px 2px 0 3px;}
+
+/* tab_h页面样式 */
+/*左边滚动按钮样式*/
+.TAB_H_SCROLLLEFTBUTTON{background:url(../images/tab/button_prv.gif) left top  no-repeat;width:14px;height:26px;cursor:hand;}
+.TAB_H_SCROLLLEFTBUTTON_HOVER{background:url(../images/tab/button_prv.gif) left top  no-repeat;background-position:-13px 0px;width:14px;height:26px;cursor:hand;}
+/*右边滚动按钮样式*/
+.TAB_H_SCROLLRIGHTBUTTON{background:url(../images/tab/button_next.gif) left top  no-repeat;width:14px;height:26px;cursor:hand;margin-left:-1px;}
+.TAB_H_SCROLLRIGHTBUTTON_HOVER{background:url(../images/tab/button_next.gif) left top  no-repeat;background-position:-13px 0px;width:14px;height:26px;cursor:hand;margin-left:-1px;}
+/*整体标签样式*/
+.TAB_H_ITEM_STYLE{background: url(../images/tab/item_bg.gif) repeat-x bottom; width:100%; height:26px;}
+/*TITLE样式含左边的图片*/
+.TAB_H_TITLE_STYLE{padding-left:10px;color:#000000;float:left;height:26px;z-index:100;margin:0 1px 0 1px;background:url(../images/tab/tagleft1.gif) left bottom  no-repeat;}
+/*TITLE样式含右边的图片*/
+.TAB_H_TITLE_STYLE span{padding-right:10px;float:right;height:26px;background:url(../images/tab/tagright1.gif) right bottom no-repeat;}
+/*聚焦当前TITLE样式含左边的图片*/
+.TAB_H_TITLE_STYLE_CURRENT{padding-left:10px;color:#fff;float:left;height:26px;z-index:100;margin:0 1px 0 1px;background:url(../images/tab/tagleft2.gif) left bottom  no-repeat;}
+/*聚焦当前TITLE样式含右边的图片*/
+.TAB_H_TITLE_STYLE_CURRENT span{padding-right:10px;float:right;height:26px;background:url(../images/tab/tagright2.gif) right bottom  no-repeat;}
+/*鼠标触发TITLE样式含左边的图片*/
+.TAB_H_TITLE_STYLE_HOVER{padding-left:10px;color:#000000;float:left;height:26px;z-index:100;margin:0 1px 0 1px;background:url(../images/tab/tagleft3.gif) left bottom  no-repeat;}
+/*鼠标触发TITLE样式含右边的图片*/
+.TAB_H_TITLE_STYLE_HOVER span{padding-right:10px;float:right;height:26px;background:url(../images/tab/tagright3.gif) right bottom  no-repeat;}
+/*TITLE的字体样式*/
+.TAB_H_TITLE_FONT_STYLE{color:#000000;text-align:center;cursor: hand;padding-top:6px;}
+/*主体部分的样式*/
+.TAB_H_MAIN_TAB {border:solid #000000;border-width:0 1 1 1;background:#FFFFFF;}
+
+/* tab_b页面样式 */
+/*左边滚动按钮样式*/
+.TAB_B_SCROLLLEFTBUTTON{background:url(../images/tab/button_prv.gif) left bottom  no-repeat;width:14px;height:26px;cursor:hand;}
+.TAB_B_SCROLLLEFTBUTTON_HOVER{background:url(../images/tab/button_prv.gif) left bottom  no-repeat;background-position:-13px 0px;width:14px;height:26px;cursor:hand;}
+/*右边滚动按钮样式*/
+.TAB_B_SCROLLRIGHTBUTTON{background:url(../images/tab/button_next.gif) left bottom  no-repeat;width:14px;height:26px;cursor:hand;margin-left:-1px;}
+.TAB_B_SCROLLRIGHTBUTTON_HOVER{background:url(../images/tab/button_next.gif) left bottom  no-repeat;background-position:-13px 0px;width:14px;height:26px;cursor:hand;margin-left:-1px;}
+/*整体标签样式*/
+.TAB_B_ITEM_STYLE{background: url(../images/tab/item_bg_b.gif) repeat-x top; width:100%; height:26px;}
+/*TITLE样式含左边的图片*/
+.TAB_B_TITLE_STYLE{padding-left:10px;color:#000000;float:left;height:26px;z-index:100;margin:0 1px 0 1px;background:url(../images/tab/tagleft1_b.gif) left bottom  no-repeat;}
+/*TITLE样式含右边的图片*/
+.TAB_B_TITLE_STYLE span{padding-right:10px;float:right;height:26px;background:url(../images/tab/tagright1_b.gif) right bottom  no-repeat;}
+/*聚焦当前TITLE样式含左边的图片*/
+.TAB_B_TITLE_STYLE_CURRENT{padding-left:10px;color:#000000;float:left;height:26px;z-index:100;margin:0 1px 0 1px;background:url(../images/tab/tagleft2_b.gif) left bottom  no-repeat;}
+/*聚焦当前TITLE样式含右边的图片*/
+.TAB_B_TITLE_STYLE_CURRENT span{padding-right:10px;float:right;height:26px;background:url(../images/tab/tagright2_b.gif) right bottom  no-repeat;}
+/*鼠标触发TITLE样式含左边的图片*/
+.TAB_B_TITLE_STYLE_HOVER{padding-left:10px;color:#000000;float:left;height:26px;z-index:100;margin:0 1px 0 1px;background:url(../images/tab/tagleft3_b.gif) left bottom  no-repeat;}
+/*鼠标触发TITLE样式含右边的图片*/
+.TAB_B_TITLE_STYLE_HOVER span{padding-right:10px;float:right;height:26px;background:url(../images/tab/tagright3_b.gif) right bottom  no-repeat;}
+/*title的字体样式*/
+.TAB_B_TITLE_FONT_STYLE{color:#000000;text-align:center;cursor: hand;padding-top:6px;}
+/*主体部分样式*/
+.TAB_B_MAIN_TAB {border:solid #000000;border-width:1 1 0 1;background:#FFFFFF;}
+
+/* tab_v页面样式 */
+/*整体标签样式*/
+.TAB_V_ITEM_STYLE{background: url(../images/tab/item_bg_v.gif) repeat-y right; height:100%;padding:5px 0 5px 0;}
+/*TITLE样式含左边的图片*/
+.TAB_V_TITLE_STYLE{padding-left:10px;color:#000000;height:26px;z-index:100;margin:1px 0 1px 0;background:url(../images/tab/tagleft1_v.gif) left top  no-repeat;}
+/*TITLE样式含右边的图片*/
+.TAB_V_TITLE_STYLE span{padding-right:10px;height:26px;background:url(../images/tab/tagright1_v.gif) right bottom  no-repeat;}
+/*聚焦当前TITLE样式含左边的图片*/
+.TAB_V_TITLE_STYLE_CURRENT{padding-left:10px;color:#000000;height:26px;z-index:100;margin:1px 0 1px 0;background:url(../images/tab/tagleft2_v.gif) left top  no-repeat;}
+/*聚焦当前TITLE样式含右边的图片*/
+.TAB_V_TITLE_STYLE_CURRENT span{padding-right:10px;height:26px;background:url(../images/tab/tagright2_v.gif) right bottom  no-repeat;}
+/*鼠标触发TITLE样式含左边的图片*/
+.TAB_V_TITLE_STYLE_HOVER{padding-left:10px;color:#000000;height:26px;z-index:100;margin:1px 0 1px 0;background:url(../images/tab/tagleft3_v.gif) left top  no-repeat;}
+/*鼠标触发TITLE样式含右边的图片*/
+.TAB_V_TITLE_STYLE_HOVER span{padding-right:10px;height:26px;background:url(../images/tab/tagright3_v.gif) right bottom  no-repeat;}
+/*title的字体样式*/
+.TAB_V_TITLE_FONT_STYLE{color:#000000;cursor: hand;white-space:nowrap;height:26px;}
+/*主体部分样式*/
+.TAB_V_MAIN_TAB {border:solid #000000;border-width:1 1 1 0;background:#FFFFFF;}
+
+/* tab_vv页面样式 */
+/*上面滚动按钮样式*/
+.TAB_VV_SCROLLLEFTBUTTON{background:url(../images/tab/button_up.gif) top right no-repeat;width:26px;height:14px;cursor:hand;}
+.TAB_VV_SCROLLLEFTBUTTON_HOVER{background:url(../images/tab/button_up.gif) top right no-repeat;background-position:0px -13px;width:26px;height:14px;cursor:hand;}
+/*下面滚动按钮样式*/
+.TAB_VV_SCROLLRIGHTBUTTON{background:url(../images/tab/button_down.gif) top right no-repeat;width:26px;height:14px;cursor:hand;margin-top:-1px;}
+.TAB_VV_SCROLLRIGHTBUTTON_HOVER{background:url(../images/tab/button_down.gif) top right no-repeat;background-position:0px -13px;width:26px;height:14px;cursor:hand;margin-top:-1px;}
+/*整体标签样式*/
+.TAB_VV_ITEM_STYLE{background: url(../images/tab/item_bg_v.gif) repeat-y right; width:26px; height:100%;}
+/*TITLE样式含左边的图片*/
+.TAB_VV_TITLE_STYLE{padding-top:10px;color:#000000;width:26px;z-index:100;margin:1px 0 1px 0;background:url(../images/tab/tagleft1_vv.gif) right top  no-repeat;}
+/*TITLE样式含右边的图片*/
+.TAB_VV_TITLE_STYLE span{padding-bottom:5px;width:26px;margin-top:1px;background:url(../images/tab/tagright1_vv.gif) right bottom  no-repeat;}
+/*聚焦当前TITLE样式含左边的图片*/
+.TAB_VV_TITLE_STYLE_CURRENT{padding-top:10px;color:#000000;width:26px;z-index:100;margin:1px 0 1px 0;background:url(../images/tab/tagleft2_vv.gif) right top  no-repeat;}
+/*聚焦当前TITLE样式含右边的图片*/
+.TAB_VV_TITLE_STYLE_CURRENT span{padding-bottom:5px;width:26px;margin-top:1px;background:url(../images/tab/tagright2_vv.gif) right bottom  no-repeat;}
+/*鼠标触发TITLE样式含左边的图片*/
+.TAB_VV_TITLE_STYLE_HOVER{padding-top:10px;color:#000000;width:26px;z-index:100;margin:1px 0 1px 0;background:url(../images/tab/tagleft3_vv.gif) right top  no-repeat;}
+/*鼠标触发TITLE样式含右边的图片*/
+.TAB_VV_TITLE_STYLE_HOVER span{padding-bottom:5px;width:26px;margin-top:1px;background:url(../images/tab/tagright3_vv.gif) right bottom  no-repeat;}
+/*title的字体样式*/
+.TAB_VV_TITLE_FONT_STYLE{color:#000000;cursor: hand;word-wrap:break-word;width:5px;text-align:center;padding-left:6px;}
+/*主体部分样式*/
+.TAB_VV_MAIN_TAB {border:solid #000000;border-width:1 1 1 0;background:#FFFFFF;}
+
+/*------------------------------平台组件样式结束------------------------------*/
+
+/*模板界面样式*/
+.title_mb01{ background:url(../images/title_mbbg01.gif);height:26px;border:1 solid #949494;color:#000;font:bold;padding:5px 0 0 40px;margin:5px;}
+.title_mb02{ background:url(../images/title_mbbg02.gif);height:26px;border:1 solid #949494;color:#000;font:bold;padding:5px 0 0 40px;margin:5px;}
+.title_mb03{ background:url(../images/title_mbbg03.gif);height:26px;border:1 solid #949494;color:#000;font:bold;padding:5px 0 0 40px;margin:5px;}
+.title_mbbg{ background:url(../images/title_mbbg.gif);height:22px;}
+.title_mbdh{ background:#FFFFFF;height:20px;}
+.title_mbsh{ background:#f4f4f4;height:20px;}
+.title_word{color:#000;font:bold;padding-left:40px;}
+.title_left{padding-left:30px;}
+
+/* 特殊用途小配件样式 */
+.dot{ background:url(../images/dot.gif) no-repeat; width:12px; height:13px; border:0}
+
+/* 基本链接样式 */
+A:link {color: #fff; text-decoration: none;}
+A:visited {color: #fff; text-decoration: none}
+A:active {color: #fff; text-decoration: none}
+A:hover {color: #ccc; text-decoration: none}
+
+/* 特殊链接样式 */
+.a { color: #000000; text-decoration: none}
+.a:active { color: #000000; text-decoration: none}
+.a:link { color: #000000; text-decoration: none}
+.a:visited { color: #000000; text-decoration: none}
+.a:hover { color: #626262; text-decoration: none}
+.b { color: #000000; text-decoration: none}
+.b:active { color: #000000; text-decoration: none}
+.b:link { color: #000000; text-decoration: none}
+.b:visited { color: #000000; text-decoration: none}
+.b:hover { color: #626262; text-decoration: none}
+
+/*各种按钮及小图片样式*/
+.x-tool-close{width:16px;height:16px;cursor:pointer;background:url(../images/tool/tool-close.gif) no-repeat;margin-left:2px;background-position:0 0px;float:right;}
+.x-tool-close:hover{background-position:-16px 0px;}
+.x-tool-minus{width:16px;height:16px;cursor:pointer;background:url(../images/tool/tool-minus.gif) no-repeat;margin-left:2px;background-position:0 0px;}
+.x-tool-minus:hover{background-position:-16px 0px;}
+.x-tool-open{width:16px;height:16px;cursor:pointer;background:url(../images/tool/tool-open.gif) no-repeat;margin-left:2px;background-position:0 0px;}
+.x-tool-open:hover{background-position:-16px 0px;}
+.t-tool-up{width:16px;height:16px;float:right;cursor:pointer;background:url(../images/tool/tool-up.gif) no-repeat;margin:5px 5px 0 5px;background-position:0 0px;}
+.t-tool-up:hover{background-position:-16px 0px;}
+.t-tool-down{width:16px;height:16px;float:right;cursor:pointer;background:url(../images/tool/tool-down.gif) no-repeat;margin:5px 5px 0 5px;background-position:0 0px;}
+.t-tool-down:hover{background-position:-16px 0px;}
+.icon_add{background: url(../images/tool/icon_add.gif) no-repeat;background-position:0px 0px;height:22px;width:60px;border:0;cursor:hand;padding:4 0 0 26;text-align:left;color:#fff;}
+.icon_addHover{background: url(../images/tool/icon_add.gif) no-repeat;background-position:0px -22px;height:22px;width:60px;border:0;cursor:hand;padding:4 0 0 26;text-align:left;}
+.icon_addDisabled{background: url(../images/tool/icon_add.gif) no-repeat;background-position:0px -44px;height:22px;width:60px;border:0;cursor:hand;padding:4 0 0 26;text-align:left;}
+.icon_modifiy{background: url(../images/tool/icon_modifiy.gif) no-repeat;background-position:0px 0px;height:22px;width:60px;border:0;cursor:hand;padding:4 0 0 26;text-align:left;color:#fff;}
+.icon_modifiyHover{background: url(../images/tool/icon_modifiy.gif) no-repeat;background-position:0px -22px;height:22px;width:60px;border:0;cursor:hand;padding:4 0 0 26;text-align:left;}
+.icon_modifiyDisabled{background: url(../images/tool/icon_modifiy.gif) no-repeat;background-position:0px -44px;height:22px;width:60px;border:0;cursor:hand;padding:4 0 0 26;text-align:left;}
+.icon_port{background: url(../images/tool/icon_port.gif) no-repeat;background-position:0px 0px;height:22px;width:60px;border:0;cursor:hand;padding:4 0 0 26;text-align:left;color:#fff;color:#fff;}
+.icon_portHover{background: url(../images/tool/icon_port.gif) no-repeat;background-position:0px -22px;height:22px;width:60px;border:0;cursor:hand;padding:4 0 0 26;text-align:left;}
+.icon_portDisabled{background: url(../images/tool/icon_port.gif) no-repeat;background-position:0px -44px;height:22px;width:60px;border:0;cursor:hand;padding:4 0 0 26;text-align:left;}
+.icon_finish{background: url(../images/tool/icon_finish.gif) no-repeat;background-position:0px 0px;height:22px;width:80px;border:0;cursor:hand;padding:4 0 0 26;text-align:left;color:#fff;}
+.icon_finishHover{background: url(../images/tool/icon_finish.gif) no-repeat;background-position:0px -22px;height:22px;width:80px;border:0;cursor:hand;padding:4 0 0 26;text-align:left;}
+.icon_finishDisabled{background: url(../images/tool/icon_finish.gif) no-repeat;background-position:0px -44px;height:22px;width:80px;border:0;cursor:hand;padding:4 0 0 26;text-align:left;}

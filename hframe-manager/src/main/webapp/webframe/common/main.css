@@ -1,0 +1,72 @@
+/* 页面基本信息的定义 */
+body {font-family:Arial,"宋体";margin:0px;padding:0px;background:#FFFFFF;overflow:auto;}
+tr,td {font-family:Arial,"宋体";}
+.input{border:1 solid #999999;height:20px;}
+
+/* 页面不同颜色字体的定义 */
+.font_red{ color:#FF0000}
+.font_yellow{ color:#FF8A00}
+.font_note{ color:#FF6600; font-weight:bold}
+.font_bold{ font-weight:bold}
+.G-Table-NoData{ color:#FF0000}
+
+/* 页面不同区域位置的定义 */
+.area_tab{ width:100%; text-align:center; padding-top:5px;}
+.td_font{ width:100px; text-align:right}
+.td_button{ width:10%; text-align:center}
+.area_button{ width:100%; text-align:center; height:40px; padding-top:10px;}
+.td_fontleft{ width:200px; text-align:left}
+
+/*数字图片样式*/
+.num01{ width:13px; height:11px; background:url(../images/number.gif) no-repeat; background-position:0 0px;}
+.num02{ width:13px; height:11px; background:url(../images/number.gif) no-repeat; background-position:-13px 0px;}
+.num03{ width:13px; height:11px; background:url(../images/number.gif) no-repeat; background-position:-26px 0px;}
+.num04{ width:13px; height:11px; background:url(../images/number.gif) no-repeat; background-position:-39px 0px;}
+.num05{ width:13px; height:11px; background:url(../images/number.gif) no-repeat; background-position:-52px 0px;}
+.num06{ width:13px; height:11px; background:url(../images/number.gif) no-repeat; background-position:-65px 0px;}
+.num07{ width:13px; height:11px; background:url(../images/number.gif) no-repeat; background-position:-78px 0px;}
+.num08{ width:13px; height:11px; background:url(../images/number.gif) no-repeat; background-position:-91px 0px;}
+.num09{ width:13px; height:11px; background:url(../images/number.gif) no-repeat; background-position:-104px 0px;}
+.num10{ width:13px; height:11px; background:url(../images/number.gif) no-repeat; background-position:-117px 0px;}
+
+/*各种按钮及小图片样式*/
+.dot_rar{ width:20px; height:20px; background:url(../images/dot_rar.gif) no-repeat;vertical-align:absmiddle;}
+.dot_word{ width:20px; height:20px; background:url(../images/dot_word.gif) no-repeat;vertical-align:absmiddle;}
+.dot_xls{ width:20px; height:20px; background:url(../images/dot_xls.gif) no-repeat;vertical-align:absmiddle;}
+
+.icon_bk{background: url(../images/icon/icon_bk.gif) no-repeat;background-position:0px 0px;height:22px;width:24px;border:0;cursor:hand;}
+.icon_bkHover{background: url(../images/icon/icon_bk.gif) no-repeat;background-position:0px -22px;height:22px;width:24px;border:0;cursor:hand;}
+.icon_bkDisabled{background: url(../images/icon/icon_bk.gif) no-repeat;background-position:0px -44px;height:22px;width:24px;border:0;cursor:hand;}
+.icon_bs{background: url(../images/icon/icon_bs.gif) no-repeat;background-position:0px 0px;height:22px;width:24px;border:0;cursor:hand;}
+.icon_bsHover{background: url(../images/icon/icon_bs.gif) no-repeat;background-position:0px -22px;height:22px;width:24px;border:0;cursor:hand;}
+.icon_bsDisabled{background: url(../images/icon/icon_bs.gif) no-repeat;background-position:0px -44px;height:22px;width:24px;border:0;cursor:hand;}
+.icon_call{background: url(../images/icon/icon_call.gif) no-repeat;background-position:0px 0px;height:22px;width:24px;border:0;cursor:hand;}
+.icon_callHover{background: url(../images/icon/icon_call.gif) no-repeat;background-position:0px -22px;height:22px;width:24px;border:0;cursor:hand;}
+.icon_callDisabled{background: url(../images/icon/icon_call.gif) no-repeat;background-position:0px -44px;height:22px;width:24px;border:0;cursor:hand;}
+.icon_edit{background: url(../images/icon/icon_edit.gif) no-repeat;background-position:0px 0px;height:22px;width:24px;border:0;cursor:hand;}
+.icon_editHover{background: url(../images/icon/icon_edit.gif) no-repeat;background-position:0px -22px;height:22px;width:24px;border:0;cursor:hand;}
+.icon_editDisabled{background: url(../images/icon/icon_edit.gif) no-repeat;background-position:0px -44px;height:22px;width:24px;border:0;cursor:hand;}
+.icon_fk{background: url(../images/icon/icon_fk.gif) no-repeat;background-position:0px 0px;height:22px;width:24px;border:0;cursor:hand;}
+.icon_fkHover{background: url(../images/icon/icon_fk.gif) no-repeat;background-position:0px -22px;height:22px;width:24px;border:0;cursor:hand;}
+.icon_fkDisabled{background: url(../images/icon/icon_fk.gif) no-repeat;background-position:0px -44px;height:22px;width:24px;border:0;cursor:hand;}
+.icon_ft{background: url(../images/icon/icon_ft.gif) no-repeat;background-position:0px 0px;height:22px;width:24px;border:0;cursor:hand;}
+.icon_ftHover{background: url(../images/icon/icon_ft.gif) no-repeat;background-position:0px -22px;height:22px;width:24px;border:0;cursor:hand;}
+.icon_ftDisabled{background: url(../images/icon/icon_ft.gif) no-repeat;background-position:0px -44px;height:22px;width:24px;border:0;cursor:hand;}
+.icon_mail{background: url(../images/icon/icon_mail.gif) no-repeat;background-position:0px 0px;height:22px;width:24px;border:0;cursor:hand;}
+.icon_mailHover{background: url(../images/icon/icon_mail.gif) no-repeat;background-position:0px -22px;height:22px;width:24px;border:0;cursor:hand;}
+.icon_mailDisabled{background: url(../images/icon/icon_mail.gif) no-repeat;background-position:0px -44px;height:22px;width:24px;border:0;cursor:hand;}
+.icon_newinfo{background: url(../images/icon/icon_newinfo.gif) no-repeat;background-position:0px 0px;height:22px;width:24px;border:0;cursor:hand;}
+.icon_newinfoHover{background: url(../images/icon/icon_newinfo.gif) no-repeat;background-position:0px -22px;height:22px;width:24px;border:0;cursor:hand;}
+.icon_newinfoDisabled{background: url(../images/icon/icon_newinfo.gif) no-repeat;background-position:0px -44px;height:22px;width:24px;border:0;cursor:hand;}
+.icon_note{background: url(../images/icon/icon_note.gif) no-repeat;background-position:0px 0px;height:22px;width:24px;border:0;cursor:hand;}
+.icon_noteHover{background: url(../images/icon/icon_note.gif) no-repeat;background-position:0px -22px;height:22px;width:24px;border:0;cursor:hand;}
+.icon_noteDisabled{background: url(../images/icon/icon_note.gif) no-repeat;background-position:0px -44px;height:22px;width:24px;border:0;cursor:hand;}
+.icon_se{background: url(../images/icon/icon_se.gif) no-repeat;background-position:0px 0px;height:22px;width:24px;border:0;cursor:hand;}
+.icon_seHover{background: url(../images/icon/icon_se.gif) no-repeat;background-position:0px -22px;height:22px;width:24px;border:0;cursor:hand;}
+.icon_seDisabled{background: url(../images/icon/icon_se.gif) no-repeat;background-position:0px -44px;height:22px;width:24px;border:0;cursor:hand;}
+.icon_up{background: url(../images/icon/icon_up.gif) no-repeat;background-position:0px 0px;height:22px;width:24px;border:0;cursor:hand;}
+.icon_upHover{background: url(../images/icon/icon_up.gif) no-repeat;background-position:0px -22px;height:22px;width:24px;border:0;cursor:hand;}
+.icon_upDisabled{background: url(../images/icon/icon_up.gif) no-repeat;background-position:0px -44px;height:22px;width:24px;border:0;cursor:hand;}
+.icon_message{background: url(../images/icon/icon_message.gif) no-repeat;background-position:0px 0px;height:22px;width:24px;border:0;cursor:hand;}
+.icon_messageHover{background: url(../images/icon/icon_message.gif) no-repeat;background-position:0px -22px;height:22px;width:24px;border:0;cursor:hand;}
+.icon_messageDisabled{background: url(../images/icon/icon_message.gif) no-repeat;background-position:0px -44px;height:22px;width:24px;border:0;cursor:hand;}

@@ -1,0 +1,47 @@
+@CHARSET "GB18030";
+
+
+	.zqh_form{
+		/* 
+		border: 1px solid #002D96; 
+		*/
+		padding: 3px;
+	}
+	
+	.zqh_form td{
+		padding: 5px;
+	}
+	
+	.zqh_form_title {
+		/* 
+		background-color: #999;
+		background-image: url("../images/bg.gif");
+		font-size: 20px;
+		*/
+		text-align:left;
+		padding: 5px;
+	}
+	
+	.zqh_form_footer {
+		/*
+		background-color: #ccc;
+		*/
+		padding: 3px;
+		text-align: center;
+	}
+	
+	
+	.zqh_form_td_name {
+		/*
+		background-color: #ddd;
+		*/
+		
+		text-align:right;
+	}
+	
+	.zqh_form_td_value {
+		/*
+		background-color: #eee;
+		*/
+	}
+	

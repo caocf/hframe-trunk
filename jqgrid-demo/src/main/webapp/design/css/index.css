@@ -1,0 +1,136 @@
+@CHARSET "UTF-8";
+
+body {
+	text-align: center;
+	margin-left: auto;
+	margin-right: auto;
+	color:#555555;
+	font-size:15px;
+
+	/**
+		background-color:#ECECEC;
+	font-family: "Microsoft YaHei,微软雅黑" ! important;**/
+}
+
+ a{
+ 	color: blue;
+ 	text-decoration:none;
+}
+ a:visited{
+ 	text-decoration:none;
+ 	color: blue;
+}
+
+a:hover{
+	color: red;
+	
+}
+
+DIV {
+	border: 0px solid #999;
+}
+#float_top{
+	
+	padding-top:5px;
+	text-align: center;
+	height: 119px;
+	background: url("../images/bg_top.png") top left repeat-x;
+}
+
+#container{
+	text-align: center;
+	margin-left: auto;
+	margin-right: auto;
+	width: 1000px;
+	
+
+}
+
+
+#content{
+	height: 360px;
+	background-color:white;
+}
+
+#footer{
+	height: 35px;
+	background-color:white;
+	background: url("../images/pic_2.gif") bottom right repeat-x;
+}
+
+
+#topflash {
+	margin-top:1px;
+	width:1000px;
+	height:90px;
+	text-align: right;
+	background: url("../images/mofang.png") center left no-repeat;
+}
+#topmenu {
+	margin-top:0px;
+	padding-top:5px;
+	height:40px;
+	padding: 5px;
+	background-color:#bbbbbb;
+}
+
+#topmenu ul li{
+	border: 0px solid #999;
+	margin:0px;
+	padding: 5px;
+	
+}
+
+
+#topmenu ul li{
+	float: left;
+	padding-left: 20px;
+	list-style: none;
+	
+
+}
+
+#left {
+	float: left;width: 200px;height: 400px;
+}
+
+
+
+
+#topmenu ul li a{
+	color: blue;
+}
+#topmenu ul li a:visited{
+	color: blue;
+}
+
+#topmenu ul li a:hover{
+	color: red;
+}
+
+.left_menu{
+	padding-top: 40px;
+}
+
+.left_menu li{
+	padding-top: 10px;
+}
+
+
+.left_menu_table tr{
+	margin:0px;
+}
+
+.left_menu_table tr td{
+	margin:0px;
+	border: 1px solid #999;
+	background-color:#cccccc;
+	padding: 10px;
+	width:200px;
+}
+
+.left_menu li a,.left_menu li A:VISITED{
+	color: black;
+	font-size: 24px;
+	background-color: white;
+}
