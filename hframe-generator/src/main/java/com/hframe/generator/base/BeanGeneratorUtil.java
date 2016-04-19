@@ -1,12 +1,16 @@
 package com.hframe.generator.base;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.hframe.common.util.FileUtils;
+import com.hframe.common.util.*;
 import com.hframe.common.util.message.Dom4jUtils;
 import com.hframe.common.util.message.JacksonObjectMapper;
 import com.hframe.common.util.message.VelocityUtil;
-import com.hframe.generator.bean.Field;
-import com.hframe.generator.util.CreatorUtil;
+import com.hframe.generator.bean.*;
+import com.hframe.generator.bean.Class;
+import com.hframework.generator.thirdplatform.bean.GeneratorConfig;
+import com.hframework.generator.thirdplatform.bean.descriptor.Node;
+import org.apache.commons.beanutils.BeanUtils;
+import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.Element;
 
@@ -19,6 +23,10 @@ import java.util.*;
  */
 public class BeanGeneratorUtil {
 
+    private static final Map<String,String> KEYWORDS= new HashMap<String, String>() {{
+        put("interface","interface1");
+        put("class","clazz");
+    }};
 
     /**
      * 通过Json数据生成Bean对象
@@ -26,89 +34,266 @@ public class BeanGeneratorUtil {
      * @param rootClassName
      * @param jsonString
      */
-    public static void generateByJson(String packagePath, String rootClassName, String jsonString) throws IOException {
+    public static void generateByJson(String packagePath, String rootClassName, String jsonString, List<Node> ruleNodeList) throws IOException {
         JsonNode jsonNode = JacksonObjectMapper.getInstance().readTree(jsonString);
         Map<String, Object> mergeMap = new HashMap<String, Object>();
         mergeMap.put(rootClassName, parseJsonNode(jsonNode));
-        generateClassByJson(packagePath, rootClassName, mergeMap.get(rootClassName), true);
+        Map<String,Integer> nameRepeatCache = new HashMap<String, Integer>();
+        generateClassByJson(packagePath, rootClassName, mergeMap.get(rootClassName), true, nameRepeatCache, ruleNodeList);
     }
 
 
 
+//    /**
+//     * 通过Xml数据生成Bean对象
+//     * @param packagePath
+//     * @param rootClassName
+//     * @param xmlString
+//     */
+//    public static void generateByXml(String packagePath, String rootClassName,String rootXmlName, String xmlString) throws IOException {
+//        Document document = Dom4jUtils.getDocumentByContent(xmlString);
+//        Element root = document.getRootElement();
+//        Map<String, Object> mergeMap = new HashMap<String, Object>();
+//        mergeMap.put(rootClassName, parseXmlNode(root));
+//        generateClassByXml(packagePath, rootClassName, rootXmlName, mergeMap.get(rootClassName), true);
+//
+//    }
+
+
     /**
-     * 通过Xml数据生成Bean对象
-     * @param packagePath
-     * @param rootClassName
+     * 通过Xml数据获取XmlNode对象
      * @param xmlString
      */
-    public static void generateByXml(String packagePath, String rootClassName,String rootXmlName, String xmlString) throws IOException {
+    public static XmlNode getXmlNodeByXml(String xmlString) throws IOException {
         Document document = Dom4jUtils.getDocumentByContent(xmlString);
         Element root = document.getRootElement();
-        Map<String, Object> mergeMap = new HashMap<String, Object>();
-        mergeMap.put(rootClassName, parseXmlNode(root));
-        generateClassByXml(packagePath, rootClassName, rootXmlName, mergeMap.get(rootClassName), true);
 
-    }
+        XmlNode rootXmlNode = parseXmlNodeNew(root);
 
+        rootXmlNode.settingNodeCode();
 
-    /**
-     * 生成类文件
-     * @param packagePath
-     * @param rootClassName
-     * @param rootXmlName
-     * @param data
-     * @param isRoot
-     */
-    private static void generateClassByXml(String packagePath, String rootClassName,String rootXmlName, Object data, boolean isRoot) {
-        com.hframe.generator.bean.Class beanClass = new com.hframe.generator.bean.Class();
-        beanClass.setSrcFilePath("E:\\xfb_workspace\\boomshare\\bs-xfb-wx\\src\\main\\java\\");
-        beanClass.setClassPackage(packagePath);
-        beanClass.setClassName(rootClassName);
-        beanClass.addConstructor();
-        beanClass.addAnnotation("@XStreamAlias(\"" + rootXmlName + "\")");
+        Map<String,List<XmlNode>> sameNameNodeMap = rootXmlNode.fetchSameNameNode(new LinkedHashMap<String, List<XmlNode>>());
 
-        Map<String, Object> dataMap = new LinkedHashMap<String, Object>();
-        if(data instanceof Map) {
-            dataMap = (Map<String, Object>) data;
-        }else if(data instanceof List){
-            dataMap = (Map<String, Object>) ((List) data).get(0);
-        }else {
-            return ;
-        }
-        beanClass.addImportClass("com.thoughtworks.xstream.annotations.XStreamAlias");
-        beanClass.addImportClass("com.thoughtworks.xstream.annotations.XStreamAsAttribute");
+        XmlNode.XmlNodeHelper.filterSingletonNode(sameNameNodeMap);
 
-        for (String fieldName : dataMap.keySet()) {
-            String subElementName = getSubElementName(dataMap.get(fieldName));
-            Field field = getField(fieldName, dataMap.get(fieldName), subElementName);
-            field.addFieldAnno("@XStreamAlias(\"" + fieldName + "\")");
-
-            beanClass.addField(field);
-            if(!"String".equals(field.getType())) {
-                if(field.getType().startsWith("List<") && !beanClass.getImportClassList().contains("java.util.List")) {
-                    beanClass.addImportClass("java.util.List");
-                }
-                if(isRoot) {
-                    beanClass.addImportClass(packagePath + "." + CreatorUtil.getJavaClassName(rootClassName).toLowerCase() + ".*");
-                }
-
-                if(subElementName != null) {
-                    generateClassByXml(packagePath + (isRoot ? ("." + CreatorUtil.getJavaClassName(rootClassName).toLowerCase()) : ""),
-                            CreatorUtil.getJavaClassName(subElementName), subElementName, dataMap.get(fieldName), false);
-                }else {
-                    generateClassByXml(packagePath + (isRoot ? ("." + CreatorUtil.getJavaClassName(rootClassName).toLowerCase()) : ""),
-                            CreatorUtil.getJavaClassName(fieldName), fieldName, dataMap.get(fieldName), false);
-                }
-
+        //获取合并规则 TODO
+        for (String nodeName : sameNameNodeMap.keySet()) {
+            List<XmlNode> xmlNodes = sameNameNodeMap.get(nodeName);
+            XmlNode baseNode = xmlNodes.get(0);
+            for (int i = 1; i < xmlNodes.size(); i++) {
+                baseNode.mergeOutSide(xmlNodes.get(i));
+                xmlNodes.get(i).getParentXmlNode().getChildrenXmlNode().set(
+                        xmlNodes.get(i).getParentXmlNode().getChildrenXmlNode().indexOf(xmlNodes.get(i)),baseNode);
             }
         }
 
+        return rootXmlNode;
+    }
+
+    /**
+     * 通过Xml数据生成Bean对象
+     * @param descriptor 类生成描述器
+     * @param rootClassName
+     * @param xmlString
+     */
+    public static void generateByXml(GenerateDescriptor descriptor, String xmlString, String rootClassName)  throws IOException {
+        generateClassByXmlNode(descriptor, rootClassName, getXmlNodeByXml(xmlString), true);
+    }
+
+//    /**
+//     * 生成类文件
+//     * @param packagePath
+//     * @param rootClassName
+//     * @param rootXmlName
+//     * @param data
+//     * @param isRoot
+//     */
+//    private static void generateClassByXml(String packagePath, String rootClassName,String rootXmlName, Object data, boolean isRoot) {
+//        com.hframe.generator.bean.Class beanClass = new com.hframe.generator.bean.Class();
+//        beanClass.setSrcFilePath("D:\\my_workspace\\hframe-trunk\\hframe-target\\src\\main\\java\\");
+//        beanClass.setClassPackage(packagePath);
+//        beanClass.setClassName(rootClassName);
+//        beanClass.addConstructor();
+//        beanClass.addAnnotation("@XStreamAlias(\"" + rootXmlName + "\")");
+//
+//        Map<String, Object> dataMap = new LinkedHashMap<String, Object>();
+//        if(data instanceof Map) {
+//            dataMap = (Map<String, Object>) data;
+//        }else if(data instanceof List){
+//            dataMap = (Map<String, Object>) ((List) data).get(0);
+//        }else {
+//            return ;
+//        }
+//        beanClass.addImportClass("com.thoughtworks.xstream.annotations.XStreamAlias");
+//        beanClass.addImportClass("com.thoughtworks.xstream.annotations.XStreamAsAttribute");
+//
+//        for (String fieldName : dataMap.keySet()) {
+//            String subElementName = getSubElementName(dataMap.get(fieldName));
+//            Field field = getField(fieldName, dataMap.get(fieldName), subElementName);
+//            field.addFieldAnno("@XStreamAlias(\"" + fieldName + "\")");
+//
+//            beanClass.addField(field);
+//            if(!"String".equals(field.getType())) {
+//                if(field.getType().startsWith("List<") && !beanClass.getImportClassList().contains("java.util.List")) {
+//                    beanClass.addImportClass("com.thoughtworks.xstream.annotations.XStreamImplicit");
+//                    beanClass.addImportClass("java.util.List");
+//                    field.addFieldAnno("@XStreamImplicit");
+//                }
+//                if(isRoot) {
+//                    beanClass.addImportClass(packagePath + "." + CreatorUtil.getJavaClassName(rootClassName).toLowerCase() + ".*");
+//                }
+//
+//                if(subElementName != null) {
+//                    generateClassByXml(packagePath + (isRoot ? ("." + CreatorUtil.getJavaClassName(rootClassName).toLowerCase()) : ""),
+//                            CreatorUtil.getJavaClassName(subElementName), subElementName, dataMap.get(fieldName), false);
+//                }else {
+//                    generateClassByXml(packagePath + (isRoot ? ("." + CreatorUtil.getJavaClassName(rootClassName).toLowerCase()) : ""),
+//                            CreatorUtil.getJavaClassName(fieldName), fieldName, dataMap.get(fieldName), false);
+//                }
+//
+//            }
+//        }
+//
+//        Map map = new HashMap();
+//        map.put("CLASS", beanClass);
+//        String content = VelocityUtil.produceTemplateContent("com/hframe/generator/vm/poByTemplate.vm", map);
+//        System.out.println(content);
+//        FileUtils.writeFile(beanClass.getFilePath(), content);
+//    }
+
+    /**
+     * 生成类文件
+     * @param rootClassName
+     * @param rootXmlNode
+     * @param isRoot
+     */
+    private static void generateClassByXmlNode(GenerateDescriptor descriptor, String rootClassName, XmlNode rootXmlNode, boolean isRoot) {
+
+        com.hframe.generator.bean.Class beanClass = generateDefaultClassByXmlNode(descriptor,rootClassName,rootXmlNode,isRoot);
+        //类扩展处理
+        descriptor.execute(beanClass, rootXmlNode);
+
+
+
+
+
+
+        List<XmlNode> childrenXmlNode = rootXmlNode.getChildrenXmlNode();
+        if(childrenXmlNode != null) {
+            for (XmlNode childXmlNode : childrenXmlNode) {
+                boolean cascadeFlag = true;
+                if(childXmlNode.getChildrenXmlNode().size() == 0 &&
+                        (childXmlNode.getAttrMap() == null || childXmlNode.getAttrMap().size() == 0 )) {
+                    cascadeFlag = false;
+                }
+                if(cascadeFlag) {
+                    if(isRoot) {
+//                        FileUtils.createDir(beanClass.getFilePath().substring(0, beanClass.getFilePath().lastIndexOf("/"))
+//                                + "/" + CreatorUtil.getJavaClassName(rootClassName).toLowerCase());
+                        beanClass.addImportClass(descriptor.getJavaPackage() + "." + CreatorUtil.getJavaClassName(rootClassName).toLowerCase() + ".*");
+                    }
+                    GenerateDescriptor newDescriptor = descriptor;
+                    try {
+                        newDescriptor = (GenerateDescriptor) BeanUtils.cloneBean(descriptor);
+                    }catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    newDescriptor.setJavaPackage(descriptor.getJavaPackage() +
+                            (isRoot ? ("." + CreatorUtil.getJavaClassName(rootClassName).toLowerCase()) : ""));
+                    generateClassByXmlNode(newDescriptor,
+                            CreatorUtil.getJavaClassName(childXmlNode.getNodeName()), childXmlNode, false);
+                }
+            }
+        }
+
+        //注意：这里迭代调用是否存在先后关系 TODO
         Map map = new HashMap();
         map.put("CLASS", beanClass);
-        String content = VelocityUtil.produceTemplateContent("com/hframe/generator/vm/poByTemplate.vm", map);
+        String content = VelocityUtil.produceTemplateContent(descriptor.getTemplatePath(), map);
         System.out.println(content);
         FileUtils.writeFile(beanClass.getFilePath(), content);
     }
+
+    private static Class generateDefaultClassByXmlNode(GenerateDescriptor descriptor, String rootClassName, XmlNode rootXmlNode, boolean isRoot) {
+        com.hframe.generator.bean.Class beanClass = new com.hframe.generator.bean.Class();
+        beanClass.setSrcFilePath(descriptor.getJavaRootPath());
+        beanClass.setClassPackage(descriptor.getJavaPackage());
+        beanClass.setClassName(rootClassName);
+        beanClass.addConstructor();
+        beanClass.addAnnotation("@XStreamAlias(\"" + rootXmlNode.getNodeName() + "\")");
+
+        beanClass.addImportClass("com.thoughtworks.xstream.annotations.XStreamAlias");
+
+        List<XmlNode> childrenXmlNode = rootXmlNode.getChildrenXmlNode();
+        if(childrenXmlNode != null) {
+            for (XmlNode childXmlNode : childrenXmlNode) {
+                Field field ;
+                if(childXmlNode.getChildrenXmlNode().size() == 0 &&
+                        (childXmlNode.getAttrMap() == null || childXmlNode.getAttrMap().size() == 0 )) {
+                    if(childXmlNode.isSingleton()) {
+                        field = new Field("String",
+                                CreatorUtil.getJavaVarName(childXmlNode.getNodeName()));
+                    }else {
+                        field = new Field("List<String>",
+                                CreatorUtil.getJavaVarName(childXmlNode.getNodeName()) + "List");
+                        beanClass.addImportClass("com.thoughtworks.xstream.annotations.XStreamImplicit");
+                        beanClass.addImportClass("java.util.List");
+                        field.addFieldAnno("@XStreamImplicit");
+                    }
+
+                }else if(childXmlNode.isSingleton()) {
+                    field = new Field(CreatorUtil.getJavaClassName(childXmlNode.getNodeName()),
+                            CreatorUtil.getJavaVarName(childXmlNode.getNodeName()));
+                }else {
+                    field = new Field("List<" + CreatorUtil.getJavaClassName(childXmlNode.getNodeName()) + ">",
+                            CreatorUtil.getJavaVarName(childXmlNode.getNodeName()) + "List");
+                    beanClass.addImportClass("com.thoughtworks.xstream.annotations.XStreamImplicit");
+                    beanClass.addImportClass("java.util.List");
+                    field.addFieldAnno("@XStreamImplicit");
+                }
+                field.addFieldAnno("@XStreamAlias(\"" + childXmlNode.getNodeName() + "\")");
+                beanClass.addField(field);
+
+                if(childXmlNode.isGenerated()) {
+                    continue;
+                }
+                childXmlNode.setGenerated(true);
+            }
+        }
+
+        Map<String, String> attrMap = rootXmlNode.getAttrMap();
+        for (Map.Entry<String, String> entry : attrMap.entrySet()) {
+            Field field = new Field("String",
+                    CreatorUtil.getJavaVarName(entry.getKey()));
+            field.addFieldAnno("@XStreamAsAttribute");
+            field.addFieldAnno("@XStreamAlias(\"" + entry.getKey()+ "\")");
+            beanClass.addImportClass("com.thoughtworks.xstream.annotations.XStreamAsAttribute");
+            beanClass.addField(field);
+        }
+
+
+        String nodeText = rootXmlNode.getNodeText();
+        if(StringUtils.isNotBlank(nodeText)) {
+            Field field = new Field("String","text");
+            field.setFieldComment("标签内内容");
+            beanClass.addAnnotation("@XStreamConverter(value=ToAttributedValueConverter.class, strings={\"text\"})");
+            beanClass.addImportClass("com.thoughtworks.xstream.annotations.XStreamConverter");
+            beanClass.addImportClass("com.thoughtworks.xstream.converters.extended.ToAttributedValueConverter");
+            beanClass.addField(field);
+        }
+        return beanClass;
+    }
+
+    private static Node matchNode(XmlNode childXmlNode, List<Node> ruleNodeList) {
+        for (Node node : ruleNodeList) {
+            System.out.println(node.getPath() + "--" + childXmlNode.getNodeCode());
+            if(PathMatcherUtils.matches(node.getPath(), childXmlNode.getNodeCode())) {
+                return node;
+            }
+        }
+        return null;
+    }
+
 
     /**
      * 获取子元素
@@ -131,11 +316,13 @@ public class BeanGeneratorUtil {
      * @param data
      * @param isRoot
      */
-    private static void generateClassByJson(String packagePath, String rootClassName, Object data, boolean isRoot) {
+    private static void generateClassByJson(String packagePath, String rootClassName, Object data, boolean isRoot, Map<String,Integer> nameRepeatCache,List<Node> ruleNodeList) {
         com.hframe.generator.bean.Class beanClass = new com.hframe.generator.bean.Class();
-        beanClass.setSrcFilePath("E:\\xfb_workspace\\boomshare\\bs-xfb-wx\\src\\main\\java\\");
+        beanClass.setSrcFilePath(GeneratorConfig.getInstance().getJavaRootPath());
         beanClass.setClassPackage(packagePath);
-        beanClass.setClassName(rootClassName);
+        Integer integer = nameRepeatCache.get(rootClassName);
+        beanClass.setClassName(rootClassName + (integer==null ? "" : integer));
+        nameRepeatCache.put(rootClassName, (integer == null ? 1 : ++integer));
         beanClass.addConstructor();
 
         Map<String, Object> dataMap = new LinkedHashMap<String, Object>();
@@ -148,7 +335,8 @@ public class BeanGeneratorUtil {
         }
         beanClass.addImportClass("com.fasterxml.jackson.annotation.JsonProperty");
         for (String fieldName : dataMap.keySet()) {
-            Field field = getField(fieldName, dataMap.get(fieldName));
+            Integer integer2 = nameRepeatCache.get(CreatorUtil.getJavaClassName(fieldName));
+            Field field = getField(fieldName + (integer2 == null ? "" : integer2), dataMap.get(fieldName));
             field.addFieldAnno("@JsonProperty(\"" + fieldName + "\")");
 
             beanClass.addField(field);
@@ -161,7 +349,7 @@ public class BeanGeneratorUtil {
                 }
 
                 generateClassByJson(packagePath + (isRoot ? ("." + CreatorUtil.getJavaClassName(rootClassName).toLowerCase()) : ""),
-                        CreatorUtil.getJavaClassName(fieldName), dataMap.get(fieldName), false);
+                        CreatorUtil.getJavaClassName(fieldName), dataMap.get(fieldName), false,nameRepeatCache,ruleNodeList);
             }
         }
 
@@ -232,6 +420,7 @@ public class BeanGeneratorUtil {
      * @param element
      * @return
      */
+    @Deprecated
     private static Object parseXmlNode(Element element) {
         if(checkElementIsArray(element)) {
             List result = new ArrayList();
@@ -240,9 +429,13 @@ public class BeanGeneratorUtil {
                 Element subElement = (Element) o;
                 xmlElementName = subElement.getName();//子元素名称
                 Map<String, Object> fieldMap = (Map<String, Object>)parseXmlNode(subElement);
+                //result列表第一个元素存放子元素信息
                 mergeField(result, fieldMap);
             }
+            //result列表第二个元素存放子元素节点名称
             result.add(xmlElementName);
+            //result列表第二个元素存放元素节点属性
+            result.add(getAttrMap(element));
             return result;
         }
 
@@ -257,6 +450,46 @@ public class BeanGeneratorUtil {
         }
 
         return fieldMap;
+    }
+
+    /**
+     * 解析XML节点信息
+     * @param element
+     * @return
+     */
+    private static XmlNode parseXmlNodeNew(Element element) {
+
+        XmlNode xmlNode = new XmlNode();
+        xmlNode.setNodeName(element.getName());
+        xmlNode.setAttrMap(getAttrMap(element));
+
+        //添加节点属性
+        for (Object attr : element.attributes()) {
+            Attribute attribute= (Attribute) attr;
+            xmlNode.addNodeAttr(attribute.getName(), attribute.getValue());
+        }
+
+        //添加子节点信息
+        for (Object o : element.elements()) {
+            XmlNode subXmlNode = parseXmlNodeNew((Element) o);
+            xmlNode.addOrMergeChildNode(subXmlNode);
+            subXmlNode.setParentXmlNode(xmlNode);
+        }
+
+        if(element.elements().size() == 0) {
+            xmlNode.setNodeText(element.getTextTrim());
+        }
+        return xmlNode;
+    }
+
+
+    private static Map<String,String> getAttrMap(Element element) {
+        Map attrMap = new LinkedHashMap();
+        for (Object attr : element.attributes()) {
+            Attribute attribute= (Attribute) attr;
+            attrMap.put(attribute.getName(),attribute.getValue());
+        }
+        return attrMap;
     }
 
 
@@ -309,7 +542,47 @@ public class BeanGeneratorUtil {
 //        generateByJson("com.wechat.bean.request","Menu",jsonString);
 
         String xmlString = FileUtils.readFile(rootClassPath + "test.xml");
-        generateByXml("com.wechat.bean.request","Persons","persons",xmlString);
 
+        GenerateDescriptor descriptor = new DefaultGenerateDescriptor();
+
+        generateByXml(descriptor, xmlString, "Descriptor");
+
+    }
+
+    public static class CreatorUtil {
+        public static String getJavaClassName(String name) {
+
+            String returnName = "";
+
+            String[] parts = name.split("[_\\-\\.]+");
+            for (String part : parts) {
+                if (!"".equals(part)) {
+                    returnName += part.substring(0, 1).toUpperCase()
+                            + part.substring(1);
+                }
+            }
+
+            return returnName;
+        }
+
+        public static String getJavaVarName(String name) {
+
+            String returnName="";
+
+            String[] parts=name.split("[__\\-\\.]+");
+            for (String part : parts) {
+                if(!"".equals(part)){
+                    returnName+=part.substring(0,1).toUpperCase()+part.substring(1);
+                }
+            }
+
+            String javaVarName = returnName.substring(0, 1).toLowerCase() + returnName.substring(1);
+
+            if(KEYWORDS.containsKey(javaVarName)) {
+                return KEYWORDS.get(javaVarName);
+            }
+
+            return javaVarName;
+        }
     }
 }

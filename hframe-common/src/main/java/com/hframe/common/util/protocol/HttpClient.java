@@ -272,7 +272,7 @@ public class HttpClient {
      * @return
      * @throws Exception
      */
-    public static <T> String doXMLPost(String httpUrl, T reqData) throws Exception {
+    public static <T> String doXmlPost(String httpUrl, T reqData) throws Exception {
         logger.info("HTTP URL:" + httpUrl);
         org.apache.http.client.HttpClient httpClient = getCustomerHttpClient();
 

@@ -20,7 +20,7 @@ import java.security.Security;
  * <p/>
  * 此段代码使用的CBC模式PKCS7Padding填充方式、用字节零填充，目的是匹配C#语言中CBC模式，zeros填充方式。
  */
-public class DesUtils {
+public class DESUtil {
 
     private static final String ALGORITHM_CBC = "DESede/CBC/PKCS7Padding";
     private static final String ALGORITHM_ECB = "DESede/ECB/PKCS7Padding";

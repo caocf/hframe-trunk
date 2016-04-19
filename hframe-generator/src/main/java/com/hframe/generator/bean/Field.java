@@ -6,8 +6,11 @@ public class Field {
 	private String name;
 	private String ucName;
 
+	private boolean setGetMethod = true;
+
 	private String fieldAnno;
 	private String getMethodAnno;
+	private String fieldComment;
 
 	public Field(String type) {
 		super();
@@ -44,7 +47,12 @@ public class Field {
 	}
 
 	public Field addFieldAnno(String fieldAnno) {
-		this.fieldAnno = fieldAnno;
+		if(this.fieldAnno == null) {
+			this.fieldAnno = fieldAnno;
+		}else {
+			this.fieldAnno += "/n    " + fieldAnno;
+		}
+
 		return this;
 	}
 
@@ -70,5 +78,19 @@ public class Field {
 //	}
 
 
+	public boolean isSetGetMethod() {
+		return setGetMethod;
+	}
 
+	public void setSetGetMethod(boolean setGetMethod) {
+		this.setGetMethod = setGetMethod;
+	}
+
+	public String getFieldComment() {
+		return fieldComment;
+	}
+
+	public void setFieldComment(String fieldComment) {
+		this.fieldComment = fieldComment;
+	}
 }

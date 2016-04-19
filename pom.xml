@@ -16,6 +16,7 @@
         <module>hframe-client</module>
         <module>hframe-tag</module>
         <module>jqgrid-demo</module>
+        <module>hframe-target</module>
     </modules>
 
     <dependencies>

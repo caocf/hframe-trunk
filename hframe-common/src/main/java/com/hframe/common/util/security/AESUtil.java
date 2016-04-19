@@ -12,13 +12,13 @@ import javax.crypto.spec.SecretKeySpec;
  *
  * Created by 闪伟 on 15-3-25.
  */
-public class AesUtils {
+public class AESUtil {
 
 
     public static final String VIPARA = "0102030405060708";
     public static final String encode = "GBK";
 
-    private static Logger logger = Logger.getLogger(AesUtils.class);
+    private static Logger logger = Logger.getLogger(AESUtil.class);
 
     /**
      * 加密

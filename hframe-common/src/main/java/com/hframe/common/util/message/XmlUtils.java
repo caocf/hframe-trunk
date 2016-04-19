@@ -1,5 +1,6 @@
 package com.hframe.common.util.message;
 
+import com.hframe.common.util.FileUtils;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
@@ -16,6 +17,17 @@ public class XmlUtils {
         xstream.processAnnotations(valueType);
         return (T) xstream.fromXML(content);
     }
+
+    public static <T> T readValueFromFile(String filePath, Class<T> valueType) throws IOException {
+        String rootClassPath = Thread.currentThread().getContextClassLoader ().getResource("").getPath();
+        String xmlString = FileUtils.readFile(rootClassPath + "/"+ filePath);
+        System.out.println(xmlString);
+        return readValue(xmlString,valueType);
+    }
+
+
+
+
 
     public static  <T> String writeValueAsString(T t) throws IOException {
         XStream xstream = new XStream(new DomDriver("utf8"));

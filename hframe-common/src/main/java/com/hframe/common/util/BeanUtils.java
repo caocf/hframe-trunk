@@ -120,23 +120,27 @@ public class BeanUtils {
             for (Field field : fileds) {
                 // 属性名称
                 String filedName = field.getName();
-                // 转换成GET方法(首字母大写)
-                StringBuffer sub = new StringBuffer("get");
-                sub.append(StringUtils.upperCaseFirstChar(filedName));
-                // GET方法名称
-                String setFiled = sub.toString();
-                // 获取GET方法
-                Method getMethod = (Method) methods.get(setFiled);
-                if (getMethod != null) {
-                    // 从baseForm中取出对应的值
-                    Object o = getMethod.invoke(obj, new Object[0]);
-                    if (o != null) {
-                        String temp = String.valueOf(o);
-                        if (!temp.equals("") || bool) {
-                            parmMap.put(filedName, temp);
-                        }
-                    }
-                }
+                field.setAccessible(true);
+                ;
+                parmMap.put(filedName, String.valueOf(field.get(obj)));
+//                // 转换成GET方法(首字母大写)
+//                StringBuffer sub = new StringBuffer("get");
+//                sub.append(StringUtils.upperCaseFirstChar(filedName));
+//                // GET方法名称
+//                String setFiled = sub.toString();
+//                // 获取GET方法
+//                Method getMethod = (Method) methods.get(setFiled);
+//                getMethod.setAccessible(true);
+//                if (getMethod != null) {
+//                    // 从baseForm中取出对应的值
+//                    Object o = getMethod.invoke(obj, new Object[0]);
+//                    if (o != null) {
+//                        String temp = String.valueOf(o);
+//                        if (!temp.equals("") || bool) {
+//                            parmMap.put(filedName, temp);
+//                        }
+//                    }
+//                }
             }
         } catch (Exception e) {
             e.printStackTrace();

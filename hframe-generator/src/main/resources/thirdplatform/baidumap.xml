@@ -12,10 +12,14 @@
             <beanOrganizeInterfaceBase>true</beanOrganizeInterfaceBase>
         </properties>
         <rules>
-            <rule id="+AES" type="encrypt">(+)AES(${this},#{SECRET_KEY})</rule>
-            <rule id="-AES" type="decrypt">(-)AES(${this},#{SECRET_KEY})</rule>
-            <rule id="SignMd5" type="encrypt">MD5(${address}${output}$${AK})</rule>
-            <rule id="MobileMapping" type="mapping">com.hframe.client.mapping.XXXX</rule>
+            <rule id="encryptAES" type="encrypt">MD5((+)AES(${this},#{zk}))</rule>
+            <rule id="decryptAES" type="decrypt">(-)AES(${this},#{zk})</rule>
+            <rule id="md5" type="encrypt">MD5(${address}${mobile}#{zk})</rule>
+            <rule id="mobileMapping" type="mapping">com.hframe.client.mapping.MobileValueMapper</rule>
+            <rule id="userIdMapping" type="mapping">com.hframe.client.mapping.UserIdValueMapper</rule>
+            <rule id="cityCodeMapping" type="mapping">com.hframe.client.mapping.CityCodeValueMapper</rule>
+            <rule id="productIdMapping" type="mapping">com.hframe.client.mapping.ProductIdValueMapper</rule>
+            <rule id="serviceInstanceIdMapping" type="mapping">com.hframe.client.mapping.ServiceInstanceIdValueMapper</rule>
         </rules>
         <requestConfig>
             <valueMappers>
@@ -36,7 +40,7 @@
                 <node path="/" type="BaiduMapResult" nullable="false" visiable="false" ruleId="SignMd5" value="">
                     <node path="errorCode"></node>
                     <node path="errorMsg"></node>
-                    <node path="data" type="Generic"></node>
+                    <node path="data" type="generic"></node>
                     <!--<exclude express="data/*"></exclude>-->
                 </node>
                 <node path="**/attr;**/attr/**"  isFloatNode="true"></node>
@@ -45,14 +49,14 @@
         </responseConfig>
     </global>
     <interfaces>
-        <interface  path="geocoder/v2" name="getAddress"  method="post" usePublicParams ="true">
+        <interface  path="geocoder/v2" name="getAddress"  method="post" usePublicParams ="true" template="baidumap/getAddress.xml">
             <request load="head#body" message="json">
                 <parameters>
                     <parameter name="address" type="String" nullable="false"  visiable="true"  ruleId="" value="${address}" />
-                    <parameter name="output"  type="String"  nullable="false" visiable="false"  ruleId="" value="json" />
-                    <parameter name="ak"  type="String"  nullable="false" visiable="false"  ruleId="" value="$${ak}" />
-                    <parameter name="sign" type="String" nullable="false" visiable="false"  ruleId="" value="MD5(${address}${output}$${AK})" />
                     <parameter name="mobile" type="long" nullable="false" visiable="ture"  ruleId="" value="(+)AES(${this},$${SECRET_KEY})" />
+                    <parameter name="output"  type="String"  nullable="false" visiable="false"  ruleId="" value="json" />
+                    <parameter name="ak"  type="String"  nullable="false" visiable="false"  ruleId="" value="#{ak}" />
+                    <parameter name="sign" type="String" nullable="false" visiable="false"  ruleId="md5" value="MD5(${address}${mobile}$${AK})" />
                 </parameters>
                 <nodes>
                     <node path="*" type="" merge="true"/>
@@ -64,7 +68,7 @@
                 <node path="**/mobile"  type="HfcfgLoginPage" ruleId="" value="(-)AES(${this},$${SECRET_KEY})" />
             </response>
         </interface>
-        <interface  path="geocoder/v2" name="getAddress"  method="post" usePublicParams ="true">
+        <interface  path="geocoder/v2" name="getAddress2"  method="post" usePublicParams ="true">
         </interface>
     </interfaces>
 </descriptor>

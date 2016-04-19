@@ -5,8 +5,11 @@ package com.hframe.client.info.baidu;
  * Date: 2016/4/10 22:52:52
  */
 public class BaiduMapHelper {
+
+    private static BaidumapConfig baidumapConfig;
+
     private String aes(long mobile) {
-        return null;//TODO
+        return
     }
 
     private String md5(String address, String output, String ak) {

@@ -124,7 +124,9 @@ public class Class {
 
 	//添加导入类
 	public void addImportClass(String importClass) {
-		importClassList.add(importClass);
+		if(!importClassList.contains(importClass)) {
+			importClassList.add(importClass);
+		}
 	}
 
 	//添加类属性

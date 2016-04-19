@@ -24,7 +24,7 @@ public class VelocityUtil {
 		properties.setProperty("userdirective", "org.apache.velocity.tools.generic.directive.Ifnotnull");
 
 //		String basePath = "D:/tomcat6.0/Tomcat6.0_AutoSystem/webapps/Hframe/WEB-INF/classes";//???????????д·????????
-		String basePath = "E:\\myworkspace\\hframe-trunk\\hframe-generator\\src\\main\\resources";//???????????д·????????
+		String basePath = "D:\\my_workspace\\hframe-trunk\\hframe-generator\\src\\main\\resources";//???????????д·????????
 		properties.setProperty(Velocity.FILE_RESOURCE_LOADER_PATH, basePath);
 
 		if(templateName==null||"".equals(templateName)){
