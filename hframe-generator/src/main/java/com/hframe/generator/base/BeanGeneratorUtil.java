@@ -173,11 +173,6 @@ public class BeanGeneratorUtil {
         //类扩展处理
         descriptor.execute(beanClass, rootXmlNode);
 
-
-
-
-
-
         List<XmlNode> childrenXmlNode = rootXmlNode.getChildrenXmlNode();
         if(childrenXmlNode != null) {
             for (XmlNode childXmlNode : childrenXmlNode) {

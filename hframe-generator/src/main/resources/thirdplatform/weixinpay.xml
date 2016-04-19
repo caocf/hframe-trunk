@@ -12,6 +12,9 @@
             <staticParameter>goods_tag</staticParameter>
             <staticParameter>trade_type</staticParameter>
             <staticParameter>limit_pay</staticParameter>
+            <staticParameter>refund_fee_type</staticParameter>
+
+
             <staticParameter>unifiedorder_callback</staticParameter>
         </staticParameters>
         <properties>
@@ -46,6 +49,8 @@
                 <node path="/*/nonce_str" type="String" nullable="false" visiable="false" isFloatNode="true" ruleId="md5RandomNumber" value=""/>
                 <node path="/*/sign" type="String" nullable="false" visiable="false" isFloatNode="true" ruleId="encryptSign" value=""/>
                 <node path="/*/notify_url" type="String" nullable="false" visiable="false" isFloatNode="true" ruleId="" value="#{unifiedorder_callback}"/>
+                <node path="/*/refund_fee_type" type="String" nullable="false" visiable="false" isFloatNode="true" ruleId="" value="#{refund_fee_type}"/>
+                <node path="/*/op_user_id" type="String" nullable="false" visiable="false" isFloatNode="true" ruleId="" value="#{mch_id}"/>
             </publicNodes>
         </requestConfig>
         <responseConfig>
@@ -73,16 +78,34 @@
         </interface>
         <interface  path="pay/orderquery" name="orderquery"  method="post" usePublicParams ="true" template="weixinpay/orderquery.xml">
             <request load="head#body" message="xml" beanName = "OrderQueryRequest">
-                <!--<nodes>-->
-                <!--<node path="/xml" type="" merge="true">-->
-                <!--</node>-->
-                <!--<node path="*" type="" merge="true"/>-->
-                <!--</nodes>-->
             </request>
             <response load="body" extend="false" message="xml" beanName = "OrderQueryResponse">
-                <!--<node path="data/**"  type="HfcfgLoginPage" />-->
-                <!--<node path="**/mobile"  type="HfcfgLoginPage" ruleId="" value="(-)AES(${this},$${SECRET_KEY})" />-->
             </response>
         </interface>
+        <interface  path="pay/closeorder" name="closeorder"  method="post" usePublicParams ="true" template="weixinpay/closeorder.xml">
+            <request load="head#body" message="xml" beanName = "CloseOrderRequest">
+            </request>
+            <response load="body" extend="false" message="xml" beanName = "CloseOrderResponse">
+            </response>
+        </interface>
+        <interface  path="pay/downloadbill" name="downloadbill"  method="post" usePublicParams ="true" template="weixinpay/downloadbill.xml">
+            <request load="head#body" message="xml" beanName = "DownloadBillRequest">
+            </request>
+            <response load="body" extend="false" message="string">
+            </response>
+        </interface>
+        <interface  path="secapi/pay/refund" name="refund"  method="post" usePublicParams ="true" template="weixinpay/refund.xml">
+            <request load="head#body" message="xml" beanName = "RefundRequest">
+            </request>
+            <response load="body" extend="false" message="xml" beanName = "RefundResponse">
+            </response>
+        </interface><interface  path="pay/refundquery" name="refundquery"  method="post" usePublicParams ="true" template="weixinpay/refundquery.xml">
+        <request load="head#body" message="xml" beanName = "RefundQueryRequest">
+        </request>
+        <response load="body" extend="false" message="xml" beanName = "RefundQueryResponse">
+        </response>
+    </interface>
+
+
     </interfaces>
 </descriptor>

@@ -13,6 +13,7 @@ public class WeixinpayClientInvoker {
         OrderQueryRequest requestData = new OrderQueryRequest();
         requestData.setTransactionId("234432432");
         OrderQueryResponse orderquery = WeixinpayClient.orderquery(requestData);
+        orderquery.convert();
 //        System.out.println(FileUtils.readFile(Thread.currentThread().getContextClassLoader().getResource("third/weixinpay/orderquery.response").getContent()));
 
     }

@@ -83,7 +83,7 @@ public class HelperBeanGenerator extends AbstractGenerator implements Generator<
     }
 
     private void createDefaultValueMapperClass(String text) {
-        String packageName = javaRootPath + ".mapping";
+        String packageName = javaPackage + ".mapping";
         String className = null;
         if(text.contains(".")) {
             packageName = text.substring(0, text.lastIndexOf("."));

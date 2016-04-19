@@ -57,6 +57,7 @@ public class ClientBeanGenerator extends AbstractGenerator implements Generator<
 
             String requestBeanName = StringUtils.isNotBlank(anInterface.getRequest().getBeanName()) ? anInterface.getRequest().getBeanName() : "RequestData";
             String responseBeanName = StringUtils.isNotBlank(anInterface.getResponse().getBeanName()) ? anInterface.getResponse().getBeanName() : "ResponseData";
+            responseBeanName = (!"xml".equals(anInterface.getResponse().getMessage()) && !"json".equals(anInterface.getResponse().getMessage()) ) ? "String" : responseBeanName;
             method.setReturnType(responseBeanName);
             //生成request请求对象
             if(StringUtils.isNotBlank(anInterface.getRequest().getMessage())) {
@@ -91,10 +92,14 @@ public class ClientBeanGenerator extends AbstractGenerator implements Generator<
                 method.addCodeLn(responseBeanName + " responseData = JsonUtils.readValue(result," + responseBeanName + ".class);");
             }else if("xml".equals(anInterface.getResponse().getMessage())) {
                 method.addCodeLn(responseBeanName + " responseData = XmlUtils.readValue(result," + responseBeanName + ".class);");
-            }else {
-                method.addCodeLn(responseBeanName + " responseData = JsonUtils.readValue(result," + responseBeanName + ".class);");
             }
-            method.addCodeLn("return responseData.convert();");
+
+            if("json".equals(anInterface.getResponse().getMessage()) || "xml".equals(anInterface.getResponse().getMessage())) {
+                method.addCodeLn("return responseData.convert();");
+            }else {
+                method.addCodeLn("return result;");
+            }
+
             beanClass.addMethod(method);
         }
 
@@ -119,6 +124,7 @@ public class ClientBeanGenerator extends AbstractGenerator implements Generator<
                         BeanGeneratorUtil.generateByJson(javaPackage + ".bean", requestDataName, requestMessage,ruleNodeList);
                     }else if("xml".equals(anInterface.getRequest().getMessage())) {
                         ClientBeanGenerateDescriptor descriptor = new ClientBeanGenerateDescriptor();
+                        descriptor.setJavaRootPath(javaRootPath);
                         descriptor.setJavaPackage(javaPackage + ".bean");
                         descriptor.setRuleNodeList(ruleNodeList);
                         BeanGeneratorUtil.generateByXml(descriptor, requestMessage, requestDataName);
@@ -143,6 +149,7 @@ public class ClientBeanGenerator extends AbstractGenerator implements Generator<
                         BeanGeneratorUtil.generateByJson(javaPackage + ".bean", responseBeanName, responseMessage, ruleNodeList);
                     }else if("xml".equals(anInterface.getResponse().getMessage())) {
                         ClientBeanGenerateDescriptor descriptor = new ClientBeanGenerateDescriptor();
+                        descriptor.setJavaRootPath(javaRootPath);
                         descriptor.setJavaPackage(javaPackage + ".bean");
                         descriptor.setRuleNodeList(ruleNodeList);
                         descriptor.setRequestBean(false);
@@ -203,18 +210,18 @@ public class ClientBeanGenerator extends AbstractGenerator implements Generator<
         private boolean requestBean = true;
 
         public void execute(com.hframe.generator.bean.Class beanClass, XmlNode xmlNode) {
+            Field field = new Field("boolean", "converted");
+            field.setSetGetMethod(false);
+            field.addFieldAnno("@XStreamOmitField");
+            beanClass.addImportClass("com.thoughtworks.xstream.annotations.XStreamOmitField");
+            beanClass.addField(field);
+            beanClass.addImportClass("com.hframe.common.util.message.*");
+
+            Method method = new Method();
+            method.setName("convert");
+            method.setExceptionStr(" throws Exception");
+
             if(ruleNodeList != null && ruleNodeList.size() > 0) {
-                Field field = new Field("boolean", "converted");
-                field.setSetGetMethod(false);
-                field.addFieldAnno("@XStreamOmitField");
-                beanClass.addImportClass("com.thoughtworks.xstream.annotations.XStreamOmitField");
-
-                beanClass.addField(field);
-                beanClass.addImportClass("com.hframe.common.util.message.*");
-
-                Method method = new Method();
-                method.setName("convert");
-                method.setExceptionStr(" throws Exception");
                 method.addCodeLn("if(!converted) {");
                 method.addCodeLn("   String beforeInfo = XmlUtils.writeValueAsString(this);");
                 method.addCodeLn("   System.out.println(beforeInfo);");
@@ -258,11 +265,12 @@ public class ClientBeanGenerator extends AbstractGenerator implements Generator<
 
                 method.addCodeLn("   String afterInfo = XmlUtils.writeValueAsString(this);");
                 method.addCodeLn("   System.out.println(afterInfo);");
-                method.addCodeLn("}");
-                method.addCodeLn("return this;");
                 beanClass.addImportClass(beanClass.getClassPackage().substring(0, beanClass.getClassPackage().lastIndexOf(".")) + ".*");
-                beanClass.addMethod(method);
             }
+
+            method.addCodeLn("}");
+            method.addCodeLn("return this;");
+            beanClass.addMethod(method);
         }
 
         private void modifyMethod(Class beanClass, String javaVarName) {
@@ -300,7 +308,7 @@ public class ClientBeanGenerator extends AbstractGenerator implements Generator<
 
         private  Node matchNode(XmlNode childXmlNode, List<Node> ruleNodeList) {
             for (Node node : ruleNodeList) {
-                System.out.println(node.getPath() + "--" + childXmlNode.getNodeCode());
+//                System.out.println(node.getPath() + "--" + childXmlNode.getNodeCode());
                 if(PathMatcherUtils.matches(node.getPath(), childXmlNode.getNodeCode())) {
                     return node;
                 }
