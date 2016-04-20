@@ -11,17 +11,17 @@
 
     <artifactId>hframe-generator</artifactId>
     <packaging>pom</packaging>
-    <modules>
-        <module>../hframework-generator-thirdplatform</module>
-        <module>../hframework-generator-thirdplatform</module>
-    </modules>
+    <!--<modules>-->
+        <!--<module>../hframework-generator-thirdplatform</module>-->
+        <!--<module>../hframework-generator-thirdplatform</module>-->
+    <!--</modules>-->
 
-    <dependencies>
-        <dependency>
-            <groupId>com.hframe</groupId>
-            <artifactId>hframe-core</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-    </dependencies>
+    <!--<dependencies>-->
+        <!--<dependency>-->
+            <!--<groupId>com.hframe</groupId>-->
+            <!--<artifactId>hframe-beans</artifactId>-->
+            <!--<version>1.0-SNAPSHOT</version>-->
+        <!--</dependency>-->
+    <!--</dependencies>-->
 
 </project>

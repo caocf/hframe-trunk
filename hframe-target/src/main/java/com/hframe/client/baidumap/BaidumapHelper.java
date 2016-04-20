@@ -1,12 +1,8 @@
 package com.hframe.client.baidumap;
 
-import com.hframework.generator.thirdplatform.helper.*;
+import com.hframe.client.baidumap.mapping.*;
 import com.hframe.common.util.security.*;
-import MobileValueMapper;
-import UserIdValueMapper;
-import CityCodeValueMapper;
-import ProductIdValueMapper;
-import ServiceInstanceIdValueMapper;
+
 
 
 public class BaidumapHelper   {

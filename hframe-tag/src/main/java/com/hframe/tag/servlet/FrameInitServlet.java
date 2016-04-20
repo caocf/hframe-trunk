@@ -2,15 +2,15 @@ package com.hframe.tag.servlet;
 
 import com.hframe.common.frame.cache.CacheFactory;
 import com.hframe.common.frame.cache.CacheKeyEnum;
+import com.hframe.common.frame.cache.PropertyConfigurerUtils;
 import com.hframe.common.util.StringUtils;
 import com.hframe.domain.model.*;
-import com.hframe.generator.bean.Class;
-import com.hframe.generator.util.CreatorUtil;
 import com.hframe.service.interfaces.*;
 import com.hframe.tag.bean.Column;
 import com.hframe.tag.bean.Field;
 import com.hframe.tag.bean.Option;
 import com.hframe.tag.bean.ShowType;
+import com.hframework.beans.class0.Class;
 import com.hframe.tag.util.ClassDeclaredUtils;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
@@ -594,5 +594,101 @@ public class FrameInitServlet extends HttpServlet {
         }
         return hfmdEntityAttrMap;
     }
+
+    public static class CreatorUtil {
+
+        public static String getJavaClassName(String tableName) {
+            String returnName = "";
+            tableName = tableName.toLowerCase();
+            String[] parts = tableName.split("[_]+");
+            for (String part : parts) {
+                if (!"".equals(part)) {
+                    returnName += part.substring(0, 1).toUpperCase()
+                            + part.substring(1);
+                }
+            }
+            return returnName;
+        }
+
+        public static String getJavaVarName(String tableName) {
+
+            String returnName="";
+            tableName=tableName.toLowerCase();
+            String[] parts=tableName.split("[_]+");
+            for (String part : parts) {
+                if(!"".equals(part)){
+                    returnName+=part.substring(0,1).toUpperCase()+part.substring(1);
+                }
+            }
+            return returnName.substring(0,1).toLowerCase()+returnName.substring(1);
+        }
+
+
+        /**
+         * @param companyName
+         * @param projectName
+         * @return 获取SQL文件在项目中存放的路径即名称
+         * @throws Exception
+         */
+        public static String getSrcFilePath(String companyName,
+                                            String projectName) throws Exception {
+
+            if("".equals(companyName) || companyName == null){
+                companyName="zqh";
+            }
+
+
+            if(StringUtils.isBlank(projectName)) {
+                throw new Exception("项目名称为不能为空！");
+            }
+
+            return PropertyConfigurerUtils.getProperty(CreatorConst.PROJECT_SRC_FILE_PATH);
+        }
+
+
+
+        /**
+         * @param companyName
+         * @param projectName
+         * @param tableName
+         * @return 获取SQL文件在项目中存放的路径即名称
+         * @throws Exception
+         */
+        public static String getPoClassPackage(String companyName,
+                                               String projectName,String moduleName,String tableName) throws Exception {
+            return PropertyConfigurerUtils.getProperty(
+                    CreatorConst.PO_CLASS_PACKAGE,
+                    companyName.toLowerCase(),
+                    projectName.toLowerCase(),
+                    moduleName.toLowerCase(),
+                    getJavaClassName(tableName.toLowerCase()));
+        }
+
+
+        public static Class getDefPoClass(String companyName,
+                                          String projectName, String moduleName,String tableName) throws Exception {
+            if(StringUtils.isBlank(tableName)) {
+                throw new Exception("表名称为不能为空！");
+            }
+
+            companyName = StringUtils.isBlank(companyName)?"":"."+(companyName);
+            projectName = StringUtils.isBlank(projectName)?"":"."+(projectName);
+            moduleName = StringUtils.isBlank(moduleName)?"":"."+(moduleName);
+
+
+            Class class1 = new Class();
+            class1.setSrcFilePath(CreatorUtil.getSrcFilePath(companyName, projectName));
+            class1.setClassPackage(CreatorUtil.getPoClassPackage(
+                    companyName, projectName, moduleName,tableName));
+            class1.setClassName(CreatorUtil.getJavaClassName(tableName) + "");
+            return class1;
+        }
+    }
+    public static class CreatorConst {
+
+        public static String PROJECT_SRC_FILE_PATH = "project_src_file_path";
+        public static String PO_CLASS_PACKAGE = "po_class_package";
+    }
+
 
 }

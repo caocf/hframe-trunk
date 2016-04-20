@@ -1,8 +1,7 @@
 package com.ucfgroup.client.weixinpay;
 
-import com.hframework.generator.thirdplatform.helper.*;
-import com.hframe.common.util.security.*;
 
+import com.hframe.common.helper.Rules;
 
 public class WeixinpayHelper   {
 
@@ -12,7 +11,7 @@ public class WeixinpayHelper   {
 	}
 
 	public static String encryptSign(Object object)  throws Exception{
-			return Rules.signAllNotEmptyParams(object,"&key="+WeixinpayConfig.getInstance().getKey());
+			return Rules.signAllNotEmptyParams(object, "&key=" + WeixinpayConfig.getInstance().getKey());
 	}
 
 	public static String decryptSign(Object object)  throws Exception{

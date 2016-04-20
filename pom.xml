@@ -13,10 +13,13 @@
         <module>hframe-generator</module>
         <module>hframe-manager</module>
         <module>hframe-core</module>
-        <module>hframe-client</module>
         <module>hframe-tag</module>
         <module>jqgrid-demo</module>
         <module>hframe-target</module>
+        <module>hframe-mq</module>
+        <module>hframe-generator-thirdplatform</module>
+        <module>hframe-beans</module>
+        <module>hframe-generator-web</module>
     </modules>
 
     <dependencies>

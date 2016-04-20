@@ -12,14 +12,14 @@
             <property name="replaceString" value="_Example" />
         </plugin>
 
-        <plugin type="com.hframe.generator.mybatis.plugins.PaginationPlugin"></plugin>
-        <plugin type="com.hframe.generator.mybatis.plugins.JointQueryPlugin"></plugin>
-        <plugin type="com.hframe.generator.mybatis.plugins.MapperAnnotationPlugin"></plugin>
-        <plugin type="com.hframe.generator.mybatis.plugins.NoParamConstructorPlugin"></plugin>
+        <plugin type="com.hframework.generator.web.mybatis.plugins.PaginationPlugin"></plugin>
+        <plugin type="com.hframework.generator.web.mybatis.plugins.JointQueryPlugin"></plugin>
+        <plugin type="com.hframework.generator.web.mybatis.plugins.MapperAnnotationPlugin"></plugin>
+        <plugin type="com.hframework.generator.web.mybatis.plugins.NoParamConstructorPlugin"></plugin>
 
 
 
-        <commentGenerator type="com.hframe.generator.mybatis.override.MybatisCommentGenerator">
+        <commentGenerator type="com.hframework.generator.web.mybatis.override.MybatisCommentGenerator">
             <property name="suppressAllComments" value="true" />
             <property name="suppressDate" value="false" />
         </commentGenerator>

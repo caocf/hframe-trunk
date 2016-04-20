@@ -1,7 +1,7 @@
 package com.hframe.common.bean;
 
 /**
- * �������У�ָ��·�����ļ�ӳ����ɵ��ļ�����
+ * 服务器中，指定路径的文件映射而成的文件对象
  * @author zhangqh6
  *
  */

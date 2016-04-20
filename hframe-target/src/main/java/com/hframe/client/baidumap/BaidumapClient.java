@@ -18,10 +18,10 @@ public class BaidumapClient   {
 			   result = FileUtils.readFile(Thread.currentThread().getContextClassLoader().getResource(
 			          "third/baidumap/getAddress.response").getPath());
 			}else {
-			   result = HttpClient.doJsonPost(url,requestData.convert());
+			   result = HttpClient.doJsonPost(url,requestData);
 			}
 			ResponseData responseData = JsonUtils.readValue(result,ResponseData.class);
-			return responseData.convert();
+			return responseData;
 	}
 
 	public static String getAddress2()  throws Exception{

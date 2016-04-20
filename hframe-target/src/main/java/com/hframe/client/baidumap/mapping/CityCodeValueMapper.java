@@ -1,6 +1,6 @@
 package com.hframe.client.baidumap.mapping;
 
-import com.hframework.generator.thirdplatform.bean.*;
+import com.hframe.common.bean.ValueMapper;
 
 
 public class CityCodeValueMapper  implements ValueMapper {
