@@ -1,7 +1,7 @@
 package com.hframework.generator.web.bean;
 
-import com.hframe.common.util.CommonUtils;
-import com.hframe.common.util.StringUtils;
+import com.hframework.common.util.CommonUtils;
+import com.hframework.common.util.StringUtils;
 import com.hframe.domain.model.*;
 
 import java.util.*;

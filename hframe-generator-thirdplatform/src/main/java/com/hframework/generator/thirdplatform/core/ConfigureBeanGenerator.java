@@ -1,8 +1,8 @@
 package com.hframework.generator.thirdplatform.core;
 
-import com.hframe.common.util.FileUtils;
-import com.hframe.common.util.ResourceWrapper;
-import com.hframe.common.util.message.VelocityUtil;
+import com.hframework.common.util.FileUtils;
+import com.hframework.common.util.ResourceWrapper;
+import com.hframework.common.util.message.VelocityUtil;
 import com.hframework.beans.class0.Class;
 import com.hframework.generator.thirdplatform.bean.Descriptor;
 import com.hframework.generator.thirdplatform.bean.GeneratorConfig;
@@ -29,8 +29,8 @@ public class ConfigureBeanGenerator extends AbstractGenerator implements Generat
         beanClass.addAnnotation("@Source(\"" + resourceFolder + "/" + platformName + ".properties\")");
 
 
-        beanClass.addImportClass("com.hframe.common.annotation.*");
-        beanClass.addImportClass("com.hframe.common.util.ResourceWrapper");
+        beanClass.addImportClass("com.hframework.common.annotation.*");
+        beanClass.addImportClass("com.hframework.common.util.ResourceWrapper");
         beanClass.addImportClass("java.lang.reflect.InvocationTargetException");
 
 

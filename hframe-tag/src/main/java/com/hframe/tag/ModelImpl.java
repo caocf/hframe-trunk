@@ -1,6 +1,6 @@
 package com.hframe.tag;
 
-import com.hframe.common.util.message.VelocityUtil;
+import com.hframework.common.util.message.VelocityUtil;
 import com.hframe.tag.util.TagUtils;
 
 import java.io.IOException;

@@ -61,7 +61,7 @@ public class XmlNode {
     }
 
     public Map<String, String> getAttrMap() {
-        return attrMap;
+        return attrMap == null ? new HashMap<String, String>() : attrMap;
     }
 
     public void setAttrMap(Map<String, String> attrMap) {
@@ -108,12 +108,12 @@ public class XmlNode {
         childrenXmlNode.add(childNode);
     }
 
-    private void merge(XmlNode targetNode) {
+    public void merge(XmlNode targetNode) {
         mergeInternal(targetNode, false);
     }
 
     public void mergeOutSide(XmlNode targetNode) {
-        mergeInternal(targetNode,true);
+        mergeInternal(targetNode, true);
     }
 
 
@@ -154,6 +154,8 @@ public class XmlNode {
         }else {
             this.setIsSingleton(false);
         }
+
+        targetNode.setParentXmlNode(this.getParentXmlNode());
     }
 
     public void addNodeAttr(String key, String value) {
@@ -169,6 +171,8 @@ public class XmlNode {
     public void settingNodeCode() {
         if(parentXmlNode == null) {
             setNodeCode("/" + this.getNodeName());
+        }else if("/".equals(parentXmlNode.getNodeCode())){
+            setNodeCode(parentXmlNode.getNodeCode() + this.getNodeName());
         }else {
             setNodeCode(parentXmlNode.getNodeCode() + "/" + this.getNodeName());
         }
@@ -203,6 +207,16 @@ public class XmlNode {
                     Map.Entry<String, List<XmlNode>> entry = iterator.next();
                     if(entry.getValue().size() == 1) {
                         iterator.remove();
+                    }else {
+                        int tmpCount = 0;
+                        for (XmlNode xmlNode : entry.getValue()) {
+                            if(xmlNode.getAttrMap().size() != 0 || xmlNode.getChildrenXmlNode().size() != 0) {
+                                tmpCount ++;
+                            }
+                        }
+                        if(tmpCount <= 1) {
+                            iterator.remove();
+                        }
                     }
                 }
             }

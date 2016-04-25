@@ -49,7 +49,7 @@ public class Global   {
 
  	
 	public RequestConfig getRequestConfig(){
-		return requestConfig;
+		return requestConfig == null ? new RequestConfig() : requestConfig;
 	}
 
 	public void setRequestConfig(RequestConfig requestConfig){

@@ -1,10 +1,9 @@
 package com.hframework.generator.web;
 
-import com.hframe.common.util.StringUtils;
-import com.hframe.common.util.message.VelocityUtil;
+import com.hframework.common.util.StringUtils;
+import com.hframework.common.util.message.VelocityUtil;
 import com.hframework.beans.class0.Field;
 import com.hframework.beans.class0.Table;
-import com.hframework.beans.class0.Class;
 import com.hframework.generator.util.CreatorUtil;
 
 import java.util.HashMap;
@@ -22,7 +21,7 @@ public class ControllerGenerator extends AbstractGenerator {
 	 */
 	@Override
 	public void setImportClass() {
-		editClass.addImportClass("com.hframe.common.util.ExampleUtils");
+		editClass.addImportClass("com.hframework.common.util.ExampleUtils");
 		editClass.addImportClass("com.hframe.controller.bean.ResultMessage");
 		editClass.addImportClass("org.springframework.stereotype.Controller");
 		editClass.addImportClass("org.springframework.web.bind.annotation.ModelAttribute");

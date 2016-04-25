@@ -39,8 +39,8 @@ public class ActionGenerator {
 //		actionClass.addImportClass("org.springframework.stereotype.Component");
 //		actionClass.addImportClass("javax.annotation.Resource");
 //		actionClass.addImportClass("ava.util.*");
-//		actionClass.addImportClass("com.hframe.common.util.COMMON");
-//		actionClass.addImportClass("com.hframe.common.ssh.action.AbstractActionSupport");
+//		actionClass.addImportClass("com.hframework.common.util.COMMON");
+//		actionClass.addImportClass("com.hframework.common.ssh.action.AbstractActionSupport");
 //		actionClass.addImportClass(serviceClass.getClassPath());
 //		actionClass.addImportClass(poClass.getClassPath());
 //
@@ -341,10 +341,10 @@ public class ActionGenerator {
 //		sb.append("import org.springframework.stereotype.Component;/n/n");
 //		sb.append("import javax.annotation.Resource;/n/n");
 //		sb.append("import java.util.*;/n/n");
-//		sb.append("import com.hframe.common.util.COMMON;/n/n");
+//		sb.append("import com.hframework.common.util.COMMON;/n/n");
 //
 //
-//		sb.append("import com.hframe.common.ssh.action.AbstractActionSupport;/n/n");
+//		sb.append("import com.hframework.common.ssh.action.AbstractActionSupport;/n/n");
 //
 //		sb.append("import "+actioinFileName.substring(actioinFileName.indexOf("/src/")+5,actioinFileName.lastIndexOf("/action/")).replace("/", ".")+".po."+getJavaClassName(coreSet.getCoreSetName())+";/n/n");
 //		sb.append("import "+actioinFileName.substring(actioinFileName.indexOf("/src/")+5,actioinFileName.lastIndexOf("/action/")).replace("/", ".")+".service."+getJavaClassName(coreSet.getCoreSetName())+"Serv;/n/n");

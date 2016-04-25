@@ -3,13 +3,13 @@ package com.hframework.generator.web.sql.reverse;
 import java.io.IOException;
 import java.util.*;
 
-import com.hframe.common.frame.cache.PropertyConfigurerUtils;
+import com.hframework.common.frame.cache.PropertyConfigurerUtils;
 
-import com.hframe.common.util.CommonUtils;
-import com.hframe.common.util.DateUtils;
-import com.hframe.common.util.FileUtils;
-import com.hframe.common.util.StringUtils;
-import com.hframe.common.ext.CollectionUtils;
+import com.hframework.common.util.CommonUtils;
+import com.hframework.common.util.DateUtils;
+import com.hframework.common.util.FileUtils;
+import com.hframework.common.util.StringUtils;
+import com.hframework.common.ext.CollectionUtils;
 import com.hframe.domain.model.HfmdEntity;
 import com.hframe.domain.model.HfmdEntityAttr;
 import com.hframe.domain.model.HfpmModule;

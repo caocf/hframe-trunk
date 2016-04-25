@@ -1,5 +1,7 @@
 package com.hframework.beans.class0;
 
+import org.apache.commons.lang.StringUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +22,8 @@ public class Method {
 	private List<String> codelnList = new ArrayList<String>();
 
 	private List<Field> parameterList = new ArrayList<Field>();
+
+	private List<String> annotationList = new ArrayList<String>();
 
 	public void addParameter(Field field) {
 		parameterList.add(field);
@@ -104,5 +108,31 @@ public class Method {
 
 	public void setExceptionStr(String exceptionStr) {
 		this.exceptionStr = exceptionStr;
+	}
+
+
+	public void addAnnotation(String annotation) {
+		if(!annotationList.contains(annotation)) {
+			annotationList.add(annotation);
+		}
+	}
+
+	public String getAnnotationString() {
+		String str = "";
+		for (String annotation : annotationList) {
+			if(StringUtils.isNotBlank(str)) {
+				str +="/n    ";
+			}
+			str += annotation;
+		}
+		return str;
+	}
+
+	public List<String> getAnnotationList() {
+		return annotationList;
+	}
+
+	public void setAnnotationList(List<String> annotationList) {
+		this.annotationList = annotationList;
 	}
 }

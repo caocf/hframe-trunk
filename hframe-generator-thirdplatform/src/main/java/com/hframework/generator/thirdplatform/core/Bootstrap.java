@@ -1,6 +1,6 @@
 package com.hframework.generator.thirdplatform.core;
 
-import com.hframe.common.util.message.XmlUtils;
+import com.hframework.common.util.message.XmlUtils;
 import com.hframework.generator.thirdplatform.bean.Descriptor;
 import com.hframework.generator.thirdplatform.bean.GeneratorConfig;
 
@@ -11,7 +11,7 @@ import java.io.IOException;
  */
 public class Bootstrap {
     public static void main(String[] args) throws IOException {
-        String thirdName = "weixinpay.xml";
+        String thirdName = "beetle.xml";
 
         GeneratorConfig generatorConfig = GeneratorConfig.getInstance();
 //        System.out.println(generatorConfig.getJavaRootPath());
@@ -32,5 +32,9 @@ public class Bootstrap {
         ClientBeanGenerator clientBeanGenerator = new ClientBeanGenerator();
         clientBeanGenerator.helperClass = helperBeanGenerator.helperClass;
         clientBeanGenerator.generate(generatorConfig,descriptor);
+
+        ClientTestBeanGenerator clientTestBeanGenerator = new ClientTestBeanGenerator();
+        clientTestBeanGenerator.clientClass = clientBeanGenerator.clientClass;
+        clientTestBeanGenerator.generate(generatorConfig,descriptor);
     }
 }

@@ -1,11 +1,13 @@
 package com.hframe.client.baidumap;
 
 import java.util.HashMap;
-import com.hframe.common.util.protocol.HttpClient;
+
+import com.hframework.common.util.message.JsonUtils;
+import com.hframework.common.util.protocol.HttpClient;
 import java.text.MessageFormat;
-import com.hframe.common.util.message.*;
+
 import com.hframe.client.baidumap.bean.*;
-import com.hframe.common.util.FileUtils;
+import com.hframework.common.util.FileUtils;
 
 
 public class BaidumapClient   {
@@ -20,7 +22,7 @@ public class BaidumapClient   {
 			}else {
 			   result = HttpClient.doJsonPost(url,requestData);
 			}
-			ResponseData responseData = JsonUtils.readValue(result,ResponseData.class);
+			ResponseData responseData = JsonUtils.readValue(result, ResponseData.class);
 			return responseData;
 	}
 

@@ -6,15 +6,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.hframe.common.frame.cache.CacheFactory;
-import com.hframe.common.frame.cache.CacheKeyEnum;
-import com.hframe.common.frame.cache.SetCacheFactory;
-import com.hframe.common.util.StringUtils;
+import com.hframework.common.frame.cache.CacheFactory;
+import com.hframework.common.frame.cache.CacheKeyEnum;
+import com.hframework.common.util.StringUtils;
 import com.hframe.tag.util.ClassDeclaredUtils;
 import com.hframe.tag.db.DBOperatorProxy;
 import com.hframe.tag.util.TagUtils;
 import com.hframe.tag.util.TransObjUtil;
-import com.hframe.common.util.message.VelocityUtil;
+import com.hframework.common.util.message.VelocityUtil;
 
 public class AutoFormImpl extends CommonTagImpl{
 

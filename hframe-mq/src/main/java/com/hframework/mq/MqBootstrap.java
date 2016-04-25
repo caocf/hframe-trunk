@@ -1,7 +1,7 @@
 package com.hframework.mq;
 
 
-import com.hframe.common.helper.LogHelper;
+import com.hframework.common.helper.LogHelper;
 import com.hframework.mq.exception.MqMessageErrorHandler;
 import com.hframework.mq.receiver.DefaultMqReceiver;
 import org.apache.commons.lang.StringUtils;

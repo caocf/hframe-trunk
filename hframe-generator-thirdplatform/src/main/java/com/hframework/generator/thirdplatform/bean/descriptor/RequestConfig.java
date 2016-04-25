@@ -27,7 +27,7 @@ public class RequestConfig   {
 
  	
 	public PublicParameters getPublicParameters(){
-		return publicParameters;
+		return publicParameters == null ? new PublicParameters() : publicParameters;
 	}
 
 	public void setPublicParameters(PublicParameters publicParameters){

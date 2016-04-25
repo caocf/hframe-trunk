@@ -1,5 +1,6 @@
 package com.hframework.generator.bean;
 
+import com.hframework.beans.class0.Field;
 import com.hframework.beans.class0.XmlNode;
 import com.hframework.beans.class0.Class;
 
@@ -22,5 +23,9 @@ public interface GenerateDescriptor {
 
     public String getTemplatePath();
 
-    public void execute(Class clazz,XmlNode xmlNode);
+    public void executeClassExtend(Class clazz,XmlNode xmlNode);
+
+    public void executeFieldExtend(Field field, XmlNode childXmlNode);
+
+    public void executeXmlNodeExtend(XmlNode xmlNode);
 }

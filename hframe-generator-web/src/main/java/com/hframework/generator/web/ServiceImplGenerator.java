@@ -1,7 +1,7 @@
 package com.hframework.generator.web;
 
-import com.hframe.common.util.StringUtils;
-import com.hframe.common.util.message.VelocityUtil;
+import com.hframework.common.util.StringUtils;
+import com.hframework.common.util.message.VelocityUtil;
 import com.hframework.beans.class0.Field;
 import com.hframework.beans.class0.Table;
 import com.hframework.generator.util.CreatorUtil;

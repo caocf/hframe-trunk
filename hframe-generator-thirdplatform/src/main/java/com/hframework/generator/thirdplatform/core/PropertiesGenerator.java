@@ -1,8 +1,8 @@
 package com.hframework.generator.thirdplatform.core;
 
-import com.hframe.common.util.FileUtils;
-import com.hframe.common.util.RegexUtils;
-import com.hframe.common.util.message.XmlUtils;
+import com.hframework.common.util.FileUtils;
+import com.hframework.common.util.RegexUtils;
+import com.hframework.common.util.message.XmlUtils;
 import com.hframework.generator.thirdplatform.bean.Descriptor;
 import com.hframework.generator.thirdplatform.bean.GeneratorConfig;
 import com.hframework.generator.thirdplatform.bean.InterfaceExample;

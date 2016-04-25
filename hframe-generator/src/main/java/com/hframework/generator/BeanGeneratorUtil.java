@@ -1,10 +1,11 @@
 package com.hframework.generator;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.hframe.common.util.*;
-import com.hframe.common.util.message.Dom4jUtils;
-import com.hframe.common.util.message.JacksonObjectMapper;
-import com.hframe.common.util.message.VelocityUtil;
+import com.hframework.common.util.FileUtils;
+import com.hframework.common.util.StringUtils;
+import com.hframework.common.util.message.Dom4jUtils;
+import com.hframework.common.util.message.JacksonObjectMapper;
+import com.hframework.common.util.message.VelocityUtil;
 import com.hframework.beans.class0.Field;
 import com.hframework.beans.class0.Class;
 import com.hframework.beans.class0.XmlNode;
@@ -36,6 +37,7 @@ public class BeanGeneratorUtil {
      */
     public static void generateByJson(GenerateDescriptor descriptor, String jsonString, String rootClassName) throws IOException {
         JsonNode jsonNode = JacksonObjectMapper.getInstance().readTree(jsonString);
+
         Map<String, Object> mergeMap = new HashMap<String, Object>();
         mergeMap.put(rootClassName, parseJsonNode(jsonNode));
         Map<String,Integer> nameRepeatCache = new HashMap<String, Integer>();
@@ -60,17 +62,54 @@ public class BeanGeneratorUtil {
 //    }
 
 
+
+
+
+    /**
+     * 通过Xml数据获取XmlNode对象
+     * @param jsonString
+     */
+    public static XmlNode getXmlNodeByJson(GenerateDescriptor descriptor, String jsonString) throws IOException {
+        JsonNode jsonNode = JacksonObjectMapper.getInstance().readTree(jsonString);
+
+        XmlNode rootXmlNode = parseXmlNode("",jsonNode);
+
+        rootXmlNode.settingNodeCode();
+
+        descriptor.executeXmlNodeExtend(rootXmlNode);
+
+        Map<String,List<XmlNode>> sameNameNodeMap = rootXmlNode.fetchSameNameNode(new LinkedHashMap<String, List<XmlNode>>());
+
+        XmlNode.XmlNodeHelper.filterSingletonNode(sameNameNodeMap);
+
+        //获取合并规则 TODO
+        for (String nodeName : sameNameNodeMap.keySet()) {
+            List<XmlNode> xmlNodes = sameNameNodeMap.get(nodeName);
+            XmlNode baseNode = xmlNodes.get(0);
+            for (int i = 1; i < xmlNodes.size(); i++) {
+                baseNode.mergeOutSide(xmlNodes.get(i));
+                xmlNodes.get(i).getParentXmlNode().getChildrenXmlNode().set(
+                        xmlNodes.get(i).getParentXmlNode().getChildrenXmlNode().indexOf(xmlNodes.get(i)),baseNode);
+            }
+        }
+
+        return rootXmlNode;
+    }
+
+
     /**
      * 通过Xml数据获取XmlNode对象
      * @param xmlString
      */
-    public static XmlNode getXmlNodeByXml(String xmlString) throws IOException {
+    public static XmlNode getXmlNodeByXml(GenerateDescriptor descriptor, String xmlString) throws IOException {
         Document document = Dom4jUtils.getDocumentByContent(xmlString);
         Element root = document.getRootElement();
 
         XmlNode rootXmlNode = parseXmlNodeNew(root);
 
         rootXmlNode.settingNodeCode();
+
+        descriptor.executeXmlNodeExtend(rootXmlNode);
 
         Map<String,List<XmlNode>> sameNameNodeMap = rootXmlNode.fetchSameNameNode(new LinkedHashMap<String, List<XmlNode>>());
 
@@ -97,7 +136,17 @@ public class BeanGeneratorUtil {
      * @param xmlString
      */
     public static void generateByXml(GenerateDescriptor descriptor, String xmlString, String rootClassName)  throws IOException {
-        generateClassByXmlNode(descriptor, rootClassName, getXmlNodeByXml(xmlString), true);
+        generateClassByXmlNode(descriptor, rootClassName, getXmlNodeByXml(descriptor, xmlString), true,"xml");
+    }
+
+    /**
+     * 通过Json数据生成Bean对象
+     * @param descriptor 类生成描述器
+     * @param rootClassName
+     * @param jsonString
+     */
+    public static void generateByJsonNew(GenerateDescriptor descriptor, String jsonString, String rootClassName)  throws IOException {
+        generateClassByXmlNode(descriptor, rootClassName, getXmlNodeByJson(descriptor,jsonString), true,"json");
     }
 
 //    /**
@@ -167,11 +216,11 @@ public class BeanGeneratorUtil {
      * @param rootXmlNode
      * @param isRoot
      */
-    private static void generateClassByXmlNode(GenerateDescriptor descriptor, String rootClassName, XmlNode rootXmlNode, boolean isRoot) {
+    private static void generateClassByXmlNode(GenerateDescriptor descriptor, String rootClassName, XmlNode rootXmlNode, boolean isRoot, String beanType) {
 
-        Class beanClass = generateDefaultClassByXmlNode(descriptor,rootClassName,rootXmlNode,isRoot);
+        Class beanClass = generateDefaultClassByXmlNode(descriptor,rootClassName,rootXmlNode,isRoot, beanType);
         //类扩展处理
-        descriptor.execute(beanClass, rootXmlNode);
+        descriptor.executeClassExtend(beanClass, rootXmlNode);
 
         List<XmlNode> childrenXmlNode = rootXmlNode.getChildrenXmlNode();
         if(childrenXmlNode != null) {
@@ -188,34 +237,47 @@ public class BeanGeneratorUtil {
                         beanClass.addImportClass(descriptor.getJavaPackage() + "." + CreatorUtil.getJavaClassName(rootClassName).toLowerCase() + ".*");
                     }
                     GenerateDescriptor newDescriptor = descriptor;
-                    try {
-                        newDescriptor = (GenerateDescriptor) BeanUtils.cloneBean(descriptor);
-                    }catch (Exception e) {
-                        e.printStackTrace();
-                    }
+//                    try {
+//                        newDescriptor = (GenerateDescriptor) BeanUtils.cloneBean(descriptor);
+//                    }catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+                    String sourceJavaPackage = descriptor.getJavaPackage();
                     newDescriptor.setJavaPackage(descriptor.getJavaPackage() +
                             (isRoot ? ("." + CreatorUtil.getJavaClassName(rootClassName).toLowerCase()) : ""));
                     generateClassByXmlNode(newDescriptor,
-                            CreatorUtil.getJavaClassName(childXmlNode.getNodeName()), childXmlNode, false);
+                            CreatorUtil.getJavaClassName(childXmlNode.getNodeName()), childXmlNode, false, beanType);
+                    newDescriptor.setJavaPackage(sourceJavaPackage);
                 }
             }
         }
 
-        //注意：这里迭代调用是否存在先后关系 TODO
-        Map map = new HashMap();
-        map.put("CLASS", beanClass);
-        String content = VelocityUtil.produceTemplateContent(descriptor.getTemplatePath(), map);
-        System.out.println(content);
-        FileUtils.writeFile(beanClass.getFilePath(), content);
+        if(!"Map".equals(beanClass.getClassName())) {
+            //注意：这里迭代调用是否存在先后关系 TODO
+            Map map = new HashMap();
+            map.put("CLASS", beanClass);
+            String content = VelocityUtil.produceTemplateContent(descriptor.getTemplatePath(), map);
+            System.out.println(content);
+            FileUtils.writeFile(beanClass.getFilePath(), content);
+        }
+
+    }
+    private static Class generateDefaultClassByXmlNode(GenerateDescriptor descriptor, String rootClassName, XmlNode rootXmlNode, boolean isRoot, String beanType) {
+        if("xml".equals(beanType)) {
+            return generateDefaultXmlClassByXmlNode(descriptor,rootClassName,rootXmlNode,isRoot);
+        }else {
+            return generateDefaultJsonClassByXmlNode(descriptor,rootClassName,rootXmlNode,isRoot);
+        }
     }
 
-    private static Class generateDefaultClassByXmlNode(GenerateDescriptor descriptor, String rootClassName, XmlNode rootXmlNode, boolean isRoot) {
+    private static Class generateDefaultXmlClassByXmlNode(GenerateDescriptor descriptor, String rootClassName, XmlNode rootXmlNode, boolean isRoot) {
         Class beanClass = new Class();
         beanClass.setSrcFilePath(descriptor.getJavaRootPath());
         beanClass.setClassPackage(descriptor.getJavaPackage());
         beanClass.setClassName(rootClassName);
         beanClass.addConstructor();
         beanClass.addAnnotation("@XStreamAlias(\"" + rootXmlNode.getNodeName() + "\")");
+        beanClass.addExtendAttr(Class.ExtendAttrCode.MESSAGE_ANNOTATION_TYPE, "xml");
 
         beanClass.addImportClass("com.thoughtworks.xstream.annotations.XStreamAlias");
 
@@ -279,6 +341,59 @@ public class BeanGeneratorUtil {
         return beanClass;
     }
 
+    private static Class generateDefaultJsonClassByXmlNode(GenerateDescriptor descriptor, String rootClassName, XmlNode rootXmlNode, boolean isRoot) {
+        Class beanClass = new Class();
+        beanClass.setSrcFilePath(descriptor.getJavaRootPath());
+        beanClass.setClassPackage(descriptor.getJavaPackage());
+//        Integer integer = nameRepeatCache.get(rootClassName);
+//        beanClass.setClassName(rootClassName + (integer==null ? "" : integer));
+//        nameRepeatCache.put(rootClassName, (integer == null ? 1 : ++integer));
+        beanClass.setClassName(rootClassName );
+        beanClass.addConstructor();
+        beanClass.addImportClass("com.fasterxml.jackson.annotation.JsonProperty");
+        beanClass.addExtendAttr(Class.ExtendAttrCode.MESSAGE_ANNOTATION_TYPE,"json");
+
+        List<XmlNode> childrenXmlNode = rootXmlNode.getChildrenXmlNode();
+        if(childrenXmlNode != null) {
+            for (XmlNode childXmlNode : childrenXmlNode) {
+                Field field ;
+                String xmlNodeName = childXmlNode.getNodeName();
+                if(childXmlNode.getChildrenXmlNode().size() == 0 &&
+                        (childXmlNode.getAttrMap() == null || childXmlNode.getAttrMap().size() == 0 )) {
+                    if(childXmlNode.isSingleton()) {
+                        field = new Field("String",
+                                CreatorUtil.getJavaVarName(childXmlNode.getNodeName()));
+                    }else {
+                        field = new Field("List<String>",
+                                CreatorUtil.getJavaVarName(childXmlNode.getNodeName()) + "List");
+//                        beanClass.addImportClass("com.thoughtworks.xstream.annotations.XStreamImplicit");
+                        beanClass.addImportClass("java.util.List");
+//                        field.addFieldAnno("@XStreamImplicit");
+                    }
+
+                }else if(childXmlNode.isSingleton()) {
+                    field = new Field(CreatorUtil.getJavaClassName(childXmlNode.getNodeName()),
+                            CreatorUtil.getJavaVarName(childXmlNode.getNodeName()));
+                    descriptor.executeFieldExtend(field,childXmlNode);
+                }else {
+                    field = new Field("List<" + CreatorUtil.getJavaClassName(childXmlNode.getNodeName()) + ">",
+                            CreatorUtil.getJavaVarName(childXmlNode.getNodeName()) + "List");
+//                    beanClass.addImportClass("com.thoughtworks.xstream.annotations.XStreamImplicit");
+                    beanClass.addImportClass("java.util.List");
+                    descriptor.executeFieldExtend(field,childXmlNode);
+//                    field.addFieldAnno("@XStreamImplicit");
+                }
+                field.addFieldAnno("@JsonProperty(\"" + xmlNodeName + "\")");
+                beanClass.addField(field);
+
+                if(childXmlNode.isGenerated()) {
+                    continue;
+                }
+                childXmlNode.setGenerated(true);
+            }
+        }
+        return beanClass;
+    }
 
 
     /**
@@ -475,17 +590,6 @@ public class BeanGeneratorUtil {
         return xmlNode;
     }
 
-
-    private static Map<String,String> getAttrMap(Element element) {
-        Map attrMap = new LinkedHashMap();
-        for (Object attr : element.attributes()) {
-            Attribute attribute= (Attribute) attr;
-            attrMap.put(attribute.getName(),attribute.getValue());
-        }
-        return attrMap;
-    }
-
-
     /**
      * 解析Json节点信息
      * @param jsonNode
@@ -514,6 +618,66 @@ public class BeanGeneratorUtil {
         }
         return fieldMap;
     }
+
+    /**
+     * 解析Json节点信息
+     * @param jsonNode
+     * @return
+     */
+    private static XmlNode parseXmlNode(String key, JsonNode jsonNode) {
+
+        XmlNode xmlNode = new XmlNode();
+        xmlNode.setNodeName(key);
+        if(jsonNode.isArray()) {
+            xmlNode.setIsSingleton(false);//这一句是不能少的，因为可能jsonNode子元素为空，这个时候就需要用到默认的Node节点
+            boolean flag = false;//防止合并后子树节点父节点还是挂靠老的父节点，而老的父节点已经被合并弃用
+            for (JsonNode subNode : jsonNode) {
+                XmlNode subXmlNode = parseXmlNode(key,subNode);
+                if(flag == false) {
+                    xmlNode = subXmlNode;
+                    xmlNode.setNodeName(key);
+                    xmlNode.setIsSingleton(false);
+                    flag = true;
+                }else {
+                    xmlNode.mergeOutSide(subXmlNode);
+                }
+            }
+            return xmlNode;
+        }
+
+
+        boolean flag = false;
+        Iterator<Map.Entry<String, JsonNode>> fields = jsonNode.fields();
+        while (fields.hasNext()) {
+            flag = true;
+            Map.Entry<String, JsonNode> field = fields.next();
+            JsonNode subJsonNode = field.getValue();
+            XmlNode subXmlNode = parseXmlNode(field.getKey(), subJsonNode);
+//            subXmlNode.setNodeName(field.getKey());
+            xmlNode.addOrMergeChildNode(subXmlNode);
+            subXmlNode.setParentXmlNode(xmlNode);
+        }
+
+
+
+        if(!flag) {
+            xmlNode.setNodeText(jsonNode.asText());
+        }
+        return xmlNode;
+    }
+
+
+
+    private static Map<String,String> getAttrMap(Element element) {
+        Map attrMap = new LinkedHashMap();
+        for (Object attr : element.attributes()) {
+            Attribute attribute= (Attribute) attr;
+            attrMap.put(attribute.getName(),attribute.getValue());
+        }
+        return attrMap;
+    }
+
+
 
     /**
      * 属性合并

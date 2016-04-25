@@ -1,10 +1,10 @@
 <%@ page language="java" import="java.util.*" pageEncoding="GB18030"%>
-<%@page import="com.hframe.common.util.VelocityUtil"%>
-<%@page import="com.hframe.common.bean.Column"%>
-<%@page import="com.hframe.common.bean.ShowType"%>
-<%@page import="com.hframe.common.bean.Option"%>
-<%@page import="com.hframe.common.bean.User"%>
-<%@page import="com.hframe.common.ssh.service.CommonServ"%>
+<%@page import="com.hframework.common.util.VelocityUtil"%>
+<%@page import="com.hframework.common.bean.Column"%>
+<%@page import="com.hframework.common.bean.ShowType"%>
+<%@page import="com.hframework.common.bean.Option"%>
+<%@page import="com.hframework.common.bean.User"%>
+<%@page import="com.hframework.common.ssh.service.CommonServ"%>
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";

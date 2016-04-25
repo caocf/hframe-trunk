@@ -1,8 +1,7 @@
 package com.hframe.tag.util;
 
-import com.hframe.common.frame.cache.CacheFactory;
-import com.hframe.common.frame.cache.CacheKeyEnum;
-import com.hframe.common.frame.cache.SetCacheFactory;
+import com.hframework.common.frame.cache.CacheFactory;
+import com.hframework.common.frame.cache.CacheKeyEnum;
 import com.hframe.tag.bean.Column;
 
 import java.lang.reflect.InvocationTargetException;
@@ -120,7 +119,7 @@ public class ReflectUtil {
 //	public static Object getObjectFromDBObject(String dbObject) {
 //		try {
 //			//TODO
-//			return Class.forName("com.hframe.common.bean.User").newInstance();
+//			return Class.forName("com.hframework.common.bean.User").newInstance();
 //
 //		} catch (Exception e) {
 //			e.printStackTrace();
@@ -133,7 +132,7 @@ public class ReflectUtil {
 			//TODO
 			 Map map= (Map) CacheFactory.get(CacheKeyEnum.DS_CREATE_CACHE.getName(), dbObject);
 				return Class.forName((String)map.get("PoPath"));
-			//return Class.forName("com.hframe.common.bean.User");
+			//return Class.forName("com.hframework.common.bean.User");
 		} catch (Exception e) {
 //			e.printStackTrace();
 		}

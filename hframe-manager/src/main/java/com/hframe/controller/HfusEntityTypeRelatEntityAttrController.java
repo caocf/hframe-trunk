@@ -1,6 +1,6 @@
 package com.hframe.controller;
 
-import com.hframe.common.util.ExampleUtils;
+import com.hframework.common.util.ExampleUtils;
 import com.hframe.controller.bean.ResultMessage;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;

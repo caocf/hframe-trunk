@@ -1,6 +1,6 @@
 <%@ page language="java" import="java.util.*" pageEncoding="GB18030"%>
 <%@page import="com.hframe.demo.vo.MenuVO"%>
-<%@page import="com.hframe.common.ssh.service.CommonServ"%>
+<%@page import="com.hframework.common.ssh.service.CommonServ"%>
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";

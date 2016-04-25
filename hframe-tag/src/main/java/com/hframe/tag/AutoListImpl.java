@@ -11,10 +11,9 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.hframe.common.frame.cache.CacheFactory;
-import com.hframe.common.frame.cache.CacheKeyEnum;
-import com.hframe.common.frame.cache.SetCacheFactory;
-import com.hframe.common.util.message.VelocityUtil;
+import com.hframework.common.frame.cache.CacheFactory;
+import com.hframework.common.frame.cache.CacheKeyEnum;
+import com.hframework.common.util.message.VelocityUtil;
 import com.hframe.tag.bean.Field;
 import com.hframe.tag.bean.Pagination;
 import com.hframe.tag.db.DBOperatorProxy;

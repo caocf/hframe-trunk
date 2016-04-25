@@ -7,9 +7,8 @@ import java.util.Map;
 import com.hframework.beans.class0.Constructor;
 import com.hframework.beans.class0.Table;
 import com.hframework.beans.class0.Class;
-import com.hframe.common.util.FileUtils;
-import com.hframe.common.util.message.VelocityUtil;
-import com.hframework.generator.util.CreatorUtil;
+import com.hframework.common.util.FileUtils;
+import com.hframework.common.util.message.VelocityUtil;
 import com.hframework.generator.web.bean.CreatorContainer;
 import com.hframework.generator.web.bean.CreatorContainerBuilder;
 
@@ -72,7 +71,7 @@ public class DAOCreator {
 		StringBuffer sb=new StringBuffer();
 
 		daoImplClass.addImportClass("org.springframework.stereotype.Component;");
-		daoImplClass.addImportClass("com.hframe.common.ssh.dao.AbstractDAOSupport;");
+		daoImplClass.addImportClass("com.hframework.common.ssh.dao.AbstractDAOSupport;");
 		daoImplClass.addImportClass(poClass.getClassPath());
 		daoImplClass.addImportClass(daoClass.getClassPath());
 

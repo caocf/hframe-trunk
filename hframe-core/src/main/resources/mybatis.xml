@@ -16,8 +16,8 @@
     </settings>
 
     <plugins>
-        <plugin interceptor="com.hframe.common.frame.mybatis.interceptor.DiclectStatementHandlerInterceptor" />
-        <plugin interceptor="com.hframe.common.frame.mybatis.interceptor.DiclectResultSetHandlerInterceptor" />
+        <plugin interceptor="com.hframework.common.frame.mybatis.interceptor.DiclectStatementHandlerInterceptor" />
+        <plugin interceptor="com.hframework.common.frame.mybatis.interceptor.DiclectResultSetHandlerInterceptor" />
     </plugins>
 
 </configuration>

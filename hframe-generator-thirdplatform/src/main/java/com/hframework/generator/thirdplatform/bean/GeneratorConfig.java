@@ -1,9 +1,9 @@
 package com.hframework.generator.thirdplatform.bean;
 
 
-import com.hframe.common.annotation.Key;
-import com.hframe.common.annotation.Source;
-import com.hframe.common.util.ResourceWrapper;
+import com.hframework.common.annotation.Key;
+import com.hframework.common.annotation.Source;
+import com.hframework.common.util.ResourceWrapper;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -19,6 +19,9 @@ public class GeneratorConfig{
 
     @Key( "resource.generate.root.path")
     private String resourceRootPath;
+
+    @Key("javatest.generate.root.path")
+    private String javaTestRootPath;
 
     private String resourceKeyPrefix;
 
@@ -73,5 +76,13 @@ public class GeneratorConfig{
         }
 
         return instance;
+    }
+
+    public String getJavaTestRootPath() {
+        return javaTestRootPath;
+    }
+
+    public void setJavaTestRootPath(String javaTestRootPath) {
+        this.javaTestRootPath = javaTestRootPath;
     }
 }

@@ -1,8 +1,8 @@
 package com.hframe.client.baidumap;
 
 import com.hframe.client.baidumap.mapping.*;
-import com.hframe.common.util.security.*;
-
+import com.hframework.common.util.security.AESUtil;
+import com.hframework.common.util.security.MD5Util;
 
 
 public class BaidumapHelper   {

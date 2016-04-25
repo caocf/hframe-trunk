@@ -1,6 +1,6 @@
 package com.hframe.client.baidumap.mapping;
 
-import com.hframe.common.bean.ValueMapper;
+import com.hframework.common.bean.ValueMapper;
 
 
 public class MobileValueMapper  implements ValueMapper {

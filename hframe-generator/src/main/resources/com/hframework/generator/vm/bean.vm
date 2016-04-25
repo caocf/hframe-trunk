@@ -8,7 +8,7 @@ package $classDef.classPackage;
 import $importClass;
 #end
 
-$!classDef.annotation
+$!classDef.javaDoc$!classDef.annotation
 public $classDef.type $classDef.className $!classDef.superClassStr $!classDef.implementsStr {
 
 #foreach($field in $classDef.fieldList)
@@ -23,8 +23,8 @@ public $classDef.type $classDef.className $!classDef.superClassStr $!classDef.im
     #end
 }
  #end
-
 #foreach($method in $classDef.methodList)
+	$method.annotationString
 	$method.modifier $method.returnType ${method.name}($!method.parameterStr) $!{method.exceptionStr}{
 	#foreach($codeLine in $method.codelnList)
 		$!codeLine

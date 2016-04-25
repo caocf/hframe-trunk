@@ -1,7 +1,7 @@
 package com.hframe.tag.util;
 
-import com.hframe.common.frame.cache.CacheFactory;
-import com.hframe.common.frame.cache.CacheKeyEnum;
+import com.hframework.common.frame.cache.CacheFactory;
+import com.hframework.common.frame.cache.CacheKeyEnum;
 
 import java.util.Map;
 

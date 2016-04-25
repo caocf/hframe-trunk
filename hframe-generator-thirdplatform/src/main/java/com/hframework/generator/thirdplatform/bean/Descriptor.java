@@ -20,7 +20,7 @@ public class Descriptor   {
  
  	
 	public Global getGlobal(){
-		return global;
+		return global == null ? new Global() : global;
 	}
 
 	public void setGlobal(Global global){

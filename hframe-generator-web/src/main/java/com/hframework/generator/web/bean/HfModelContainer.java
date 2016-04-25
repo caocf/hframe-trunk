@@ -1,6 +1,6 @@
 package com.hframework.generator.web.bean;
 
-import com.hframe.common.util.CommonUtils;
+import com.hframework.common.util.CommonUtils;
 import com.hframe.domain.model.*;
 
 import java.math.BigDecimal;

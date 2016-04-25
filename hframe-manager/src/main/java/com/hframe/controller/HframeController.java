@@ -1,6 +1,6 @@
 package com.hframe.controller;
 
-import com.hframe.common.util.DateUtils;
+import com.hframework.common.util.DateUtils;
 import com.hframe.controller.bean.ResultMessage;
 import com.hframe.domain.model.HfmdEntity;
 import com.hframe.domain.model.HfpmPage;

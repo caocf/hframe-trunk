@@ -1,6 +1,6 @@
 package com.hframe.tag;
 
-import com.hframe.common.frame.cache.SetCacheFactory;
+import com.hframework.common.frame.cache.SetCacheFactory;
 import com.hframe.tag.bean.Field;
 import com.hframe.tag.db.DBOperatorProxy;
 import com.hframe.tag.util.ReflectUtil;

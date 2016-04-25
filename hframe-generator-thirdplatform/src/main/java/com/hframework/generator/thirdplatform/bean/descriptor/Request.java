@@ -36,7 +36,7 @@ public class Request   {
 
  	
 	public Nodes getNodes(){
-		return nodes;
+		return nodes == null ? new Nodes() : nodes;
 	}
 
 	public void setNodes(Nodes nodes){

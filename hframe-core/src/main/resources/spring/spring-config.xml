@@ -34,7 +34,7 @@
     </bean>
     <!-- ehcache配置结束 -->
 
-    <bean class="com.hframe.common.frame.cache.PropertyConfigurerUtils">
+    <bean class="com.hframework.common.frame.cache.PropertyConfigurerUtils">
         <property name="locations">
             <list>
                 <value>classpath:properties/dataSource.properties</value>

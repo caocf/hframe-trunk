@@ -1,7 +1,7 @@
 package com.hframe.tag;
 
-import com.hframe.common.frame.cache.SetCacheFactory;
-import com.hframe.common.util.message.VelocityUtil;
+import com.hframework.common.frame.cache.SetCacheFactory;
+import com.hframework.common.util.message.VelocityUtil;
 import com.hframe.tag.bean.EnumDyn;
 import com.hframe.tag.db.DBOperatorProxy;
 

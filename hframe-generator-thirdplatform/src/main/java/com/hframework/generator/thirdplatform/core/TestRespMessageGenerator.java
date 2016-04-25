@@ -1,8 +1,8 @@
 package com.hframework.generator.thirdplatform.core;
 
-import com.hframe.common.util.FileUtils;
-import com.hframe.common.util.StringUtils;
-import com.hframe.common.util.message.XmlUtils;
+import com.hframework.common.util.FileUtils;
+import com.hframework.common.util.StringUtils;
+import com.hframework.common.util.message.XmlUtils;
 import com.hframework.generator.thirdplatform.bean.Descriptor;
 import com.hframework.generator.thirdplatform.bean.GeneratorConfig;
 import com.hframework.generator.thirdplatform.bean.InterfaceExample;
@@ -28,9 +28,9 @@ public class TestRespMessageGenerator extends AbstractGenerator implements Gener
                 if(StringUtils.isNotBlank(anInterface.getTemplate())) {
                     InterfaceExample interfaceExample =
                             XmlUtils.readValueFromFile("/thirdplatform/" + anInterface.getTemplate(), InterfaceExample.class);
-                    String responseMessage = interfaceExample.getRequestMessage().trim();
+                    String responseMessage = interfaceExample.getResponseMessage().trim();
                     String name = interfaceExample.getName();
-                    FileUtils.writeFile(resourceFilePath + name + ".response", responseMessage);
+                    FileUtils.writeFile(resourceFilePath + anInterface.getName() + ".response", responseMessage);
                 }
             } catch (IOException e) {
                 e.printStackTrace();

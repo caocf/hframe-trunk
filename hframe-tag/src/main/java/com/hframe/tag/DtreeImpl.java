@@ -1,13 +1,11 @@
 package com.hframe.tag;
 
-import com.hframe.common.frame.cache.CacheFactory;
-import com.hframe.common.frame.cache.CacheKeyEnum;
-import com.hframe.common.frame.cache.SetCacheFactory;
-import com.hframe.common.util.StringUtils;
+import com.hframework.common.frame.cache.CacheFactory;
+import com.hframework.common.frame.cache.CacheKeyEnum;
+import com.hframework.common.util.StringUtils;
 import com.hframe.tag.bean.Field;
 import com.hframe.tag.bean.TreeItem;
 import com.hframe.tag.db.DBOperatorProxy;
-import com.hframe.tag.util.ClassDeclaredUtils;
 import com.hframe.tag.util.DHtmlTreeUtil;
 import com.hframe.tag.util.TagUtils;
 import com.hframe.tag.util.TransObjUtil;

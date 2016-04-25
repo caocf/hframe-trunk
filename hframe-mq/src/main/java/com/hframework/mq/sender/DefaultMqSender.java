@@ -1,7 +1,7 @@
 package com.hframework.mq.sender;
 
-import com.hframe.common.helper.LogHelper;
-import com.hframe.common.util.StringUtils;
+import com.hframework.common.helper.LogHelper;
+import com.hframework.common.util.StringUtils;
 import com.hframework.mq.MqMessage;
 import org.apache.log4j.Logger;
 import org.springframework.amqp.core.AmqpTemplate;

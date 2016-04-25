@@ -2,7 +2,7 @@
 
 
 <%@page import="java.io.File"%>
-<%@ page import="com.hframe.common.util.FileUtils" %>
+<%@ page import="com.hframework.common.util.FileUtils" %>
 
 <%
 	String path = request.getContextPath();

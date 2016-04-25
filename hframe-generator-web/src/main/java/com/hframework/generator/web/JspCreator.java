@@ -2,7 +2,7 @@ package com.hframework.generator.web;
 
 import java.util.List;
 
-import com.hframe.common.util.FileUtils;
+import com.hframework.common.util.FileUtils;
 import com.hframework.beans.class0.Table;
 import com.hframework.generator.util.CreatorUtil;
 

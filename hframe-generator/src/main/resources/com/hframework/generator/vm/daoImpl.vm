@@ -4,7 +4,7 @@
 ##模板内容
 package $classDef.classPackage;
 import java.util.*;
-import com.hframe.common.ssh.dao.IBaseDAO;
+import com.hframework.common.ssh.dao.IBaseDAO;
 #foreach($importClass in $classDef.importClassList)
 import $importClass;
 #end

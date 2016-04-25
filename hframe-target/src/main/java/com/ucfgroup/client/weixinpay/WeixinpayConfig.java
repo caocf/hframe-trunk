@@ -1,7 +1,8 @@
 package com.ucfgroup.client.weixinpay;
 
-import com.hframe.common.annotation.*;
-import com.hframe.common.util.ResourceWrapper;
+import com.hframework.common.annotation.Key;
+import com.hframework.common.annotation.Source;
+import com.hframework.common.util.ResourceWrapper;
 import java.lang.reflect.InvocationTargetException;
 
 @Source("third/weixinpay.properties")

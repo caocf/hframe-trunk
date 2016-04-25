@@ -1,11 +1,11 @@
 package com.hframe.tag.db;
 
-import com.hframe.common.util.ExampleUtils;
-import com.hframe.common.util.ReflectUtils;
+import com.hframework.common.util.ExampleUtils;
+import com.hframework.common.util.ReflectUtils;
 import com.hframe.tag.bean.*;
 import com.hframe.tag.util.ClassDeclaredUtils;
 import com.hframe.tag.util.ReflectUtil;
-import com.hframe.common.frame.ServiceFactory;
+import com.hframework.common.frame.ServiceFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.lang.reflect.InvocationTargetException;

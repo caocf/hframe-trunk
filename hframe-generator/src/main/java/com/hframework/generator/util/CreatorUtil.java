@@ -1,7 +1,7 @@
 package com.hframework.generator.util;
 
-import com.hframe.common.frame.cache.PropertyConfigurerUtils;
-import com.hframe.common.util.StringUtils;
+import com.hframework.common.frame.cache.PropertyConfigurerUtils;
+import com.hframework.common.util.StringUtils;
 import com.hframework.generator.web.constants.CreatorConst;
 import com.hframework.beans.class0.Class;
 

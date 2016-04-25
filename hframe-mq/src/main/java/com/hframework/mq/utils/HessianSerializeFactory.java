@@ -2,7 +2,7 @@ package com.hframework.mq.utils;
 
 import com.caucho.hessian.io.HessianInput;
 import com.caucho.hessian.io.HessianOutput;
-import com.hframe.common.helper.LogHelper;
+import com.hframework.common.helper.LogHelper;
 import org.apache.log4j.Logger;
 
 import java.io.ByteArrayInputStream;

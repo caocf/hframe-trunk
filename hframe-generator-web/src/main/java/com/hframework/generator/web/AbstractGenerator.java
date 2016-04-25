@@ -1,10 +1,9 @@
 package com.hframework.generator.web;
 
-import com.hframe.common.util.FileUtils;
-import com.hframe.common.util.message.VelocityUtil;
+import com.hframework.common.util.FileUtils;
+import com.hframework.common.util.message.VelocityUtil;
 import com.hframework.beans.class0.Table;
 import com.hframework.beans.class0.Class;
-import com.hframework.generator.util.CreatorUtil;
 import com.hframework.generator.web.bean.CreatorContainer;
 import com.hframework.generator.web.bean.CreatorContainerBuilder;
 

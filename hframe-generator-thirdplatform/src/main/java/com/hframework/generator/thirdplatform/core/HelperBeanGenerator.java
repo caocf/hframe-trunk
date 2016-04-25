@@ -1,10 +1,10 @@
 package com.hframework.generator.thirdplatform.core;
 
-import com.hframe.common.util.FileUtils;
-import com.hframe.common.util.RegexUtils;
-import com.hframe.common.util.ResourceWrapper;
-import com.hframe.common.util.StringUtils;
-import com.hframe.common.util.message.VelocityUtil;
+import com.hframework.common.util.FileUtils;
+import com.hframework.common.util.RegexUtils;
+import com.hframework.common.util.ResourceWrapper;
+import com.hframework.common.util.StringUtils;
+import com.hframework.common.util.message.VelocityUtil;
 import com.hframework.beans.class0.Field;
 import com.hframework.beans.class0.Method;
 import com.hframework.beans.class0.Class;
@@ -28,10 +28,10 @@ public class HelperBeanGenerator extends AbstractGenerator implements Generator<
         beanClass.setSrcFilePath(javaRootPath);
         beanClass.setClassPackage(javaPackage);
         beanClass.setClassName(CreatorUtil.getJavaClassName(platformName) + "Helper");
-        beanClass.addImportClass("com.hframework.generator.thirdplatform.helper.*");
+        beanClass.addImportClass("com.hframework.common.helper.Rules");
         helperClass = beanClass;
 
-        beanClass.addImportClass("com.hframe.common.util.security.*");
+        beanClass.addImportClass("com.hframework.common.util.security.*");
 
         List<Rule> ruleList = descriptor.getGlobal().getRules().getRuleList();
         for (Rule rule : ruleList) {
@@ -94,7 +94,7 @@ public class HelperBeanGenerator extends AbstractGenerator implements Generator<
         beanClass.setClassName(className);
         beanClass.addInterface("ValueMapper");
 
-        beanClass.addImportClass("com.hframe.common.bean.ValueMapper");
+        beanClass.addImportClass("com.hframework.common.bean.ValueMapper");
 
 
         Method method = new Method();

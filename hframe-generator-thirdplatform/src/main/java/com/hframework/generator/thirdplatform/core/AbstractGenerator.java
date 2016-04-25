@@ -15,7 +15,11 @@ public abstract class AbstractGenerator implements Generator<GeneratorConfig,Des
     protected String resourceFolder = null;
     protected String resourceRootPath = null;
 
+    protected String javaTestRootPath = null;
+
+
     protected Class helperClass;
+    protected Class clientClass;
 
     public AbstractGenerator() {
 
@@ -24,6 +28,7 @@ public abstract class AbstractGenerator implements Generator<GeneratorConfig,Des
     public boolean generate(GeneratorConfig generatorConfig, Descriptor descriptor) {
         javaRootPath = generatorConfig.getJavaRootPath();
         resourceRootPath = generatorConfig.getResourceRootPath();
+        javaTestRootPath = generatorConfig.getJavaTestRootPath();
 
         javaPackage = descriptor.getGlobal().getProperties().getJavaPackage();
         resourceFolder = descriptor.getGlobal().getProperties().getResourceFolder();
@@ -31,6 +36,9 @@ public abstract class AbstractGenerator implements Generator<GeneratorConfig,Des
         resourceKeyPrefix =
                 generatorConfig.getResourceKeyPrefix() == null ? "" : generatorConfig.getResourceKeyPrefix();
         platformName = descriptor.getPlatformName();
+
+
+
 
         return generateInternal(generatorConfig, descriptor);
     }

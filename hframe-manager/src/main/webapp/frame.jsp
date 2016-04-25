@@ -7,7 +7,7 @@
 %>
 <%@ include file="/webframe/commonhead.jsp"%>
 <%@ include file="/webframe/mycommonhead.jsp"%>
-<%@page import="com.hframe.common.ssh.service.CommonServ"%>
+<%@page import="com.hframework.common.ssh.service.CommonServ"%>
 
 
 
