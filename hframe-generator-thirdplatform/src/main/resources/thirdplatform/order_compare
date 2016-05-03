@@ -1,0 +1,67 @@
+<config>
+    <global>
+        <host id="targetHost">
+            <datasource type="ftp">ftp://ncfgorup.com</datasource><!-- ftp -->
+            <username>root</username>
+            <password>123</password>
+            <cxtpath>/data/lcs/</cxtpath>
+        </host>
+        <host id="selfHost">
+            <datasource type="db">jdbc:172.12.123.13:3060?dbDemo</datasource>
+            <username>root</username>
+            <password>123</password>
+        </host>
+    </global>
+    <services>
+        <service>
+            <trigger type="cronExpression">0 0/3 * * * ?</trigger>
+            <importers>
+                <importer>
+                    <host rel="targetHost"></host>
+                    <file path="/order" name="order_YYYYMMDD.txt">
+                        <row separator="|" type="descriptor"></row>
+                        <row id="data"  type="data"></row>
+                        <row type="statistics">
+                            <item id="totalCount">lineString.split["|"][0]</item>
+                            <item id="totalAmount">lineString.split["|"][1]</item>
+                        </row>
+                    </file>
+                </importer>
+                <importer>
+                    <host rel="selfHost"></host>
+                    <dataset>
+                        <sql id = "data">select * from orders where data=234234;</sql>
+                        <sql id = "totalAmount">select * from orders where data=234234;</sql>
+                        <sql id = "totalCount">select * from orders where data=234234;</sql>
+                    </dataset>
+                </importer>
+            </importers>
+            <ruleCenter>
+                <rule targetId="totalCount" originId="totalCount"></rule>
+                <rule targetId="totalAmount" originId="totalAmount"></rule>
+                <rule type="RIT"></rule><!-- return if true -->
+                <rule targetId="data" originId="data">
+                    <datanode targetName="商户号" originName="{0}"></datanode>
+                    <datanode targetName="商户订单号" originName="{2}"></datanode>
+                    <datanode targetName="金额" originName="{3}"></datanode>
+                    <datanode targetName="状态" originName="{4}"></datanode>
+                    <datanode targetName="交易完成时间" originName="{5}"></datanode>
+                </rule>
+            </ruleCenter>
+            <exporters>
+                <exporter>
+                    <host rel="selfHost"/>
+                    <sql>insert into order_his value(?,?,?,?,?,?,?)</sql>
+                    <dataitem>商户号,商户订单号,金额,状态,交易完成时间,${status}</dataitem>
+                    <scope>all</scope><!-- all:全量比对结果，diff:差量比对结果 self:自己的数据 target: 对端数据-->
+                </exporter>
+                <exporter>
+                    <host rel="targetHost"/>
+                    <file path="/order/his/" name="order_YYYYMMDD_his.txt" parser=""></file>
+                    <dataitem>商户号,商户订单号,金额,状态,交易完成时间,${status}</dataitem>
+                    <scope>all</scope><!-- all:全量比对结果，diff:差量比对结果  self:自己的数据 target:对端数据-->
+                </exporter>
+            </exporters>
+        </service>
+    </services>
+</config>

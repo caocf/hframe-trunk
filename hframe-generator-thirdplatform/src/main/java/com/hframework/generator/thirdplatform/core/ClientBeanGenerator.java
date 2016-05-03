@@ -59,7 +59,8 @@ public class ClientBeanGenerator extends AbstractGenerator implements Generator<
             method.setExceptionStr(" throws Exception");
 
             method.addCodeLn(getFormatUrl(method, anInterface,
-                    descriptor.getGlobal().getRequestConfig().getPublicParameters().getParameterList()));
+                    "false".equals(anInterface.getUsePublicParams()) ? new ArrayList<Parameter>() :
+                            descriptor.getGlobal().getRequestConfig().getPublicParameters().getParameterList()));
 
             String requestBeanName = StringUtils.isNotBlank(anInterface.getRequest().getBeanName()) ? anInterface.getRequest().getBeanName() : "RequestData";
             String responseBeanName = StringUtils.isNotBlank(anInterface.getResponse().getBeanName()) ? anInterface.getResponse().getBeanName() : "ResponseData";
@@ -90,9 +91,9 @@ public class ClientBeanGenerator extends AbstractGenerator implements Generator<
                 httpCode += "HttpClient.doXmlPost(url,requestData.convert());";
             }else {
                 if("get".equals(anInterface.getMethod())) {
-                    httpCode += "HttpClient.doGet(url,new HashMap());";
+                    httpCode += "HttpClient.doGet(url,parameterMap);";
                 }else {
-                    httpCode += "HttpClient.doPost(url,new HashMap());";
+                    httpCode += "HttpClient.doPost(url,parameterMap);";
                 }
 
             }
@@ -189,7 +190,7 @@ public class ClientBeanGenerator extends AbstractGenerator implements Generator<
 
     private String getFormatUrl(Method method, Interface anInterface, List<Parameter> parentParameterList) {
         method.addCodeLn("Map<String, String> parameterMap = new LinkedHashMap();");
-        String url = "String url = UrlHelper.getFinalUrl(" +
+        String url = "String url = UrlHelper.getUrlPath(" +
                 CreatorUtil.getJavaClassName(platformName) + "Config.getInstance().get"
                 + ResourceWrapper.JavaUtil.getJavaClassName(method.getName()) + "()";
         List<Parameter> parameterList = anInterface.getRequest().getParameters().getParameterList();
@@ -208,7 +209,7 @@ public class ClientBeanGenerator extends AbstractGenerator implements Generator<
 //        if(parameterList.size() == 0) {
 //            url += ",null";
 //        }
-        url += ", parameterMap";
+//        url += ", parameterMap";
 
 
         url += ");";
@@ -230,7 +231,7 @@ public class ClientBeanGenerator extends AbstractGenerator implements Generator<
             if(StringUtils.isNotBlank(value)) {
                 String[] strings = RegexUtils.find(value, "[\\#\\$]\\{[ a-zA-Z:0-9_]+\\}");
                 if(strings != null && strings.length > 0) {
-                    String paramName = CreatorUtil.getJavaVarName(strings[0].substring(2, strings[0].length() - 1));
+                    String paramName = strings[0].substring(2, strings[0].length() - 1);
                     if(strings[0].startsWith("#")) {
                         return CreatorUtil.getJavaClassName(platformName) + "Config.getInstance().get"
                                 + ResourceWrapper.JavaUtil.getJavaClassName(paramName) + "()";
@@ -238,7 +239,8 @@ public class ClientBeanGenerator extends AbstractGenerator implements Generator<
                 }
             }
 
-            return "unkown";
+            //说明是固定值
+            return "\"" + value + "\"";
         }
     }
 
@@ -282,9 +284,13 @@ public class ClientBeanGenerator extends AbstractGenerator implements Generator<
                 String type = node.getType();
                 if(Arrays.binarySearch(new String[]{"String","int","long",""},type) < 0) {
                     if("Map".equals(type)) {
-                        Node subNode = node.getNodeList().get(0);
-                        field.setType("java.util.Map<String, " +  "" + subNode.getType() + ">");
-                        field.setName(CreatorUtil.getJavaVarName(subNode.getType()));
+                        Node subNode = null;
+                        if(node.getNodeList().size() >  0) {
+                            subNode = node.getNodeList().get(0);
+                        }
+
+                        field.setType("java.util.Map<String, " +  "" + (subNode == null ? "String" : subNode.getType()) + ">");
+                        field.setName(CreatorUtil.getJavaVarName(subNode == null ? "String" : subNode.getType()));
                     }
                 }
             }
@@ -353,6 +359,7 @@ public class ClientBeanGenerator extends AbstractGenerator implements Generator<
             Method method = new Method();
             method.setName("convert");
             method.setExceptionStr(" throws Exception");
+            method.setReturnType(beanClass.getClassName());
 
             if(ruleNodeList != null && ruleNodeList.size() > 0) {
                 method.addCodeLn("if(!converted) {");
@@ -360,7 +367,6 @@ public class ClientBeanGenerator extends AbstractGenerator implements Generator<
                 method.addCodeLn("   System.out.println(beforeInfo);");
 
                 method.addCodeLn("   converted = true;");
-                method.setReturnType(beanClass.getClassName());
 
                 List<XmlNode> childrenXmlNode = xmlNode.getChildrenXmlNode();
                 if(childrenXmlNode != null) {
@@ -375,7 +381,7 @@ public class ClientBeanGenerator extends AbstractGenerator implements Generator<
                                 if(StringUtils.isNotBlank(value)) {
                                     String[] strings = RegexUtils.find(value, "[\\#\\$]\\{[ a-zA-Z:0-9_]+\\}");
                                     if(strings != null && strings.length > 0) {
-                                        String paramName = CreatorUtil.getJavaVarName(strings[0].substring(2, strings[0].length() - 1));
+                                        String paramName = strings[0].substring(2, strings[0].length() - 1);
                                         if(strings[0].startsWith("#")) {
                                             method.addCodeLn("   " + CreatorUtil.getJavaVarName(childXmlNode.getNodeName()) +
                                                     "=" + CreatorUtil.getJavaClassName(platformName) + "Config.getInstance().get"
@@ -398,10 +404,11 @@ public class ClientBeanGenerator extends AbstractGenerator implements Generator<
                 method.addCodeLn("   String afterInfo = XmlUtils.writeValueAsString(this);");
                 method.addCodeLn("   System.out.println(afterInfo);");
                 beanClass.addImportClass(beanClass.getClassPackage().substring(0, beanClass.getClassPackage().lastIndexOf(".")) + ".*");
+                method.addCodeLn("}");
             }
 
-            method.addCodeLn("}");
             method.addCodeLn("return this;");
+
             beanClass.addMethod(method);
         }
 

@@ -23,6 +23,15 @@ public class UrlHelper {
         return finalUrl;
     }
 
+    public static String getUrlPath(String patternUrl) {
+        String finalUrl = patternUrl;
+        if(finalUrl.contains("?")) {
+            finalUrl = finalUrl.substring(0,finalUrl.indexOf("?"));
+        }
+        return finalUrl;
+    }
+
+
     public static Map<String, String> getUrlParameters(String url,boolean javaNamespaceKey) {
         Map<String, String> map = new HashMap<String, String>();
         if(url.contains("?")) {

@@ -87,7 +87,7 @@ public class ClientTestBeanGenerator extends AbstractGenerator implements Genera
 
             if("String".equals(field.getType())) {
                 code += "\"" + urlParameters.get(field.getName())+ "\",";
-            }else if("int".equals(field.getType())) {
+            }else if("int".equals(field.getType()) || "long".equals(field.getType())) {
                 code += urlParameters.get(field.getName()) + ",";
             }else {
                 //what ???

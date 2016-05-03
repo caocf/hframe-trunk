@@ -3,6 +3,9 @@ package com.hframework.generator.thirdplatform.bean.descriptor;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import org.apache.velocity.anakia.NodeList;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @XStreamAlias("node")
@@ -45,7 +48,7 @@ public class Node   {
  
  	
 	public List<Node> getNodeList(){
-		return nodeList;
+		return nodeList == null ? new ArrayList<Node>() : nodeList;
 	}
 
 	public void setNodeList(List<Node> nodeList){

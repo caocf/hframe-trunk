@@ -69,6 +69,18 @@
             }
         ],
                 "manager": [ ],
+                 "secondid_list": {
+                    "c1458012056": "testzzy",
+                    "t1460961907": "默认团队 team",
+                    "c1460961907": "生生集团"
+                },
+                "secondlevel": "company",
+                "secondname": "瑞生集团",
+                "secondid": "c1461033669",
+                "max_level": "company",
+                "max_level_title": "公司",
+                "max_id": "c1461033669",
+                "max_name": "瑞生集团",
                 "path": "/system/集团内部员工/测试团队/诚实"
             }
         }

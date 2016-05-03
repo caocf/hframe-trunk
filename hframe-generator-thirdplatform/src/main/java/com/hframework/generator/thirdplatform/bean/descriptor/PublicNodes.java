@@ -2,6 +2,8 @@ package com.hframework.generator.thirdplatform.bean.descriptor;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @XStreamAlias("publicNodes")
@@ -17,7 +19,7 @@ public class PublicNodes   {
  
  	
 	public List<Node> getNodeList(){
-		return nodeList;
+		return nodeList == null ? new ArrayList<Node>() :nodeList;
 	}
 
 	public void setNodeList(List<Node> nodeList){

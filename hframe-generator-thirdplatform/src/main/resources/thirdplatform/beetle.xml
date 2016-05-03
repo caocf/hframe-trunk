@@ -44,14 +44,19 @@
                     <parameter name="node" type="String" nullable="false"  visiable="true"  ruleId="" value="" />
                 </parameters>
             </request>
-            <response extend="false" message="json" beanName = "GetNodeInfoResponse"></response>
+            <response extend="false" message="json" beanName = "GetNodeInfoResponse">
+                <node path="/data/secondid_list" type="Map" nullable="false" visiable="false" isFloatNode="true" ruleId="" value="">
+                    <!--<node path="/data/groups/*" type="GroupItem" nullable="false" visiable="false" isFloatNode="true" ruleId="" value="" />-->
+                </node>
+            </response>
         </interface>
         <interface  path="/apibeetle/get_node_data" name="getNodeData"  method="get" usePublicParams ="true" template="beetle/get_node_data.xml">
             <request>
                 <parameters>
                     <parameter name="node" type="String" nullable="false"  visiable="true"  ruleId="" value="" />
                     <parameter name="cycle" type="String" nullable="false"  visiable="true"  ruleId="" value="" />
-                    <parameter name="isLeaf" type="int" nullable="false"  visiable="true"  ruleId="" value="" />
+                    <parameter name="isleaf" type="int" nullable="false"  visiable="true"  ruleId="" value="" />
+                    <parameter name="p2p_id" type="String" nullable="false"  visiable="true"  ruleId="" value="" />
                 </parameters>
             </request>
             <response extend="false" message="json" beanName = "GetNodeDataResponse">

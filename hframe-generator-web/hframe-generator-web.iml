@@ -13,6 +13,11 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="cache" level="project" />
     <orderEntry type="module" module-name="hframe-common" />
+    <orderEntry type="library" name="Maven: org.apache.httpcomponents:fluent-hc:4.4" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpclient:4.4" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpcore:4.4" level="project" />
+    <orderEntry type="library" name="Maven: commons-codec:commons-codec:1.9" level="project" />
+    <orderEntry type="library" name="Maven: commons-logging:commons-logging:1.2" level="project" />
     <orderEntry type="module" module-name="hframe-beans" />
     <orderEntry type="module" module-name="hframe-generator" />
     <orderEntry type="module" module-name="hframe-core" />
@@ -23,7 +28,6 @@
     <orderEntry type="library" name="Maven: org.springframework.amqp:spring-amqp:1.1.1.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-core:3.0.7.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-asm:3.0.7.RELEASE" level="project" />
-    <orderEntry type="library" name="Maven: commons-logging:commons-logging:1.1.1" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.amqp:spring-rabbit:1.1.1.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-tx:3.0.7.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: aopalliance:aopalliance:1.0" level="project" />
@@ -32,5 +36,6 @@
     <orderEntry type="library" name="Maven: org.springframework:spring-context:3.0.7.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-expression:3.0.7.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: com.caucho:hessian:4.0.7" level="project" />
+    <orderEntry type="library" name="common" level="project" />
   </component>
 </module>

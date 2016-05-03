@@ -38,7 +38,7 @@ public class ConfigureBeanGenerator extends AbstractGenerator implements Generat
 
         for (String staticParameter : staticParameterList) {
             Field field = new Field("String",
-                    CreatorUtil.getJavaVarName(staticParameter.replaceAll(resourceKeyPrefix,"")));
+                    ResourceWrapper.JavaUtil.getJavaVarName(staticParameter.replaceAll(resourceKeyPrefix, "")));
             field.addFieldAnno("@Key( \"" + MessageFormat.format(resourceKeyPrefix,platformName) + staticParameter + "\")");
             beanClass.addField(field);
         }

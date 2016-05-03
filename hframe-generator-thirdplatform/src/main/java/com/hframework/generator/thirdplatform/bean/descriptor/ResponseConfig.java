@@ -25,7 +25,7 @@ public class ResponseConfig   {
 
  	
 	public PublicNodes getPublicNodes(){
-		return publicNodes;
+		return publicNodes == null ? new PublicNodes() : publicNodes;
 	}
 
 	public void setPublicNodes(PublicNodes publicNodes){

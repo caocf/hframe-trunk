@@ -38,7 +38,7 @@
         <property name="locations">
             <list>
                 <value>classpath:properties/dataSource.properties</value>
-                <value>classpath:properties/projectCreate.properties</value>
+                <!--<value>classpath:properties/projectCreate.properties</value>-->
             </list>
         </property>
     </bean>

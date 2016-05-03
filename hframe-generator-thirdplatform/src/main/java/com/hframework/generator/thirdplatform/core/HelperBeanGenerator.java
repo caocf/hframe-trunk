@@ -42,7 +42,10 @@ public class HelperBeanGenerator extends AbstractGenerator implements Generator<
             method.setExceptionStr(" throws Exception");
 
             String text = rule.getText().replaceAll("[ ]+", "");
-            if(text != null && text.startsWith("Rules.")) {
+            if(text != null && text.trim().startsWith("//TODO")) {
+                method.addCodeLn("//TODO");
+                method.addCodeLn("return null;");
+            }else if(text != null && text.startsWith("Rules.")) {
                 String[] strings = RegexUtils.find(text, "[\\#\\$]\\{[ a-zA-Z:0-9_]+\\}");
                 for (String string : strings) {
                     String paramName = CreatorUtil.getJavaVarName(string.substring(2, string.length() - 1));

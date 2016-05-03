@@ -3,7 +3,7 @@ package com.hframe.client.baidumap;
 import java.util.HashMap;
 
 import com.hframework.common.util.message.JsonUtils;
-import com.hframework.common.util.protocol.HttpClient;
+import com.hframework.common.util.protocol.OldHttpClient;
 import java.text.MessageFormat;
 
 import com.hframe.client.baidumap.bean.*;
@@ -20,7 +20,7 @@ public class BaidumapClient   {
 			   result = FileUtils.readFile(Thread.currentThread().getContextClassLoader().getResource(
 			          "third/baidumap/getAddress.response").getPath());
 			}else {
-			   result = HttpClient.doJsonPost(url,requestData);
+			   result = OldHttpClient.doJsonPost(url, requestData);
 			}
 			ResponseData responseData = JsonUtils.readValue(result, ResponseData.class);
 			return responseData;
@@ -33,7 +33,7 @@ public class BaidumapClient   {
 			   result = FileUtils.readFile(Thread.currentThread().getContextClassLoader().getResource(
 			          "third/baidumap/getAddress2.response").getPath());
 			}else {
-			   result = HttpClient.doPost(url,new HashMap());
+			   result = OldHttpClient.doPost(url, new HashMap());
 			}
 			return result;
 	}

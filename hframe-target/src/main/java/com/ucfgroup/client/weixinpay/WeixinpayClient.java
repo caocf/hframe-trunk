@@ -3,7 +3,7 @@ package com.ucfgroup.client.weixinpay;
 import java.util.*;
 
 import com.hframework.common.util.message.XmlUtils;
-import com.hframework.common.util.protocol.HttpClient;
+import com.hframework.common.util.protocol.OldHttpClient;
 import com.hframework.common.util.UrlHelper;
 
 import com.ucfgroup.client.weixinpay.bean.*;
@@ -23,7 +23,7 @@ public class WeixinpayClient   {
 			   result = FileUtils.readFile(Thread.currentThread().getContextClassLoader().getResource(
 			          "third/weixinpay/unifiedorder.response").getPath());
 			}else {
-			   result = HttpClient.doXmlPost(url,requestData.convert());
+			   result = OldHttpClient.doXmlPost(url, requestData.convert());
 			}
 			UnifiedOrderResponse responseData = XmlUtils.readValue(result, UnifiedOrderResponse.class);
 			return responseData.convert();
@@ -38,7 +38,7 @@ public class WeixinpayClient   {
 			   result = FileUtils.readFile(Thread.currentThread().getContextClassLoader().getResource(
 			          "third/weixinpay/orderquery.response").getPath());
 			}else {
-			   result = HttpClient.doXmlPost(url,requestData.convert());
+			   result = OldHttpClient.doXmlPost(url, requestData.convert());
 			}
 			OrderQueryResponse responseData = XmlUtils.readValue(result,OrderQueryResponse.class);
 			return responseData.convert();
@@ -53,7 +53,7 @@ public class WeixinpayClient   {
 			   result = FileUtils.readFile(Thread.currentThread().getContextClassLoader().getResource(
 			          "third/weixinpay/closeorder.response").getPath());
 			}else {
-			   result = HttpClient.doXmlPost(url,requestData.convert());
+			   result = OldHttpClient.doXmlPost(url, requestData.convert());
 			}
 			CloseOrderResponse responseData = XmlUtils.readValue(result,CloseOrderResponse.class);
 			return responseData.convert();
@@ -68,7 +68,7 @@ public class WeixinpayClient   {
 			   result = FileUtils.readFile(Thread.currentThread().getContextClassLoader().getResource(
 			          "third/weixinpay/downloadbill.response").getPath());
 			}else {
-			   result = HttpClient.doXmlPost(url,requestData.convert());
+			   result = OldHttpClient.doXmlPost(url, requestData.convert());
 			}
 			return result;
 	}
@@ -82,7 +82,7 @@ public class WeixinpayClient   {
 			   result = FileUtils.readFile(Thread.currentThread().getContextClassLoader().getResource(
 			          "third/weixinpay/refund.response").getPath());
 			}else {
-			   result = HttpClient.doXmlPost(url,requestData.convert());
+			   result = OldHttpClient.doXmlPost(url, requestData.convert());
 			}
 			RefundResponse responseData = XmlUtils.readValue(result,RefundResponse.class);
 			return responseData.convert();
@@ -97,7 +97,7 @@ public class WeixinpayClient   {
 			   result = FileUtils.readFile(Thread.currentThread().getContextClassLoader().getResource(
 			          "third/weixinpay/refundquery.response").getPath());
 			}else {
-			   result = HttpClient.doXmlPost(url,requestData.convert());
+			   result = OldHttpClient.doXmlPost(url, requestData.convert());
 			}
 			RefundQueryResponse responseData = XmlUtils.readValue(result,RefundQueryResponse.class);
 			return responseData.convert();

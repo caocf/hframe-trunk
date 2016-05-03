@@ -14,15 +14,15 @@ public class Bootstrap {
         String thirdName = "beetle.xml";
 
         GeneratorConfig generatorConfig = GeneratorConfig.getInstance();
-//        System.out.println(generatorConfig.getJavaRootPath());
-//        System.out.println(generatorConfig.getResourceRootPath());
+        System.out.println(generatorConfig.getJavaRootPath());
+        System.out.println(generatorConfig.getResourceRootPath());
 
         Descriptor descriptor = XmlUtils.readValueFromFile("/thirdplatform/" + thirdName, Descriptor.class);
 
         descriptor.setPlatformName(thirdName.substring(0, thirdName.lastIndexOf(".")));
 //        System.out.println(descriptor);
 
-        new PropertiesGenerator().generate(generatorConfig, descriptor);
+//        new PropertiesGenerator().generate(generatorConfig, descriptor);
         new TestRespMessageGenerator().generate(generatorConfig, descriptor);
         new ConfigureBeanGenerator().generate(generatorConfig, descriptor);
 
