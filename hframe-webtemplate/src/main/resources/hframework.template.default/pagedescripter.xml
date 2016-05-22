@@ -1,0 +1,19 @@
+<pagetemplates>
+    <pagetemplate id="default" pagePath="default.html">
+        <element id="leftMenuTree" type="component"></element>
+        <element id="programName" type="globalParam"></element>
+        <element id="fastMenu" type="component"></element>
+        <element id="personalCenter" type="component"></element>
+        <element id="content" type="container"></element>
+    </pagetemplate>
+    <pagetemplate id="list" pagePath="list.html" parentId = "default">
+        <element id="queryForm" type="component"></element>
+        <element id="queryList" type="component"></element>
+    </pagetemplate>
+    <pagetemplate id="create" pagePath="create.html" parentId = "default">
+        <element id="createForm" type="component"></element>
+    </pagetemplate>
+    <pagetemplate id="edit" pagePath="edit.html" parentId = "default">
+        <element id="editForm" type="component"></element>
+    </pagetemplate>
+</pagetemplates>

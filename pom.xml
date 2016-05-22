@@ -21,6 +21,7 @@
         <module>hframe-beans</module>
         <module>hframe-generator-web</module>
         <module>hframe-reconciliation</module>
+        <module>hframe-webtemplate</module>
     </modules>
 
     <dependencies>

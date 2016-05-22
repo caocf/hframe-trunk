@@ -1,0 +1,27 @@
+<pages>
+    <page id="userQuery" name="用户查询" page-template="list" data-id="User">
+        <component id="form" dataid="User">
+            <event name="edit">
+                <attach>
+                    <position></position>
+                    <component></component>
+                    <componentParam></componentParam>
+                </attach>
+                <source>
+                    <scope></scope>
+                    <param></param>
+                </source>
+                <effect>
+                    <type></type>
+                    <action></action>
+                    <isStack></isStack>
+                </effect>
+            </event>
+        </component>
+        <component id="list" dataid="User">
+            <event></event>
+        </component>
+        <event></event>
+    </page>
+    <page></page>
+</pages>
