@@ -207,5 +207,13 @@ public class RegexUtils {
         for (String string : strings) {
             System.out.println(string);
         }
+
+        String str = "COUNT:1Count1  SUM:你没呀";
+        strings = RegexUtils.find(str, "[^(COUNT:)]+[^(SUM:)]+");
+        if(strings != null) {
+            for (String string : strings) {
+                System.out.println(string);
+            }
+        }
     }
 }

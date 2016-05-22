@@ -63,6 +63,7 @@
                 <node path="/data/groups" type="Map" nullable="false" visiable="false" isFloatNode="true" ruleId="" value="">
                     <node path="/data/groups/*" type="GroupItem" nullable="false" visiable="false" isFloatNode="true" ruleId="" value="" />
                 </node>
+                <node path="/data/info/secondid_list" type="Map" nullable="false" visiable="false" isFloatNode="true" ruleId="" value=""></node>
             </response>
         </interface>
         <interface  path="/apibeetle/get_reg_detail" name="getRegDetail"  method="get" usePublicParams ="true" template="beetle/get_reg_detail.xml">
@@ -88,7 +89,7 @@
         <interface  path="/apibeetle/get_repay_plan" name="getRepayPlan"  method="get" usePublicParams ="true" template="beetle/get_repay_plan.xml">
             <request>
                 <parameters>
-                    <parameter name="p2p_id" type="int" nullable="false"  visiable="true"  ruleId="" value="" />
+                    <parameter name="p2p_id" type="long" nullable="false"  visiable="true"  ruleId="" value="" />
                     <parameter name="status" type="int" nullable="false"  visiable="true"  ruleId="" value="" />
                     <parameter name="page" type="int" nullable="false"  visiable="true"  ruleId="" value="" />
                     <parameter name="page_num" type="int" nullable="false"  visiable="true"  ruleId="" value="" />
@@ -99,7 +100,7 @@
         <interface  path="/apibeetle/get_asset_change" name="getAssetChange"  method="get" usePublicParams ="true" template="beetle/get_asset_change.xml">
             <request>
                 <parameters>
-                    <parameter name="p2p_id" type="int" nullable="false"  visiable="true"  ruleId="" value="" />
+                    <parameter name="p2p_id" type="long" nullable="false"  visiable="true"  ruleId="" value="" />
                     <parameter name="log_info" type="String" nullable="false"  visiable="true"  ruleId="" value="" />
                     <parameter name="page" type="int" nullable="false"  visiable="true"  ruleId="" value="" />
                     <parameter name="page_num" type="int" nullable="false"  visiable="true"  ruleId="" value="" />

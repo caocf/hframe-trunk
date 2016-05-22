@@ -2,7 +2,8 @@ package com.hframework.common.util;
 
 import com.hframework.common.bean.Email;
 import com.hframework.common.frame.cache.PropertyConfigurerUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
@@ -23,7 +24,7 @@ public class MailUtils {
 
     public static final String SEPARATED = ";";
 
-    private static Logger logger = Logger.getLogger(MailUtils.class);
+    private static Logger logger = LoggerFactory.getLogger(MailUtils.class);
 
     private static JavaMailSenderImpl javaMailSender;
 
@@ -100,4 +101,7 @@ public class MailUtils {
         javaMailSender.send(mailMessage);
     }
 
+    public static void main(String[] args) {
+
+    }
 }

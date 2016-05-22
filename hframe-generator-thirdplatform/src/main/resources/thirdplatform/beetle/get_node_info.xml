@@ -68,7 +68,22 @@
                 "secondid": "c1461033669"
             }
         ],
-                "manager": [ ],
+                "manager": [ {
+                "id": "126",
+                "node_id": "c1430361594",
+                "level": "company",
+                "p2p_id": "11450",
+                "name": "刘县栋",
+                "mtime": "2016-05-09 14:46:36"
+            },
+            {
+                "id": "127",
+                "node_id": "c1430361594",
+                "level": "company",
+                "p2p_id": "503710",
+                "name": "赵力",
+                "mtime": "2016-05-09 14:46:36"
+            }],
                  "secondid_list": {
                     "c1458012056": "testzzy",
                     "t1460961907": "默认团队 team",

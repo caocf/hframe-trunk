@@ -120,9 +120,14 @@ public class BeanGeneratorUtil {
             List<XmlNode> xmlNodes = sameNameNodeMap.get(nodeName);
             XmlNode baseNode = xmlNodes.get(0);
             for (int i = 1; i < xmlNodes.size(); i++) {
-                baseNode.mergeOutSide(xmlNodes.get(i));
-                xmlNodes.get(i).getParentXmlNode().getChildrenXmlNode().set(
-                        xmlNodes.get(i).getParentXmlNode().getChildrenXmlNode().indexOf(xmlNodes.get(i)),baseNode);
+                XmlNode targetXmlNode = xmlNodes.get(i);
+                //将targetXmlNode原父节点下替换为新的base节点
+                List<XmlNode> brotherXmlNode = targetXmlNode.getParentXmlNode().getChildrenXmlNode();
+                baseNode.mergeOutSide(targetXmlNode);
+                if(brotherXmlNode.indexOf(xmlNodes.get(i)) > -1) {
+                    brotherXmlNode.set(brotherXmlNode.indexOf(xmlNodes.get(i)), baseNode);
+                }
+
             }
         }
 
@@ -702,7 +707,7 @@ public class BeanGeneratorUtil {
 
         GenerateDescriptor descriptor = new DefaultGenerateDescriptor();
 
-        generateByXml(descriptor, xmlString, "Descriptor");
+        generateByXml(descriptor, xmlString, "Config");
 
     }
 
