@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+        xmlns="http://www.springframework.org/schema/beans"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:aop="http://www.springframework.org/schema/aop"
+        xmlns:mvc="http://www.springframework.org/schema/mvc"
+        xmlns:context="http://www.springframework.org/schema/context"
+        xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/aop
+    http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+    http://www.springframework.org/schema/mvc
+    http://www.springframework.org/schema/mvc/spring-mvc.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context.xsd">
+    <!-- 组件自动扫描 （注解） -->
+    <context:component-scan base-package="com.hframework">
+        <context:include-filter type="regex" expression="com.hframework.controller.*"/>
+    </context:component-scan>
+    <!-- Configures support for @Controllers -->
+    <mvc:annotation-driven/>
+    <!-- 对静态资源文件的访问 -->
+    <mvc:default-servlet-handler/>
+
+
+    <!-- 模板信息设置 -->
+    <bean id="velocityConfigurer"
+          class="org.springframework.web.servlet.view.velocity.VelocityConfigurer">
+        <property name="resourceLoaderPath"  value="WEB-INF/page" /><!-- 設置模板访问位置-->
+        <property name="velocityProperties">
+            <props>
+                <prop key="directive.foreach.counter.name">loopCounter</prop>
+                <prop key="directive.foreach.counter.initial.value">0</prop>
+                <prop key="input.encoding">UTF-8</prop><!-- 指定模板引擎进行模板处理的编码 -->
+                <prop key="output.encoding">UTF-8</prop><!-- 指定输出流的编码 -->
+            </props>
+        </property>
+    </bean>
+
+    <!-- 设置视图解析工具 -->
+    <bean id="viewResolver"
+          class="org.springframework.web.servlet.view.velocity.VelocityViewResolver">
+        <property name="suffix" value=".vm" />
+        <!-- 避免乱码 -->
+        <property name="contentType" value="text/html;charset=UTF-8" />
+        <property name="dateToolAttribute" value="dateTool" />
+        <property name="numberToolAttribute" value="numberTool" />
+        <property name="exposeRequestAttributes" value="true" />
+        <property name="exposeSessionAttributes" value="true" />
+    </bean>
+
+
+    <!--&lt;!&ndash; 视图解释类 &ndash;&gt;-->
+    <!--<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">-->
+    <!--<property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>-->
+    <!--&lt;!&ndash;<property name="prefix" value="/WEB-INF/page/"/>&ndash;&gt;-->
+    <!--<property name="prefix" value="/page/"/>-->
+    <!--&lt;!&ndash;可为空,方便实现自已的依据扩展名来选择视图解释类的逻辑  &ndash;&gt;-->
+    <!--<property name="suffix" value=".jsp"/>-->
+    <!--</bean>-->
+
+
+    <!-- 文件上传类 -->
+    <bean id="multipartResolver"
+          class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="defaultEncoding" value="utf-8"/>
+        <property name="maxUploadSize" value="10485760000"/>
+        <property name="maxInMemorySize" value="40960"/>
+    </bean>
+    <!--微信业务异常处理-->
+    <!-- TODO
+    <bean id="weixinExceptionResolver" class="com.ourangel.box.mvc.interceptor.WeixinExceptionResolver" />
+    -->
+    <!-- 查询分页拦截器 TODO
+    <aop:config proxy-target-class="true">
+        <aop:pointcut id="methodPointcut" expression="execution (* com.ourangel.box.mvc.controller..*(..))"/>
+        <aop:advisor advice-ref="methodInterceptorBySpring" pointcut-ref="methodPointcut"/>
+    </aop:config>
+-->
+    <!-- 拦截器 TODO
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/platformedm/*" />
+            <mvc:mapping path="/platformstore/*" />
+            <mvc:mapping path="/platformuser/*" />
+            <mvc:mapping path="/platformAddress/*" />
+            <mvc:mapping path="/platformcenter/*" />
+            <bean class="com.ourangel.box.mvc.interceptor.PlatformUserInterceptor" />
+        </mvc:interceptor>
+    </mvc:interceptors>
+-->
+</beans>

@@ -34,42 +34,6 @@
         <url-pattern>*.html</url-pattern>
     </servlet-mapping>
 
-    <!-- 框架加载服务 -->
-    <servlet>
-        <servlet-name>frameInitServlet</servlet-name>
-        <servlet-class>com.hframe.tag.servlet.FrameInitServlet</servlet-class>
-        <load-on-startup>2</load-on-startup>
-    </servlet>
-
-    <!-- 框架标签刷新服务 -->
-    <servlet>
-        <servlet-name>tagRefreshServlet</servlet-name>
-        <servlet-class>com.hframe.tag.servlet.TagRefreshServlet</servlet-class>
-        <load-on-startup>3</load-on-startup>
-    </servlet>
-
-    <!-- 框架标签刷新服务 -->
-    <servlet>
-        <servlet-name>paginationRefreshServlet</servlet-name>
-        <servlet-class>com.hframe.tag.servlet.PaginationRefreshServlet</servlet-class>
-        <load-on-startup>3</load-on-startup>
-    </servlet>
-
-
-    <servlet-mapping>
-        <servlet-name>frameInitServlet</servlet-name>
-        <url-pattern>/servlet/frameInitServlet</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>tagRefreshServlet</servlet-name>
-        <url-pattern>/core/core_page_refreshTagContent</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>paginationRefreshServlet</servlet-name>
-        <url-pattern>/core/core_page_getListContentByAjax</url-pattern>
-    </servlet-mapping>
 
     <filter>
         <filter-name>encodingFilter</filter-name>

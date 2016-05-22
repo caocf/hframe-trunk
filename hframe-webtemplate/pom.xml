@@ -10,6 +10,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>hframe-webtemplate</artifactId>
-
+    <packaging>war</packaging>
+    <name>hframe-webtempalte Maven Webapp</name>
+    <url>http://maven.apache.org</url>
 
 </project>
