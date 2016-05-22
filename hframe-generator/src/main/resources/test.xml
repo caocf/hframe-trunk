@@ -1,70 +1,77 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<descriptor>
+<config>
     <global>
-        <staticParameters>
-            <staticParameter>zk</staticParameter>
-            <staticParameter>domain</staticParameter>
-        </staticParameters>
-        <properties>
-            <javaPackage>com.hframe.client</javaPackage>
-            <clientName>*Client</clientName>
-            <resourceFolder>third</resourceFolder>
-            <beanOrganizeInterfaceBase>true</beanOrganizeInterfaceBase>
-        </properties>
-        <rules>
-            <rule id="+AES" type="encrypt">(+)AES(${this},#{SECRET_KEY})</rule>
-            <rule id="-AES" type="decrypt">(-)AES(${this},#{SECRET_KEY})</rule>
-            <rule id="SignMd5" type="encrypt">MD5(${address}${output}$${AK})</rule>
-            <rule id="MobileMapping" type="mapping">com.hframe.client.mapping.XXXX</rule>
-        </rules>
-        <requestConfig>
-            <valueMappers>
-                <valueMapper name="mobile"  ruleId="MobileMapping" value=""/>
-            </valueMappers>
-            <publicParameters>
-                <parameter name="sign" type="String" nullable="false" visiable="false" ruleId="SignMd5" value=""/>
-            </publicParameters>
-            <publicNodes>
-                <node name="sign" type="String" nullable="false" visiable="false" ruleId="SignMd5" value=""/>
-            </publicNodes>
-        </requestConfig>
-        <responseConfig>
-            <valueMappers>
-                <valueMapper path="**/mobile"  ruleId="MobileMapping" value=""/>
-            </valueMappers>
-            <publicNodes>
-                <node path="/" type="BaiduMapResult" nullable="false" visiable="false" ruleId="SignMd5" value="">
-                    <node path="errorCode"></node>
-                    <node path="errorMsg"></node>
-                    <node path="data" type="Generic"></node>
-                    <!--<exclude express="data/*"></exclude>-->
-                </node>
-                <node path="**/attr;**/attr/**"  isFloatNode="true"></node>
-                <node path="**/prod;**/attr/prod" type="Attribute" isFloatNode="true"></node>
-            </publicNodes>
-        </responseConfig>
+        <host id="targetHost">
+        </host>
+        <host id="selfHost">
+            <datasource type="db">jdbc:mysql://10.20.69.216:3306/beetle?useUnicode=true&amp;characterEncoding=utf8&amp;zeroDateTimeBehavior=convertToNull&amp;autoReconnect=true</datasource>
+            <username>beetle</username>
+            <password>NHY67ujm</password>
+        </host>
     </global>
-    <interfaces>
-        <interface  path="geocoder/v2" name="getAddress"  method="post" usePublicParams ="true">
-            <request load="head#body" message="json">
-                <parameters>
-                    <parameter name="address" type="String" nullable="false"  visiable="true"  ruleId="" value="${address}" />
-                    <parameter name="output"  type="String"  nullable="false" visiable="false"  ruleId="" value="json" />
-                    <parameter name="ak"  type="String"  nullable="false" visiable="false"  ruleId="" value="$${ak}" />
-                    <parameter name="sign" type="String" nullable="false" visiable="false"  ruleId="" value="MD5(${address}${output}$${AK})" />
-                    <parameter name="mobile" type="long" nullable="false" visiable="ture"  ruleId="" value="(+)AES(${this},$${SECRET_KEY})" />
-                </parameters>
-                <nodes>
-                    <node path="*" type="" merge="true"/>
-                    <node path="*" type="" merge="true"/>
-                </nodes>
-            </request>
-            <response load="body" extend="false" message="json">
-                <node path="data/**"  type="HfcfgLoginPage" />
-                <node path="**/mobile"  type="HfcfgLoginPage" ruleId="" value="(-)AES(${this},$${SECRET_KEY})" />
-            </response>
-        </interface>
-        <interface  path="geocoder/v2" name="getAddress"  method="post" usePublicParams ="true">
-        </interface>
-    </interfaces>
-</descriptor>
+    <services>
+        <service id="">
+            <trigger type="cronExpression">0 0/3 * * * ?</trigger>
+            <importers>
+                <importer type="left">
+                    <host rel="targetHost"></host>
+                    <file path="/order" name="order_YYYYMMDD.txt">
+                        <row separator="|" type="descriptor" rowspan="1"></row>
+                        <row id="data"  type="data" rowspan="*" ></row>
+                        <row type="statistics" rowspan="1"  express="COUNT:{} SUM:{}">
+                            <item id="totalCount" express="COUNT:{} SUM:{}">CONTENT.split["|"][0]</item>
+                            <item id="totalAmount" express="COUNT:{} SUM:{}">CONTENT.split["|"][1]</item>
+                        </row>
+                    </file>
+                </importer>
+                <importer type="right">
+                    <host rel="selfHost"></host>
+                    <dataset>
+                        <sql id = "data">select * from orders where data=234234;</sql>
+                        <sql id = "totalAmount">select * from orders where data=234234;</sql>
+                        <sql id = "totalCount">select * from orders where data=234234;</sql>
+                    </dataset>
+                </importer>
+            </importers>
+            <ruleCenter>
+                <rule leftId="totalCount" rightId="totalCount"></rule>
+                <rule leftId="totalAmount" rightId="totalAmount"></rule>
+                <rule type="RIT"></rule><!-- return if true -->
+                <rule leftId="data" rightId="data">
+                    <datanode leftName="{2}" rightName="merchantNo" isKey="true"></datanode>
+                    <datanode leftName="{5}" rightName="amount" isKey="true"></datanode>
+                    <datanode leftName="{7}" rightName="status"></datanode>
+                    <datanode leftName="{8}" rightName="createTime"></datanode>
+                </rule>
+            </ruleCenter>
+            <exporters>
+                <exporter type="RIT">
+                    <!--<host rel="selfHost"/>-->
+                    <sql>insert into order_his value(?,?,?,?,?,?,?)</sql>
+                    <!--<dataitem>商户号,商户订单号,金额,状态,交易完成时间,${status}</dataitem>-->
+                    <!--<scope>all</scope>&lt;!&ndash; all:全量比对结果，diff:差量比对结果 self:自己的数据 target: 对端数据 &ndash;&gt;-->
+                    <leftId>data</leftId>
+                    <rightId>data</rightId>
+                </exporter>
+                <exporter>
+                    <host rel="targetHost"  id="targetHost">
+                        <datasource type="ftp">10.20.69.80</datasource><!-- ftp -->
+                        <username>test</username>
+                        <password>test</password>
+                        <cxtpath>/data/lcs/</cxtpath>
+                    </host>
+                    <file path="/order/his/" name="order_YYYYMMDD_his.txt" tmpPath="" parser="">
+                        <row separator="|" type="descriptor" rowspan="1" express="COUNT:{} SUM:{}"></row>
+                        <row id="data"  type="data" rowspan="*"></row>
+                        <row type="statistics" rowspan="1">
+                            <item id="totalCount">CONTENT.split["|"][0]</item>
+                            <item id="totalAmount">CONTENT.split["|"][1]</item>
+                        </row>
+                    </file>
+                    <dataitem>商户号,商户订单号,金额,状态,交易完成时间,${status}</dataitem>
+                    <scope>all</scope><!-- all:全量比对结果，diff:差量比对结果  self:自己的数据 target:对端数据-->
+                </exporter>
+            </exporters>
+        </service>
+        <service></service>
+    </services>
+</config>

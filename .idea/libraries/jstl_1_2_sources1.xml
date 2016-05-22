@@ -1,0 +1,22 @@
+<component name="libraryTable">
+  <library name="jstl-1.2-sources1">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/springMVC/jstl-1.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/springMVC/servlet-api-2.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/springMVC/servlet-api-2.5.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/springMVC/servlet-api-3.0-alpha-1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/springMVC/spring-web-4.1.6.RELEASE.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/springMVC/spring-webmvc-4.1.6.RELEASE.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/springMVC/spring-webmvc-portlet-4.1.6.RELEASE.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/springMVC/spring-websocket-4.1.6.RELEASE.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/lib/springMVC/jstl-1.2-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/springMVC/servlet-api-2.3-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/springMVC/servlet-api-2.5-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/springMVC/servlet-api-3.0-alpha-1-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/springMVC/servlet-api-3.0-alpha-1.jar!/" />
+    </SOURCES>
+  </library>
+</component>

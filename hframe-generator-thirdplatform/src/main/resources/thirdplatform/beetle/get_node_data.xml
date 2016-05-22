@@ -69,12 +69,14 @@
                 }
             ],
             "manager": [ {
-                    "id": "42",
-                    "node_id": "c1461033669",
-                    "p2p_id": "1500123",
-                    "name": "美丽",
-                    "mtime": "2016-04-20 14:24:24"
+                     "id": "126",
+                    "node_id": "c1430361594",
+                    "level": "company",
+                    "p2p_id": "11450",
+                    "name": "刘县栋",
+                    "mtime": "2016-05-09 14:46:36"
                 } ],
+            "company_num": 2,
             "subcompany_num": 1,
             "dept_num": 1,
             "team_num": 2,
@@ -92,7 +94,12 @@
             "carry_money": 0,
             "loan_repay_money": 0,
             "real_repay_money": 0,
-            "is_leaf": 0
+            "is_leaf": 0,
+            "secondid_list": {
+                "c1458012056": "testzzy",
+                "c1460961907": "生生集团"
+            },
+            "secondid_list_chart": "c1458012056,c1460961907"
         },
         "invest": {
             "referer_rebate_money": 0,

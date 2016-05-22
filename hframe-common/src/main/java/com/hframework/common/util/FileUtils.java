@@ -1,8 +1,9 @@
 package com.hframework.common.util;
 
 import com.hframework.common.bean.MyFile;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import java.io.*;
 import java.util.ArrayList;
@@ -10,7 +11,7 @@ import java.util.List;
 
 public class FileUtils {
 
-    private static Log logger = LogFactory.getLog(FileUtils.class);
+    private static Logger logger = LoggerFactory.getLogger(FileUtils.class);
     /**
      * 转化为绝对路径文件名
      *
@@ -82,6 +83,19 @@ public class FileUtils {
             str = br.readLine();
         }
         return retStr;
+    }
+
+    public static List<String> readFileToArray(String fileName) throws IOException {
+        logger.debug("method params：{}", fileName);
+        List<String> result = new ArrayList<String>();
+        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(new File(fileName))));
+        String str = br.readLine();
+        while(str != null) {
+            result.add(str);
+            str = br.readLine();
+        }
+        logger.debug("method return：{}", result);
+        return result;
     }
 
     public static void copyFile(File theFile,String filePath) throws FileNotFoundException, IOException{
