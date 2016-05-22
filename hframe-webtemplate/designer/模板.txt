@@ -1,0 +1,364 @@
+###############组件################
+
+##组件报文##
+leftMenuTree:
+
+#set($map=$MAP)
+#set($menus=$map.get("menus"))
+
+<ul class="nav nav-tabs nav-stacked main-menu">
+
+	#foreach($menu in $menus)
+		<li><a href="$menu.url"><i class="$menu.icon"></i><span class="hidden-tablet"> $menu.name</span> 
+				#if($menu.submenucount > 0) <span class="label">3</span> #end 
+			</a>
+			#if($menu.submenucount > 0)
+			<ul>
+				#foreach($submenu in $menu.submenus)
+					<li><a class="submenu" href="$submenu.url"><i class="$submenu.icon"></i><span class="hidden-tablet"> $submenu.name</span></a></li>
+				#end
+			</ul>
+		</li>
+	#end
+</ul>
+
+##组件数据模板##
+{
+    menus [
+        {
+            url: '',
+			id:'',
+            icon: '',
+            name: '',
+            submenus: [
+                {
+                    url: '#',
+					id:'',
+                    icon: '',
+                    name: '',
+                    
+                }
+            ]
+        }
+    ]
+}
+
+
+##组件实例
+<mapper tempalte='leftMenuTree' data="user">
+	<mapping var="menus" data="user">
+		<mapping var="id" data"id">
+		<mapping var="name" data="name">
+		<mapping var="description" express="共计25个好友">
+	</mapping>
+</mapper>
+
+
+###############页面################
+模块：
+	页面名称、页面模板、数据实体
+
+topFastMenu:
+
+#set($map=$MAP)
+#set($elements=$map.get("elements"))
+
+<ul class="nav pull-right">
+#foreach($element in $elements)
+	<li class="dropdown hidden-phone">
+		<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+			<i class="$element.icon"></i>
+		</a>
+		$element.context
+	</li>
+#end
+</ul>
+
+
+
+
+
+topFastMenu_item1
+
+#set($map=$MAP)
+#set($result=$map.get("result"))
+
+<ul class="dropdown-menu notifications">
+	<li class="dropdown-menu-title">
+		<span>你一共有${result.count}条通知未处理</span>
+	</li>	
+	
+	#foreach($data in $result.data)
+	<li>
+		<a href="#">
+			<span class="icon blue"><i class="${data.icon}"></i></span>
+			<span class="message">${data.message}</span>
+			<span class="time">${data.time}</span> 
+		</a>
+	</li>
+	#end
+	<li class="dropdown-menu-sub-footer">
+		<a href="#">查看更多</a>
+	</li>	
+</ul>
+
+
+{
+    result: [
+        {
+            count: '',
+            data: {
+                icon: '',
+                message: '',
+                time: ''
+            }
+        }
+    ]
+}
+
+	
+#set($map=$MAP)
+#set($id=$map.get("id"))
+#set($icon=$map.get("icon"))
+#set($title=$map.get("title"))
+#set($columns=$map.get("columns"))
+#set($list=$map.get("data"))
+#set($pager=$map.get("pager"))
+
+<div class="box span12 hflist" id='$id' dataset="user" module="uc" >
+	<div class="box-header">
+		<h2><i class="$icon"></i><span class="break"></span>$title</h2>
+		<div class="box-icon">
+			<a href="#" class="btn-setting"><i class="icon-wrench"></i></a>
+			<a href="#" class="btn-minimize"><i class="icon-chevron-up"></i></a>
+			<a href="#" class="btn-close"><i class="icon-remove"></i></a>
+		</div>
+	</div>
+	<div class="box-content">
+		<table class="table table-bordered table-striped table-condensed">
+			  <thead>
+				  <tr>
+				  #foreach($column in $columns)
+					<th>$column</th>
+				  #end     
+					<th>操作</th>
+			  </tr>								  
+				  </tr>
+			  </thead>   
+			  <tbody class='hflist-data'>
+				#foreach($row in $list)
+				  <tr>
+						#foreach($item in $row)
+							<td>$item</td>
+						#end
+						<td class="center">
+							<a class="btn btn-success hfhref" href="javascript:void(0)" dataset="user" module="uc" operate="create" params='id=$row.id'>
+								<i class="icon-zoom-in"></i>  
+							</a>
+							<a class="btn btn-info" href="#">
+								<i class="icon-edit "></i>  
+							</a>
+							<a class="btn btn-danger" href="#">
+								<i class="icon-trash "></i> 
+							</a>
+						</td>
+					</tr>
+			  #end                                  
+			  </tbody>
+		 </table>  
+		 <div class="pagination pagination-centered">
+		  <ul class='hflist-pager'>
+		  #foreach($pageObj in $pager)
+			<li
+			#if($pageObj[3] == 'active')
+			   class="active"
+			#end
+			><a href="#" class='hflist-pager-index' pageNo='$pageObj[1]' disabled='$pageObj[2]'>$pageObj[0]</a></li>
+		  #end
+		  </ul>
+		</div>     
+	</div>
+</div>	
+
+
+event:{
+	mylist:{
+		edit:{
+			attach:{
+				position:"EOFR",
+				component:"icon",
+				componentParam:{fillclass:"btn-success",iconclass:"icon-zoom-in"}
+			}
+			
+			source:{
+				scope:"CROW",
+				param:["id","name"],
+			}
+			effect:[{
+				type:"pageFwd",
+				action:"uc/user/edit",
+				isStack:true,
+			}]
+		},
+		delete:{
+			attach:{
+				position:"EOFR",
+				component:"icon",
+				componentParam:{fillclass:"btn-success",iconclass:"icon-zoom-in"}
+			}
+			source:{
+				scope:"CROW",
+				param:["id","name"],
+			}
+			effect:[{
+				type:"dialogTip",
+				param:["你是否删除","name","该用户数据!"],
+			},{
+				type:"ajaxSubmit",
+				action:"uc/user/delete",
+			},{
+				type:"compReload"
+			}]
+		},
+		detail:{
+			attach:{
+				position:"name"
+			}
+			source:{
+				scope:"CROW",
+				param:["id","name"],
+			}
+			effect:[{
+				type:"pageFwd",
+				action:"uc/user/detail",
+				isStack:true,
+			}]
+		
+		},
+		create:{
+			attach:{
+				position:"EOF",
+				component:"button",
+				componentParam:{fillclass:"btn-success",iconclass:"icon-zoom-in"}
+			}
+			effect:[{
+				type:"pageFwd",
+				action:"uc/user/create",
+				param:["id","name"],
+				isStack:true,
+			}]
+		},
+		batchDelete:{
+			attach:{
+				position:"EOF",
+				component:"button",
+				componentParam:{fillclass:"btn-success",iconclass:"icon-zoom-in"}
+			}
+			source:{
+				scope:"COMP",
+				extend:{
+					id:ids,
+					type:checkbox,
+					params:["id","name"]
+				}
+			}
+			effect:[{
+				type:"ajaxSubmit",
+				action:"uc/user/batchDelete",
+				param:["ids"],
+			}]
+		}
+
+	}
+}
+
+
+
+href.js
+$(".hfhref").click(function(){
+	var $component = $parent($this);
+	var module = $component.attr("module");
+	var dataset = $component.attr("dataset");
+	var operate = $component.attr("operate");
+	var params = $component.attr("params");
+	var url = module + "/" + dataset + "/" + operate;
+	gotoUrl(url,params);
+
+});
+
+list.js
+$(".hflist-pager-button").click(function(){
+	var pageNo = $(this).attr("pageNo);
+	var $component = $parent($this);
+	var module = $component.attr("module");
+	var dataset = $component.attr("dataset");
+	$ajax({
+		url:module + "/" + dataset + "list",
+		param:{
+			"pageNo":pageNo,
+		},
+		success:function(ret){
+			$(this).parent("hflist-pager).html(ret.paper);
+			$(this).parent("hflist-data).html(ret.data);
+		}
+	});
+});		
+
+		
+列表（list):
+{
+   id:"mylist",
+   icon:'icon-user',
+   title:"我的列表",
+   columnCode:["id","name","age","gender","address","remark"],
+   columnName:["学号","姓名","年龄","性别","地址","备注"],
+   data:[
+    [1001,"张三",29,"女","四川成都",''],
+	[1002,"李四",31,"女"，"北京",'']
+   ],
+   pagination:{
+	 pageSize:2,
+	 pageIndex:1,
+	 total:100,
+	 pageCount:50,
+   },
+   memo:{
+	 "dataset":"user",
+   },
+   order:{
+	 "name":"DESC",
+	 "age":"ASC"
+   }
+   pager:[
+	 ["上一页","1","disabled",""]
+	 ["1","1","disabled","active"]
+	 ["2","2","",""]
+	 ["3","3","",""]
+	 ["4","4","",""]
+	 ["下一页","5","",""]
+   ]
+}
+
+
+
+
+
+
+表格（form)
+{
+   id:"mylist",
+   icon:'icon-user',
+   title:"新增用户",
+   columns:[
+		{code:"id",name:"学号",editType:"hidden"},
+		{code:"name",name:"姓名",editType:"input"},
+		{code:"age",name:"年龄",editType:"select"},
+		{code:"gender",name:"性别",editType:"radio"},
+		{code:"address",name:"地址",editType:"input"},
+		{code:"remark",name:"备注",editType:"textarea"}
+   ]
+   data:{id:"1001",name:"张三",age:29,gender:"女",address:"四川成都",remark:""}
+   memo:{
+	 "dataset":"user",
+   }
+}
