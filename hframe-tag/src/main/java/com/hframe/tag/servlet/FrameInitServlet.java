@@ -610,6 +610,107 @@ public class FrameInitServlet extends HttpServlet {
             return returnName;
         }
 
+        public static Class getDefPoExampleClass(String companyName,
+                                                 String projectName,String moduleName, String tableName) throws Exception {
+            if(StringUtils.isBlank(tableName)) {
+                throw new Exception("表名称为不能为空！");
+            }
+
+            companyName = StringUtils.isBlank(companyName)?"":"."+(companyName);
+            projectName = StringUtils.isBlank(projectName)?"":"."+(projectName);
+            moduleName = StringUtils.isBlank(moduleName)?"":"."+(moduleName);
+
+
+            Class class1 = new Class();
+            class1.setSrcFilePath(CreatorUtil.getSrcFilePath(companyName, projectName));
+            class1.setClassPackage(CreatorUtil.getPoClassPackage(
+                    companyName, projectName, moduleName, tableName));
+            class1.setClassName(CreatorUtil.getJavaClassName(tableName) + "_Example");
+            return class1;
+        }
+        public static Class getDefServiceClass(String companyName,
+                                               String projectName, String moduleName,String tableName) throws Exception {
+            if(StringUtils.isBlank(tableName)) {
+                throw new Exception("表名称为不能为空！");
+            }
+
+            companyName = StringUtils.isBlank(companyName)?"":"."+(companyName);
+            projectName = StringUtils.isBlank(projectName)?"":"."+(projectName);
+            moduleName = StringUtils.isBlank(moduleName)?"":"."+(moduleName);
+
+            Class class1 = new Class();
+            class1.setSrcFilePath(CreatorUtil.getSrcFilePath(companyName, projectName));
+            class1.setClassPackage(CreatorUtil.getServiceClassPackage(
+                    companyName, projectName, moduleName, tableName));
+            class1.setClassName("I" + CreatorUtil.getJavaClassName(tableName) + "SV");
+            return class1;
+        }
+
+        public static String getServiceClassPackage(String companyName,
+                                                    String projectName,String moduleName, String tableName) throws Exception {
+
+            return PropertyConfigurerUtils.getProperty(
+                    "service_class_package",
+                    companyName.toLowerCase(),
+                    projectName.toLowerCase(),
+                    moduleName.toLowerCase());
+        }
+
+        public static Class getDefServiceImplClass(String companyName,
+                                                   String projectName, String moduleName,String tableName) throws Exception {
+            if(StringUtils.isBlank(tableName)) {
+                throw new Exception("表名称为不能为空！");
+            }
+
+            companyName = StringUtils.isBlank(companyName)?"":"."+(companyName);
+            projectName = StringUtils.isBlank(projectName)?"":"."+(projectName);
+            moduleName = StringUtils.isBlank(moduleName)?"":"."+(moduleName);
+
+            Class class1 = new Class();
+            class1.setSrcFilePath(CreatorUtil.getSrcFilePath(companyName, projectName));
+            class1.setClassPackage(CreatorUtil.getServiceImplClassPackage(
+                    companyName, projectName, moduleName, tableName));
+            class1.setClassName(CreatorUtil.getJavaClassName(tableName) + "SVImpl");
+            return class1;
+        }
+        public static Class getDefControllerClass(String companyName,
+                                                  String projectName, String moduleName,String tableName) throws Exception {
+
+            if(StringUtils.isBlank(tableName)) {
+                throw new Exception("表名称为不能为空！");
+            }
+
+            companyName = StringUtils.isBlank(companyName)?"":"."+(companyName);
+            projectName = StringUtils.isBlank(projectName)?"":"."+(projectName);
+            moduleName = StringUtils.isBlank(moduleName)?"":"."+(moduleName);
+
+            Class class1 = new Class();
+            class1.setSrcFilePath(CreatorUtil.getSrcFilePath(companyName, projectName));
+            class1.setClassPackage(CreatorUtil.getActionClassPackage(
+                    companyName, projectName, moduleName, tableName));
+            class1.setClassName(CreatorUtil.getJavaClassName(tableName) + "Controller");
+            return class1;
+        }
+
+        public static String getActionClassPackage(String companyName,
+                                                   String projectName,String moduleName,String tableName) throws Exception {
+
+            return PropertyConfigurerUtils.getProperty(
+                    "action_class_package",
+                    companyName.toLowerCase(),
+                    projectName.toLowerCase(),
+                    moduleName.toLowerCase());
+        }
+        public static String getServiceImplClassPackage(String companyName,
+                                                        String projectName,String moduleName, String tableName) throws Exception {
+
+            return PropertyConfigurerUtils.getProperty(
+                    "serviceimpl_class_package",
+                    companyName.toLowerCase(),
+                    projectName.toLowerCase(),
+                    moduleName.toLowerCase());
+        }
+
         public static String getJavaVarName(String tableName) {
 
             String returnName="";

@@ -202,6 +202,20 @@ public class RegexUtils {
         return result.toArray(new String[0]);
     }
 
+    public static List<String> findVarList(String string) {
+        List<String> varList = new ArrayList<String>();
+        String[] strings = RegexUtils.find(string, "[\\$]\\{[ a-zA-Z:0-9_]+\\}");
+        if (strings != null && strings.length > 0) {
+            for (String s : strings) {
+                varList.add(s.substring(2, strings[0].length() - 1));
+            }
+        }
+        return varList;
+    }
+
+
+
+
     public static void main(String[] args) {
         String[] strings = find("col-sm-12", "\\d+");
         for (String string : strings) {

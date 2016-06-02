@@ -1,14 +1,14 @@
 
-var webHost = appConfig.ucdomain;
-
-
-if(webHost == ''){
-	webHost = '/';
-}
+//var webHost = appConfig.ucdomain;
+//
+//
+//if(webHost == ''){
+//	webHost = '/';
+//}
 
 
 requirejs.config({
-  baseUrl: webHost,
+  //baseUrl: webHost,
   paths:{
 	  'store':['static/plugins/jquery/store.min'],
 	  'echarts': ['static/plugins/ehcarts/echarts-all'],
@@ -19,6 +19,7 @@ requirejs.config({
 	  'jquery-base64': ['static/plugins/jquery/jquery.base64'],
 	  'lazyload': ['static/plugins/jquery/jquery.lazyload'],
 	  'layer':['static/plugins/layer/layer'],
+	  'ajax': ['js/hframework/utils/ajax'],
 	  'selectBox': ['static/js/common/unit/selectbox'],
 	  'gradeBox': ['static/js/common/unit/gradeBox'],
 	  'utility': ['static/js/web/common/utility'],

@@ -24,5 +24,4 @@ public @interface Source {
 
     boolean formatKey() default true;
 
-
 }

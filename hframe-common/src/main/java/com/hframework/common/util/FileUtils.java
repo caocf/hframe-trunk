@@ -75,7 +75,7 @@ public class FileUtils {
     }
 
     public static String readFile(String fileName) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(new File(fileName))));
+        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(new File(fileName)),"UTF-8"));
         String retStr = "";
         String str = br.readLine();
         while(str != null) {

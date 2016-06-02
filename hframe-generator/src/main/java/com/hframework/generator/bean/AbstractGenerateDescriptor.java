@@ -4,8 +4,8 @@ package com.hframework.generator.bean;
  * Created by zhangquanhong on 2016/4/19.
  */
 public abstract class AbstractGenerateDescriptor implements GenerateDescriptor {
-    private String javaPackage = "com.hframework.reconciliation.bean";
-    private String javaRootPath = "D:/my_workspace/hframe-trunk/hframe-reconciliation/src/main/java/";
+    private String javaPackage = "com.hframework.web.config.bean";
+    private String javaRootPath = "D:/my_workspace/hframe-trunk/hframe-webtemplate/src/main/java/";
     private String templatePath = "com/hframework/generator/vm/bean.vm";
 
     public String getJavaPackage() {

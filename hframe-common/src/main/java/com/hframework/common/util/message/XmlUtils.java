@@ -1,12 +1,15 @@
 package com.hframework.common.util.message;
 
 import com.hframework.common.util.FileUtils;
+import com.hframework.common.util.StringUtils;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * User: zhangqh6
@@ -31,7 +34,39 @@ public class XmlUtils {
         return t;
     }
 
+    public static <T> List<T> readValuesFromDirectory(String directory, Class<T> valueType, String format) throws IOException {
+        List<T> result = new ArrayList<T>();
+        logger.debug("入参：{}|{}",directory,valueType);
+        String rootClassPath = Thread.currentThread().getContextClassLoader ().getResource("").getPath();
+        File[] fileList = FileUtils.getFileList(new File(rootClassPath + "/" + directory));
+        for (File file : fileList) {
+            if(StringUtils.isBlank(format) || file.getName().endsWith(format)) {
+                String xmlString = FileUtils.readFile(file.getAbsolutePath());
+                logger.debug("报文：{}", xmlString);
+                T t = readValue(xmlString, valueType);
+                result.add(t);
+                logger.debug("对象：{}", t);
+            }
+        }
 
+        return result;
+    }
+
+    public static <T> List<T> readValuesFromDirectory(String directory, Class<T> valueType) throws IOException {
+        List<T> result = new ArrayList<T>();
+        logger.debug("入参：{}|{}",directory,valueType);
+        String rootClassPath = Thread.currentThread().getContextClassLoader ().getResource("").getPath();
+        File[] fileList = FileUtils.getFileList(new File(rootClassPath + "/" + directory));
+        for (File file : fileList) {
+            String xmlString = FileUtils.readFile(file.getAbsolutePath());
+            logger.debug("报文：{}", xmlString);
+            T t = readValue(xmlString, valueType);
+            result.add(t);
+            logger.debug("对象：{}", t);
+        }
+
+        return result;
+    }
 
 
 

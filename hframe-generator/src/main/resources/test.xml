@@ -1,77 +1,37 @@
-<config>
-    <global>
-        <host id="targetHost">
-        </host>
-        <host id="selfHost">
-            <datasource type="db">jdbc:mysql://10.20.69.216:3306/beetle?useUnicode=true&amp;characterEncoding=utf8&amp;zeroDateTimeBehavior=convertToNull&amp;autoReconnect=true</datasource>
-            <username>beetle</username>
-            <password>NHY67ujm</password>
-        </host>
-    </global>
-    <services>
-        <service id="">
-            <trigger type="cronExpression">0 0/3 * * * ?</trigger>
-            <importers>
-                <importer type="left">
-                    <host rel="targetHost"></host>
-                    <file path="/order" name="order_YYYYMMDD.txt">
-                        <row separator="|" type="descriptor" rowspan="1"></row>
-                        <row id="data"  type="data" rowspan="*" ></row>
-                        <row type="statistics" rowspan="1"  express="COUNT:{} SUM:{}">
-                            <item id="totalCount" express="COUNT:{} SUM:{}">CONTENT.split["|"][0]</item>
-                            <item id="totalAmount" express="COUNT:{} SUM:{}">CONTENT.split["|"][1]</item>
-                        </row>
-                    </file>
-                </importer>
-                <importer type="right">
-                    <host rel="selfHost"></host>
-                    <dataset>
-                        <sql id = "data">select * from orders where data=234234;</sql>
-                        <sql id = "totalAmount">select * from orders where data=234234;</sql>
-                        <sql id = "totalCount">select * from orders where data=234234;</sql>
-                    </dataset>
-                </importer>
-            </importers>
-            <ruleCenter>
-                <rule leftId="totalCount" rightId="totalCount"></rule>
-                <rule leftId="totalAmount" rightId="totalAmount"></rule>
-                <rule type="RIT"></rule><!-- return if true -->
-                <rule leftId="data" rightId="data">
-                    <datanode leftName="{2}" rightName="merchantNo" isKey="true"></datanode>
-                    <datanode leftName="{5}" rightName="amount" isKey="true"></datanode>
-                    <datanode leftName="{7}" rightName="status"></datanode>
-                    <datanode leftName="{8}" rightName="createTime"></datanode>
-                </rule>
-            </ruleCenter>
-            <exporters>
-                <exporter type="RIT">
-                    <!--<host rel="selfHost"/>-->
-                    <sql>insert into order_his value(?,?,?,?,?,?,?)</sql>
-                    <!--<dataitem>商户号,商户订单号,金额,状态,交易完成时间,${status}</dataitem>-->
-                    <!--<scope>all</scope>&lt;!&ndash; all:全量比对结果，diff:差量比对结果 self:自己的数据 target: 对端数据 &ndash;&gt;-->
-                    <leftId>data</leftId>
-                    <rightId>data</rightId>
-                </exporter>
-                <exporter>
-                    <host rel="targetHost"  id="targetHost">
-                        <datasource type="ftp">10.20.69.80</datasource><!-- ftp -->
-                        <username>test</username>
-                        <password>test</password>
-                        <cxtpath>/data/lcs/</cxtpath>
-                    </host>
-                    <file path="/order/his/" name="order_YYYYMMDD_his.txt" tmpPath="" parser="">
-                        <row separator="|" type="descriptor" rowspan="1" express="COUNT:{} SUM:{}"></row>
-                        <row id="data"  type="data" rowspan="*"></row>
-                        <row type="statistics" rowspan="1">
-                            <item id="totalCount">CONTENT.split["|"][0]</item>
-                            <item id="totalAmount">CONTENT.split["|"][1]</item>
-                        </row>
-                    </file>
-                    <dataitem>商户号,商户订单号,金额,状态,交易完成时间,${status}</dataitem>
-                    <scope>all</scope><!-- all:全量比对结果，diff:差量比对结果  self:自己的数据 target:对端数据-->
-                </exporter>
-            </exporters>
-        </service>
-        <service></service>
-    </services>
-</config>
+<dataset>
+    <module>hfmd</module>
+    <code>hfmd_entity</code>
+    <entity is-main="true">hfmd_entity</entity>
+    <entity>hfmd_entity_page</entity>
+    <name>实体</name>
+    <fields>
+        <field code="hfpm_program_id" name="项目ID" edit-type="hidden">
+            <rel entityCode="hfmd/hfmd_program/hfmd_program_id"></rel>
+        </field>
+        <field code="hfpm_module_id" name="模块ID" edit-type="hidden">
+        </field>
+        <field code="hfmd_entity_id" name="实体ID" edit-type="hidden"></field>
+
+        <field code="code" name="实体编码" edit-type="input">
+        </field>
+        <field code="name" name="实体名称" edit-type="input"></field>
+        <field code="type" name="实体类型" edit-type="select">
+            <enum value="0" name="业务类"></enum>
+            <enum value="1" name="配置类"></enum>
+            <enum value="2" name="关系类"></enum>
+            <enum value="3" name="扩展类"></enum>
+        </field>
+        <field code="desc" name="实体描述" edit-type="textarea" action="fdsfdsfds"></field>
+        <field code="del_flag" name="删除标识" edit-type="radio">
+            <create-edit-type>hidden</create-edit-type>
+            <enum-class code="GLOBAL.BOOLEAN"></enum-class>
+        </field>
+        <field code="op_id" name="创建人" edit-type="hidden">
+            <update-edit-type>text</update-edit-type>
+        </field>
+        <field code="create_time" name="创建时间" edit-type="hidden">
+        </field>
+        <field code="modify_op_id" name="修改人" edit-type="hidden"></field>
+        <field code="modify_time" name="修改时间" edit-type="hidden"></field>
+    </fields>
+</dataset>

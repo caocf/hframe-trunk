@@ -1,16 +1,20 @@
-$(".hflist-pager-button").click(function(){
-    var pageNo = $(this).attr("pageNo");
-    var $component = $parent($this);
-    var module = $component.attr("module");
-    var dataset = $component.attr("dataset");
-    $ajax({
-        url:module + "/" + dataset + "list",
-        param:{
-            "pageNo":pageNo,
-        },
-        success:function(ret){
-            $(this).parent("hflist-pager").html(ret.paper);
-            $(this).parent("hflist-data").html(ret.data);
-        }
+require(['layer','ajax','js/hframework/errormsg'], function () {
+
+    var layer = require('layer');
+    var ajax = require('ajax');
+    var errormsg = require('js/hframework/errormsg');
+
+    $(".hflist-pager-button").click(function(){
+        var pageNo = $(this).attr("pageNo");
+        var compoContainer = $(this).parents("[dataset][module]")[0];
+        var module = $(compoContainer).attr("module");
+        var dataset =$(compoContainer).attr("dataset");
+        var _url = module + "/" + dataset + "list";
+        var _data = {"pageNo":pageNo};
+        ajax.Post(_url,_data,function(data){
+            $(this).parent("hflist-pager").html(data.paper);
+            $(this).parent("hflist-data").html(data.data);
+        });
     });
 });
+

@@ -23,4 +23,13 @@
         <!--</property>-->
     <!--</bean>-->
 
+
+    <bean class="com.hframework.common.frame.cache.PropertyConfigurerUtils">
+        <property name="locations">
+            <list>
+                <value>classpath:properties/projectCreate.properties</value>
+            </list>
+        </property>
+    </bean>
+
 </beans>

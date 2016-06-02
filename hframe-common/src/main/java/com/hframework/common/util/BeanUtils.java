@@ -5,9 +5,7 @@ import org.apache.commons.logging.LogFactory;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 public class BeanUtils {
 
@@ -146,6 +144,21 @@ public class BeanUtils {
             e.printStackTrace();
         }
         return parmMap;
+    }
+
+    public static String[] getPropertiesArray(Object obj) {
+        List<String> result= new ArrayList();
+        Field[] fileds = obj.getClass().getDeclaredFields();
+        try {
+            for (Field field : fileds) {
+                // 属性名称
+                field.setAccessible(true);
+                result.add(String.valueOf(field.get(obj)));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result.toArray(new String[0]);
     }
 
     /**

@@ -707,7 +707,7 @@ public class BeanGeneratorUtil {
 
         GenerateDescriptor descriptor = new DefaultGenerateDescriptor();
 
-        generateByXml(descriptor, xmlString, "Config");
+        generateByXml(descriptor, xmlString, "DataSet");
 
     }
 

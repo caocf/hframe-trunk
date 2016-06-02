@@ -1,5 +1,7 @@
 package com.hframework.common.util;
 
+import javafx.scene.control.Pagination;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -39,6 +41,20 @@ public class ExampleUtils {
         signKeyWordMap.put("BT","Between");
         signKeyWordMap.put("NBT","NotBetween");
     }
+
+
+    /**
+     * 将一个业务对象转换为Example查询对象
+     * @param srcObj
+     * @return
+     * @throws InvocationTargetException
+     * @throws IllegalAccessException
+     */
+    public  static <T> T parseExample(Object srcObj,Class<T> exampleClass) throws InvocationTargetException,
+            IllegalAccessException, InstantiationException {
+        return (T) parseExample(srcObj,exampleClass.newInstance());
+    }
+
 
     /**
      * 将一个业务对象转换为Example查询对象

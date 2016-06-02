@@ -24,25 +24,29 @@ leftMenuTree:
 
 ##组件数据模板##
 {
-    menus [
+    menus[
         {
-            url: '',
-			id:'',
+            url: '1',
+            id: '1',
             icon: '',
-            name: '',
+            name: '用户管理',
             submenus: [
                 {
                     url: '#',
-					id:'',
+                    id: '',
                     icon: '',
-                    name: '',
-                    
+                    name: '用户添加'
+                },
+                {
+                    url: '#',
+                    id: '',
+                    icon: '',
+                    name: '用户查询'
                 }
             ]
         }
     ]
 }
-
 
 ##组件实例
 <mapper tempalte='leftMenuTree' data="user">
@@ -310,31 +314,35 @@ $(".hflist-pager-button").click(function(){
    id:"mylist",
    icon:'icon-user',
    title:"我的列表",
-   columnCode:["id","name","age","gender","address","remark"],
-   columnName:["学号","姓名","年龄","性别","地址","备注"],
+   columns:[{code:"id",name:"学号"},
+   			{code:"name",name:"姓名"},
+   			{code:"age",name:"年龄"},
+   			{code:"gender",name:"性别"},
+   			{code:"address",name:"地址"},
+   			{code:"remark",name:"备注"}],
    data:[
     [1001,"张三",29,"女","四川成都",''],
-	[1002,"李四",31,"女"，"北京",'']
+	[1002,"李四",31,"女","北京",'']
    ],
    pagination:{
 	 pageSize:2,
 	 pageIndex:1,
 	 total:100,
-	 pageCount:50,
+	 pageCount:50
    },
    memo:{
-	 "dataset":"user",
+	 "dataset":"user"
    },
    order:{
 	 "name":"DESC",
 	 "age":"ASC"
-   }
+   },
    pager:[
-	 ["上一页","1","disabled",""]
-	 ["1","1","disabled","active"]
-	 ["2","2","",""]
-	 ["3","3","",""]
-	 ["4","4","",""]
+	 ["上一页","1","disabled",""],
+	 ["1","1","disabled","active"],
+	 ["2","2","",""],
+	 ["3","3","",""],
+	 ["4","4","",""],
 	 ["下一页","5","",""]
    ]
 }
@@ -356,9 +364,15 @@ $(".hflist-pager-button").click(function(){
 		{code:"gender",name:"性别",editType:"radio"},
 		{code:"address",name:"地址",editType:"input"},
 		{code:"remark",name:"备注",editType:"textarea"}
-   ]
-   data:{id:"1001",name:"张三",age:29,gender:"女",address:"四川成都",remark:""}
+   ],
+   data:{id:"1001",name:"张三",age:29,gender:"女",address:"四川成都",remark:""},
    memo:{
 	 "dataset":"user",
    }
+}
+
+
+
+{
+
 }
