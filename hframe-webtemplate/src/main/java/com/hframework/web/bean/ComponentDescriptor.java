@@ -1,5 +1,6 @@
 package com.hframework.web.bean;
 
+import com.alibaba.fastjson.JSONObject;
 import com.hframework.beans.controller.ResultData;
 import com.hframework.web.config.bean.Component;
 import com.hframework.web.config.bean.Mapper;
@@ -35,13 +36,17 @@ public class ComponentDescriptor extends ElementDescriptor{
         }
     }
 
-    public String getJson(ResultData resultData){
+    public JSONObject getJson(ResultData resultData){
         ComponentDataContainer dataInstance;
         if(resultData.getData() != null) {
             dataInstance = this.dataContainer.getDataInstance(resultData.getData());
             return dataInstance.getJson();
         }
         return null;
+    }
+
+    public JSONObject getJson(){
+        return this.dataContainer.getJson();
     }
 
     public ComponentDescriptor(Element element) {

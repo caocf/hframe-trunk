@@ -32,20 +32,27 @@
         </event>
     </baseEvents>
     <events>
-        <event name="edit">
+        <event name="create">
             <attach anchor="EOFR">
                 <appendElement type="icon" param='{fillclass:"btn-success",iconclass:"icon-zoom-in"}'></appendElement>
             </attach>
+            <effect type="pageFwd" action='${create}' isStack="true"></effect>
+            <effect type="component.reload"></effect>
+        </event>
+        <event name="edit">
+            <attach anchor="EOFR">
+                <appendElement type="icon" param='{fillclass:"btn-info",iconclass:"icon-edit"}'></appendElement>
+            </attach>
             <source scope="CROW" param="${id}"></source>
-            <effect type="pageFwd" action='${edit}' isStack="true"></effect>
+            <effect type="dialog" action='${edit}' isStack="true"></effect>
             <effect type="component.reload"></effect>
         </event>
         <event name="delete">
             <attach anchor="EOFR">
-                <appendElement type="icon" param='{fillclass:"btn-success",iconclass:"icon-zoom-in"}'></appendElement>
+                <appendElement type="icon" param='{fillclass:"btn-danger",iconclass:"icon-trash"}'></appendElement>
             </attach>
             <source scope="CROW" param='${id}'></source>
-            <effect type="dialogTip" param='你是否删除${name}该数据!'></effect>
+            <effect type="confirm" content='你是否删除【{${name}}】该数据!'></effect>
             <effect type="ajaxSubmit" action="${delete}"></effect>
             <effect type="component.reload"></effect>
         </event>
@@ -54,18 +61,12 @@
             <source scope="CROW" param="${id}"></source>
             <effect type="pageFwd" action='${detail}' isStack="true"></effect>
         </event>
-        <event name="create">
-            <attach anchor="EOFR">
-                <appendElement type="icon" param='{fillclass:"btn-success",iconclass:"icon-zoom-in"}'></appendElement>
-            </attach>
-            <effect type="pageFwd" action='${create}' isStack="true"></effect>
-            <effect type="component.reload"></effect>
-        </event>
+
         <event name="batchDelete">
-            <attach anchor="EOF">
-                <appendElement type="button" param='{btnclass:"btn-error",btnText:"批量删除"}'></appendElement>
+            <attach anchor="EOFC">
+                <appendElement type="button" param='{btnclass:"btn-primary",btnText:"批量删除"}'></appendElement>
             </attach>
-            <source scope="ROWS">
+            <source scope="BOFR">
                 <appendElement type="checkbox" param='${id}|${name}'></appendElement>
             </source>
             <effect type="ajaxSubmit" action='${batchDelete}' param="ids" isStack="true"></effect>

@@ -8,6 +8,7 @@ import com.hframework.beans.controller.Pagination;
 import com.hframework.common.util.BeanUtils;
 import com.hframework.common.util.EnumUtils;
 import com.hframework.common.util.RegexUtils;
+import com.hframework.common.util.ResourceWrapper;
 import com.hframework.web.config.bean.Component;
 import com.hframework.web.config.bean.DataSet;
 import com.hframework.web.config.bean.component.AppendElement;
@@ -36,6 +37,8 @@ public class ComponentDataContainer {
     //组件结尾(如：提交按钮)
     private List<EventElement> endOfCompList = new ArrayList<EventElement>();
     //每一行某一列（如：点击名称进行超链接）
+    private List<EventElement> elementOfCompList = new ArrayList<EventElement>();
+    //每一行某一列（如：点击名称进行超链接）
     private Map<String, EventElement> elementOfRowMap = new HashMap<String, EventElement>();
 
     private Map<String, JsonSegmentParser> runtimeDataMap = new HashMap<String, JsonSegmentParser>();
@@ -60,36 +63,34 @@ public class ComponentDataContainer {
             }else if(EnumUtils.compare(ComponentElementType.array2, element.getType())) {
                 elements.put(element.getId(), new Array2JsonSegmentParser(element));
             }
+        }
 
-            List<Event> allEvent = new ArrayList<Event>();
-            allEvent.addAll(component.getBaseEvents().getEventList());
-            allEvent.addAll(component.getEvents().getEventList());
-            for (Event event : allEvent) {
-                if(EnumUtils.compare(ComponentEventAnchor.BOFR, event.getAttach().getAnchor())) {
-                    beforeOfRowList.add(new EventElement(event));
-                }else if(EnumUtils.compare(ComponentEventAnchor.EOFR, event.getAttach().getAnchor())) {
-                    endOfRowList.add(new EventElement(event));
-                }else if(EnumUtils.compare(ComponentEventAnchor.EOFC, event.getAttach().getAnchor())) {
-                    endOfCompList.add(new EventElement(event));
-                }else {
-                    elementOfRowMap.put(event.getName(), new EventElement(event));
-                }
-
-                AppendElement appendElement = event.getSource().getAppendElement();
-                if(appendElement != null) {
-                    if(EnumUtils.compare(ComponentEventAnchor.BOFR, appendElement.getType())) {
-                        beforeOfRowList.add(new EventElement(appendElement));
-                    }else if(EnumUtils.compare(ComponentEventAnchor.EOFR, appendElement.getType())) {
-                        endOfRowList.add(new EventElement(appendElement));
-                    }else if(EnumUtils.compare(ComponentEventAnchor.EOFC, appendElement.getType())) {
-                        endOfCompList.add(new EventElement(appendElement));
-                    }else {
-                        elementOfRowMap.put(event.getName(), new EventElement(event));
-                    }
-                }
+        List<Event> allEvent = new ArrayList<Event>();
+        allEvent.addAll(component.getBaseEvents().getEventList());
+        allEvent.addAll(component.getEvents().getEventList());
+        for (Event event : allEvent) {
+            if(EnumUtils.compare(ComponentEventAnchor.BOFR, event.getAttach().getAnchor())) {
+                beforeOfRowList.add(new EventElement(event));
+            }else if(EnumUtils.compare(ComponentEventAnchor.EOFR, event.getAttach().getAnchor())) {
+                endOfRowList.add(new EventElement(event));
+            }else if(EnumUtils.compare(ComponentEventAnchor.EOFC, event.getAttach().getAnchor())) {
+                endOfCompList.add(new EventElement(event));
+            }else {
+                elementOfCompList.add(new EventElement(event));
             }
 
-
+            AppendElement appendElement = event.getSource().getAppendElement();
+            if(appendElement != null && appendElement.getType() !=null) {
+                if(EnumUtils.compare(ComponentEventAnchor.BOFR, event.getSource().getScope())) {
+                    beforeOfRowList.add(new EventElement(appendElement));
+                }else if(EnumUtils.compare(ComponentEventAnchor.EOFR, event.getSource().getScope())) {
+                    endOfRowList.add(new EventElement(appendElement));
+                }else if(EnumUtils.compare(ComponentEventAnchor.EOFC, event.getSource().getScope())) {
+                    endOfCompList.add(new EventElement(appendElement));
+                }else {
+                    elementOfCompList.add(new EventElement(appendElement));
+                }
+            }
         }
     }
 
@@ -100,16 +101,21 @@ public class ComponentDataContainer {
             peddingEventElement(beforeOfRowList, mapping, dataSetDescriptor);
             peddingEventElement(endOfRowList, mapping, dataSetDescriptor);
             peddingEventElement(endOfCompList, mapping, dataSetDescriptor);
-            peddingEventElement(new ArrayList<EventElement>(elementOfRowMap.values()), mapping, dataSetDescriptor);
+            peddingEventElement(elementOfCompList, mapping, dataSetDescriptor);
+            for (EventElement eventElement : elementOfCompList) {
+                elementOfRowMap.put(eventElement.getAnchorName(),eventElement);
+            }
         }
     }
 
     private void peddingEventElement(List<EventElement> eventElementList, Mapping mapping, DataSetDescriptor dataSetDescriptor) {
         for (EventElement eventElement : eventElementList) {
             eventElement.setParams(eventElement.getParams() == null ? null :
-                    eventElement.getParams().replace("${" + mapping.getId() + "}", mapping.getValue()));
+                    eventElement.getParams().replace("${" + mapping.getId() + "}", mapping.getValue() + "={" + mapping.getValue() + "}"));
             eventElement.setAction(eventElement.getAction() == null ? null :
                     eventElement.getAction().replace("${" + mapping.getId() + "}", mapping.getValue()));
+            eventElement.setAnchorName(eventElement.getAnchorName() == null ? null :
+                    eventElement.getAnchorName().replace("${" + mapping.getId() + "}", mapping.getValue()));
         }
     }
 
@@ -126,20 +132,21 @@ public class ComponentDataContainer {
                     JsonSegmentParser jsonSegmentParser = runtimeDataMap.get("${data}");
                     if (jsonSegmentParser instanceof Array2JsonSegmentParser) {
                         Array2JsonSegmentParser segmentParser = (Array2JsonSegmentParser) jsonSegmentParser;
-                        segmentParser.setData(map.get("list"));
+                        JSONArray columns = (JSONArray) this.elements.get("columns").getJsonObject();
+                        segmentParser.setData(map.get("list"),columns);
                     }
                 } else if ("pager".equals(key)) {
                     JsonSegmentParser jsonSegmentParser = runtimeDataMap.get("${pager}");
                     if (jsonSegmentParser instanceof Array2JsonSegmentParser) {
                         Array2JsonSegmentParser segmentParser = (Array2JsonSegmentParser) jsonSegmentParser;
-                        segmentParser.setData(map.get("pager"));
+                        segmentParser.setData(map.get("pager"), null);
                     }
                 }
             }
         } else {//详情返回
 
         }
-        return null;
+        return this;
     }
 
     private List<Pager> getPagers(Pagination pagination) {
@@ -162,12 +169,25 @@ public class ComponentDataContainer {
         return list;
     }
 
-    public String getJson() {
+    public JSONObject getJson() {
         jsonObject = new JSONObject();
         for (String key : elements.keySet()) {
-            jsonObject.put(key,elements.get(key).getJsonObject());
+            jsonObject.put(key, elements.get(key).getJsonObject());
         }
-        return jsonObject.toJSONString();
+
+        jsonObject.put("BOFR",beforeOfRowList.size() == 0 ? null : beforeOfRowList );
+        jsonObject.put("EOFR",endOfRowList.size() == 0 ? null : endOfRowList );
+        jsonObject.put("EOF",endOfCompList.size() == 0 ? null : endOfCompList );
+        jsonObject.put("ELE",elementOfRowMap.size() == 0 ? null : elementOfRowMap );
+        return jsonObject;
+    }
+
+    private List getEventJsonString(List<EventElement> eventElements) {
+        List tempList = new ArrayList();
+        for (EventElement eventElement : eventElements) {
+            tempList.add(eventElement.getAction());
+        }
+        return tempList;
     }
 
     public class Pager{
@@ -321,14 +341,14 @@ public class ComponentDataContainer {
             runtimeDataMap.put(express,this);
         }
 
-        public void setData(Object data) {
+        public void setData(Object data, JSONArray columns) {
             this.data = data;
             if (data instanceof List) {
                 values = new ArrayList<String[]>();
                 List list = (List) data;
                 for (Object object : list) {
-                    if(initMap.size() == 0) {
-                        List<String> value= new ArrayList<String>();
+                    List<String> value= new ArrayList<String>();
+                    if(initMap.size() != 0) {
                         for (String string : initMap.values()) {
                             String propertyName = string.substring(2,string.length()-1);
                             try {
@@ -337,11 +357,22 @@ public class ComponentDataContainer {
                                 e.printStackTrace();
                             }
                         }
-                        values.add(value.toArray(new String[0]));
                     }else {
-                        values.add(BeanUtils.getPropertiesArray(object));
+                        for (Object column : columns) {
+                            try {
+                                value.add(org.apache.commons.beanutils.BeanUtils.getProperty(object,
+                                        ResourceWrapper.JavaUtil.getJavaVarName(((JSONObject) column).getString("code"))));
+                            } catch (IllegalAccessException e) {
+                                e.printStackTrace();
+                            } catch (InvocationTargetException e) {
+                                e.printStackTrace();
+                            } catch (NoSuchMethodException e) {
+                                e.printStackTrace();
+                            }
+                        }
+//                        values.add(BeanUtils.getPropertiesArray(object));
                     }
-
+                    values.add(value.toArray(new String[0]));
                 }
             }
         }
@@ -505,7 +536,8 @@ public class ComponentDataContainer {
 
         @Override
         public void afterSetDataSetDescriptorAndMapping() {
-
+            express = mapping.getValue();
+            value = mapping.getValue();
         }
 
         public String getExpress() {
@@ -600,12 +632,17 @@ public class ComponentDataContainer {
         private String component;
         private String params;
         private String action;
-        private JSONObject actionJsonObject = new JSONObject();
+        private String fillclass;
+        private JSONObject actionJsonObject = new JSONObject(true);
+
+        private String anchorName;
 
         public EventElement(Event event) {
+            anchorName = event.getAttach().getAnchor();
             if(event.getAttach().getAppendElementList() != null) {
                 for (AppendElement appendElement : event.getAttach().getAppendElementList()) {
                     component = parseComponent(appendElement);
+                    fillclass = (String) JSONObject.parseObject(appendElement.getParam()).get("fillclass");
                 }
             }
             if(event.getSource() != null) {
@@ -616,10 +653,27 @@ public class ComponentDataContainer {
                 subJsonObject.put("action",effect.getAction());
                 subJsonObject.put("isStack",effect.getIsStack());
                 subJsonObject.put("param",effect.getParam());
+                subJsonObject.put("content",effect.getContent());
                 actionJsonObject.put(effect.getType(),subJsonObject);
             }
 
             action = actionJsonObject.toJSONString();
+        }
+
+        public String getAnchorName() {
+            return anchorName;
+        }
+
+        public void setAnchorName(String anchorName) {
+            this.anchorName = anchorName;
+        }
+
+        public String getFillclass() {
+            return fillclass;
+        }
+
+        public void setFillclass(String fillclass) {
+            this.fillclass = fillclass;
         }
 
         public EventElement(AppendElement appendElement) {
@@ -630,18 +684,20 @@ public class ComponentDataContainer {
         }
 
         private String parseComponent(AppendElement appendElement) {
-            JSONObject jsonObject = JSONObject.parseObject(appendElement.getParam());
+
             if("icon".equals(appendElement.getType())) {
+                JSONObject jsonObject = JSONObject.parseObject(appendElement.getParam());
                 return "<i class=\"${iconclass}\"></i>"
                         .replace("${iconclass}", (String) jsonObject.get("iconclass"));
             }else if("button".equals(appendElement.getType())) {
+                JSONObject jsonObject = JSONObject.parseObject(appendElement.getParam());
                 return "<button  class=\"btn ${btnclass}\">${btnText}</button>"
                         .replace("${btnclass}", (String) jsonObject.get("btnclass"))
                         .replace("${btnText}", (String) jsonObject.get("btnText"));
             }else if("checkbox".equals(appendElement.getType())) {
-                return "<input type=\"checkbox\" name=\"${id}\", value=\"${value}\">"
-                        .replace("${id}", (String) jsonObject.get("id"))
-                        .replace("${value}", (String) jsonObject.get("${id}"));
+                return "<input type=\"checkbox\" name=\"${id}\", value=\"${value}\">";
+//                        .replace("${id}", (String) jsonObject.get("id"))
+//                        .replace("${value}", (String) jsonObject.get("${id}"));
             }
             return null;
         }

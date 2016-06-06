@@ -7,13 +7,16 @@
         <element id="content" type="container"></element>
     </pagetemplate>
     <pagetemplate id="list" path="list.vm" parent-id = "default" name="列表页" type="forward">
-        <element id="qForm" type="component"></element>
+        <element id="form" type="component"></element>
         <element id="list" type="component"></element>
     </pagetemplate>
     <pagetemplate id="create" path="create.vm" parent-id = "default" name="创建页" type="forward">
-        <element id="cForm" type="component"></element>
+        <element id="form" type="component"></element>
     </pagetemplate>
     <pagetemplate id="edit" path="edit.vm" parent-id = "default" name="编辑页" type="pop">
-        <element id="eForm" type="component"></element>
+        <element id="form" type="component"></element>
+    </pagetemplate>
+    <pagetemplate id="detail" path="detail.vm" parent-id = "default" name="详情页" type="pop">
+        <element id="form" type="component"></element>
     </pagetemplate>
 </pagetemplates>

@@ -10,6 +10,9 @@ import $importClass;
 
 $!classDef.annotation
 public $classDef.type $classDef.className $!classDef.superClassStr $!classDef.implementsStr {
+#if($classDef.useLogger)
+    private static final Logger logger = LoggerFactory.getLogger(${classDef.className}.class);
+#end
 
 #foreach($field in $classDef.fieldList)
 	$!field.fieldAnno

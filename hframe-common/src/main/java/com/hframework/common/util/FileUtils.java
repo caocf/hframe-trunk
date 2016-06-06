@@ -175,7 +175,6 @@ public class FileUtils {
     }
 
     public static void writeFile(String filePath, String fileContent) {
-
         newFile(filePath);
         BufferedWriter bw=null;
         try {
@@ -190,7 +189,7 @@ public class FileUtils {
                 }
             }
             bw.flush();
-            System.out.println("文件创建成功");
+            System.out.println("文件创建成功:" + filePath);
 
         } catch (Exception e) {
             e.printStackTrace();

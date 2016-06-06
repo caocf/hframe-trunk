@@ -34,10 +34,11 @@ public class WebContext {
 //    private static final String COMPONENT_DIR = "/template/component";
 //    private static final String PAGE_DESCRIPTER_FILE = "template/page/pagedescripter.xml";
 
-    private static final String DATA_SET_DIR = "program/demo/data/set";
-    private static final String MODULE_DIR = "program/demo/module";
-    private static final String MAPPER_DIR = "program/demo/mapper";
-    private static final String PROGRAM_FILE = "program/demo/program.xml";
+    private static final String PROGRAM_ROOT_DIR = "program/hframe";
+    private static final String DATA_SET_DIR = PROGRAM_ROOT_DIR + "/data/set";
+    private static final String MODULE_DIR = PROGRAM_ROOT_DIR + "/module";
+    private static final String MAPPER_DIR = PROGRAM_ROOT_DIR + "/mapper";
+    private static final String PROGRAM_FILE = PROGRAM_ROOT_DIR + "/program.xml";
     private static final String COMPONENT_DIR = "hframework/template/default/component";
     private static final String PAGE_DESCRIPTER_FILE = "hframework/template/default/page/pagedescripter.xml";
 
@@ -126,8 +127,23 @@ public class WebContext {
             }
         }
 
+        //获取页面级初始化信息。
+        for (ComponentDescriptor componentDescriptor : pageDescriptor.getComponents().values()) {
+            if(mappers.get(page.getDataSet() + "_" + componentDescriptor.getId()) == null) {
+                logger.warn("no mapper {} exists !", page.getDataSet() + "_" + componentDescriptor.getId());
+                continue;
+            }
+            componentDescriptor.setMapper(mappers.get(page.getDataSet() + "_" + componentDescriptor.getId()));
+            componentDescriptor.setDataSetDescriptor(dataSets.get(page.getDataSet()));
+            componentDescriptor.initComponentDataContainer();
+        }
+
+        //获取组件级初始化信息。
         List<com.hframework.web.config.bean.module.Component> componentList = page.getComponentList();
         for (com.hframework.web.config.bean.module.Component component : componentList) {
+            if(StringUtils.isBlank(component.getDataSet())) {
+                component.setDataSet(page.getDataSet());
+            }
             ComponentDescriptor componentDescriptor = pageDescriptor.getComponentDescriptor(component.getId());
             componentDescriptor.setMapper(mappers.get(component.getDataSet() + "_" + component.getId()));
             componentDescriptor.setDataSetDescriptor(dataSets.get(component.getDataSet()));

@@ -1,9 +1,10 @@
-<select name='$map.get("ViewObject").$column.javaVarName' class="form-control"  style='$widthStype' >
-	#foreach($option in $column.ShowType.optionList)
-		<option  value=$option.Value
-		#if("{$oldObjectValue.get(${column.Name})}"=="{$option.Value}")
-		selected='selected'
-		#end
-		>$option.Text</option>
-	#end
-</select>
+##<select name='$map.get("ViewObject").$column.javaVarName' class="form-control"  style='$widthStype' >
+##	#foreach($option in $column.ShowType.optionList)
+##		<option  value=$option.Value
+##		#if("{$oldObjectValue.get(${column.Name})}"=="{$option.Value}")
+##		selected='selected'
+##		#end
+##		>$option.Text</option>
+##	#end
+##</select>
+<select name='$column.code' class="form-control"  style='$widthStype' data-code="PC.BasicProduct.Id.Name" data-condition="orgId=${curUser.orgId}" relat-element="spvId"></select>

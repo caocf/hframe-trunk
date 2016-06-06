@@ -16,6 +16,8 @@
 ##只有一个类型的时候
 #if($column.editType=='input')
 	#parse("component/element/_input.vm")
+#elseif($column.editType=='hidden')
+	#parse("component/element/_hidden.vm")
 #elseif($column.editType=='select')
 	#parse("component/element/_select.vm")
 #elseif($column.editType=='datetime')
@@ -28,6 +30,8 @@
 	#parse("component/element/_radio.vm")
 #elseif($column.editType=='openwin')
 	#parse("component/element/_openwin.vm")
+#elseif($column.editType=='textarea')
+	#parse("component/element/_textarea.vm")
 #else
 	UNKOWN
 #end

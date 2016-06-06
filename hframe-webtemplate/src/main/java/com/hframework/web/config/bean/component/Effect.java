@@ -17,9 +17,14 @@ public class Effect   {
 	@XStreamAsAttribute
     @XStreamAlias("isStack")
 	private String isStack;
-	@XStreamAsAttribute
+    @XStreamAsAttribute
     @XStreamAlias("param")
-	private String param;
+    private String param;
+    @XStreamAsAttribute
+    @XStreamAlias("content")
+    private String content;
+
+
 
     public Effect() {
     }
@@ -56,5 +61,12 @@ public class Effect   {
      public void setParam(String param){
      	this.param = param;
      }
-	 
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
 }

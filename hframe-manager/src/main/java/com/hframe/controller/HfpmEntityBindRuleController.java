@@ -1,7 +1,11 @@
 package com.hframe.controller;
 
+import com.hframework.beans.controller.Pagination;
+import com.hframework.beans.controller.ResultCode;
+import com.hframework.beans.controller.ResultData;
 import com.hframework.common.util.ExampleUtils;
-import com.hframe.controller.bean.ResultMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,11 +20,64 @@ import com.hframe.service.interfaces.IHfpmEntityBindRuleSV;
 @Controller
 @RequestMapping(value = "/hframe/hfpmEntityBindRule")
 public class HfpmEntityBindRuleController   {
+    private static final Logger logger = LoggerFactory.getLogger(HfpmEntityBindRuleController.class);
 
 	@Resource
 	private IHfpmEntityBindRuleSV iHfpmEntityBindRuleSV;
   
 
+
+
+
+    /**
+     * 查询展示实体捆绑规则列表
+     * @param hfpmEntityBindRule
+     * @return
+     * @throws Throwable
+     */
+    @RequestMapping(value = "/queryListByAjax.html")
+    @ResponseBody
+    public ResultData list(@ModelAttribute("hfpmEntityBindRule") HfpmEntityBindRule hfpmEntityBindRule,
+                                      @ModelAttribute("example") HfpmEntityBindRule_Example example, Pagination pagination){
+        logger.debug("request : {},{},{}", hfpmEntityBindRule, example, pagination);
+        try{
+            ExampleUtils.parseExample(hfpmEntityBindRule, example);
+            //设置分页信息
+            example.setLimitStart(pagination.getStartIndex());
+            example.setLimitEnd(pagination.getEndIndex());
+
+            final List< HfpmEntityBindRule> list = iHfpmEntityBindRuleSV.getHfpmEntityBindRuleListByExample(example);
+            pagination.setTotalCount(iHfpmEntityBindRuleSV.getHfpmEntityBindRuleCountByExample(example));
+
+            return ResultData.success().add("list",list).add("pagination",pagination);
+        }catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+    }
+
+    /**
+     * 查询展示实体捆绑规则明细
+     * @param hfpmEntityBindRule
+     * @return
+     * @throws Throwable
+     */
+    @RequestMapping(value = "/queryOneByAjax.html")
+    @ResponseBody
+    public ResultData detail(@ModelAttribute("hfpmEntityBindRule") HfpmEntityBindRule hfpmEntityBindRule){
+        logger.debug("request : {},{}", hfpmEntityBindRule.getHfpmEntityBindRuleId(), hfpmEntityBindRule);
+        try{
+            HfpmEntityBindRule result = iHfpmEntityBindRuleSV.getHfpmEntityBindRuleByPK(hfpmEntityBindRule.getHfpmEntityBindRuleId());
+            if(result != null) {
+                return ResultData.success(result);
+            }else {
+                return ResultData.error(ResultCode.RECODE_IS_NOT_EXISTS);
+            }
+        }catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+    }
 
     /**
     * 创建实体捆绑规则
@@ -28,75 +85,66 @@ public class HfpmEntityBindRuleController   {
     * @return
     * @throws Throwable
     */
-    @RequestMapping(value = "/create.html")
-    public ModelAndView create(@ModelAttribute("hfpmEntityBindRule") HfpmEntityBindRule hfpmEntityBindRule) throws Throwable {
-        ModelAndView mav = new ModelAndView();
-        iHfpmEntityBindRuleSV.create(hfpmEntityBindRule);
-        mav.addObject("hfpmEntityBindRuleId", hfpmEntityBindRule.getHfpmEntityBindRuleId());
-        mav.setViewName("/hframe/hfpmEntityBindRule/hframe_hfpmEntityBindRule_create");
-        return mav;
-    }
-
-    /**
-    * 查询展示实体捆绑规则
-    * @param hfpmEntityBindRule
-    * @return
-    * @throws Throwable
-    */
-    @RequestMapping(value = "/list.html")
-    public ModelAndView list(@ModelAttribute("hfpmEntityBindRule") HfpmEntityBindRule hfpmEntityBindRule) throws Throwable {
-        ModelAndView mav = new ModelAndView();
-        HfpmEntityBindRule_Example example = new HfpmEntityBindRule_Example();
-        ExampleUtils.parseExample(hfpmEntityBindRule,example);
-
-        List< HfpmEntityBindRule> hfpmEntityBindRuleList = iHfpmEntityBindRuleSV.getHfpmEntityBindRuleListByExample(example);
-
-        mav.addObject("hfpmEntityBindRuleList", hfpmEntityBindRuleList);
-        mav.setViewName("/hframe/hfpmEntityBindRule/hframe_hfpmEntityBindRule_list");
-        return mav;
-    }
-
-
-    /**
-    * 异步创建实体捆绑规则
-    * @param hfpmEntityBindRule
-    * @return
-    * @throws Throwable
-    */
     @RequestMapping(value = "/createByAjax.html")
     @ResponseBody
-    public ResultMessage createByAjax(@ModelAttribute("hfpmEntityBindRule") HfpmEntityBindRule hfpmEntityBindRule) throws Throwable {
-        ResultMessage message = new ResultMessage();
-        iHfpmEntityBindRuleSV.create(hfpmEntityBindRule);
-        return message;
+    public ResultData create(@ModelAttribute("hfpmEntityBindRule") HfpmEntityBindRule hfpmEntityBindRule) {
+        logger.debug("request : {}", hfpmEntityBindRule);
+        try {
+            int result = iHfpmEntityBindRuleSV.create(hfpmEntityBindRule);
+            if(result > 0) {
+                return ResultData.success(hfpmEntityBindRule);
+            }
+        } catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+        return ResultData.error(ResultCode.UNKNOW);
     }
 
     /**
-    * 异步更新实体捆绑规则
+    * 更新实体捆绑规则
     * @param hfpmEntityBindRule
     * @return
     * @throws Throwable
     */
     @RequestMapping(value = "/updateByAjax.html")
     @ResponseBody
-    public ResultMessage updateByAjax(@ModelAttribute("hfpmEntityBindRule") HfpmEntityBindRule hfpmEntityBindRule) throws Throwable {
-        ResultMessage message = new ResultMessage();
-        iHfpmEntityBindRuleSV.update(hfpmEntityBindRule);
-        return message;
+    public ResultData update(@ModelAttribute("hfpmEntityBindRule") HfpmEntityBindRule hfpmEntityBindRule) {
+        logger.debug("request : {}", hfpmEntityBindRule);
+        try {
+            int result = iHfpmEntityBindRuleSV.update(hfpmEntityBindRule);
+            if(result > 0) {
+                return ResultData.success(hfpmEntityBindRule);
+            }
+        } catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+        return ResultData.error(ResultCode.UNKNOW);
     }
 
     /**
-    * 异步删除实体捆绑规则
+    * 删除实体捆绑规则
     * @param hfpmEntityBindRule
     * @return
     * @throws Throwable
     */
     @RequestMapping(value = "/deleteByAjax.html")
     @ResponseBody
-    public ResultMessage deleteByAjax(@ModelAttribute("hfpmEntityBindRule") HfpmEntityBindRule hfpmEntityBindRule) throws Throwable {
-        ResultMessage message = new ResultMessage();
-        iHfpmEntityBindRuleSV.delete(hfpmEntityBindRule);
-        return message;
+    public ResultData delete(@ModelAttribute("hfpmEntityBindRule") HfpmEntityBindRule hfpmEntityBindRule) {
+        logger.debug("request : {}", hfpmEntityBindRule);
+
+        try {
+            int result = iHfpmEntityBindRuleSV.delete(hfpmEntityBindRule);
+            if(result > 0) {
+                return ResultData.success(hfpmEntityBindRule);
+            }else {
+                return ResultData.error(ResultCode.RECODE_IS_NOT_EXISTS);
+            }
+        } catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
     }
   	//getter
  	

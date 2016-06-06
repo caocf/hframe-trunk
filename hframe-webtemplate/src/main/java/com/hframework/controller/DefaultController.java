@@ -1,8 +1,11 @@
 package com.hframework.controller;
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.hframework.beans.class0.Class;
+import com.hframework.beans.controller.Pagination;
 import com.hframework.beans.controller.ResultData;
+import com.hframework.common.frame.ServiceFactory;
 import com.hframework.common.frame.cache.PropertyConfigurerUtils;
 import com.hframework.common.util.ReflectUtils;
 import com.hframework.common.util.StringUtils;
@@ -10,6 +13,7 @@ import com.hframework.web.bean.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -32,7 +36,10 @@ public class DefaultController {
      * @throws Throwable
      */
     @RequestMapping(value = "/{module}/{page}.html")
-    public ModelAndView gotoPage(@PathVariable("module") String module,@PathVariable("page") String pageCode, HttpServletRequest request, HttpServletResponse response) throws Throwable {
+    public ModelAndView gotoPage(@PathVariable("module") String module,@PathVariable("page") String pageCode,
+                                 @ModelAttribute("component")  String componentId,
+                                 @ModelAttribute("pagination")  Pagination pagination,
+                                 HttpServletRequest request, HttpServletResponse response) throws Throwable {
         ModelAndView mav = new ModelAndView();
 
         PageDescriptor pageInfo = WebContext.get().getPageInfo(module, pageCode);
@@ -45,33 +52,67 @@ public class DefaultController {
 
         Map<String, ComponentDescriptor> components = pageInfo.getComponents();
         for (ComponentDescriptor componentDescriptor : components.values()) {
-            if(componentDescriptor.getDataSetDescriptor() == null) {
-                logger.warn("component {} is not set data set",componentDescriptor.getId());
-                continue;
-            }
-            String moduleCode = componentDescriptor.getDataSetDescriptor().getDataSet().getModule();
-            String dataSetCode = componentDescriptor.getDataSetDescriptor().getDataSet().getCode();
-            String action = componentDescriptor.getComponent().getType();
+            if(StringUtils.isBlank(componentId) || componentId.equals(componentDescriptor.getId())) {
+                if(componentDescriptor.getDataSetDescriptor() == null) {
+                    logger.warn("component {} is not set data set",componentDescriptor.getId());
+                    continue;
+                }
+                String moduleCode = componentDescriptor.getDataSetDescriptor().getDataSet().getModule();
+                String dataSetCode = componentDescriptor.getDataSetDescriptor().getDataSet().getCode();
+                String action = componentDescriptor.getComponent().getType();
 
-            com.hframework.beans.class0.Class defPoClass = CreatorUtil.getDefPoClass("",
-                    WebContext.get().getProgram().getCode(), moduleCode, dataSetCode);
-            com.hframework.beans.class0.Class defControllerClass = CreatorUtil.getDefControllerClass("",
-                    WebContext.get().getProgram().getCode(), moduleCode, dataSetCode);
+                if(StringUtils.isNotBlank(action)) {
+                    com.hframework.beans.class0.Class defPoClass = CreatorUtil.getDefPoClass("",
+                            WebContext.get().getProgram().getCode(), moduleCode, dataSetCode);
+                    com.hframework.beans.class0.Class defPoExampleClass = CreatorUtil.getDefPoExampleClass("",
+                            WebContext.get().getProgram().getCode(), moduleCode, dataSetCode);
+                    com.hframework.beans.class0.Class defControllerClass = CreatorUtil.getDefControllerClass("",
+                            WebContext.get().getProgram().getCode(), moduleCode, dataSetCode);
 
-            Object po= java.lang.Class.forName(defPoClass.getClassPath()).newInstance();
-            Object controller= java.lang.Class.forName(defControllerClass.getClassPath()).newInstance();
-            ResultData resultData = (ResultData) ReflectUtils.invokeMethod(controller,
-                    action, new java.lang.Class[]{java.lang.Class.forName(defPoClass.getClassPath())}, new Object[]{po});
-            resetResultMessage(resultData, WebContext.get().getProgram().getCode(), moduleCode, dataSetCode, action);
-            if(resultData.isSuccess()) {
-                String json = componentDescriptor.getJson(resultData);
-                mav.addObject(componentDescriptor.getId(), JSONArray.parse(json));
+                    if(pagination.getPageNo() == 0) {
+                        pagination.setPageNo(1);
+                    }
+                    if(pagination.getPageSize() == 0) {
+                        pagination.setPageSize(5);
+                    }
+                    Object po= java.lang.Class.forName(defPoClass.getClassPath()).newInstance();
+                    Object poExample= java.lang.Class.forName(defPoExampleClass.getClassPath()).newInstance();
+                    Object controller= ServiceFactory.getService(defControllerClass.getClassName().substring(0,1).toLowerCase() + defControllerClass.getClassName().substring(1));
+                    ResultData resultData = (ResultData) ReflectUtils.invokeMethod(controller,action,
+                            new java.lang.Class[]{java.lang.Class.forName(defPoClass.getClassPath()),
+                                    java.lang.Class.forName(defPoExampleClass.getClassPath()), Pagination.class},
+                            new Object[]{po,poExample, pagination});
+                    resetResultMessage(resultData, WebContext.get().getProgram().getCode(), moduleCode, dataSetCode, action);
+                    if(resultData.isSuccess()) {
+                        JSONObject jsonObject = componentDescriptor.getJson(resultData);
+                        jsonObject.put("module",module);
+                        jsonObject.put("page",pageCode);
+                        jsonObject.put("param","");
+                        jsonObject.put("component",componentDescriptor.getId());
+                        System.out.println(jsonObject.toJSONString());
+                        mav.addObject(componentDescriptor.getId(), jsonObject);
+                    }
+                }else {
+                    JSONObject jsonObject = componentDescriptor.getJson();
+                    jsonObject.put("module",module);
+                    jsonObject.put("page",pageCode);
+                    jsonObject.put("param","");
+                    jsonObject.put("component",componentDescriptor.getId());
+                    System.out.println(jsonObject.toJSONString());
+                    mav.addObject(componentDescriptor.getId(), jsonObject);
+                }
             }
         }
 
-//        mav.addObject("pageTemplate", "default.vm");
-        mav.addObject("staticResourcePath", "/static");
-        mav.setViewName(pageInfo.getPageTemplate().getId());
+        if(StringUtils.isNotBlank(componentId)) {
+            mav.addObject("staticResourcePath", "/static");
+            mav.setViewName("/component/queryList");
+
+        }else {
+            mav.addObject("staticResourcePath", "/static");
+            mav.setViewName(pageInfo.getPageTemplate().getId());
+        }
+
         return mav;
 
     }

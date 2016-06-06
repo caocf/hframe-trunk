@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<component id="qForm" init="false" type="qForm" data-set="${dataSet}" data-auth="${dataAuth}">
+<component id="form" init="false" type="" data-set="${dataSet}" data-auth="${dataAuth}">
     <element id="id" type="characters" default-value=""></element>
     <element id="icon" type="enums" relId="icons" default-value=""></element>
     <element id="title" type="characters"  default-value=""></element>
     <element id="columns" type="objects"  default-value="">
         <element id="code" type="characters"  default-value=""></element>
         <element id="name" type="characters"  default-value=""></element>
-        <element id="type" type="enums" relId="#{TYPE}"  default-value=""></element>
+        <element id="editType" type="enums" relId="#{TYPE}"  default-value=""></element>
     </element>
     <element id="data" type="object"  default-value=""></element>
 

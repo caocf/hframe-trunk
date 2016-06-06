@@ -1,7 +1,11 @@
 package com.hframe.controller;
 
+import com.hframework.beans.controller.Pagination;
+import com.hframework.beans.controller.ResultCode;
+import com.hframework.beans.controller.ResultData;
 import com.hframework.common.util.ExampleUtils;
-import com.hframe.controller.bean.ResultMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,11 +20,64 @@ import com.hframe.service.interfaces.IHfmdEntityAttrSV;
 @Controller
 @RequestMapping(value = "/hframe/hfmdEntityAttr")
 public class HfmdEntityAttrController   {
+    private static final Logger logger = LoggerFactory.getLogger(HfmdEntityAttrController.class);
 
 	@Resource
 	private IHfmdEntityAttrSV iHfmdEntityAttrSV;
   
 
+
+
+
+    /**
+     * 查询展示实体属性列表
+     * @param hfmdEntityAttr
+     * @return
+     * @throws Throwable
+     */
+    @RequestMapping(value = "/queryListByAjax.html")
+    @ResponseBody
+    public ResultData list(@ModelAttribute("hfmdEntityAttr") HfmdEntityAttr hfmdEntityAttr,
+                                      @ModelAttribute("example") HfmdEntityAttr_Example example, Pagination pagination){
+        logger.debug("request : {},{},{}", hfmdEntityAttr, example, pagination);
+        try{
+            ExampleUtils.parseExample(hfmdEntityAttr, example);
+            //设置分页信息
+            example.setLimitStart(pagination.getStartIndex());
+            example.setLimitEnd(pagination.getEndIndex());
+
+            final List< HfmdEntityAttr> list = iHfmdEntityAttrSV.getHfmdEntityAttrListByExample(example);
+            pagination.setTotalCount(iHfmdEntityAttrSV.getHfmdEntityAttrCountByExample(example));
+
+            return ResultData.success().add("list",list).add("pagination",pagination);
+        }catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+    }
+
+    /**
+     * 查询展示实体属性明细
+     * @param hfmdEntityAttr
+     * @return
+     * @throws Throwable
+     */
+    @RequestMapping(value = "/queryOneByAjax.html")
+    @ResponseBody
+    public ResultData detail(@ModelAttribute("hfmdEntityAttr") HfmdEntityAttr hfmdEntityAttr){
+        logger.debug("request : {},{}", hfmdEntityAttr.getHfmdEntityAttrId(), hfmdEntityAttr);
+        try{
+            HfmdEntityAttr result = iHfmdEntityAttrSV.getHfmdEntityAttrByPK(hfmdEntityAttr.getHfmdEntityAttrId());
+            if(result != null) {
+                return ResultData.success(result);
+            }else {
+                return ResultData.error(ResultCode.RECODE_IS_NOT_EXISTS);
+            }
+        }catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+    }
 
     /**
     * 创建实体属性
@@ -28,75 +85,66 @@ public class HfmdEntityAttrController   {
     * @return
     * @throws Throwable
     */
-    @RequestMapping(value = "/create.html")
-    public ModelAndView create(@ModelAttribute("hfmdEntityAttr") HfmdEntityAttr hfmdEntityAttr) throws Throwable {
-        ModelAndView mav = new ModelAndView();
-        iHfmdEntityAttrSV.create(hfmdEntityAttr);
-        mav.addObject("hfmdEntityAttrId", hfmdEntityAttr.getHfmdEntityAttrId());
-        mav.setViewName("/hframe/hfmdEntityAttr/hframe_hfmdEntityAttr_create");
-        return mav;
-    }
-
-    /**
-    * 查询展示实体属性
-    * @param hfmdEntityAttr
-    * @return
-    * @throws Throwable
-    */
-    @RequestMapping(value = "/list.html")
-    public ModelAndView list(@ModelAttribute("hfmdEntityAttr") HfmdEntityAttr hfmdEntityAttr) throws Throwable {
-        ModelAndView mav = new ModelAndView();
-        HfmdEntityAttr_Example example = new HfmdEntityAttr_Example();
-        ExampleUtils.parseExample(hfmdEntityAttr,example);
-
-        List< HfmdEntityAttr> hfmdEntityAttrList = iHfmdEntityAttrSV.getHfmdEntityAttrListByExample(example);
-
-        mav.addObject("hfmdEntityAttrList", hfmdEntityAttrList);
-        mav.setViewName("/hframe/hfmdEntityAttr/hframe_hfmdEntityAttr_list");
-        return mav;
-    }
-
-
-    /**
-    * 异步创建实体属性
-    * @param hfmdEntityAttr
-    * @return
-    * @throws Throwable
-    */
     @RequestMapping(value = "/createByAjax.html")
     @ResponseBody
-    public ResultMessage createByAjax(@ModelAttribute("hfmdEntityAttr") HfmdEntityAttr hfmdEntityAttr) throws Throwable {
-        ResultMessage message = new ResultMessage();
-        iHfmdEntityAttrSV.create(hfmdEntityAttr);
-        return message;
+    public ResultData create(@ModelAttribute("hfmdEntityAttr") HfmdEntityAttr hfmdEntityAttr) {
+        logger.debug("request : {}", hfmdEntityAttr);
+        try {
+            int result = iHfmdEntityAttrSV.create(hfmdEntityAttr);
+            if(result > 0) {
+                return ResultData.success(hfmdEntityAttr);
+            }
+        } catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+        return ResultData.error(ResultCode.UNKNOW);
     }
 
     /**
-    * 异步更新实体属性
+    * 更新实体属性
     * @param hfmdEntityAttr
     * @return
     * @throws Throwable
     */
     @RequestMapping(value = "/updateByAjax.html")
     @ResponseBody
-    public ResultMessage updateByAjax(@ModelAttribute("hfmdEntityAttr") HfmdEntityAttr hfmdEntityAttr) throws Throwable {
-        ResultMessage message = new ResultMessage();
-        iHfmdEntityAttrSV.update(hfmdEntityAttr);
-        return message;
+    public ResultData update(@ModelAttribute("hfmdEntityAttr") HfmdEntityAttr hfmdEntityAttr) {
+        logger.debug("request : {}", hfmdEntityAttr);
+        try {
+            int result = iHfmdEntityAttrSV.update(hfmdEntityAttr);
+            if(result > 0) {
+                return ResultData.success(hfmdEntityAttr);
+            }
+        } catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+        return ResultData.error(ResultCode.UNKNOW);
     }
 
     /**
-    * 异步删除实体属性
+    * 删除实体属性
     * @param hfmdEntityAttr
     * @return
     * @throws Throwable
     */
     @RequestMapping(value = "/deleteByAjax.html")
     @ResponseBody
-    public ResultMessage deleteByAjax(@ModelAttribute("hfmdEntityAttr") HfmdEntityAttr hfmdEntityAttr) throws Throwable {
-        ResultMessage message = new ResultMessage();
-        iHfmdEntityAttrSV.delete(hfmdEntityAttr);
-        return message;
+    public ResultData delete(@ModelAttribute("hfmdEntityAttr") HfmdEntityAttr hfmdEntityAttr) {
+        logger.debug("request : {}", hfmdEntityAttr);
+
+        try {
+            int result = iHfmdEntityAttrSV.delete(hfmdEntityAttr);
+            if(result > 0) {
+                return ResultData.success(hfmdEntityAttr);
+            }else {
+                return ResultData.error(ResultCode.RECODE_IS_NOT_EXISTS);
+            }
+        } catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
     }
   	//getter
  	

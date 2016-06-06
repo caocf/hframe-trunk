@@ -1,7 +1,11 @@
 package com.hframe.controller;
 
+import com.hframework.beans.controller.Pagination;
+import com.hframework.beans.controller.ResultCode;
+import com.hframework.beans.controller.ResultData;
 import com.hframework.common.util.ExampleUtils;
-import com.hframe.controller.bean.ResultMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,11 +20,64 @@ import com.hframe.service.interfaces.IHfmdEnumClassSV;
 @Controller
 @RequestMapping(value = "/hframe/hfmdEnumClass")
 public class HfmdEnumClassController   {
+    private static final Logger logger = LoggerFactory.getLogger(HfmdEnumClassController.class);
 
 	@Resource
 	private IHfmdEnumClassSV iHfmdEnumClassSV;
   
 
+
+
+
+    /**
+     * 查询展示枚举组列表
+     * @param hfmdEnumClass
+     * @return
+     * @throws Throwable
+     */
+    @RequestMapping(value = "/queryListByAjax.html")
+    @ResponseBody
+    public ResultData list(@ModelAttribute("hfmdEnumClass") HfmdEnumClass hfmdEnumClass,
+                                      @ModelAttribute("example") HfmdEnumClass_Example example, Pagination pagination){
+        logger.debug("request : {},{},{}", hfmdEnumClass, example, pagination);
+        try{
+            ExampleUtils.parseExample(hfmdEnumClass, example);
+            //设置分页信息
+            example.setLimitStart(pagination.getStartIndex());
+            example.setLimitEnd(pagination.getEndIndex());
+
+            final List< HfmdEnumClass> list = iHfmdEnumClassSV.getHfmdEnumClassListByExample(example);
+            pagination.setTotalCount(iHfmdEnumClassSV.getHfmdEnumClassCountByExample(example));
+
+            return ResultData.success().add("list",list).add("pagination",pagination);
+        }catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+    }
+
+    /**
+     * 查询展示枚举组明细
+     * @param hfmdEnumClass
+     * @return
+     * @throws Throwable
+     */
+    @RequestMapping(value = "/queryOneByAjax.html")
+    @ResponseBody
+    public ResultData detail(@ModelAttribute("hfmdEnumClass") HfmdEnumClass hfmdEnumClass){
+        logger.debug("request : {},{}", hfmdEnumClass.getHfmdEnumClassId(), hfmdEnumClass);
+        try{
+            HfmdEnumClass result = iHfmdEnumClassSV.getHfmdEnumClassByPK(hfmdEnumClass.getHfmdEnumClassId());
+            if(result != null) {
+                return ResultData.success(result);
+            }else {
+                return ResultData.error(ResultCode.RECODE_IS_NOT_EXISTS);
+            }
+        }catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+    }
 
     /**
     * 创建枚举组
@@ -28,75 +85,66 @@ public class HfmdEnumClassController   {
     * @return
     * @throws Throwable
     */
-    @RequestMapping(value = "/create.html")
-    public ModelAndView create(@ModelAttribute("hfmdEnumClass") HfmdEnumClass hfmdEnumClass) throws Throwable {
-        ModelAndView mav = new ModelAndView();
-        iHfmdEnumClassSV.create(hfmdEnumClass);
-        mav.addObject("hfmdEnumClassId", hfmdEnumClass.getHfmdEnumClassId());
-        mav.setViewName("/hframe/hfmdEnumClass/hframe_hfmdEnumClass_create");
-        return mav;
-    }
-
-    /**
-    * 查询展示枚举组
-    * @param hfmdEnumClass
-    * @return
-    * @throws Throwable
-    */
-    @RequestMapping(value = "/list.html")
-    public ModelAndView list(@ModelAttribute("hfmdEnumClass") HfmdEnumClass hfmdEnumClass) throws Throwable {
-        ModelAndView mav = new ModelAndView();
-        HfmdEnumClass_Example example = new HfmdEnumClass_Example();
-        ExampleUtils.parseExample(hfmdEnumClass,example);
-
-        List< HfmdEnumClass> hfmdEnumClassList = iHfmdEnumClassSV.getHfmdEnumClassListByExample(example);
-
-        mav.addObject("hfmdEnumClassList", hfmdEnumClassList);
-        mav.setViewName("/hframe/hfmdEnumClass/hframe_hfmdEnumClass_list");
-        return mav;
-    }
-
-
-    /**
-    * 异步创建枚举组
-    * @param hfmdEnumClass
-    * @return
-    * @throws Throwable
-    */
     @RequestMapping(value = "/createByAjax.html")
     @ResponseBody
-    public ResultMessage createByAjax(@ModelAttribute("hfmdEnumClass") HfmdEnumClass hfmdEnumClass) throws Throwable {
-        ResultMessage message = new ResultMessage();
-        iHfmdEnumClassSV.create(hfmdEnumClass);
-        return message;
+    public ResultData create(@ModelAttribute("hfmdEnumClass") HfmdEnumClass hfmdEnumClass) {
+        logger.debug("request : {}", hfmdEnumClass);
+        try {
+            int result = iHfmdEnumClassSV.create(hfmdEnumClass);
+            if(result > 0) {
+                return ResultData.success(hfmdEnumClass);
+            }
+        } catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+        return ResultData.error(ResultCode.UNKNOW);
     }
 
     /**
-    * 异步更新枚举组
+    * 更新枚举组
     * @param hfmdEnumClass
     * @return
     * @throws Throwable
     */
     @RequestMapping(value = "/updateByAjax.html")
     @ResponseBody
-    public ResultMessage updateByAjax(@ModelAttribute("hfmdEnumClass") HfmdEnumClass hfmdEnumClass) throws Throwable {
-        ResultMessage message = new ResultMessage();
-        iHfmdEnumClassSV.update(hfmdEnumClass);
-        return message;
+    public ResultData update(@ModelAttribute("hfmdEnumClass") HfmdEnumClass hfmdEnumClass) {
+        logger.debug("request : {}", hfmdEnumClass);
+        try {
+            int result = iHfmdEnumClassSV.update(hfmdEnumClass);
+            if(result > 0) {
+                return ResultData.success(hfmdEnumClass);
+            }
+        } catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+        return ResultData.error(ResultCode.UNKNOW);
     }
 
     /**
-    * 异步删除枚举组
+    * 删除枚举组
     * @param hfmdEnumClass
     * @return
     * @throws Throwable
     */
     @RequestMapping(value = "/deleteByAjax.html")
     @ResponseBody
-    public ResultMessage deleteByAjax(@ModelAttribute("hfmdEnumClass") HfmdEnumClass hfmdEnumClass) throws Throwable {
-        ResultMessage message = new ResultMessage();
-        iHfmdEnumClassSV.delete(hfmdEnumClass);
-        return message;
+    public ResultData delete(@ModelAttribute("hfmdEnumClass") HfmdEnumClass hfmdEnumClass) {
+        logger.debug("request : {}", hfmdEnumClass);
+
+        try {
+            int result = iHfmdEnumClassSV.delete(hfmdEnumClass);
+            if(result > 0) {
+                return ResultData.success(hfmdEnumClass);
+            }else {
+                return ResultData.error(ResultCode.RECODE_IS_NOT_EXISTS);
+            }
+        } catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
     }
   	//getter
  	

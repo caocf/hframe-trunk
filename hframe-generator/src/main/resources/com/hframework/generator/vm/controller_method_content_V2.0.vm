@@ -1,0 +1,131 @@
+##第一部分：传入参数
+#set($map=$MAP)
+#set($className = $map.get("ClassName"))
+#set($varName = $map.get("VarName"))
+#set($entityName = $map.get("EntityName"))
+
+#set($seviceVarName = $map.get("SeviceVarName"))
+#set($poExampleClassName = $map.get("PoExampleClassName"))
+
+#set($moduleName = $map.get("ModuleName"))
+
+##模板内容
+
+
+    /**
+     * 查询展示${entityName}列表
+     * @param ${varName}
+     * @return
+     * @throws Throwable
+     */
+    @RequestMapping(value = "/queryListByAjax.html")
+    @ResponseBody
+    public ResultData list(@ModelAttribute("${varName}") ${className} ${varName},
+                                      @ModelAttribute("example") ${poExampleClassName} example, Pagination pagination){
+        logger.debug("request : {},{},{}", ${varName}, example, pagination);
+        try{
+            ExampleUtils.parseExample(${varName}, example);
+            //设置分页信息
+            example.setLimitStart(pagination.getStartIndex());
+            example.setLimitEnd(pagination.getEndIndex());
+
+            final List< ${className}> list = ${seviceVarName}.get${className}ListByExample(example);
+            pagination.setTotalCount(${seviceVarName}.get${className}CountByExample(example));
+
+            return ResultData.success().add("list",list).add("pagination",pagination);
+        }catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+    }
+
+    /**
+     * 查询展示${entityName}明细
+     * @param ${varName}
+     * @return
+     * @throws Throwable
+     */
+    @RequestMapping(value = "/queryOneByAjax.html")
+    @ResponseBody
+    public ResultData detail(@ModelAttribute("${varName}") ${className} ${varName}){
+        logger.debug("request : {},{}", ${varName}.get${className}Id(), ${varName});
+        try{
+            ${className} result = ${seviceVarName}.get${className}ByPK(${varName}.get${className}Id());
+            if(result != null) {
+                return ResultData.success(result);
+            }else {
+                return ResultData.error(ResultCode.RECODE_IS_NOT_EXISTS);
+            }
+        }catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+    }
+
+    /**
+    * 创建${entityName}
+    * @param ${varName}
+    * @return
+    * @throws Throwable
+    */
+    @RequestMapping(value = "/createByAjax.html")
+    @ResponseBody
+    public ResultData create(@ModelAttribute("${varName}") ${className} ${varName}) {
+        logger.debug("request : {}", ${varName});
+        try {
+            int result = ${seviceVarName}.create(${varName});
+            if(result > 0) {
+                return ResultData.success(${varName});
+            }
+        } catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+        return ResultData.error(ResultCode.UNKNOW);
+    }
+
+    /**
+    * 更新${entityName}
+    * @param ${varName}
+    * @return
+    * @throws Throwable
+    */
+    @RequestMapping(value = "/updateByAjax.html")
+    @ResponseBody
+    public ResultData update(@ModelAttribute("${varName}") ${className} ${varName}) {
+        logger.debug("request : {}", ${varName});
+        try {
+            int result = ${seviceVarName}.update(${varName});
+            if(result > 0) {
+                return ResultData.success(${varName});
+            }
+        } catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+        return ResultData.error(ResultCode.UNKNOW);
+    }
+
+    /**
+    * 删除${entityName}
+    * @param ${varName}
+    * @return
+    * @throws Throwable
+    */
+    @RequestMapping(value = "/deleteByAjax.html")
+    @ResponseBody
+    public ResultData delete(@ModelAttribute("${varName}") ${className} ${varName}) {
+        logger.debug("request : {}", ${varName});
+
+        try {
+            int result = ${seviceVarName}.delete(${varName});
+            if(result > 0) {
+                return ResultData.success(${varName});
+            }else {
+                return ResultData.error(ResultCode.RECODE_IS_NOT_EXISTS);
+            }
+        } catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+    }

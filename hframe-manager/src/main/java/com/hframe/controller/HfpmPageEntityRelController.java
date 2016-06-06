@@ -1,7 +1,11 @@
 package com.hframe.controller;
 
+import com.hframework.beans.controller.Pagination;
+import com.hframework.beans.controller.ResultCode;
+import com.hframework.beans.controller.ResultData;
 import com.hframework.common.util.ExampleUtils;
-import com.hframe.controller.bean.ResultMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,11 +20,64 @@ import com.hframe.service.interfaces.IHfpmPageEntityRelSV;
 @Controller
 @RequestMapping(value = "/hframe/hfpmPageEntityRel")
 public class HfpmPageEntityRelController   {
+    private static final Logger logger = LoggerFactory.getLogger(HfpmPageEntityRelController.class);
 
 	@Resource
 	private IHfpmPageEntityRelSV iHfpmPageEntityRelSV;
   
 
+
+
+
+    /**
+     * 查询展示页面关联实体列表
+     * @param hfpmPageEntityRel
+     * @return
+     * @throws Throwable
+     */
+    @RequestMapping(value = "/queryListByAjax.html")
+    @ResponseBody
+    public ResultData list(@ModelAttribute("hfpmPageEntityRel") HfpmPageEntityRel hfpmPageEntityRel,
+                                      @ModelAttribute("example") HfpmPageEntityRel_Example example, Pagination pagination){
+        logger.debug("request : {},{},{}", hfpmPageEntityRel, example, pagination);
+        try{
+            ExampleUtils.parseExample(hfpmPageEntityRel, example);
+            //设置分页信息
+            example.setLimitStart(pagination.getStartIndex());
+            example.setLimitEnd(pagination.getEndIndex());
+
+            final List< HfpmPageEntityRel> list = iHfpmPageEntityRelSV.getHfpmPageEntityRelListByExample(example);
+            pagination.setTotalCount(iHfpmPageEntityRelSV.getHfpmPageEntityRelCountByExample(example));
+
+            return ResultData.success().add("list",list).add("pagination",pagination);
+        }catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+    }
+
+    /**
+     * 查询展示页面关联实体明细
+     * @param hfpmPageEntityRel
+     * @return
+     * @throws Throwable
+     */
+    @RequestMapping(value = "/queryOneByAjax.html")
+    @ResponseBody
+    public ResultData detail(@ModelAttribute("hfpmPageEntityRel") HfpmPageEntityRel hfpmPageEntityRel){
+        logger.debug("request : {},{}", hfpmPageEntityRel.getHfpmPageEntityRelId(), hfpmPageEntityRel);
+        try{
+            HfpmPageEntityRel result = iHfpmPageEntityRelSV.getHfpmPageEntityRelByPK(hfpmPageEntityRel.getHfpmPageEntityRelId());
+            if(result != null) {
+                return ResultData.success(result);
+            }else {
+                return ResultData.error(ResultCode.RECODE_IS_NOT_EXISTS);
+            }
+        }catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+    }
 
     /**
     * 创建页面关联实体
@@ -28,75 +85,66 @@ public class HfpmPageEntityRelController   {
     * @return
     * @throws Throwable
     */
-    @RequestMapping(value = "/create.html")
-    public ModelAndView create(@ModelAttribute("hfpmPageEntityRel") HfpmPageEntityRel hfpmPageEntityRel) throws Throwable {
-        ModelAndView mav = new ModelAndView();
-        iHfpmPageEntityRelSV.create(hfpmPageEntityRel);
-        mav.addObject("hfpmPageEntityRelId", hfpmPageEntityRel.getHfpmPageEntityRelId());
-        mav.setViewName("/hframe/hfpmPageEntityRel/hframe_hfpmPageEntityRel_create");
-        return mav;
-    }
-
-    /**
-    * 查询展示页面关联实体
-    * @param hfpmPageEntityRel
-    * @return
-    * @throws Throwable
-    */
-    @RequestMapping(value = "/list.html")
-    public ModelAndView list(@ModelAttribute("hfpmPageEntityRel") HfpmPageEntityRel hfpmPageEntityRel) throws Throwable {
-        ModelAndView mav = new ModelAndView();
-        HfpmPageEntityRel_Example example = new HfpmPageEntityRel_Example();
-        ExampleUtils.parseExample(hfpmPageEntityRel,example);
-
-        List< HfpmPageEntityRel> hfpmPageEntityRelList = iHfpmPageEntityRelSV.getHfpmPageEntityRelListByExample(example);
-
-        mav.addObject("hfpmPageEntityRelList", hfpmPageEntityRelList);
-        mav.setViewName("/hframe/hfpmPageEntityRel/hframe_hfpmPageEntityRel_list");
-        return mav;
-    }
-
-
-    /**
-    * 异步创建页面关联实体
-    * @param hfpmPageEntityRel
-    * @return
-    * @throws Throwable
-    */
     @RequestMapping(value = "/createByAjax.html")
     @ResponseBody
-    public ResultMessage createByAjax(@ModelAttribute("hfpmPageEntityRel") HfpmPageEntityRel hfpmPageEntityRel) throws Throwable {
-        ResultMessage message = new ResultMessage();
-        iHfpmPageEntityRelSV.create(hfpmPageEntityRel);
-        return message;
+    public ResultData create(@ModelAttribute("hfpmPageEntityRel") HfpmPageEntityRel hfpmPageEntityRel) {
+        logger.debug("request : {}", hfpmPageEntityRel);
+        try {
+            int result = iHfpmPageEntityRelSV.create(hfpmPageEntityRel);
+            if(result > 0) {
+                return ResultData.success(hfpmPageEntityRel);
+            }
+        } catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+        return ResultData.error(ResultCode.UNKNOW);
     }
 
     /**
-    * 异步更新页面关联实体
+    * 更新页面关联实体
     * @param hfpmPageEntityRel
     * @return
     * @throws Throwable
     */
     @RequestMapping(value = "/updateByAjax.html")
     @ResponseBody
-    public ResultMessage updateByAjax(@ModelAttribute("hfpmPageEntityRel") HfpmPageEntityRel hfpmPageEntityRel) throws Throwable {
-        ResultMessage message = new ResultMessage();
-        iHfpmPageEntityRelSV.update(hfpmPageEntityRel);
-        return message;
+    public ResultData update(@ModelAttribute("hfpmPageEntityRel") HfpmPageEntityRel hfpmPageEntityRel) {
+        logger.debug("request : {}", hfpmPageEntityRel);
+        try {
+            int result = iHfpmPageEntityRelSV.update(hfpmPageEntityRel);
+            if(result > 0) {
+                return ResultData.success(hfpmPageEntityRel);
+            }
+        } catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+        return ResultData.error(ResultCode.UNKNOW);
     }
 
     /**
-    * 异步删除页面关联实体
+    * 删除页面关联实体
     * @param hfpmPageEntityRel
     * @return
     * @throws Throwable
     */
     @RequestMapping(value = "/deleteByAjax.html")
     @ResponseBody
-    public ResultMessage deleteByAjax(@ModelAttribute("hfpmPageEntityRel") HfpmPageEntityRel hfpmPageEntityRel) throws Throwable {
-        ResultMessage message = new ResultMessage();
-        iHfpmPageEntityRelSV.delete(hfpmPageEntityRel);
-        return message;
+    public ResultData delete(@ModelAttribute("hfpmPageEntityRel") HfpmPageEntityRel hfpmPageEntityRel) {
+        logger.debug("request : {}", hfpmPageEntityRel);
+
+        try {
+            int result = iHfpmPageEntityRelSV.delete(hfpmPageEntityRel);
+            if(result > 0) {
+                return ResultData.success(hfpmPageEntityRel);
+            }else {
+                return ResultData.error(ResultCode.RECODE_IS_NOT_EXISTS);
+            }
+        } catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
     }
   	//getter
  	

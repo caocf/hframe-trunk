@@ -1,7 +1,11 @@
 package com.hframe.controller;
 
+import com.hframework.beans.controller.Pagination;
+import com.hframework.beans.controller.ResultCode;
+import com.hframework.beans.controller.ResultData;
 import com.hframework.common.util.ExampleUtils;
-import com.hframe.controller.bean.ResultMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,11 +20,64 @@ import com.hframe.service.interfaces.IHfpmPageCfgSV;
 @Controller
 @RequestMapping(value = "/hframe/hfpmPageCfg")
 public class HfpmPageCfgController   {
+    private static final Logger logger = LoggerFactory.getLogger(HfpmPageCfgController.class);
 
 	@Resource
 	private IHfpmPageCfgSV iHfpmPageCfgSV;
   
 
+
+
+
+    /**
+     * 查询展示页面配置列表
+     * @param hfpmPageCfg
+     * @return
+     * @throws Throwable
+     */
+    @RequestMapping(value = "/queryListByAjax.html")
+    @ResponseBody
+    public ResultData list(@ModelAttribute("hfpmPageCfg") HfpmPageCfg hfpmPageCfg,
+                                      @ModelAttribute("example") HfpmPageCfg_Example example, Pagination pagination){
+        logger.debug("request : {},{},{}", hfpmPageCfg, example, pagination);
+        try{
+            ExampleUtils.parseExample(hfpmPageCfg, example);
+            //设置分页信息
+            example.setLimitStart(pagination.getStartIndex());
+            example.setLimitEnd(pagination.getEndIndex());
+
+            final List< HfpmPageCfg> list = iHfpmPageCfgSV.getHfpmPageCfgListByExample(example);
+            pagination.setTotalCount(iHfpmPageCfgSV.getHfpmPageCfgCountByExample(example));
+
+            return ResultData.success().add("list",list).add("pagination",pagination);
+        }catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+    }
+
+    /**
+     * 查询展示页面配置明细
+     * @param hfpmPageCfg
+     * @return
+     * @throws Throwable
+     */
+    @RequestMapping(value = "/queryOneByAjax.html")
+    @ResponseBody
+    public ResultData detail(@ModelAttribute("hfpmPageCfg") HfpmPageCfg hfpmPageCfg){
+        logger.debug("request : {},{}", hfpmPageCfg.getHfpmPageCfgId(), hfpmPageCfg);
+        try{
+            HfpmPageCfg result = iHfpmPageCfgSV.getHfpmPageCfgByPK(hfpmPageCfg.getHfpmPageCfgId());
+            if(result != null) {
+                return ResultData.success(result);
+            }else {
+                return ResultData.error(ResultCode.RECODE_IS_NOT_EXISTS);
+            }
+        }catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+    }
 
     /**
     * 创建页面配置
@@ -28,75 +85,66 @@ public class HfpmPageCfgController   {
     * @return
     * @throws Throwable
     */
-    @RequestMapping(value = "/create.html")
-    public ModelAndView create(@ModelAttribute("hfpmPageCfg") HfpmPageCfg hfpmPageCfg) throws Throwable {
-        ModelAndView mav = new ModelAndView();
-        iHfpmPageCfgSV.create(hfpmPageCfg);
-        mav.addObject("hfpmPageCfgId", hfpmPageCfg.getHfpmPageCfgId());
-        mav.setViewName("/hframe/hfpmPageCfg/hframe_hfpmPageCfg_create");
-        return mav;
-    }
-
-    /**
-    * 查询展示页面配置
-    * @param hfpmPageCfg
-    * @return
-    * @throws Throwable
-    */
-    @RequestMapping(value = "/list.html")
-    public ModelAndView list(@ModelAttribute("hfpmPageCfg") HfpmPageCfg hfpmPageCfg) throws Throwable {
-        ModelAndView mav = new ModelAndView();
-        HfpmPageCfg_Example example = new HfpmPageCfg_Example();
-        ExampleUtils.parseExample(hfpmPageCfg,example);
-
-        List< HfpmPageCfg> hfpmPageCfgList = iHfpmPageCfgSV.getHfpmPageCfgListByExample(example);
-
-        mav.addObject("hfpmPageCfgList", hfpmPageCfgList);
-        mav.setViewName("/hframe/hfpmPageCfg/hframe_hfpmPageCfg_list");
-        return mav;
-    }
-
-
-    /**
-    * 异步创建页面配置
-    * @param hfpmPageCfg
-    * @return
-    * @throws Throwable
-    */
     @RequestMapping(value = "/createByAjax.html")
     @ResponseBody
-    public ResultMessage createByAjax(@ModelAttribute("hfpmPageCfg") HfpmPageCfg hfpmPageCfg) throws Throwable {
-        ResultMessage message = new ResultMessage();
-        iHfpmPageCfgSV.create(hfpmPageCfg);
-        return message;
+    public ResultData create(@ModelAttribute("hfpmPageCfg") HfpmPageCfg hfpmPageCfg) {
+        logger.debug("request : {}", hfpmPageCfg);
+        try {
+            int result = iHfpmPageCfgSV.create(hfpmPageCfg);
+            if(result > 0) {
+                return ResultData.success(hfpmPageCfg);
+            }
+        } catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+        return ResultData.error(ResultCode.UNKNOW);
     }
 
     /**
-    * 异步更新页面配置
+    * 更新页面配置
     * @param hfpmPageCfg
     * @return
     * @throws Throwable
     */
     @RequestMapping(value = "/updateByAjax.html")
     @ResponseBody
-    public ResultMessage updateByAjax(@ModelAttribute("hfpmPageCfg") HfpmPageCfg hfpmPageCfg) throws Throwable {
-        ResultMessage message = new ResultMessage();
-        iHfpmPageCfgSV.update(hfpmPageCfg);
-        return message;
+    public ResultData update(@ModelAttribute("hfpmPageCfg") HfpmPageCfg hfpmPageCfg) {
+        logger.debug("request : {}", hfpmPageCfg);
+        try {
+            int result = iHfpmPageCfgSV.update(hfpmPageCfg);
+            if(result > 0) {
+                return ResultData.success(hfpmPageCfg);
+            }
+        } catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+        return ResultData.error(ResultCode.UNKNOW);
     }
 
     /**
-    * 异步删除页面配置
+    * 删除页面配置
     * @param hfpmPageCfg
     * @return
     * @throws Throwable
     */
     @RequestMapping(value = "/deleteByAjax.html")
     @ResponseBody
-    public ResultMessage deleteByAjax(@ModelAttribute("hfpmPageCfg") HfpmPageCfg hfpmPageCfg) throws Throwable {
-        ResultMessage message = new ResultMessage();
-        iHfpmPageCfgSV.delete(hfpmPageCfg);
-        return message;
+    public ResultData delete(@ModelAttribute("hfpmPageCfg") HfpmPageCfg hfpmPageCfg) {
+        logger.debug("request : {}", hfpmPageCfg);
+
+        try {
+            int result = iHfpmPageCfgSV.delete(hfpmPageCfg);
+            if(result > 0) {
+                return ResultData.success(hfpmPageCfg);
+            }else {
+                return ResultData.error(ResultCode.RECODE_IS_NOT_EXISTS);
+            }
+        } catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
     }
   	//getter
  	

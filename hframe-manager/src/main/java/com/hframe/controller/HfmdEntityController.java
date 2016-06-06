@@ -1,7 +1,11 @@
 package com.hframe.controller;
 
+import com.hframework.beans.controller.Pagination;
+import com.hframework.beans.controller.ResultCode;
+import com.hframework.beans.controller.ResultData;
 import com.hframework.common.util.ExampleUtils;
-import com.hframe.controller.bean.ResultMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,11 +20,64 @@ import com.hframe.service.interfaces.IHfmdEntitySV;
 @Controller
 @RequestMapping(value = "/hframe/hfmdEntity")
 public class HfmdEntityController   {
+    private static final Logger logger = LoggerFactory.getLogger(HfmdEntityController.class);
 
 	@Resource
 	private IHfmdEntitySV iHfmdEntitySV;
   
 
+
+
+
+    /**
+     * 查询展示实体列表
+     * @param hfmdEntity
+     * @return
+     * @throws Throwable
+     */
+    @RequestMapping(value = "/queryListByAjax.html")
+    @ResponseBody
+    public ResultData list(@ModelAttribute("hfmdEntity") HfmdEntity hfmdEntity,
+                                      @ModelAttribute("example") HfmdEntity_Example example, Pagination pagination){
+        logger.debug("request : {},{},{}", hfmdEntity, example, pagination);
+        try{
+            ExampleUtils.parseExample(hfmdEntity, example);
+            //设置分页信息
+            example.setLimitStart(pagination.getStartIndex());
+            example.setLimitEnd(pagination.getPageSize());
+
+            final List< HfmdEntity> list = iHfmdEntitySV.getHfmdEntityListByExample(example);
+            pagination.setTotalCount(iHfmdEntitySV.getHfmdEntityCountByExample(example));
+
+            return ResultData.success().add("list",list).add("pagination",pagination);
+        }catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+    }
+
+    /**
+     * 查询展示实体明细
+     * @param hfmdEntity
+     * @return
+     * @throws Throwable
+     */
+    @RequestMapping(value = "/queryOneByAjax.html")
+    @ResponseBody
+    public ResultData detail(@ModelAttribute("hfmdEntity") HfmdEntity hfmdEntity){
+        logger.debug("request : {},{}", hfmdEntity.getHfmdEntityId(), hfmdEntity);
+        try{
+            HfmdEntity result = iHfmdEntitySV.getHfmdEntityByPK(hfmdEntity.getHfmdEntityId());
+            if(result != null) {
+                return ResultData.success(result);
+            }else {
+                return ResultData.error(ResultCode.RECODE_IS_NOT_EXISTS);
+            }
+        }catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+    }
 
     /**
     * 创建实体
@@ -28,75 +85,66 @@ public class HfmdEntityController   {
     * @return
     * @throws Throwable
     */
-    @RequestMapping(value = "/create.html")
-    public ModelAndView create(@ModelAttribute("hfmdEntity") HfmdEntity hfmdEntity) throws Throwable {
-        ModelAndView mav = new ModelAndView();
-        iHfmdEntitySV.create(hfmdEntity);
-        mav.addObject("hfmdEntityId", hfmdEntity.getHfmdEntityId());
-        mav.setViewName("/hframe/hfmdEntity/hframe_hfmdEntity_create");
-        return mav;
-    }
-
-    /**
-    * 查询展示实体
-    * @param hfmdEntity
-    * @return
-    * @throws Throwable
-    */
-    @RequestMapping(value = "/list.html")
-    public ModelAndView list(@ModelAttribute("hfmdEntity") HfmdEntity hfmdEntity) throws Throwable {
-        ModelAndView mav = new ModelAndView();
-        HfmdEntity_Example example = new HfmdEntity_Example();
-        ExampleUtils.parseExample(hfmdEntity,example);
-
-        List< HfmdEntity> hfmdEntityList = iHfmdEntitySV.getHfmdEntityListByExample(example);
-
-        mav.addObject("hfmdEntityList", hfmdEntityList);
-        mav.setViewName("/hframe/hfmdEntity/hframe_hfmdEntity_list");
-        return mav;
-    }
-
-
-    /**
-    * 异步创建实体
-    * @param hfmdEntity
-    * @return
-    * @throws Throwable
-    */
     @RequestMapping(value = "/createByAjax.html")
     @ResponseBody
-    public ResultMessage createByAjax(@ModelAttribute("hfmdEntity") HfmdEntity hfmdEntity) throws Throwable {
-        ResultMessage message = new ResultMessage();
-        iHfmdEntitySV.create(hfmdEntity);
-        return message;
+    public ResultData create(@ModelAttribute("hfmdEntity") HfmdEntity hfmdEntity) {
+        logger.debug("request : {}", hfmdEntity);
+        try {
+            int result = iHfmdEntitySV.create(hfmdEntity);
+            if(result > 0) {
+                return ResultData.success(hfmdEntity);
+            }
+        } catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+        return ResultData.error(ResultCode.UNKNOW);
     }
 
     /**
-    * 异步更新实体
+    * 更新实体
     * @param hfmdEntity
     * @return
     * @throws Throwable
     */
     @RequestMapping(value = "/updateByAjax.html")
     @ResponseBody
-    public ResultMessage updateByAjax(@ModelAttribute("hfmdEntity") HfmdEntity hfmdEntity) throws Throwable {
-        ResultMessage message = new ResultMessage();
-        iHfmdEntitySV.update(hfmdEntity);
-        return message;
+    public ResultData update(@ModelAttribute("hfmdEntity") HfmdEntity hfmdEntity) {
+        logger.debug("request : {}", hfmdEntity);
+        try {
+            int result = iHfmdEntitySV.update(hfmdEntity);
+            if(result > 0) {
+                return ResultData.success(hfmdEntity);
+            }
+        } catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+        return ResultData.error(ResultCode.UNKNOW);
     }
 
     /**
-    * 异步删除实体
+    * 删除实体
     * @param hfmdEntity
     * @return
     * @throws Throwable
     */
     @RequestMapping(value = "/deleteByAjax.html")
     @ResponseBody
-    public ResultMessage deleteByAjax(@ModelAttribute("hfmdEntity") HfmdEntity hfmdEntity) throws Throwable {
-        ResultMessage message = new ResultMessage();
-        iHfmdEntitySV.delete(hfmdEntity);
-        return message;
+    public ResultData delete(@ModelAttribute("hfmdEntity") HfmdEntity hfmdEntity) {
+        logger.debug("request : {}", hfmdEntity);
+
+        try {
+            int result = iHfmdEntitySV.delete(hfmdEntity);
+            if(result > 0) {
+                return ResultData.success(hfmdEntity);
+            }else {
+                return ResultData.error(ResultCode.RECODE_IS_NOT_EXISTS);
+            }
+        } catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
     }
   	//getter
  	

@@ -8,7 +8,7 @@
 
 
 requirejs.config({
-  //baseUrl: webHost,
+  baseUrl: "/",
   paths:{
 	  'store':['static/plugins/jquery/store.min'],
 	  'echarts': ['static/plugins/ehcarts/echarts-all'],

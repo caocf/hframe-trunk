@@ -80,6 +80,7 @@ public class ResultData<T> {
     }
 
     public boolean isSuccess() {
-        return ResultCode.SUCCESS.equals(this.getResultCode());
+        return ResultCode.SUCCESS.getErrorCode().equals(this.getResultCode());
     }
+
 }

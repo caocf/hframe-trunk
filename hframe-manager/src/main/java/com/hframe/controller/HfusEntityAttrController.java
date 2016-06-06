@@ -1,7 +1,11 @@
 package com.hframe.controller;
 
+import com.hframework.beans.controller.Pagination;
+import com.hframework.beans.controller.ResultCode;
+import com.hframework.beans.controller.ResultData;
 import com.hframework.common.util.ExampleUtils;
-import com.hframe.controller.bean.ResultMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,11 +20,64 @@ import com.hframe.service.interfaces.IHfusEntityAttrSV;
 @Controller
 @RequestMapping(value = "/hframe/hfusEntityAttr")
 public class HfusEntityAttrController   {
+    private static final Logger logger = LoggerFactory.getLogger(HfusEntityAttrController.class);
 
 	@Resource
 	private IHfusEntityAttrSV iHfusEntityAttrSV;
   
 
+
+
+
+    /**
+     * 查询展示常用实体属性列表
+     * @param hfusEntityAttr
+     * @return
+     * @throws Throwable
+     */
+    @RequestMapping(value = "/queryListByAjax.html")
+    @ResponseBody
+    public ResultData list(@ModelAttribute("hfusEntityAttr") HfusEntityAttr hfusEntityAttr,
+                                      @ModelAttribute("example") HfusEntityAttr_Example example, Pagination pagination){
+        logger.debug("request : {},{},{}", hfusEntityAttr, example, pagination);
+        try{
+            ExampleUtils.parseExample(hfusEntityAttr, example);
+            //设置分页信息
+            example.setLimitStart(pagination.getStartIndex());
+            example.setLimitEnd(pagination.getEndIndex());
+
+            final List< HfusEntityAttr> list = iHfusEntityAttrSV.getHfusEntityAttrListByExample(example);
+            pagination.setTotalCount(iHfusEntityAttrSV.getHfusEntityAttrCountByExample(example));
+
+            return ResultData.success().add("list",list).add("pagination",pagination);
+        }catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+    }
+
+    /**
+     * 查询展示常用实体属性明细
+     * @param hfusEntityAttr
+     * @return
+     * @throws Throwable
+     */
+    @RequestMapping(value = "/queryOneByAjax.html")
+    @ResponseBody
+    public ResultData detail(@ModelAttribute("hfusEntityAttr") HfusEntityAttr hfusEntityAttr){
+        logger.debug("request : {},{}", hfusEntityAttr.getHfusEntityAttrId(), hfusEntityAttr);
+        try{
+            HfusEntityAttr result = iHfusEntityAttrSV.getHfusEntityAttrByPK(hfusEntityAttr.getHfusEntityAttrId());
+            if(result != null) {
+                return ResultData.success(result);
+            }else {
+                return ResultData.error(ResultCode.RECODE_IS_NOT_EXISTS);
+            }
+        }catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+    }
 
     /**
     * 创建常用实体属性
@@ -28,75 +85,66 @@ public class HfusEntityAttrController   {
     * @return
     * @throws Throwable
     */
-    @RequestMapping(value = "/create.html")
-    public ModelAndView create(@ModelAttribute("hfusEntityAttr") HfusEntityAttr hfusEntityAttr) throws Throwable {
-        ModelAndView mav = new ModelAndView();
-        iHfusEntityAttrSV.create(hfusEntityAttr);
-        mav.addObject("hfusEntityAttrId", hfusEntityAttr.getHfusEntityAttrId());
-        mav.setViewName("/hframe/hfusEntityAttr/hframe_hfusEntityAttr_create");
-        return mav;
-    }
-
-    /**
-    * 查询展示常用实体属性
-    * @param hfusEntityAttr
-    * @return
-    * @throws Throwable
-    */
-    @RequestMapping(value = "/list.html")
-    public ModelAndView list(@ModelAttribute("hfusEntityAttr") HfusEntityAttr hfusEntityAttr) throws Throwable {
-        ModelAndView mav = new ModelAndView();
-        HfusEntityAttr_Example example = new HfusEntityAttr_Example();
-        ExampleUtils.parseExample(hfusEntityAttr,example);
-
-        List< HfusEntityAttr> hfusEntityAttrList = iHfusEntityAttrSV.getHfusEntityAttrListByExample(example);
-
-        mav.addObject("hfusEntityAttrList", hfusEntityAttrList);
-        mav.setViewName("/hframe/hfusEntityAttr/hframe_hfusEntityAttr_list");
-        return mav;
-    }
-
-
-    /**
-    * 异步创建常用实体属性
-    * @param hfusEntityAttr
-    * @return
-    * @throws Throwable
-    */
     @RequestMapping(value = "/createByAjax.html")
     @ResponseBody
-    public ResultMessage createByAjax(@ModelAttribute("hfusEntityAttr") HfusEntityAttr hfusEntityAttr) throws Throwable {
-        ResultMessage message = new ResultMessage();
-        iHfusEntityAttrSV.create(hfusEntityAttr);
-        return message;
+    public ResultData create(@ModelAttribute("hfusEntityAttr") HfusEntityAttr hfusEntityAttr) {
+        logger.debug("request : {}", hfusEntityAttr);
+        try {
+            int result = iHfusEntityAttrSV.create(hfusEntityAttr);
+            if(result > 0) {
+                return ResultData.success(hfusEntityAttr);
+            }
+        } catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+        return ResultData.error(ResultCode.UNKNOW);
     }
 
     /**
-    * 异步更新常用实体属性
+    * 更新常用实体属性
     * @param hfusEntityAttr
     * @return
     * @throws Throwable
     */
     @RequestMapping(value = "/updateByAjax.html")
     @ResponseBody
-    public ResultMessage updateByAjax(@ModelAttribute("hfusEntityAttr") HfusEntityAttr hfusEntityAttr) throws Throwable {
-        ResultMessage message = new ResultMessage();
-        iHfusEntityAttrSV.update(hfusEntityAttr);
-        return message;
+    public ResultData update(@ModelAttribute("hfusEntityAttr") HfusEntityAttr hfusEntityAttr) {
+        logger.debug("request : {}", hfusEntityAttr);
+        try {
+            int result = iHfusEntityAttrSV.update(hfusEntityAttr);
+            if(result > 0) {
+                return ResultData.success(hfusEntityAttr);
+            }
+        } catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+        return ResultData.error(ResultCode.UNKNOW);
     }
 
     /**
-    * 异步删除常用实体属性
+    * 删除常用实体属性
     * @param hfusEntityAttr
     * @return
     * @throws Throwable
     */
     @RequestMapping(value = "/deleteByAjax.html")
     @ResponseBody
-    public ResultMessage deleteByAjax(@ModelAttribute("hfusEntityAttr") HfusEntityAttr hfusEntityAttr) throws Throwable {
-        ResultMessage message = new ResultMessage();
-        iHfusEntityAttrSV.delete(hfusEntityAttr);
-        return message;
+    public ResultData delete(@ModelAttribute("hfusEntityAttr") HfusEntityAttr hfusEntityAttr) {
+        logger.debug("request : {}", hfusEntityAttr);
+
+        try {
+            int result = iHfusEntityAttrSV.delete(hfusEntityAttr);
+            if(result > 0) {
+                return ResultData.success(hfusEntityAttr);
+            }else {
+                return ResultData.error(ResultCode.RECODE_IS_NOT_EXISTS);
+            }
+        } catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
     }
   	//getter
  	

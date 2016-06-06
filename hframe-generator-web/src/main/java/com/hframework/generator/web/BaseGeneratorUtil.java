@@ -64,7 +64,7 @@ public class BaseGeneratorUtil {
     public static void controllerGenerate(String companyName, String projectName, String moduleName,  List<Table> tables) throws Exception {
         if(tables != null && tables.size() > 0) {
             for (Table table : tables) {
-                ControllerGenerator controllerGenerator = new ControllerGenerator(companyName, projectName, moduleName, table);
+                ControllerV2Generator controllerGenerator = new ControllerV2Generator(companyName, projectName, moduleName, table);
                 controllerGenerator.create();
             }
         }
@@ -76,7 +76,7 @@ public class BaseGeneratorUtil {
             Table table = new Table();
             table.setTableName(tableConfiguration.getTableName());
             table.setTableDesc(tableConfiguration.getProperty("chineseName"));
-            serviceGenerate("", "hframe", "hframe", table);
+//            serviceGenerate("", "hframe", "hframe", table);
             controllerGenerate("", "hframe", "hframe", table);
         }
     }

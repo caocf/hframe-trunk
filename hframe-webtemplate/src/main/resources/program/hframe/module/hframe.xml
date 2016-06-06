@@ -1,0 +1,6 @@
+<module code="hframe">
+    <page id="hfmd_entity_query" name="实体查询" page-template="list" data-set="hframe/hfmd_entity"></page>
+    <page id="hfmd_entity_create" name="实体创建" page-template="create" data-set="hframe/hfmd_entity"></page>
+    <page id="hfmd_entity_edit" name="实体修改" page-template="edit" data-set="hframe/hfmd_entity"></page>
+    <page id="hfmd_entity_detail" name="实体修改" page-template="edit" data-set="hframe/hfmd_entity"></page>
+</module>

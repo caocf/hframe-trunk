@@ -4,17 +4,19 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
     var ajax = require('ajax');
     var errormsg = require('js/hframework/errormsg');
 
-    $(".hflist-pager-button").click(function(){
+    $(".hflist-pager-button").live("click",function(){
         var pageNo = $(this).attr("pageNo");
-        var compoContainer = $(this).parents("[dataset][module]")[0];
+        var compoContainer = $(this).parents("[page][module]")[0];
         var module = $(compoContainer).attr("module");
-        var dataset =$(compoContainer).attr("dataset");
-        var _url = module + "/" + dataset + "list";
-        var _data = {"pageNo":pageNo};
+        var page =$(compoContainer).attr("page");
+        var component  =$(compoContainer).attr("component");
+        var _url =  "/" + module + "/" + page + ".html";
+        var _data = {"pageNo":pageNo,"component" : component};
         ajax.Post(_url,_data,function(data){
-            $(this).parent("hflist-pager").html(data.paper);
-            $(this).parent("hflist-data").html(data.data);
-        });
+            var $newHfList = $(data);
+            $(compoContainer).find(".hflist-pager").html($newHfList.find(".hflist-pager").html());
+            $(compoContainer).find(".hflist-data").html($newHfList.find(".hflist-data").html());
+        },'html');
     });
 });
 

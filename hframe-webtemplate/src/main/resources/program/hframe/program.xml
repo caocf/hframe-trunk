@@ -1,0 +1,17 @@
+<program>
+    <code>hframe</code>
+    <name></name>
+    <description>改系统对学习的各项进行进行统一的管理</description>
+    <modules>
+        <module code="hframe" name="框架"></module>
+    </modules>
+    <template>
+        <path>hframework.template.default</path>
+    </template>
+    <welcome>uc/login.html</welcome>
+    <superManager>
+        <code>admin</code>
+        <password>admin</password>
+        <name>草鸡管理员</name>
+    </superManager>
+</program>

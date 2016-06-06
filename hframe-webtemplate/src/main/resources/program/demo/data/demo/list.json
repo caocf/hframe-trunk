@@ -46,6 +46,6 @@
     {component:"<button type=\"submit\" class=\"btn btn-primary\">ÅúÁ¿É¾³ý</button>",action:"{\"pageFwd\":{\"action\":\"uc/user/batchDel\",\"isStack\":true}}"}
   ],
   ELE:{
-    2:{params:"userName={2}",action:"{\"pageFwd\":{\"action\":\"uc/user/edit\",\"isStack\":true}}"}
+    name:{params:"userName={2}",action:"{\"pageFwd\":{\"action\":\"uc/user/edit\",\"isStack\":true}}"}
   }
 }

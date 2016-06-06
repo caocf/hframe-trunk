@@ -1,7 +1,11 @@
 package com.hframe.controller;
 
+import com.hframework.beans.controller.Pagination;
+import com.hframework.beans.controller.ResultCode;
+import com.hframework.beans.controller.ResultData;
 import com.hframework.common.util.ExampleUtils;
-import com.hframe.controller.bean.ResultMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,11 +20,64 @@ import com.hframe.service.interfaces.IHfpmEntityPermissionSV;
 @Controller
 @RequestMapping(value = "/hframe/hfpmEntityPermission")
 public class HfpmEntityPermissionController   {
+    private static final Logger logger = LoggerFactory.getLogger(HfpmEntityPermissionController.class);
 
 	@Resource
 	private IHfpmEntityPermissionSV iHfpmEntityPermissionSV;
   
 
+
+
+
+    /**
+     * 查询展示实体权限列表
+     * @param hfpmEntityPermission
+     * @return
+     * @throws Throwable
+     */
+    @RequestMapping(value = "/queryListByAjax.html")
+    @ResponseBody
+    public ResultData list(@ModelAttribute("hfpmEntityPermission") HfpmEntityPermission hfpmEntityPermission,
+                                      @ModelAttribute("example") HfpmEntityPermission_Example example, Pagination pagination){
+        logger.debug("request : {},{},{}", hfpmEntityPermission, example, pagination);
+        try{
+            ExampleUtils.parseExample(hfpmEntityPermission, example);
+            //设置分页信息
+            example.setLimitStart(pagination.getStartIndex());
+            example.setLimitEnd(pagination.getEndIndex());
+
+            final List< HfpmEntityPermission> list = iHfpmEntityPermissionSV.getHfpmEntityPermissionListByExample(example);
+            pagination.setTotalCount(iHfpmEntityPermissionSV.getHfpmEntityPermissionCountByExample(example));
+
+            return ResultData.success().add("list",list).add("pagination",pagination);
+        }catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+    }
+
+    /**
+     * 查询展示实体权限明细
+     * @param hfpmEntityPermission
+     * @return
+     * @throws Throwable
+     */
+    @RequestMapping(value = "/queryOneByAjax.html")
+    @ResponseBody
+    public ResultData detail(@ModelAttribute("hfpmEntityPermission") HfpmEntityPermission hfpmEntityPermission){
+        logger.debug("request : {},{}", hfpmEntityPermission.getHfpmEntityPermissionId(), hfpmEntityPermission);
+        try{
+            HfpmEntityPermission result = iHfpmEntityPermissionSV.getHfpmEntityPermissionByPK(hfpmEntityPermission.getHfpmEntityPermissionId());
+            if(result != null) {
+                return ResultData.success(result);
+            }else {
+                return ResultData.error(ResultCode.RECODE_IS_NOT_EXISTS);
+            }
+        }catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+    }
 
     /**
     * 创建实体权限
@@ -28,75 +85,66 @@ public class HfpmEntityPermissionController   {
     * @return
     * @throws Throwable
     */
-    @RequestMapping(value = "/create.html")
-    public ModelAndView create(@ModelAttribute("hfpmEntityPermission") HfpmEntityPermission hfpmEntityPermission) throws Throwable {
-        ModelAndView mav = new ModelAndView();
-        iHfpmEntityPermissionSV.create(hfpmEntityPermission);
-        mav.addObject("hfpmEntityPermissionId", hfpmEntityPermission.getHfpmEntityPermissionId());
-        mav.setViewName("/hframe/hfpmEntityPermission/hframe_hfpmEntityPermission_create");
-        return mav;
-    }
-
-    /**
-    * 查询展示实体权限
-    * @param hfpmEntityPermission
-    * @return
-    * @throws Throwable
-    */
-    @RequestMapping(value = "/list.html")
-    public ModelAndView list(@ModelAttribute("hfpmEntityPermission") HfpmEntityPermission hfpmEntityPermission) throws Throwable {
-        ModelAndView mav = new ModelAndView();
-        HfpmEntityPermission_Example example = new HfpmEntityPermission_Example();
-        ExampleUtils.parseExample(hfpmEntityPermission,example);
-
-        List< HfpmEntityPermission> hfpmEntityPermissionList = iHfpmEntityPermissionSV.getHfpmEntityPermissionListByExample(example);
-
-        mav.addObject("hfpmEntityPermissionList", hfpmEntityPermissionList);
-        mav.setViewName("/hframe/hfpmEntityPermission/hframe_hfpmEntityPermission_list");
-        return mav;
-    }
-
-
-    /**
-    * 异步创建实体权限
-    * @param hfpmEntityPermission
-    * @return
-    * @throws Throwable
-    */
     @RequestMapping(value = "/createByAjax.html")
     @ResponseBody
-    public ResultMessage createByAjax(@ModelAttribute("hfpmEntityPermission") HfpmEntityPermission hfpmEntityPermission) throws Throwable {
-        ResultMessage message = new ResultMessage();
-        iHfpmEntityPermissionSV.create(hfpmEntityPermission);
-        return message;
+    public ResultData create(@ModelAttribute("hfpmEntityPermission") HfpmEntityPermission hfpmEntityPermission) {
+        logger.debug("request : {}", hfpmEntityPermission);
+        try {
+            int result = iHfpmEntityPermissionSV.create(hfpmEntityPermission);
+            if(result > 0) {
+                return ResultData.success(hfpmEntityPermission);
+            }
+        } catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+        return ResultData.error(ResultCode.UNKNOW);
     }
 
     /**
-    * 异步更新实体权限
+    * 更新实体权限
     * @param hfpmEntityPermission
     * @return
     * @throws Throwable
     */
     @RequestMapping(value = "/updateByAjax.html")
     @ResponseBody
-    public ResultMessage updateByAjax(@ModelAttribute("hfpmEntityPermission") HfpmEntityPermission hfpmEntityPermission) throws Throwable {
-        ResultMessage message = new ResultMessage();
-        iHfpmEntityPermissionSV.update(hfpmEntityPermission);
-        return message;
+    public ResultData update(@ModelAttribute("hfpmEntityPermission") HfpmEntityPermission hfpmEntityPermission) {
+        logger.debug("request : {}", hfpmEntityPermission);
+        try {
+            int result = iHfpmEntityPermissionSV.update(hfpmEntityPermission);
+            if(result > 0) {
+                return ResultData.success(hfpmEntityPermission);
+            }
+        } catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+        return ResultData.error(ResultCode.UNKNOW);
     }
 
     /**
-    * 异步删除实体权限
+    * 删除实体权限
     * @param hfpmEntityPermission
     * @return
     * @throws Throwable
     */
     @RequestMapping(value = "/deleteByAjax.html")
     @ResponseBody
-    public ResultMessage deleteByAjax(@ModelAttribute("hfpmEntityPermission") HfpmEntityPermission hfpmEntityPermission) throws Throwable {
-        ResultMessage message = new ResultMessage();
-        iHfpmEntityPermissionSV.delete(hfpmEntityPermission);
-        return message;
+    public ResultData delete(@ModelAttribute("hfpmEntityPermission") HfpmEntityPermission hfpmEntityPermission) {
+        logger.debug("request : {}", hfpmEntityPermission);
+
+        try {
+            int result = iHfpmEntityPermissionSV.delete(hfpmEntityPermission);
+            if(result > 0) {
+                return ResultData.success(hfpmEntityPermission);
+            }else {
+                return ResultData.error(ResultCode.RECODE_IS_NOT_EXISTS);
+            }
+        } catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
     }
   	//getter
  	

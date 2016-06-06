@@ -11,7 +11,8 @@ public class ResultCode {
 
     public static final ResultCode SUCCESS = new ResultCode("0","成功");
     public static final ResultCode ERROR = new ResultCode("-1","系统异常");
-    public static final ResultCode UNKNOW = new ResultCode("-1","为止异常");
+    public static final ResultCode UNKNOW = new ResultCode("-1","未知错误");
+    public static final ResultCode RECODE_IS_NOT_EXISTS = new ResultCode("1001","没有查询到对应记录！");
 
     private String errorCode;
     private String errorMsg;

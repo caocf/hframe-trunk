@@ -8,4 +8,4 @@
 
 
 
-<input class="input-xlarge focused" id="$column.code" type="text" value="$data.get($column.code)">
+<input class="input-xlarge focused" id="$column.code" type="text" value="$!data.get($column.code)">

@@ -1,7 +1,11 @@
 package com.hframe.controller;
 
+import com.hframework.beans.controller.Pagination;
+import com.hframework.beans.controller.ResultCode;
+import com.hframework.beans.controller.ResultData;
 import com.hframework.common.util.ExampleUtils;
-import com.hframe.controller.bean.ResultMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,11 +20,64 @@ import com.hframe.service.interfaces.IHfpmPageEventAttrSV;
 @Controller
 @RequestMapping(value = "/hframe/hfpmPageEventAttr")
 public class HfpmPageEventAttrController   {
+    private static final Logger logger = LoggerFactory.getLogger(HfpmPageEventAttrController.class);
 
 	@Resource
 	private IHfpmPageEventAttrSV iHfpmPageEventAttrSV;
   
 
+
+
+
+    /**
+     * 查询展示事件属性列表
+     * @param hfpmPageEventAttr
+     * @return
+     * @throws Throwable
+     */
+    @RequestMapping(value = "/queryListByAjax.html")
+    @ResponseBody
+    public ResultData list(@ModelAttribute("hfpmPageEventAttr") HfpmPageEventAttr hfpmPageEventAttr,
+                                      @ModelAttribute("example") HfpmPageEventAttr_Example example, Pagination pagination){
+        logger.debug("request : {},{},{}", hfpmPageEventAttr, example, pagination);
+        try{
+            ExampleUtils.parseExample(hfpmPageEventAttr, example);
+            //设置分页信息
+            example.setLimitStart(pagination.getStartIndex());
+            example.setLimitEnd(pagination.getEndIndex());
+
+            final List< HfpmPageEventAttr> list = iHfpmPageEventAttrSV.getHfpmPageEventAttrListByExample(example);
+            pagination.setTotalCount(iHfpmPageEventAttrSV.getHfpmPageEventAttrCountByExample(example));
+
+            return ResultData.success().add("list",list).add("pagination",pagination);
+        }catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+    }
+
+    /**
+     * 查询展示事件属性明细
+     * @param hfpmPageEventAttr
+     * @return
+     * @throws Throwable
+     */
+    @RequestMapping(value = "/queryOneByAjax.html")
+    @ResponseBody
+    public ResultData detail(@ModelAttribute("hfpmPageEventAttr") HfpmPageEventAttr hfpmPageEventAttr){
+        logger.debug("request : {},{}", hfpmPageEventAttr.getHfpmPageEventAttrId(), hfpmPageEventAttr);
+        try{
+            HfpmPageEventAttr result = iHfpmPageEventAttrSV.getHfpmPageEventAttrByPK(hfpmPageEventAttr.getHfpmPageEventAttrId());
+            if(result != null) {
+                return ResultData.success(result);
+            }else {
+                return ResultData.error(ResultCode.RECODE_IS_NOT_EXISTS);
+            }
+        }catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+    }
 
     /**
     * 创建事件属性
@@ -28,75 +85,66 @@ public class HfpmPageEventAttrController   {
     * @return
     * @throws Throwable
     */
-    @RequestMapping(value = "/create.html")
-    public ModelAndView create(@ModelAttribute("hfpmPageEventAttr") HfpmPageEventAttr hfpmPageEventAttr) throws Throwable {
-        ModelAndView mav = new ModelAndView();
-        iHfpmPageEventAttrSV.create(hfpmPageEventAttr);
-        mav.addObject("hfpmPageEventAttrId", hfpmPageEventAttr.getHfpmPageEventAttrId());
-        mav.setViewName("/hframe/hfpmPageEventAttr/hframe_hfpmPageEventAttr_create");
-        return mav;
-    }
-
-    /**
-    * 查询展示事件属性
-    * @param hfpmPageEventAttr
-    * @return
-    * @throws Throwable
-    */
-    @RequestMapping(value = "/list.html")
-    public ModelAndView list(@ModelAttribute("hfpmPageEventAttr") HfpmPageEventAttr hfpmPageEventAttr) throws Throwable {
-        ModelAndView mav = new ModelAndView();
-        HfpmPageEventAttr_Example example = new HfpmPageEventAttr_Example();
-        ExampleUtils.parseExample(hfpmPageEventAttr,example);
-
-        List< HfpmPageEventAttr> hfpmPageEventAttrList = iHfpmPageEventAttrSV.getHfpmPageEventAttrListByExample(example);
-
-        mav.addObject("hfpmPageEventAttrList", hfpmPageEventAttrList);
-        mav.setViewName("/hframe/hfpmPageEventAttr/hframe_hfpmPageEventAttr_list");
-        return mav;
-    }
-
-
-    /**
-    * 异步创建事件属性
-    * @param hfpmPageEventAttr
-    * @return
-    * @throws Throwable
-    */
     @RequestMapping(value = "/createByAjax.html")
     @ResponseBody
-    public ResultMessage createByAjax(@ModelAttribute("hfpmPageEventAttr") HfpmPageEventAttr hfpmPageEventAttr) throws Throwable {
-        ResultMessage message = new ResultMessage();
-        iHfpmPageEventAttrSV.create(hfpmPageEventAttr);
-        return message;
+    public ResultData create(@ModelAttribute("hfpmPageEventAttr") HfpmPageEventAttr hfpmPageEventAttr) {
+        logger.debug("request : {}", hfpmPageEventAttr);
+        try {
+            int result = iHfpmPageEventAttrSV.create(hfpmPageEventAttr);
+            if(result > 0) {
+                return ResultData.success(hfpmPageEventAttr);
+            }
+        } catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+        return ResultData.error(ResultCode.UNKNOW);
     }
 
     /**
-    * 异步更新事件属性
+    * 更新事件属性
     * @param hfpmPageEventAttr
     * @return
     * @throws Throwable
     */
     @RequestMapping(value = "/updateByAjax.html")
     @ResponseBody
-    public ResultMessage updateByAjax(@ModelAttribute("hfpmPageEventAttr") HfpmPageEventAttr hfpmPageEventAttr) throws Throwable {
-        ResultMessage message = new ResultMessage();
-        iHfpmPageEventAttrSV.update(hfpmPageEventAttr);
-        return message;
+    public ResultData update(@ModelAttribute("hfpmPageEventAttr") HfpmPageEventAttr hfpmPageEventAttr) {
+        logger.debug("request : {}", hfpmPageEventAttr);
+        try {
+            int result = iHfpmPageEventAttrSV.update(hfpmPageEventAttr);
+            if(result > 0) {
+                return ResultData.success(hfpmPageEventAttr);
+            }
+        } catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+        return ResultData.error(ResultCode.UNKNOW);
     }
 
     /**
-    * 异步删除事件属性
+    * 删除事件属性
     * @param hfpmPageEventAttr
     * @return
     * @throws Throwable
     */
     @RequestMapping(value = "/deleteByAjax.html")
     @ResponseBody
-    public ResultMessage deleteByAjax(@ModelAttribute("hfpmPageEventAttr") HfpmPageEventAttr hfpmPageEventAttr) throws Throwable {
-        ResultMessage message = new ResultMessage();
-        iHfpmPageEventAttrSV.delete(hfpmPageEventAttr);
-        return message;
+    public ResultData delete(@ModelAttribute("hfpmPageEventAttr") HfpmPageEventAttr hfpmPageEventAttr) {
+        logger.debug("request : {}", hfpmPageEventAttr);
+
+        try {
+            int result = iHfpmPageEventAttrSV.delete(hfpmPageEventAttr);
+            if(result > 0) {
+                return ResultData.success(hfpmPageEventAttr);
+            }else {
+                return ResultData.error(ResultCode.RECODE_IS_NOT_EXISTS);
+            }
+        } catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
     }
   	//getter
  	

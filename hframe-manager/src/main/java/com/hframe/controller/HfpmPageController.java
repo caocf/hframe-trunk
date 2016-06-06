@@ -1,7 +1,11 @@
 package com.hframe.controller;
 
+import com.hframework.beans.controller.Pagination;
+import com.hframework.beans.controller.ResultCode;
+import com.hframework.beans.controller.ResultData;
 import com.hframework.common.util.ExampleUtils;
-import com.hframe.controller.bean.ResultMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,11 +20,64 @@ import com.hframe.service.interfaces.IHfpmPageSV;
 @Controller
 @RequestMapping(value = "/hframe/hfpmPage")
 public class HfpmPageController   {
+    private static final Logger logger = LoggerFactory.getLogger(HfpmPageController.class);
 
 	@Resource
 	private IHfpmPageSV iHfpmPageSV;
   
 
+
+
+
+    /**
+     * 查询展示页面列表
+     * @param hfpmPage
+     * @return
+     * @throws Throwable
+     */
+    @RequestMapping(value = "/queryListByAjax.html")
+    @ResponseBody
+    public ResultData list(@ModelAttribute("hfpmPage") HfpmPage hfpmPage,
+                                      @ModelAttribute("example") HfpmPage_Example example, Pagination pagination){
+        logger.debug("request : {},{},{}", hfpmPage, example, pagination);
+        try{
+            ExampleUtils.parseExample(hfpmPage, example);
+            //设置分页信息
+            example.setLimitStart(pagination.getStartIndex());
+            example.setLimitEnd(pagination.getEndIndex());
+
+            final List< HfpmPage> list = iHfpmPageSV.getHfpmPageListByExample(example);
+            pagination.setTotalCount(iHfpmPageSV.getHfpmPageCountByExample(example));
+
+            return ResultData.success().add("list",list).add("pagination",pagination);
+        }catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+    }
+
+    /**
+     * 查询展示页面明细
+     * @param hfpmPage
+     * @return
+     * @throws Throwable
+     */
+    @RequestMapping(value = "/queryOneByAjax.html")
+    @ResponseBody
+    public ResultData detail(@ModelAttribute("hfpmPage") HfpmPage hfpmPage){
+        logger.debug("request : {},{}", hfpmPage.getHfpmPageId(), hfpmPage);
+        try{
+            HfpmPage result = iHfpmPageSV.getHfpmPageByPK(hfpmPage.getHfpmPageId());
+            if(result != null) {
+                return ResultData.success(result);
+            }else {
+                return ResultData.error(ResultCode.RECODE_IS_NOT_EXISTS);
+            }
+        }catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+    }
 
     /**
     * 创建页面
@@ -28,75 +85,66 @@ public class HfpmPageController   {
     * @return
     * @throws Throwable
     */
-    @RequestMapping(value = "/create.html")
-    public ModelAndView create(@ModelAttribute("hfpmPage") HfpmPage hfpmPage) throws Throwable {
-        ModelAndView mav = new ModelAndView();
-        iHfpmPageSV.create(hfpmPage);
-        mav.addObject("hfpmPageId", hfpmPage.getHfpmPageId());
-        mav.setViewName("/hframe/hfpmPage/hframe_hfpmPage_create");
-        return mav;
-    }
-
-    /**
-    * 查询展示页面
-    * @param hfpmPage
-    * @return
-    * @throws Throwable
-    */
-    @RequestMapping(value = "/list.html")
-    public ModelAndView list(@ModelAttribute("hfpmPage") HfpmPage hfpmPage) throws Throwable {
-        ModelAndView mav = new ModelAndView();
-        HfpmPage_Example example = new HfpmPage_Example();
-        ExampleUtils.parseExample(hfpmPage,example);
-
-        List< HfpmPage> hfpmPageList = iHfpmPageSV.getHfpmPageListByExample(example);
-
-        mav.addObject("hfpmPageList", hfpmPageList);
-        mav.setViewName("/hframe/hfpmPage/hframe_hfpmPage_list");
-        return mav;
-    }
-
-
-    /**
-    * 异步创建页面
-    * @param hfpmPage
-    * @return
-    * @throws Throwable
-    */
     @RequestMapping(value = "/createByAjax.html")
     @ResponseBody
-    public ResultMessage createByAjax(@ModelAttribute("hfpmPage") HfpmPage hfpmPage) throws Throwable {
-        ResultMessage message = new ResultMessage();
-        iHfpmPageSV.create(hfpmPage);
-        return message;
+    public ResultData create(@ModelAttribute("hfpmPage") HfpmPage hfpmPage) {
+        logger.debug("request : {}", hfpmPage);
+        try {
+            int result = iHfpmPageSV.create(hfpmPage);
+            if(result > 0) {
+                return ResultData.success(hfpmPage);
+            }
+        } catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+        return ResultData.error(ResultCode.UNKNOW);
     }
 
     /**
-    * 异步更新页面
+    * 更新页面
     * @param hfpmPage
     * @return
     * @throws Throwable
     */
     @RequestMapping(value = "/updateByAjax.html")
     @ResponseBody
-    public ResultMessage updateByAjax(@ModelAttribute("hfpmPage") HfpmPage hfpmPage) throws Throwable {
-        ResultMessage message = new ResultMessage();
-        iHfpmPageSV.update(hfpmPage);
-        return message;
+    public ResultData update(@ModelAttribute("hfpmPage") HfpmPage hfpmPage) {
+        logger.debug("request : {}", hfpmPage);
+        try {
+            int result = iHfpmPageSV.update(hfpmPage);
+            if(result > 0) {
+                return ResultData.success(hfpmPage);
+            }
+        } catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+        return ResultData.error(ResultCode.UNKNOW);
     }
 
     /**
-    * 异步删除页面
+    * 删除页面
     * @param hfpmPage
     * @return
     * @throws Throwable
     */
     @RequestMapping(value = "/deleteByAjax.html")
     @ResponseBody
-    public ResultMessage deleteByAjax(@ModelAttribute("hfpmPage") HfpmPage hfpmPage) throws Throwable {
-        ResultMessage message = new ResultMessage();
-        iHfpmPageSV.delete(hfpmPage);
-        return message;
+    public ResultData delete(@ModelAttribute("hfpmPage") HfpmPage hfpmPage) {
+        logger.debug("request : {}", hfpmPage);
+
+        try {
+            int result = iHfpmPageSV.delete(hfpmPage);
+            if(result > 0) {
+                return ResultData.success(hfpmPage);
+            }else {
+                return ResultData.error(ResultCode.RECODE_IS_NOT_EXISTS);
+            }
+        } catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
     }
   	//getter
  	

@@ -2,7 +2,7 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
     var layer = require('layer');
     var ajax = require('ajax');
 
-    $(".hfhref").click(function(){
+    $(".hfhref").live("click", function(){
         $action =JSON.parse($(this).attr("action"));
         $param  = formatContent($(this).attr("params"), $(this));
         doEvent($action, $param, $(this));

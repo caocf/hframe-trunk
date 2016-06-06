@@ -11,6 +11,8 @@ public class Class {
 
 	private String srcFilePath;
 
+	private boolean useLogger;
+
 	//包路径
 	private String annotation;
 
@@ -84,6 +86,14 @@ public class Class {
 			this.annotation += ("\n" + annotation);
 		}
 
+	}
+
+	public boolean isUseLogger() {
+		return useLogger;
+	}
+
+	public void setUseLogger(boolean useLogger) {
+		this.useLogger = useLogger;
 	}
 
 	public void setSrcFilePath(String srcFilePath) {

@@ -1,7 +1,11 @@
 package com.hframe.controller;
 
+import com.hframework.beans.controller.Pagination;
+import com.hframework.beans.controller.ResultCode;
+import com.hframework.beans.controller.ResultData;
 import com.hframework.common.util.ExampleUtils;
-import com.hframe.controller.bean.ResultMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,11 +20,64 @@ import com.hframe.service.interfaces.IHfcfgProgramTemplateSV;
 @Controller
 @RequestMapping(value = "/hframe/hfcfgProgramTemplate")
 public class HfcfgProgramTemplateController   {
+    private static final Logger logger = LoggerFactory.getLogger(HfcfgProgramTemplateController.class);
 
 	@Resource
 	private IHfcfgProgramTemplateSV iHfcfgProgramTemplateSV;
   
 
+
+
+
+    /**
+     * 查询展示项目模板列表
+     * @param hfcfgProgramTemplate
+     * @return
+     * @throws Throwable
+     */
+    @RequestMapping(value = "/queryListByAjax.html")
+    @ResponseBody
+    public ResultData list(@ModelAttribute("hfcfgProgramTemplate") HfcfgProgramTemplate hfcfgProgramTemplate,
+                                      @ModelAttribute("example") HfcfgProgramTemplate_Example example, Pagination pagination){
+        logger.debug("request : {},{},{}", hfcfgProgramTemplate, example, pagination);
+        try{
+            ExampleUtils.parseExample(hfcfgProgramTemplate, example);
+            //设置分页信息
+            example.setLimitStart(pagination.getStartIndex());
+            example.setLimitEnd(pagination.getEndIndex());
+
+            final List< HfcfgProgramTemplate> list = iHfcfgProgramTemplateSV.getHfcfgProgramTemplateListByExample(example);
+            pagination.setTotalCount(iHfcfgProgramTemplateSV.getHfcfgProgramTemplateCountByExample(example));
+
+            return ResultData.success().add("list",list).add("pagination",pagination);
+        }catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+    }
+
+    /**
+     * 查询展示项目模板明细
+     * @param hfcfgProgramTemplate
+     * @return
+     * @throws Throwable
+     */
+    @RequestMapping(value = "/queryOneByAjax.html")
+    @ResponseBody
+    public ResultData detail(@ModelAttribute("hfcfgProgramTemplate") HfcfgProgramTemplate hfcfgProgramTemplate){
+        logger.debug("request : {},{}", hfcfgProgramTemplate.getHfcfgProgramTemplateId(), hfcfgProgramTemplate);
+        try{
+            HfcfgProgramTemplate result = iHfcfgProgramTemplateSV.getHfcfgProgramTemplateByPK(hfcfgProgramTemplate.getHfcfgProgramTemplateId());
+            if(result != null) {
+                return ResultData.success(result);
+            }else {
+                return ResultData.error(ResultCode.RECODE_IS_NOT_EXISTS);
+            }
+        }catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+    }
 
     /**
     * 创建项目模板
@@ -28,75 +85,66 @@ public class HfcfgProgramTemplateController   {
     * @return
     * @throws Throwable
     */
-    @RequestMapping(value = "/create.html")
-    public ModelAndView create(@ModelAttribute("hfcfgProgramTemplate") HfcfgProgramTemplate hfcfgProgramTemplate) throws Throwable {
-        ModelAndView mav = new ModelAndView();
-        iHfcfgProgramTemplateSV.create(hfcfgProgramTemplate);
-        mav.addObject("hfcfgProgramTemplateId", hfcfgProgramTemplate.getHfcfgProgramTemplateId());
-        mav.setViewName("/hframe/hfcfgProgramTemplate/hframe_hfcfgProgramTemplate_create");
-        return mav;
-    }
-
-    /**
-    * 查询展示项目模板
-    * @param hfcfgProgramTemplate
-    * @return
-    * @throws Throwable
-    */
-    @RequestMapping(value = "/list.html")
-    public ModelAndView list(@ModelAttribute("hfcfgProgramTemplate") HfcfgProgramTemplate hfcfgProgramTemplate) throws Throwable {
-        ModelAndView mav = new ModelAndView();
-        HfcfgProgramTemplate_Example example = new HfcfgProgramTemplate_Example();
-        ExampleUtils.parseExample(hfcfgProgramTemplate,example);
-
-        List< HfcfgProgramTemplate> hfcfgProgramTemplateList = iHfcfgProgramTemplateSV.getHfcfgProgramTemplateListByExample(example);
-
-        mav.addObject("hfcfgProgramTemplateList", hfcfgProgramTemplateList);
-        mav.setViewName("/hframe/hfcfgProgramTemplate/hframe_hfcfgProgramTemplate_list");
-        return mav;
-    }
-
-
-    /**
-    * 异步创建项目模板
-    * @param hfcfgProgramTemplate
-    * @return
-    * @throws Throwable
-    */
     @RequestMapping(value = "/createByAjax.html")
     @ResponseBody
-    public ResultMessage createByAjax(@ModelAttribute("hfcfgProgramTemplate") HfcfgProgramTemplate hfcfgProgramTemplate) throws Throwable {
-        ResultMessage message = new ResultMessage();
-        iHfcfgProgramTemplateSV.create(hfcfgProgramTemplate);
-        return message;
+    public ResultData create(@ModelAttribute("hfcfgProgramTemplate") HfcfgProgramTemplate hfcfgProgramTemplate) {
+        logger.debug("request : {}", hfcfgProgramTemplate);
+        try {
+            int result = iHfcfgProgramTemplateSV.create(hfcfgProgramTemplate);
+            if(result > 0) {
+                return ResultData.success(hfcfgProgramTemplate);
+            }
+        } catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+        return ResultData.error(ResultCode.UNKNOW);
     }
 
     /**
-    * 异步更新项目模板
+    * 更新项目模板
     * @param hfcfgProgramTemplate
     * @return
     * @throws Throwable
     */
     @RequestMapping(value = "/updateByAjax.html")
     @ResponseBody
-    public ResultMessage updateByAjax(@ModelAttribute("hfcfgProgramTemplate") HfcfgProgramTemplate hfcfgProgramTemplate) throws Throwable {
-        ResultMessage message = new ResultMessage();
-        iHfcfgProgramTemplateSV.update(hfcfgProgramTemplate);
-        return message;
+    public ResultData update(@ModelAttribute("hfcfgProgramTemplate") HfcfgProgramTemplate hfcfgProgramTemplate) {
+        logger.debug("request : {}", hfcfgProgramTemplate);
+        try {
+            int result = iHfcfgProgramTemplateSV.update(hfcfgProgramTemplate);
+            if(result > 0) {
+                return ResultData.success(hfcfgProgramTemplate);
+            }
+        } catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+        return ResultData.error(ResultCode.UNKNOW);
     }
 
     /**
-    * 异步删除项目模板
+    * 删除项目模板
     * @param hfcfgProgramTemplate
     * @return
     * @throws Throwable
     */
     @RequestMapping(value = "/deleteByAjax.html")
     @ResponseBody
-    public ResultMessage deleteByAjax(@ModelAttribute("hfcfgProgramTemplate") HfcfgProgramTemplate hfcfgProgramTemplate) throws Throwable {
-        ResultMessage message = new ResultMessage();
-        iHfcfgProgramTemplateSV.delete(hfcfgProgramTemplate);
-        return message;
+    public ResultData delete(@ModelAttribute("hfcfgProgramTemplate") HfcfgProgramTemplate hfcfgProgramTemplate) {
+        logger.debug("request : {}", hfcfgProgramTemplate);
+
+        try {
+            int result = iHfcfgProgramTemplateSV.delete(hfcfgProgramTemplate);
+            if(result > 0) {
+                return ResultData.success(hfcfgProgramTemplate);
+            }else {
+                return ResultData.error(ResultCode.RECODE_IS_NOT_EXISTS);
+            }
+        } catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
     }
   	//getter
  	

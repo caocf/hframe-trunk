@@ -1,7 +1,11 @@
 package com.hframe.controller;
 
+import com.hframework.beans.controller.Pagination;
+import com.hframework.beans.controller.ResultCode;
+import com.hframework.beans.controller.ResultData;
 import com.hframework.common.util.ExampleUtils;
-import com.hframe.controller.bean.ResultMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,11 +20,64 @@ import com.hframe.service.interfaces.IHfpmDataFieldSV;
 @Controller
 @RequestMapping(value = "/hframe/hfpmDataField")
 public class HfpmDataFieldController   {
+    private static final Logger logger = LoggerFactory.getLogger(HfpmDataFieldController.class);
 
 	@Resource
 	private IHfpmDataFieldSV iHfpmDataFieldSV;
   
 
+
+
+
+    /**
+     * 查询展示数据列列表
+     * @param hfpmDataField
+     * @return
+     * @throws Throwable
+     */
+    @RequestMapping(value = "/queryListByAjax.html")
+    @ResponseBody
+    public ResultData list(@ModelAttribute("hfpmDataField") HfpmDataField hfpmDataField,
+                                      @ModelAttribute("example") HfpmDataField_Example example, Pagination pagination){
+        logger.debug("request : {},{},{}", hfpmDataField, example, pagination);
+        try{
+            ExampleUtils.parseExample(hfpmDataField, example);
+            //设置分页信息
+            example.setLimitStart(pagination.getStartIndex());
+            example.setLimitEnd(pagination.getEndIndex());
+
+            final List< HfpmDataField> list = iHfpmDataFieldSV.getHfpmDataFieldListByExample(example);
+            pagination.setTotalCount(iHfpmDataFieldSV.getHfpmDataFieldCountByExample(example));
+
+            return ResultData.success().add("list",list).add("pagination",pagination);
+        }catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+    }
+
+    /**
+     * 查询展示数据列明细
+     * @param hfpmDataField
+     * @return
+     * @throws Throwable
+     */
+    @RequestMapping(value = "/queryOneByAjax.html")
+    @ResponseBody
+    public ResultData detail(@ModelAttribute("hfpmDataField") HfpmDataField hfpmDataField){
+        logger.debug("request : {},{}", hfpmDataField.getHfpmDataFieldId(), hfpmDataField);
+        try{
+            HfpmDataField result = iHfpmDataFieldSV.getHfpmDataFieldByPK(hfpmDataField.getHfpmDataFieldId());
+            if(result != null) {
+                return ResultData.success(result);
+            }else {
+                return ResultData.error(ResultCode.RECODE_IS_NOT_EXISTS);
+            }
+        }catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+    }
 
     /**
     * 创建数据列
@@ -28,75 +85,66 @@ public class HfpmDataFieldController   {
     * @return
     * @throws Throwable
     */
-    @RequestMapping(value = "/create.html")
-    public ModelAndView create(@ModelAttribute("hfpmDataField") HfpmDataField hfpmDataField) throws Throwable {
-        ModelAndView mav = new ModelAndView();
-        iHfpmDataFieldSV.create(hfpmDataField);
-        mav.addObject("hfpmDataFieldId", hfpmDataField.getHfpmDataFieldId());
-        mav.setViewName("/hframe/hfpmDataField/hframe_hfpmDataField_create");
-        return mav;
-    }
-
-    /**
-    * 查询展示数据列
-    * @param hfpmDataField
-    * @return
-    * @throws Throwable
-    */
-    @RequestMapping(value = "/list.html")
-    public ModelAndView list(@ModelAttribute("hfpmDataField") HfpmDataField hfpmDataField) throws Throwable {
-        ModelAndView mav = new ModelAndView();
-        HfpmDataField_Example example = new HfpmDataField_Example();
-        ExampleUtils.parseExample(hfpmDataField,example);
-
-        List< HfpmDataField> hfpmDataFieldList = iHfpmDataFieldSV.getHfpmDataFieldListByExample(example);
-
-        mav.addObject("hfpmDataFieldList", hfpmDataFieldList);
-        mav.setViewName("/hframe/hfpmDataField/hframe_hfpmDataField_list");
-        return mav;
-    }
-
-
-    /**
-    * 异步创建数据列
-    * @param hfpmDataField
-    * @return
-    * @throws Throwable
-    */
     @RequestMapping(value = "/createByAjax.html")
     @ResponseBody
-    public ResultMessage createByAjax(@ModelAttribute("hfpmDataField") HfpmDataField hfpmDataField) throws Throwable {
-        ResultMessage message = new ResultMessage();
-        iHfpmDataFieldSV.create(hfpmDataField);
-        return message;
+    public ResultData create(@ModelAttribute("hfpmDataField") HfpmDataField hfpmDataField) {
+        logger.debug("request : {}", hfpmDataField);
+        try {
+            int result = iHfpmDataFieldSV.create(hfpmDataField);
+            if(result > 0) {
+                return ResultData.success(hfpmDataField);
+            }
+        } catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+        return ResultData.error(ResultCode.UNKNOW);
     }
 
     /**
-    * 异步更新数据列
+    * 更新数据列
     * @param hfpmDataField
     * @return
     * @throws Throwable
     */
     @RequestMapping(value = "/updateByAjax.html")
     @ResponseBody
-    public ResultMessage updateByAjax(@ModelAttribute("hfpmDataField") HfpmDataField hfpmDataField) throws Throwable {
-        ResultMessage message = new ResultMessage();
-        iHfpmDataFieldSV.update(hfpmDataField);
-        return message;
+    public ResultData update(@ModelAttribute("hfpmDataField") HfpmDataField hfpmDataField) {
+        logger.debug("request : {}", hfpmDataField);
+        try {
+            int result = iHfpmDataFieldSV.update(hfpmDataField);
+            if(result > 0) {
+                return ResultData.success(hfpmDataField);
+            }
+        } catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+        return ResultData.error(ResultCode.UNKNOW);
     }
 
     /**
-    * 异步删除数据列
+    * 删除数据列
     * @param hfpmDataField
     * @return
     * @throws Throwable
     */
     @RequestMapping(value = "/deleteByAjax.html")
     @ResponseBody
-    public ResultMessage deleteByAjax(@ModelAttribute("hfpmDataField") HfpmDataField hfpmDataField) throws Throwable {
-        ResultMessage message = new ResultMessage();
-        iHfpmDataFieldSV.delete(hfpmDataField);
-        return message;
+    public ResultData delete(@ModelAttribute("hfpmDataField") HfpmDataField hfpmDataField) {
+        logger.debug("request : {}", hfpmDataField);
+
+        try {
+            int result = iHfpmDataFieldSV.delete(hfpmDataField);
+            if(result > 0) {
+                return ResultData.success(hfpmDataField);
+            }else {
+                return ResultData.error(ResultCode.RECODE_IS_NOT_EXISTS);
+            }
+        } catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
     }
   	//getter
  	

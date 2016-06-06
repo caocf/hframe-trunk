@@ -37,7 +37,7 @@ public class Pagination {
     }
 
     public int getTotalPage(){
-        return this.totalCount / this.pageSize +  this.totalCount % this.pageSize > 0 ? 1 : 0;
+        return this.totalCount / this.pageSize +  (this.totalCount % this.pageSize > 0 ? 1 : 0);
     }
 
     public int getStartIndex(){

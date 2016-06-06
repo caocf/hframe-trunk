@@ -46,8 +46,11 @@ define(['layer'],function (){
         });
     };
 
-    var AjaxPost = function (url,data,callback){
-        $.post(url, data, callback, 'json');
+    var AjaxPost = function (url,data,callback, dataType){
+        if(dataType == null) {
+            dataType = 'json';
+        }
+        $.post(url, data, callback, dataType);
     }
     // 异步方法封装
     var AjaxGet = function (url,data,callback){
