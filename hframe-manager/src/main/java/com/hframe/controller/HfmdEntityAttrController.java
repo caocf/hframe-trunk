@@ -6,12 +6,18 @@ import com.hframework.beans.controller.ResultData;
 import com.hframework.common.util.ExampleUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.ServletRequestDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import com.hframe.domain.model.HfmdEntityAttr;
 import com.hframe.domain.model.HfmdEntityAttr_Example;
@@ -24,8 +30,14 @@ public class HfmdEntityAttrController   {
 
 	@Resource
 	private IHfmdEntityAttrSV iHfmdEntityAttrSV;
-  
 
+    @InitBinder
+    protected void initBinder(HttpServletRequest request,
+                              ServletRequestDataBinder binder) throws Exception {
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        CustomDateEditor editor = new CustomDateEditor(df, false);
+        binder.registerCustomEditor(Date.class, editor);
+    }
 
 
 
@@ -35,7 +47,7 @@ public class HfmdEntityAttrController   {
      * @return
      * @throws Throwable
      */
-    @RequestMapping(value = "/queryListByAjax.html")
+    @RequestMapping(value = "/queryListByAjax.json")
     @ResponseBody
     public ResultData list(@ModelAttribute("hfmdEntityAttr") HfmdEntityAttr hfmdEntityAttr,
                                       @ModelAttribute("example") HfmdEntityAttr_Example example, Pagination pagination){
@@ -62,7 +74,7 @@ public class HfmdEntityAttrController   {
      * @return
      * @throws Throwable
      */
-    @RequestMapping(value = "/queryOneByAjax.html")
+    @RequestMapping(value = "/queryOneByAjax.json")
     @ResponseBody
     public ResultData detail(@ModelAttribute("hfmdEntityAttr") HfmdEntityAttr hfmdEntityAttr){
         logger.debug("request : {},{}", hfmdEntityAttr.getHfmdEntityAttrId(), hfmdEntityAttr);
@@ -85,7 +97,7 @@ public class HfmdEntityAttrController   {
     * @return
     * @throws Throwable
     */
-    @RequestMapping(value = "/createByAjax.html")
+    @RequestMapping(value = "/createByAjax.json")
     @ResponseBody
     public ResultData create(@ModelAttribute("hfmdEntityAttr") HfmdEntityAttr hfmdEntityAttr) {
         logger.debug("request : {}", hfmdEntityAttr);
@@ -107,7 +119,7 @@ public class HfmdEntityAttrController   {
     * @return
     * @throws Throwable
     */
-    @RequestMapping(value = "/updateByAjax.html")
+    @RequestMapping(value = "/updateByAjax.json")
     @ResponseBody
     public ResultData update(@ModelAttribute("hfmdEntityAttr") HfmdEntityAttr hfmdEntityAttr) {
         logger.debug("request : {}", hfmdEntityAttr);
@@ -129,7 +141,7 @@ public class HfmdEntityAttrController   {
     * @return
     * @throws Throwable
     */
-    @RequestMapping(value = "/deleteByAjax.html")
+    @RequestMapping(value = "/deleteByAjax.json")
     @ResponseBody
     public ResultData delete(@ModelAttribute("hfmdEntityAttr") HfmdEntityAttr hfmdEntityAttr) {
         logger.debug("request : {}", hfmdEntityAttr);

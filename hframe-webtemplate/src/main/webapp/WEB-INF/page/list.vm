@@ -1,9 +1,19 @@
-#parse("default_startpart.vm")
+#if($isPop)
+    #parse("blank_startpart.vm")
+#else
+    #parse("default_startpart.vm")
+#end
 
 <div class="row-fluid">
+#set($form = $qForm)
 #parse("component/queryForm.vm")
 </div>
 <div class="row-fluid">
 #parse("component/queryList.vm")
 </div>
-#parse("default_endpart.vm")
+
+#if($isPop)
+    #parse("blank_endpart.vm")
+#else
+    #parse("default_endpart.vm")
+#end

@@ -120,7 +120,7 @@ public class BeanUtils {
                 String filedName = field.getName();
                 field.setAccessible(true);
                 ;
-                parmMap.put(filedName, String.valueOf(field.get(obj)));
+                parmMap.put(filedName,field.get(obj) != null ? String.valueOf(field.get(obj)) : null);
 //                // 转换成GET方法(首字母大写)
 //                StringBuffer sub = new StringBuffer("get");
 //                sub.append(StringUtils.upperCaseFirstChar(filedName));

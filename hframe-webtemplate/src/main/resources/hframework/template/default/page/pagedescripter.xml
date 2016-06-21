@@ -7,16 +7,31 @@
         <element id="content" type="container"></element>
     </pagetemplate>
     <pagetemplate id="list" path="list.vm" parent-id = "default" name="列表页" type="forward">
-        <element id="form" type="component"></element>
+        <element id="qForm" type="component">
+            <events>
+                <event name="query">
+                    <attach anchor="EOFC">
+                        <appendElement type="button" param='{btnclass:"btn-primary",btnText:"查询"}'></appendElement>
+                    </attach>
+                    <source scope="thisForm"></source>
+                    <effect type="component.reload" target-id="list"></effect>
+                </event>
+            </events>
+        </element>
         <element id="list" type="component"></element>
     </pagetemplate>
     <pagetemplate id="create" path="create.vm" parent-id = "default" name="创建页" type="forward">
-        <element id="form" type="component"></element>
+        <element id="cForm" type="component"></element>
     </pagetemplate>
     <pagetemplate id="edit" path="edit.vm" parent-id = "default" name="编辑页" type="pop">
-        <element id="form" type="component"></element>
+        <element id="eForm" type="component"></element>
     </pagetemplate>
     <pagetemplate id="detail" path="detail.vm" parent-id = "default" name="详情页" type="pop">
-        <element id="form" type="component"></element>
+        <element id="dForm" type="component"></element>
     </pagetemplate>
+
+
+    <!--<pagetemplate id="pop" path="blank.vm"  name="空白页" type="pop"></pagetemplate>-->
+    <!--<pagetemplate id="popForm" path="blank.vm"  name="空白页" type="pop"></pagetemplate>-->
+
 </pagetemplates>

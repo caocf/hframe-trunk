@@ -1,5 +1,6 @@
 package com.hframework.web.config.bean.pagetemplates;
 
+import com.hframework.web.config.bean.component.Events;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
@@ -14,6 +15,9 @@ public class Element   {
 	@XStreamAsAttribute
     @XStreamAlias("type")
 	private String type;
+
+    @XStreamAlias("events")
+    private Events events;
 
     public Element() {
     }
@@ -34,5 +38,12 @@ public class Element   {
      public void setType(String type){
      	this.type = type;
      }
-	 
+
+    public Events getEvents() {
+        return events;
+    }
+
+    public void setEvents(Events events) {
+        this.events = events;
+    }
 }

@@ -178,15 +178,15 @@ public class FileUtils {
         newFile(filePath);
         BufferedWriter bw=null;
         try {
-            bw=new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(filePath))));
+            bw=new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(filePath)),"UTF-8"));
 
             String[] ss=fileContent.split("\n");
             for (String s : ss) {
 
-                for(String part :s.split("/n")){
-                    bw.write(part);
+//                for(String part :s.split("/n")){
+                    bw.write(s);
                     bw.newLine();
-                }
+//                }
             }
             bw.flush();
             System.out.println("文件创建成功:" + filePath);

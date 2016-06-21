@@ -35,7 +35,7 @@ public class HfusEntityAttrController   {
      * @return
      * @throws Throwable
      */
-    @RequestMapping(value = "/queryListByAjax.html")
+    @RequestMapping(value = "/queryListByAjax.json")
     @ResponseBody
     public ResultData list(@ModelAttribute("hfusEntityAttr") HfusEntityAttr hfusEntityAttr,
                                       @ModelAttribute("example") HfusEntityAttr_Example example, Pagination pagination){
@@ -62,7 +62,7 @@ public class HfusEntityAttrController   {
      * @return
      * @throws Throwable
      */
-    @RequestMapping(value = "/queryOneByAjax.html")
+    @RequestMapping(value = "/queryOneByAjax.json")
     @ResponseBody
     public ResultData detail(@ModelAttribute("hfusEntityAttr") HfusEntityAttr hfusEntityAttr){
         logger.debug("request : {},{}", hfusEntityAttr.getHfusEntityAttrId(), hfusEntityAttr);
@@ -85,7 +85,7 @@ public class HfusEntityAttrController   {
     * @return
     * @throws Throwable
     */
-    @RequestMapping(value = "/createByAjax.html")
+    @RequestMapping(value = "/createByAjax.json")
     @ResponseBody
     public ResultData create(@ModelAttribute("hfusEntityAttr") HfusEntityAttr hfusEntityAttr) {
         logger.debug("request : {}", hfusEntityAttr);
@@ -107,7 +107,7 @@ public class HfusEntityAttrController   {
     * @return
     * @throws Throwable
     */
-    @RequestMapping(value = "/updateByAjax.html")
+    @RequestMapping(value = "/updateByAjax.json")
     @ResponseBody
     public ResultData update(@ModelAttribute("hfusEntityAttr") HfusEntityAttr hfusEntityAttr) {
         logger.debug("request : {}", hfusEntityAttr);
@@ -129,7 +129,7 @@ public class HfusEntityAttrController   {
     * @return
     * @throws Throwable
     */
-    @RequestMapping(value = "/deleteByAjax.html")
+    @RequestMapping(value = "/deleteByAjax.json")
     @ResponseBody
     public ResultData delete(@ModelAttribute("hfusEntityAttr") HfusEntityAttr hfusEntityAttr) {
         logger.debug("request : {}", hfusEntityAttr);

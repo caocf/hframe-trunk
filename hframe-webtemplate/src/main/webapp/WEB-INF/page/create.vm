@@ -1,6 +1,14 @@
-#parse("default_startpart.vm")
-
+#if($isPop)
+    #parse("blank_startpart.vm")
+#else
+    #parse("default_startpart.vm")
+#end
 <div class="row-fluid">
-#parse("component/queryForm.vm")
+#set($form = $cForm)
+#parse("component/createForm.vm")
 </div>
-#parse("default_endpart.vm")
+#if($isPop)
+    #parse("blank_endpart.vm")
+#else
+    #parse("default_endpart.vm")
+#end

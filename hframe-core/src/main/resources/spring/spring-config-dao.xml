@@ -9,15 +9,15 @@
 
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="dataSource" ref="dataSource"/>
-        <property name="typeAliasesPackage" value="com.hframe.domain"/>
+        <property name="typeAliasesPackage" value="com.hframe.domain;com.hframework.base.bean;"/>
         <property name="mapperLocations" value="classpath:mapper/*.xml"/>
         <property name="configLocation" value="classpath:mybatis.xml"/>
     </bean>
 
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
         <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
-        <!-- <property name="basePackage" value="com.hframe.dao.mapper;com.hframe.dao"/> -->
-        <property name="basePackage" value="com.hframe.dao"/>
+         <!--<property name="basePackage" value="com.hframe.dao.mapper;com.hframe.dao"/> -->
+        <property name="basePackage" value="com.hframe.dao ;com.hframework.base.dao"/>
     </bean>
 
 </beans>

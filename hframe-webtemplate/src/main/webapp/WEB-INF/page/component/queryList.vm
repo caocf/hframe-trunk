@@ -9,6 +9,22 @@
         </div>
     </div>
     <div class="box-content">
+##        <div class="row-fluid">
+##            <div class="span4">
+##                <div id="DataTables_Table_0_length" class="dataTables_length">
+##                    <label><select size="1" name="DataTables_Table_0_length" aria-controls="DataTables_Table_0"><option value="10" selected="selected">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select> records per page</label>
+##                </div>
+##            </div>
+##            <div class="span4">
+##                <div class="dataTables_filter" id="DataTables_Table_0_filter"><label>Search: <input type="text" aria-controls="DataTables_Table_0"></label>
+##                </div>
+##            </div>
+##            <div class="span4">
+##                <div class="dataTables_filter" id="DataTables_Table_0_filter"><label>Search: <input type="text" aria-controls="DataTables_Table_0"></label>
+##                </div>
+##            </div>
+##        </div>
+
         <table class="table table-bordered table-striped table-condensed">
             <thead>
             <tr>

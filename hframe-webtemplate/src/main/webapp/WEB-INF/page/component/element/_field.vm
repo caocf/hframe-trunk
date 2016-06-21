@@ -32,6 +32,8 @@
 	#parse("component/element/_openwin.vm")
 #elseif($column.editType=='textarea')
 	#parse("component/element/_textarea.vm")
+#elseif($column.editType=='text')
+	#parse("component/element/_text.vm")
 #else
 	UNKOWN
 #end

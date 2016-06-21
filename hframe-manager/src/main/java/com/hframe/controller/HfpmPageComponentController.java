@@ -35,7 +35,7 @@ public class HfpmPageComponentController   {
      * @return
      * @throws Throwable
      */
-    @RequestMapping(value = "/queryListByAjax.html")
+    @RequestMapping(value = "/queryListByAjax.json")
     @ResponseBody
     public ResultData list(@ModelAttribute("hfpmPageComponent") HfpmPageComponent hfpmPageComponent,
                                       @ModelAttribute("example") HfpmPageComponent_Example example, Pagination pagination){
@@ -62,7 +62,7 @@ public class HfpmPageComponentController   {
      * @return
      * @throws Throwable
      */
-    @RequestMapping(value = "/queryOneByAjax.html")
+    @RequestMapping(value = "/queryOneByAjax.json")
     @ResponseBody
     public ResultData detail(@ModelAttribute("hfpmPageComponent") HfpmPageComponent hfpmPageComponent){
         logger.debug("request : {},{}", hfpmPageComponent.getHfpmPageComponentId(), hfpmPageComponent);
@@ -85,7 +85,7 @@ public class HfpmPageComponentController   {
     * @return
     * @throws Throwable
     */
-    @RequestMapping(value = "/createByAjax.html")
+    @RequestMapping(value = "/createByAjax.json")
     @ResponseBody
     public ResultData create(@ModelAttribute("hfpmPageComponent") HfpmPageComponent hfpmPageComponent) {
         logger.debug("request : {}", hfpmPageComponent);
@@ -107,7 +107,7 @@ public class HfpmPageComponentController   {
     * @return
     * @throws Throwable
     */
-    @RequestMapping(value = "/updateByAjax.html")
+    @RequestMapping(value = "/updateByAjax.json")
     @ResponseBody
     public ResultData update(@ModelAttribute("hfpmPageComponent") HfpmPageComponent hfpmPageComponent) {
         logger.debug("request : {}", hfpmPageComponent);
@@ -129,7 +129,7 @@ public class HfpmPageComponentController   {
     * @return
     * @throws Throwable
     */
-    @RequestMapping(value = "/deleteByAjax.html")
+    @RequestMapping(value = "/deleteByAjax.json")
     @ResponseBody
     public ResultData delete(@ModelAttribute("hfpmPageComponent") HfpmPageComponent hfpmPageComponent) {
         logger.debug("request : {}", hfpmPageComponent);

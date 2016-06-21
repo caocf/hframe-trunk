@@ -35,7 +35,7 @@ public class HfusWordStoreController   {
      * @return
      * @throws Throwable
      */
-    @RequestMapping(value = "/queryListByAjax.html")
+    @RequestMapping(value = "/queryListByAjax.json")
     @ResponseBody
     public ResultData list(@ModelAttribute("hfusWordStore") HfusWordStore hfusWordStore,
                                       @ModelAttribute("example") HfusWordStore_Example example, Pagination pagination){
@@ -62,7 +62,7 @@ public class HfusWordStoreController   {
      * @return
      * @throws Throwable
      */
-    @RequestMapping(value = "/queryOneByAjax.html")
+    @RequestMapping(value = "/queryOneByAjax.json")
     @ResponseBody
     public ResultData detail(@ModelAttribute("hfusWordStore") HfusWordStore hfusWordStore){
         logger.debug("request : {},{}", hfusWordStore.getHfusWordStoreId(), hfusWordStore);
@@ -85,7 +85,7 @@ public class HfusWordStoreController   {
     * @return
     * @throws Throwable
     */
-    @RequestMapping(value = "/createByAjax.html")
+    @RequestMapping(value = "/createByAjax.json")
     @ResponseBody
     public ResultData create(@ModelAttribute("hfusWordStore") HfusWordStore hfusWordStore) {
         logger.debug("request : {}", hfusWordStore);
@@ -107,7 +107,7 @@ public class HfusWordStoreController   {
     * @return
     * @throws Throwable
     */
-    @RequestMapping(value = "/updateByAjax.html")
+    @RequestMapping(value = "/updateByAjax.json")
     @ResponseBody
     public ResultData update(@ModelAttribute("hfusWordStore") HfusWordStore hfusWordStore) {
         logger.debug("request : {}", hfusWordStore);
@@ -129,7 +129,7 @@ public class HfusWordStoreController   {
     * @return
     * @throws Throwable
     */
-    @RequestMapping(value = "/deleteByAjax.html")
+    @RequestMapping(value = "/deleteByAjax.json")
     @ResponseBody
     public ResultData delete(@ModelAttribute("hfusWordStore") HfusWordStore hfusWordStore) {
         logger.debug("request : {}", hfusWordStore);

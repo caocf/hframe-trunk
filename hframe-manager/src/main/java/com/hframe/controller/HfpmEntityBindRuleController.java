@@ -35,7 +35,7 @@ public class HfpmEntityBindRuleController   {
      * @return
      * @throws Throwable
      */
-    @RequestMapping(value = "/queryListByAjax.html")
+    @RequestMapping(value = "/queryListByAjax.json")
     @ResponseBody
     public ResultData list(@ModelAttribute("hfpmEntityBindRule") HfpmEntityBindRule hfpmEntityBindRule,
                                       @ModelAttribute("example") HfpmEntityBindRule_Example example, Pagination pagination){
@@ -62,7 +62,7 @@ public class HfpmEntityBindRuleController   {
      * @return
      * @throws Throwable
      */
-    @RequestMapping(value = "/queryOneByAjax.html")
+    @RequestMapping(value = "/queryOneByAjax.json")
     @ResponseBody
     public ResultData detail(@ModelAttribute("hfpmEntityBindRule") HfpmEntityBindRule hfpmEntityBindRule){
         logger.debug("request : {},{}", hfpmEntityBindRule.getHfpmEntityBindRuleId(), hfpmEntityBindRule);
@@ -85,7 +85,7 @@ public class HfpmEntityBindRuleController   {
     * @return
     * @throws Throwable
     */
-    @RequestMapping(value = "/createByAjax.html")
+    @RequestMapping(value = "/createByAjax.json")
     @ResponseBody
     public ResultData create(@ModelAttribute("hfpmEntityBindRule") HfpmEntityBindRule hfpmEntityBindRule) {
         logger.debug("request : {}", hfpmEntityBindRule);
@@ -107,7 +107,7 @@ public class HfpmEntityBindRuleController   {
     * @return
     * @throws Throwable
     */
-    @RequestMapping(value = "/updateByAjax.html")
+    @RequestMapping(value = "/updateByAjax.json")
     @ResponseBody
     public ResultData update(@ModelAttribute("hfpmEntityBindRule") HfpmEntityBindRule hfpmEntityBindRule) {
         logger.debug("request : {}", hfpmEntityBindRule);
@@ -129,7 +129,7 @@ public class HfpmEntityBindRuleController   {
     * @return
     * @throws Throwable
     */
-    @RequestMapping(value = "/deleteByAjax.html")
+    @RequestMapping(value = "/deleteByAjax.json")
     @ResponseBody
     public ResultData delete(@ModelAttribute("hfpmEntityBindRule") HfpmEntityBindRule hfpmEntityBindRule) {
         logger.debug("request : {}", hfpmEntityBindRule);

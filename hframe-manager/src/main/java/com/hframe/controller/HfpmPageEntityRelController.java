@@ -35,7 +35,7 @@ public class HfpmPageEntityRelController   {
      * @return
      * @throws Throwable
      */
-    @RequestMapping(value = "/queryListByAjax.html")
+    @RequestMapping(value = "/queryListByAjax.json")
     @ResponseBody
     public ResultData list(@ModelAttribute("hfpmPageEntityRel") HfpmPageEntityRel hfpmPageEntityRel,
                                       @ModelAttribute("example") HfpmPageEntityRel_Example example, Pagination pagination){
@@ -62,7 +62,7 @@ public class HfpmPageEntityRelController   {
      * @return
      * @throws Throwable
      */
-    @RequestMapping(value = "/queryOneByAjax.html")
+    @RequestMapping(value = "/queryOneByAjax.json")
     @ResponseBody
     public ResultData detail(@ModelAttribute("hfpmPageEntityRel") HfpmPageEntityRel hfpmPageEntityRel){
         logger.debug("request : {},{}", hfpmPageEntityRel.getHfpmPageEntityRelId(), hfpmPageEntityRel);
@@ -85,7 +85,7 @@ public class HfpmPageEntityRelController   {
     * @return
     * @throws Throwable
     */
-    @RequestMapping(value = "/createByAjax.html")
+    @RequestMapping(value = "/createByAjax.json")
     @ResponseBody
     public ResultData create(@ModelAttribute("hfpmPageEntityRel") HfpmPageEntityRel hfpmPageEntityRel) {
         logger.debug("request : {}", hfpmPageEntityRel);
@@ -107,7 +107,7 @@ public class HfpmPageEntityRelController   {
     * @return
     * @throws Throwable
     */
-    @RequestMapping(value = "/updateByAjax.html")
+    @RequestMapping(value = "/updateByAjax.json")
     @ResponseBody
     public ResultData update(@ModelAttribute("hfpmPageEntityRel") HfpmPageEntityRel hfpmPageEntityRel) {
         logger.debug("request : {}", hfpmPageEntityRel);
@@ -129,7 +129,7 @@ public class HfpmPageEntityRelController   {
     * @return
     * @throws Throwable
     */
-    @RequestMapping(value = "/deleteByAjax.html")
+    @RequestMapping(value = "/deleteByAjax.json")
     @ResponseBody
     public ResultData delete(@ModelAttribute("hfpmPageEntityRel") HfpmPageEntityRel hfpmPageEntityRel) {
         logger.debug("request : {}", hfpmPageEntityRel);

@@ -11,7 +11,7 @@ import java.io.IOException;
  */
 public class Bootstrap {
     public static void main(String[] args) throws IOException {
-        String thirdName = "beetle.xml";
+        String thirdName = "oapi.xml";
 
         GeneratorConfig generatorConfig = GeneratorConfig.getInstance();
         System.out.println(generatorConfig.getJavaRootPath());
@@ -22,7 +22,7 @@ public class Bootstrap {
         descriptor.setPlatformName(thirdName.substring(0, thirdName.lastIndexOf(".")));
 //        System.out.println(descriptor);
 
-//        new PropertiesGenerator().generate(generatorConfig, descriptor);
+        new PropertiesGenerator().generate(generatorConfig, descriptor);
         new TestRespMessageGenerator().generate(generatorConfig, descriptor);
         new ConfigureBeanGenerator().generate(generatorConfig, descriptor);
 

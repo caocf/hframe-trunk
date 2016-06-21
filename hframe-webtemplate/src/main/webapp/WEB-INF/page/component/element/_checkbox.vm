@@ -13,6 +13,10 @@
 
 
 <label class="checkbox">
-    <div class="checker disabled" id="uniform-optionsCheckbox2"><span><input type="checkbox" id="optionsCheckbox2" value="option1" disabled=""></span></div>
+    <div class="checker disabled" id="uniform-optionsCheckbox2"><span><input type="checkbox" id="optionsCheckbox2" name="$column.code" value="option1" disabled=""></span></div>
     This is a disabled checkbox
+</label>
+
+<label class="checkbox inline">
+    <div class="checker" id="uniform-inlineCheckbox1"><span class="checked"><input type="checkbox" id="inlineCheckbox1" name="$column.code" value="option1"></span></div> Option 1
 </label>

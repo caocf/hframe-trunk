@@ -9,8 +9,14 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 public class Rel   {
 
 	@XStreamAsAttribute
-    @XStreamAlias("entityCode")
+    @XStreamAlias("entity-code")
 	private String entityCode;
+
+
+    @XStreamAsAttribute
+    @XStreamAlias("rel-field")
+    private String relField;
+
 
     public Rel() {
     }
@@ -23,5 +29,12 @@ public class Rel   {
      public void setEntityCode(String entityCode){
      	this.entityCode = entityCode;
      }
-	 
+
+    public String getRelField() {
+        return relField;
+    }
+
+    public void setRelField(String relField) {
+        this.relField = relField;
+    }
 }

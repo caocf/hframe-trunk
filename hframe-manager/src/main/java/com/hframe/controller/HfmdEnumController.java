@@ -35,7 +35,7 @@ public class HfmdEnumController   {
      * @return
      * @throws Throwable
      */
-    @RequestMapping(value = "/queryListByAjax.html")
+    @RequestMapping(value = "/queryListByAjax.json")
     @ResponseBody
     public ResultData list(@ModelAttribute("hfmdEnum") HfmdEnum hfmdEnum,
                                       @ModelAttribute("example") HfmdEnum_Example example, Pagination pagination){
@@ -62,7 +62,7 @@ public class HfmdEnumController   {
      * @return
      * @throws Throwable
      */
-    @RequestMapping(value = "/queryOneByAjax.html")
+    @RequestMapping(value = "/queryOneByAjax.json")
     @ResponseBody
     public ResultData detail(@ModelAttribute("hfmdEnum") HfmdEnum hfmdEnum){
         logger.debug("request : {},{}", hfmdEnum.getHfmdEnumId(), hfmdEnum);
@@ -85,7 +85,7 @@ public class HfmdEnumController   {
     * @return
     * @throws Throwable
     */
-    @RequestMapping(value = "/createByAjax.html")
+    @RequestMapping(value = "/createByAjax.json")
     @ResponseBody
     public ResultData create(@ModelAttribute("hfmdEnum") HfmdEnum hfmdEnum) {
         logger.debug("request : {}", hfmdEnum);
@@ -107,7 +107,7 @@ public class HfmdEnumController   {
     * @return
     * @throws Throwable
     */
-    @RequestMapping(value = "/updateByAjax.html")
+    @RequestMapping(value = "/updateByAjax.json")
     @ResponseBody
     public ResultData update(@ModelAttribute("hfmdEnum") HfmdEnum hfmdEnum) {
         logger.debug("request : {}", hfmdEnum);
@@ -129,7 +129,7 @@ public class HfmdEnumController   {
     * @return
     * @throws Throwable
     */
-    @RequestMapping(value = "/deleteByAjax.html")
+    @RequestMapping(value = "/deleteByAjax.json")
     @ResponseBody
     public ResultData delete(@ModelAttribute("hfmdEnum") HfmdEnum hfmdEnum) {
         logger.debug("request : {}", hfmdEnum);

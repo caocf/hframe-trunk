@@ -35,7 +35,7 @@ public class HfcfgPageTemplateController   {
      * @return
      * @throws Throwable
      */
-    @RequestMapping(value = "/queryListByAjax.html")
+    @RequestMapping(value = "/queryListByAjax.json")
     @ResponseBody
     public ResultData list(@ModelAttribute("hfcfgPageTemplate") HfcfgPageTemplate hfcfgPageTemplate,
                                       @ModelAttribute("example") HfcfgPageTemplate_Example example, Pagination pagination){
@@ -62,7 +62,7 @@ public class HfcfgPageTemplateController   {
      * @return
      * @throws Throwable
      */
-    @RequestMapping(value = "/queryOneByAjax.html")
+    @RequestMapping(value = "/queryOneByAjax.json")
     @ResponseBody
     public ResultData detail(@ModelAttribute("hfcfgPageTemplate") HfcfgPageTemplate hfcfgPageTemplate){
         logger.debug("request : {},{}", hfcfgPageTemplate.getHfcfgPageTemplateId(), hfcfgPageTemplate);
@@ -85,7 +85,7 @@ public class HfcfgPageTemplateController   {
     * @return
     * @throws Throwable
     */
-    @RequestMapping(value = "/createByAjax.html")
+    @RequestMapping(value = "/createByAjax.json")
     @ResponseBody
     public ResultData create(@ModelAttribute("hfcfgPageTemplate") HfcfgPageTemplate hfcfgPageTemplate) {
         logger.debug("request : {}", hfcfgPageTemplate);
@@ -107,7 +107,7 @@ public class HfcfgPageTemplateController   {
     * @return
     * @throws Throwable
     */
-    @RequestMapping(value = "/updateByAjax.html")
+    @RequestMapping(value = "/updateByAjax.json")
     @ResponseBody
     public ResultData update(@ModelAttribute("hfcfgPageTemplate") HfcfgPageTemplate hfcfgPageTemplate) {
         logger.debug("request : {}", hfcfgPageTemplate);
@@ -129,7 +129,7 @@ public class HfcfgPageTemplateController   {
     * @return
     * @throws Throwable
     */
-    @RequestMapping(value = "/deleteByAjax.html")
+    @RequestMapping(value = "/deleteByAjax.json")
     @ResponseBody
     public ResultData delete(@ModelAttribute("hfcfgPageTemplate") HfcfgPageTemplate hfcfgPageTemplate) {
         logger.debug("request : {}", hfcfgPageTemplate);

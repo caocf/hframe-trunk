@@ -35,7 +35,7 @@ public class HfpmDataSetController   {
      * @return
      * @throws Throwable
      */
-    @RequestMapping(value = "/queryListByAjax.html")
+    @RequestMapping(value = "/queryListByAjax.json")
     @ResponseBody
     public ResultData list(@ModelAttribute("hfpmDataSet") HfpmDataSet hfpmDataSet,
                                       @ModelAttribute("example") HfpmDataSet_Example example, Pagination pagination){
@@ -62,7 +62,7 @@ public class HfpmDataSetController   {
      * @return
      * @throws Throwable
      */
-    @RequestMapping(value = "/queryOneByAjax.html")
+    @RequestMapping(value = "/queryOneByAjax.json")
     @ResponseBody
     public ResultData detail(@ModelAttribute("hfpmDataSet") HfpmDataSet hfpmDataSet){
         logger.debug("request : {},{}", hfpmDataSet.getHfpmDataSetId(), hfpmDataSet);
@@ -85,7 +85,7 @@ public class HfpmDataSetController   {
     * @return
     * @throws Throwable
     */
-    @RequestMapping(value = "/createByAjax.html")
+    @RequestMapping(value = "/createByAjax.json")
     @ResponseBody
     public ResultData create(@ModelAttribute("hfpmDataSet") HfpmDataSet hfpmDataSet) {
         logger.debug("request : {}", hfpmDataSet);
@@ -107,7 +107,7 @@ public class HfpmDataSetController   {
     * @return
     * @throws Throwable
     */
-    @RequestMapping(value = "/updateByAjax.html")
+    @RequestMapping(value = "/updateByAjax.json")
     @ResponseBody
     public ResultData update(@ModelAttribute("hfpmDataSet") HfpmDataSet hfpmDataSet) {
         logger.debug("request : {}", hfpmDataSet);
@@ -129,7 +129,7 @@ public class HfpmDataSetController   {
     * @return
     * @throws Throwable
     */
-    @RequestMapping(value = "/deleteByAjax.html")
+    @RequestMapping(value = "/deleteByAjax.json")
     @ResponseBody
     public ResultData delete(@ModelAttribute("hfpmDataSet") HfpmDataSet hfpmDataSet) {
         logger.debug("request : {}", hfpmDataSet);

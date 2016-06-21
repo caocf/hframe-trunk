@@ -51,7 +51,7 @@ public class ExampleUtils {
      * @throws IllegalAccessException
      */
     public  static <T> T parseExample(Object srcObj,Class<T> exampleClass) throws InvocationTargetException,
-            IllegalAccessException, InstantiationException {
+            IllegalAccessException, InstantiationException, NoSuchMethodException {
         return (T) parseExample(srcObj,exampleClass.newInstance());
     }
 
@@ -64,10 +64,13 @@ public class ExampleUtils {
      * @throws InvocationTargetException
      * @throws IllegalAccessException
      */
-    public static Object parseExample(Object srcObj,Object exampleObj) throws InvocationTargetException, IllegalAccessException {
+    public static Object parseExample(Object srcObj,Object exampleObj) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
+
+        Method criteriaMethod = exampleObj.getClass().getMethod("or");
+        Object criteriaObj = criteriaMethod.invoke(exampleObj);
 
         // 方法名称及方法
-        Map<String, Method> exampleMethods = BeanUtils.getMethods(exampleObj.getClass());
+        Map<String, Method> criteriaMethods = BeanUtils.getMethods(criteriaObj.getClass());
 
         Map<String, String> convertMap = BeanUtils.convertMap(srcObj, false);
         if(convertMap != null && !convertMap.isEmpty()) {
@@ -77,10 +80,23 @@ public class ExampleUtils {
                 sb.append("EqualTo");
 
                 // 获取对应方法
-                Method method = exampleMethods.get(sb.toString());
-                if (method != null) {
-                    // 对exampleObj对象直接赋值
-                    method.invoke(exampleObj, new Object[]{convertMap.get(filed)});
+                Method method = criteriaMethods.get(sb.toString());
+                String value = convertMap.get(filed);
+                if (method != null && value != null && !"".equals(value)) {
+                    if(method.getParameterTypes()[0] == Long.class) {
+                        // 对exampleObj对象直接赋值
+                        method.invoke(criteriaObj, new Object[]{Long.valueOf(value)});
+                    }else if(method.getParameterTypes()[0] == Integer.class) {
+                        // 对exampleObj对象直接赋值
+                        method.invoke(criteriaObj, new Object[]{Integer.valueOf(value)});
+                    }else if(method.getParameterTypes()[0] == Double.class) {
+                        // 对exampleObj对象直接赋值
+                        method.invoke(criteriaObj, new Object[]{Double.valueOf(value)});
+                    }else {
+                        // 对exampleObj对象直接赋值
+                        method.invoke(criteriaObj, new Object[]{value});
+                    }
+
                 }
             }
         }

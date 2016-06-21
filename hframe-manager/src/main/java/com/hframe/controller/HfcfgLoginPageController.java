@@ -35,7 +35,7 @@ public class HfcfgLoginPageController   {
      * @return
      * @throws Throwable
      */
-    @RequestMapping(value = "/queryListByAjax.html")
+    @RequestMapping(value = "/queryListByAjax.json")
     @ResponseBody
     public ResultData list(@ModelAttribute("hfcfgLoginPage") HfcfgLoginPage hfcfgLoginPage,
                                       @ModelAttribute("example") HfcfgLoginPage_Example example, Pagination pagination){
@@ -62,7 +62,7 @@ public class HfcfgLoginPageController   {
      * @return
      * @throws Throwable
      */
-    @RequestMapping(value = "/queryOneByAjax.html")
+    @RequestMapping(value = "/queryOneByAjax.json")
     @ResponseBody
     public ResultData detail(@ModelAttribute("hfcfgLoginPage") HfcfgLoginPage hfcfgLoginPage){
         logger.debug("request : {},{}", hfcfgLoginPage.getHfcfgLoginPageId(), hfcfgLoginPage);
@@ -85,7 +85,7 @@ public class HfcfgLoginPageController   {
     * @return
     * @throws Throwable
     */
-    @RequestMapping(value = "/createByAjax.html")
+    @RequestMapping(value = "/createByAjax.json")
     @ResponseBody
     public ResultData create(@ModelAttribute("hfcfgLoginPage") HfcfgLoginPage hfcfgLoginPage) {
         logger.debug("request : {}", hfcfgLoginPage);
@@ -107,7 +107,7 @@ public class HfcfgLoginPageController   {
     * @return
     * @throws Throwable
     */
-    @RequestMapping(value = "/updateByAjax.html")
+    @RequestMapping(value = "/updateByAjax.json")
     @ResponseBody
     public ResultData update(@ModelAttribute("hfcfgLoginPage") HfcfgLoginPage hfcfgLoginPage) {
         logger.debug("request : {}", hfcfgLoginPage);
@@ -129,7 +129,7 @@ public class HfcfgLoginPageController   {
     * @return
     * @throws Throwable
     */
-    @RequestMapping(value = "/deleteByAjax.html")
+    @RequestMapping(value = "/deleteByAjax.json")
     @ResponseBody
     public ResultData delete(@ModelAttribute("hfcfgLoginPage") HfcfgLoginPage hfcfgLoginPage) {
         logger.debug("request : {}", hfcfgLoginPage);
