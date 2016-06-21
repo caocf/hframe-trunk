@@ -167,6 +167,7 @@ public class ClientBeanGenerator extends AbstractGenerator implements Generator<
                 descriptor.setRuleNodeList(ruleNodeList);
                 descriptor.setRequestBean(false);
                 if(StringUtils.isNotBlank(responseMessage)) {
+                    System.out.println(responseMessage);
                     if("json".equals(anInterface.getResponse().getMessage())) {
                         BeanGeneratorUtil.generateByJsonNew(descriptor, responseMessage, responseBeanName);
                     }else if("xml".equals(anInterface.getResponse().getMessage())) {

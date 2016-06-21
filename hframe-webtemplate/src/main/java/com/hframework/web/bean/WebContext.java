@@ -39,7 +39,9 @@ public class WebContext {
     private static final String MODULE_DIR = PROGRAM_ROOT_DIR + "/module";
     private static final String MAPPER_DIR = PROGRAM_ROOT_DIR + "/mapper";
     private static final String PROGRAM_FILE = PROGRAM_ROOT_DIR + "/program.xml";
+
     private static final String COMPONENT_DIR = "hframework/template/default/component";
+    private static final String COMPONENT_DEFAULT_MAPPER_DIR = "hframework/template/default/compMapper";
     private static final String PAGE_DESCRIPTER_FILE = "hframework/template/default/page/pagedescripter.xml";
 
     private static WebContext context = new WebContext();
@@ -129,11 +131,20 @@ public class WebContext {
 
         //获取页面级初始化信息。
         for (ComponentDescriptor componentDescriptor : pageDescriptor.getComponents().values()) {
-            if(mappers.get(page.getDataSet() + "_" + componentDescriptor.getId()) == null) {
+            Mapper mapper = null;
+            if(mappers.get(page.getDataSet() + "_" + componentDescriptor.getId()) != null) {
+                mapper = mappers.get(page.getDataSet() + "_" + componentDescriptor.getId());
+            }
+
+            if(mappers.get(componentDescriptor.getId()) != null) {
+                mapper = mappers.get(componentDescriptor.getId());
+            }
+
+            if(mapper == null) {
                 logger.warn("no mapper {} exists !", page.getDataSet() + "_" + componentDescriptor.getId());
                 continue;
             }
-            componentDescriptor.setMapper(mappers.get(page.getDataSet() + "_" + componentDescriptor.getId()));
+            componentDescriptor.setMapper(mapper);
             componentDescriptor.setDataSetDescriptor(dataSets.get(page.getDataSet()));
             componentDescriptor.initComponentDataContainer();
         }
@@ -144,8 +155,21 @@ public class WebContext {
             if(StringUtils.isBlank(component.getDataSet())) {
                 component.setDataSet(page.getDataSet());
             }
+            Mapper mapper = null;
+            if(mappers.get(page.getDataSet() + "_" + component.getId()) != null) {
+                mapper = mappers.get(page.getDataSet() + "_" + component.getId());
+            }
+
+            if(mappers.get(component.getId()) != null) {
+                mapper = mappers.get(component.getId());
+            }
+
+            if(mapper == null) {
+                logger.warn("no mapper {} exists !", page.getDataSet() + "_" + component.getId());
+                continue;
+            }
             ComponentDescriptor componentDescriptor = pageDescriptor.getComponentDescriptor(component.getId());
-            componentDescriptor.setMapper(mappers.get(component.getDataSet() + "_" + component.getId()));
+            componentDescriptor.setMapper(mapper);
             componentDescriptor.setDataSetDescriptor(dataSets.get(component.getDataSet()));
             componentDescriptor.initComponentDataContainer();
         }
@@ -214,6 +238,12 @@ public class WebContext {
                 continue;
             }
             components.put(component.getId(),component);
+        }
+
+        //加载默认数据映射信息
+        List<Mapper> defaultMappers = XmlUtils.readValuesFromDirectory(COMPONENT_DEFAULT_MAPPER_DIR, Mapper.class);
+        for (Mapper mapper : defaultMappers) {
+            mappers.put(mapper.getComponentId(), mapper);
         }
     }
 

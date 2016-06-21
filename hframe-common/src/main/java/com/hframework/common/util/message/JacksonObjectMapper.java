@@ -1,5 +1,7 @@
 package com.hframework.common.util.message;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -30,6 +32,7 @@ public class JacksonObjectMapper {
                 //声明一个局部变更，避免因构造函数执行期内，并发调用会返回一个未构造完成的实例引用
                 ObjectMapper tempObject = new ObjectMapper();
                 instance = tempObject;
+                instance.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
             }
         }
 

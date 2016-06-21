@@ -23,6 +23,10 @@ public class Effect   {
     @XStreamAsAttribute
     @XStreamAlias("content")
     private String content;
+    @XStreamAsAttribute
+    @XStreamAlias("target-id")
+    private String targetId;
+
 
 
 
@@ -68,5 +72,13 @@ public class Effect   {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getTargetId() {
+        return targetId;
+    }
+
+    public void setTargetId(String targetId) {
+        this.targetId = targetId;
     }
 }

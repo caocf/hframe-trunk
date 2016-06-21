@@ -9,6 +9,9 @@
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
+    <listener>
+        <listener-class>com.hframework.listener.DataSetLoaderListener</listener-class>
+    </listener>
 
     <listener>
         <listener-class>org.springframework.web.util.IntrospectorCleanupListener</listener-class>
@@ -33,7 +36,21 @@
         <servlet-name>dispatcherServlet</servlet-name>
         <url-pattern>*.html</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>dispatcherServlet</servlet-name>
+        <url-pattern>*.json</url-pattern>
+    </servlet-mapping>
+    <!-- 框架加载服务 -->
+    <!--<servlet>-->
+        <!--<servlet-name>frameInitServlet</servlet-name>-->
+        <!--<servlet-class>com.hframe.tag.servlet.FrameInitServlet</servlet-class>-->
+        <!--<load-on-startup>2</load-on-startup>-->
+    <!--</servlet>-->
 
+    <!--<servlet-mapping>-->
+        <!--<servlet-name>frameInitServlet</servlet-name>-->
+        <!--<url-pattern>/servlet/frameInitServlet</url-pattern>-->
+    <!--</servlet-mapping>-->
 
     <filter>
         <filter-name>encodingFilter</filter-name>
@@ -55,6 +72,10 @@
     <filter-mapping>
         <filter-name>encodingFilter</filter-name>
         <url-pattern>*.html</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>encodingFilter</filter-name>
+        <url-pattern>*.json</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>encodingFilter</filter-name>

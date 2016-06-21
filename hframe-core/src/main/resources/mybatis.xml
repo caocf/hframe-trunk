@@ -20,4 +20,8 @@
         <plugin interceptor="com.hframework.common.frame.mybatis.interceptor.DiclectResultSetHandlerInterceptor" />
     </plugins>
 
+    <mappers>
+        <mapper resource="mappers/CommonDataMapper.xml"/>
+    </mappers>
+
 </configuration>

@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hframework.beans.controller.Pagination;
-import com.hframework.common.util.BeanUtils;
 import com.hframework.common.util.EnumUtils;
 import com.hframework.common.util.RegexUtils;
 import com.hframework.common.util.ResourceWrapper;
@@ -45,29 +44,32 @@ public class ComponentDataContainer {
     private String json;
     private JSONObject jsonObject;
 
-    public ComponentDataContainer(Component component) {
+    public ComponentDataContainer(Component component, com.hframework.web.config.bean.pagetemplates.Element pageElementDesc) {
         if(component == null) {
             return;
         }
         for (com.hframework.web.config.bean.component.Element element : component.getElementList()) {
             if(EnumUtils.compare(ComponentElementType.characters, element.getType())) {
-                elements.put(element.getId(), new CharacterJsonSegmentParser(element));
+                elements.put(element.getId(), new CharacterJsonSegmentParser(element,component.getType()));
             }else if(EnumUtils.compare(ComponentElementType.enums, element.getType())) {
-                elements.put(element.getId(), new EnumJsonSegmentParser(element));
+                elements.put(element.getId(), new EnumJsonSegmentParser(element, component.getType()));
             }else if(EnumUtils.compare(ComponentElementType.object, element.getType())) {
-                elements.put(element.getId(), new ObjectJsonSegmentParser(element));
+                elements.put(element.getId(), new ObjectJsonSegmentParser(element, component.getType()));
             }else if(EnumUtils.compare(ComponentElementType.objects, element.getType())) {
-                elements.put(element.getId(), new ObjectsJsonSegmentParser(element));
+                elements.put(element.getId(), new ObjectsJsonSegmentParser(element,component.getType()));
             }else if(EnumUtils.compare(ComponentElementType.array, element.getType())) {
-                elements.put(element.getId(), new ArrayJsonSegmentParser(element));
+                elements.put(element.getId(), new ArrayJsonSegmentParser(element, component.getType()));
             }else if(EnumUtils.compare(ComponentElementType.array2, element.getType())) {
-                elements.put(element.getId(), new Array2JsonSegmentParser(element));
+                elements.put(element.getId(), new Array2JsonSegmentParser(element,component.getType()));
             }
         }
 
         List<Event> allEvent = new ArrayList<Event>();
         allEvent.addAll(component.getBaseEvents().getEventList());
         allEvent.addAll(component.getEvents().getEventList());
+        if(pageElementDesc.getEvents() != null) {
+            allEvent.addAll(pageElementDesc.getEvents().getEventList());
+        }
         for (Event event : allEvent) {
             if(EnumUtils.compare(ComponentEventAnchor.BOFR, event.getAttach().getAnchor())) {
                 beforeOfRowList.add(new EventElement(event));
@@ -109,13 +111,35 @@ public class ComponentDataContainer {
     }
 
     private void peddingEventElement(List<EventElement> eventElementList, Mapping mapping, DataSetDescriptor dataSetDescriptor) {
+
+        String value = mapping.getValue();
+        List<String> varList = RegexUtils.findVarList(value);
+        for (String var : varList) {
+            DataSet dataSet = dataSetDescriptor.getDataSet();
+            if("id".equals(var)) {
+                value = ResourceWrapper.JavaUtil.getJavaVarName(value.replace("${" + var + "}",dataSet.getCode() + "_" + var));
+            }else if("name".equals(var)) {
+                value = ResourceWrapper.JavaUtil.getJavaVarName(value.replace("${" + var + "}", dataSet.getCode() + "_" + var));
+            }else if("createByAjax".equals(var) || "updateByAjax".equals(var)|| "deleteByAjax".equals(var)) {
+                value = value.replace("${" + var + "}", /*ResourceWrapper.JavaUtil.getJavaVarName(dataSet.getModule())
+                        + "/" + */ResourceWrapper.JavaUtil.getJavaVarName(dataSet.getCode()) + "/" + var);
+            }else {//create, edit , detail, batchDelete
+                value = value.replace("${" + var + "}", dataSet.getCode() + "_" + var);
+            }
+
+
+        }
+
+
         for (EventElement eventElement : eventElementList) {
             eventElement.setParams(eventElement.getParams() == null ? null :
-                    eventElement.getParams().replace("${" + mapping.getId() + "}", mapping.getValue() + "={" + mapping.getValue() + "}"));
+                    eventElement.getParams().replace("${" + mapping.getId() + "}", value + "={" + value + "}"));
             eventElement.setAction(eventElement.getAction() == null ? null :
-                    eventElement.getAction().replace("${" + mapping.getId() + "}", mapping.getValue()));
+                    eventElement.getAction().replace("${" + mapping.getId() + "}", value));
             eventElement.setAnchorName(eventElement.getAnchorName() == null ? null :
-                    eventElement.getAnchorName().replace("${" + mapping.getId() + "}", mapping.getValue()));
+                    eventElement.getAnchorName().replace("${" + mapping.getId() + "}", value));
+            eventElement.setComponent(eventElement.getComponent() == null ? null :
+                    eventElement.getComponent().replace("${" + mapping.getId() + "}", value));
         }
     }
 
@@ -144,7 +168,12 @@ public class ComponentDataContainer {
                 }
             }
         } else {//详情返回
-
+            JsonSegmentParser jsonSegmentParser = runtimeDataMap.get("${data}");
+            if (jsonSegmentParser instanceof ObjectJsonSegmentParser) {
+                ObjectJsonSegmentParser segmentParser = (ObjectJsonSegmentParser) jsonSegmentParser;
+                JSONArray columns = (JSONArray) this.elements.get("columns").getJsonObject();
+                segmentParser.setData(data,columns);
+            }
         }
         return this;
     }
@@ -252,14 +281,16 @@ public class ComponentDataContainer {
     public abstract class AbstractJsonSegmentParser{
         private String id;
 
-        private Element element;
+        protected String componentType;
+        protected Element element;
 
         protected Mapping mapping;
 
         protected DataSetDescriptor dataSetDescriptor;
 
-        public AbstractJsonSegmentParser(Element element){
+        public AbstractJsonSegmentParser(Element element, String type){
             this.element =element;
+            this.componentType = type;
         }
 
         public abstract boolean ok();
@@ -298,6 +329,8 @@ public class ComponentDataContainer {
         public void setDataSetDescriptor(DataSetDescriptor dataSetDescriptor) {
             this.dataSetDescriptor = dataSetDescriptor;
         }
+
+
     }
 
     public class Array2JsonSegmentParser extends AbstractJsonSegmentParser implements JsonSegmentParser{
@@ -309,8 +342,8 @@ public class ComponentDataContainer {
         private List<String[]> values;
         private Object data;
 
-        public Array2JsonSegmentParser(Element element) {
-            super(element);
+        public Array2JsonSegmentParser(Element element, String type) {
+            super(element, type);
         }
 
         @Override
@@ -381,8 +414,8 @@ public class ComponentDataContainer {
     public class ArrayJsonSegmentParser extends AbstractJsonSegmentParser implements JsonSegmentParser{
 
 
-        public ArrayJsonSegmentParser(Element element) {
-            super(element);
+        public ArrayJsonSegmentParser(Element element, String type) {
+            super(element, type);
         }
 
         @Override
@@ -415,8 +448,10 @@ public class ComponentDataContainer {
 
         private Map<String, String> resultMap= new LinkedHashMap<String, String>();
 
-        public ObjectJsonSegmentParser(Element element) {
-            super(element);
+        private String express;
+
+        public ObjectJsonSegmentParser(Element element,String type) {
+            super(element, type);
         }
 
         @Override
@@ -437,7 +472,44 @@ public class ComponentDataContainer {
 
         @Override
         public void afterSetDataSetDescriptorAndMapping() {
+            List<Mapping> mappingList = mapping.getMappingList();
+            for (Mapping mapping1 : mappingList) {
+                expressesMap.put(mapping1.getId(), mapping1.getValue());
+            }
+            express = mapping.getValue();
+            if("${data}".equals(express)) {
+                runtimeDataMap.put(express,this);
+            }
+        }
 
+        public void setData(Object data, JSONArray columns) {
+
+            if (data != null) {
+                if (expressesMap.size() != 0) {
+                    for (String string : expressesMap.values()) {
+                        String propertyName = string.substring(2, string.length() - 1);
+                        try {
+                            resultMap.put(propertyName, org.apache.commons.beanutils.BeanUtils.getProperty(data, propertyName));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                } else {
+                    for (Object column : columns) {
+                        try {
+                            resultMap.put(((JSONObject) column).getString("code"),
+                                    org.apache.commons.beanutils.BeanUtils.getProperty(data,
+                                            ResourceWrapper.JavaUtil.getJavaVarName(((JSONObject) column).getString("code"))));
+                        } catch (IllegalAccessException e) {
+                            e.printStackTrace();
+                        } catch (InvocationTargetException e) {
+                            e.printStackTrace();
+                        } catch (NoSuchMethodException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -449,8 +521,8 @@ public class ComponentDataContainer {
 
         private List<Map<String, String>> resultList= new ArrayList<Map<String, String>>();
 
-        public ObjectsJsonSegmentParser(Element element) {
-            super(element);
+        public ObjectsJsonSegmentParser(Element element, String type) {
+            super(element, type);
         }
 
         @Override
@@ -483,7 +555,6 @@ public class ComponentDataContainer {
             for (String var : varList) {
                 DataSet dataSet = dataSetDescriptor.getDataSet();
                 if("columns".equals(var)) {
-
                     List<Field> fields = dataSet.getFields().getFieldList();
                     for (Field field : fields) {
                         Map<String, String> tempMap= new LinkedHashMap<String, String>();
@@ -497,13 +568,37 @@ public class ComponentDataContainer {
         }
 
         private String getValueFromField(Field field, String code) {
+
             code = code.substring(2, code.length() - 1).trim();
             if("code".equals(code)) {
-                return field.getCode();
+                return ResourceWrapper.JavaUtil.getJavaVarName(field.getCode());
             }else if("name".equals(code)) {
                 return field.getName();
             }else if("editType".equals(code)) {
-                return field.getEditType();
+                if(this.componentType.startsWith("c")){
+                    return StringUtils.isNotBlank(field.getCreateEditType()) ? field.getCreateEditType() : field.getEditType();
+                }else if(this.componentType.startsWith("e")){
+                    return StringUtils.isNotBlank(field.getUpdateEditType()) ? field.getUpdateEditType() : field.getEditType();
+                }else{
+                    return field.getEditType();
+                }
+//            }else if("enumClass".equals(code)  && field.getEnumClass() != null) {
+//                    return field.getEnumClass().getCode();
+//            }else if("entityCode".equals(code) && field.getRel() != null) {
+//                return field.getRel().getEntityCode().replaceAll("/", ".");
+            }else if("relColumns".equals(code)  && field.getRel() != null) {
+                return field.getRel().getRelField();
+            }else {//${enumClass||entityCode}
+                if(field.getEnumClass() != null && field.getEnumClass().getCode() != null) {
+                    return field.getEnumClass().getCode();
+                }
+                if(field.getRel() != null && field.getRel().getEntityCode() != null) {
+//                    String entityCode = field.getRel().getEntityCode();
+//                    String entityName = entityCode.substring(0,entityCode.indexOf("/"));
+//                    String entityKey = entityCode.substring(entityCode.indexOf("/") + 1, entityCode.lastIndexOf("/"));
+//                    String entityShowName = entityCode.substring(entityCode.lastIndexOf("/"));
+                    return field.getRel().getEntityCode().replaceAll("/",".");
+                }
             }
             return null;
         }
@@ -516,8 +611,8 @@ public class ComponentDataContainer {
         private String express;
         private String value;
 
-        public EnumJsonSegmentParser(Element element) {
-            super(element);
+        public EnumJsonSegmentParser(Element element, String type) {
+            super(element, type);
         }
 
         @Override
@@ -562,8 +657,8 @@ public class ComponentDataContainer {
         private String express;
         private String value;
 
-        public CharacterJsonSegmentParser(Element element) {
-            super(element);
+        public CharacterJsonSegmentParser(Element element, String type) {
+            super(element,type);
         }
 
         @Override
@@ -638,13 +733,6 @@ public class ComponentDataContainer {
         private String anchorName;
 
         public EventElement(Event event) {
-            anchorName = event.getAttach().getAnchor();
-            if(event.getAttach().getAppendElementList() != null) {
-                for (AppendElement appendElement : event.getAttach().getAppendElementList()) {
-                    component = parseComponent(appendElement);
-                    fillclass = (String) JSONObject.parseObject(appendElement.getParam()).get("fillclass");
-                }
-            }
             if(event.getSource() != null) {
                 params = event.getSource().getParam();
             }
@@ -654,10 +742,19 @@ public class ComponentDataContainer {
                 subJsonObject.put("isStack",effect.getIsStack());
                 subJsonObject.put("param",effect.getParam());
                 subJsonObject.put("content",effect.getContent());
+                subJsonObject.put("targetId",effect.getTargetId());
                 actionJsonObject.put(effect.getType(),subJsonObject);
             }
 
             action = actionJsonObject.toJSONString();
+
+            anchorName = event.getAttach().getAnchor();
+            if(event.getAttach().getAppendElementList() != null) {
+                for (AppendElement appendElement : event.getAttach().getAppendElementList()) {
+                    component = parseComponent(appendElement, params, action);
+                    fillclass = (String) JSONObject.parseObject(appendElement.getParam()).get("fillclass");
+                }
+            }
         }
 
         public String getAnchorName() {
@@ -677,13 +774,13 @@ public class ComponentDataContainer {
         }
 
         public EventElement(AppendElement appendElement) {
-            component = parseComponent(appendElement);
+            component = parseComponent(appendElement, appendElement.getParam(), action);
             if(StringUtils.isNotBlank(appendElement.getParam())) {
                 params = appendElement.getParam();
             }
         }
 
-        private String parseComponent(AppendElement appendElement) {
+        private String parseComponent(AppendElement appendElement, String params, String action) {
 
             if("icon".equals(appendElement.getType())) {
                 JSONObject jsonObject = JSONObject.parseObject(appendElement.getParam());
@@ -691,9 +788,12 @@ public class ComponentDataContainer {
                         .replace("${iconclass}", (String) jsonObject.get("iconclass"));
             }else if("button".equals(appendElement.getType())) {
                 JSONObject jsonObject = JSONObject.parseObject(appendElement.getParam());
-                return "<button  class=\"btn ${btnclass}\">${btnText}</button>"
+
+                return "<button  class=\"btn hfhref ${btnclass}\" onclick=\"javascript:void(0)\"  params=\"${params}\" action='${action}'>${btnText}</button>"
                         .replace("${btnclass}", (String) jsonObject.get("btnclass"))
-                        .replace("${btnText}", (String) jsonObject.get("btnText"));
+                        .replace("${btnText}", (String) jsonObject.get("btnText"))
+                        .replace("${params}", StringUtils.isNotBlank(params) ? params : "")
+                        .replace("${action}", StringUtils.isNotBlank(action) ? action : "");
             }else if("checkbox".equals(appendElement.getType())) {
                 return "<input type=\"checkbox\" name=\"${id}\", value=\"${value}\">";
 //                        .replace("${id}", (String) jsonObject.get("id"))

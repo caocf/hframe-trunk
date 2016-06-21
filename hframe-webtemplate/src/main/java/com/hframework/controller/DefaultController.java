@@ -1,9 +1,12 @@
 package com.hframework.controller;
 
-import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.hframework.base.bean.KVBean;
+import com.hframework.base.service.CommonDataService;
 import com.hframework.beans.class0.Class;
 import com.hframework.beans.controller.Pagination;
+import com.hframework.beans.controller.ResultCode;
 import com.hframework.beans.controller.ResultData;
 import com.hframework.common.frame.ServiceFactory;
 import com.hframework.common.frame.cache.PropertyConfigurerUtils;
@@ -12,14 +15,30 @@ import com.hframework.common.util.StringUtils;
 import com.hframework.web.bean.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.MethodParameter;
+import org.springframework.core.convert.support.DefaultConversionService;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.support.ConfigurableWebBindingInitializer;
+import org.springframework.web.bind.support.WebDataBinderFactory;
+import org.springframework.web.context.request.NativeWebRequest;
+import org.springframework.web.context.request.ServletWebRequest;
+import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.method.annotation.ServletModelAttributeMethodProcessor;
+import org.springframework.web.servlet.mvc.method.annotation.ServletRequestDataBinderFactory;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -28,7 +47,52 @@ import java.util.Map;
  */
 @Controller
 public class DefaultController {
-    private static final Logger logger = LoggerFactory.getLogger(DemoController.class);
+    private static final Logger logger = LoggerFactory.getLogger(DefaultController.class);
+
+    @Resource
+    private CommonDataService commonDataService;
+
+    private ModelAttributeSetter modelAttributeSetter = new ModelAttributeSetter();
+
+
+    /**
+     * 字典查询
+     * @param dataCode
+     * @param dataCondition
+     * @return
+     */
+    @RequestMapping(value = "/dictionary.json")
+    @ResponseBody
+    public ResultData dictionary(@ModelAttribute("dataCode") String dataCode ,
+                                 @ModelAttribute("dataCondition") final String dataCondition){
+        logger.debug("request : {}", dataCode, dataCondition);
+        try{
+
+            final String[] split = dataCode.split("\\.");
+            Map<String, String> dicInfo = new HashMap<String, String>(){{
+                put("tableName", split[0]);
+                put("keyColumn", split[1]);
+                put("valueColumn", split[2]);
+//                put("extColumn", dictionary.getExtColumn());
+                put("condition", dataCondition);
+            }};
+            List<KVBean> kvBeans = commonDataService.selectDynamicTableDataList(dicInfo);
+
+            return ResultData.success(kvBeans);
+        }catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+    }
+
+    public ResultData invokeMethod(HttpServletRequest request, Object controller, String action, java.lang.Class[] classes, Object[] objects) throws InvocationTargetException {
+
+        Method declaredMethod = ReflectUtils.getDeclaredMethod(controller, action,classes);
+        Object o = modelAttributeSetter.resolveArgument(request, new MethodParameter(declaredMethod, 0));
+        objects[0] = o;
+        ResultData resultData = (ResultData) ReflectUtils.invokeMethod(controller,action,classes,objects);
+        return resultData;
+    }
 
     /**
      * 页面跳转
@@ -39,7 +103,9 @@ public class DefaultController {
     public ModelAndView gotoPage(@PathVariable("module") String module,@PathVariable("page") String pageCode,
                                  @ModelAttribute("component")  String componentId,
                                  @ModelAttribute("pagination")  Pagination pagination,
+                                 @ModelAttribute("isPop")  String isPop,
                                  HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        System.out.println("==> " + request.getQueryString());
         ModelAndView mav = new ModelAndView();
 
         PageDescriptor pageInfo = WebContext.get().getPageInfo(module, pageCode);
@@ -59,14 +125,20 @@ public class DefaultController {
                 }
                 String moduleCode = componentDescriptor.getDataSetDescriptor().getDataSet().getModule();
                 String dataSetCode = componentDescriptor.getDataSetDescriptor().getDataSet().getCode();
-                String action = componentDescriptor.getComponent().getType();
+                String type = componentDescriptor.getComponent().getType();
+                String action = null;
+                 if("eForm".equals(type) || "dForm".equals(type)) {
+                    action = "detail";
+                }else if(!"cForm".equals(type) && !"qForm".equals(type)) {
+                     action = type;
+                 }
 
                 if(StringUtils.isNotBlank(action)) {
-                    com.hframework.beans.class0.Class defPoClass = CreatorUtil.getDefPoClass("",
+                    Class defPoClass = CreatorUtil.getDefPoClass("",
                             WebContext.get().getProgram().getCode(), moduleCode, dataSetCode);
-                    com.hframework.beans.class0.Class defPoExampleClass = CreatorUtil.getDefPoExampleClass("",
+                    Class defPoExampleClass = CreatorUtil.getDefPoExampleClass("",
                             WebContext.get().getProgram().getCode(), moduleCode, dataSetCode);
-                    com.hframework.beans.class0.Class defControllerClass = CreatorUtil.getDefControllerClass("",
+                    Class defControllerClass = CreatorUtil.getDefControllerClass("",
                             WebContext.get().getProgram().getCode(), moduleCode, dataSetCode);
 
                     if(pagination.getPageNo() == 0) {
@@ -77,11 +149,23 @@ public class DefaultController {
                     }
                     Object po= java.lang.Class.forName(defPoClass.getClassPath()).newInstance();
                     Object poExample= java.lang.Class.forName(defPoExampleClass.getClassPath()).newInstance();
-                    Object controller= ServiceFactory.getService(defControllerClass.getClassName().substring(0,1).toLowerCase() + defControllerClass.getClassName().substring(1));
-                    ResultData resultData = (ResultData) ReflectUtils.invokeMethod(controller,action,
-                            new java.lang.Class[]{java.lang.Class.forName(defPoClass.getClassPath()),
-                                    java.lang.Class.forName(defPoExampleClass.getClassPath()), Pagination.class},
-                            new Object[]{po,poExample, pagination});
+                    Object controller= ServiceFactory.getService(defControllerClass.getClassName().substring(0, 1).toLowerCase() + defControllerClass.getClassName().substring(1));
+                    ResultData resultData = null;
+                    if("detail".equals(action)) {
+                        resultData = invokeMethod(request,controller,action,
+                                new java.lang.Class[]{java.lang.Class.forName(defPoClass.getClassPath())},
+                                new Object[]{po});
+                    }else {
+                        resultData = invokeMethod(request,controller,action,
+                                new java.lang.Class[]{java.lang.Class.forName(defPoClass.getClassPath()),
+                                        java.lang.Class.forName(defPoExampleClass.getClassPath()), Pagination.class},
+                                new Object[]{po,poExample, pagination});
+//                        resultData = (ResultData) ReflectUtils.invokeMethod(controller,action,
+//                                new java.lang.Class[]{java.lang.Class.forName(defPoClass.getClassPath()),
+//                                        java.lang.Class.forName(defPoExampleClass.getClassPath()), Pagination.class},
+//                                new Object[]{po,poExample, pagination});
+                    }
+
                     resetResultMessage(resultData, WebContext.get().getProgram().getCode(), moduleCode, dataSetCode, action);
                     if(resultData.isSuccess()) {
                         JSONObject jsonObject = componentDescriptor.getJson(resultData);
@@ -104,12 +188,12 @@ public class DefaultController {
             }
         }
 
+        mav.addObject("isPop","true".equals(isPop)? true : false);
+        mav.addObject("staticResourcePath", "/static");
         if(StringUtils.isNotBlank(componentId)) {
-            mav.addObject("staticResourcePath", "/static");
             mav.setViewName("/component/queryList");
 
         }else {
-            mav.addObject("staticResourcePath", "/static");
             mav.setViewName(pageInfo.getPageTemplate().getId());
         }
 
@@ -140,7 +224,7 @@ public class DefaultController {
             return returnName;
         }
 
-        public static com.hframework.beans.class0.Class getDefPoExampleClass(String companyName,
+        public static Class getDefPoExampleClass(String companyName,
                                                                              String projectName,String moduleName, String tableName) throws Exception {
             if(StringUtils.isBlank(tableName)) {
                 throw new Exception("表名称为不能为空！");
@@ -313,6 +397,40 @@ public class DefaultController {
                     companyName, projectName, moduleName,tableName));
             class1.setClassName(CreatorUtil.getJavaClassName(tableName) + "");
             return class1;
+        }
+    }
+
+    public  class ModelAttributeSetter{
+        private ServletModelAttributeMethodProcessor processor;
+
+        private ModelAndViewContainer mavContainer;
+
+        private WebDataBinderFactory binderFactory;
+
+        public ModelAttributeSetter() {
+            init();
+        }
+
+        public void init() {
+            this.processor = new ServletModelAttributeMethodProcessor(false);
+
+            ConfigurableWebBindingInitializer initializer = new ConfigurableWebBindingInitializer();
+            initializer.setConversionService(new DefaultConversionService());
+
+            this.binderFactory = new ServletRequestDataBinderFactory(null, initializer);
+            this.mavContainer = new ModelAndViewContainer();
+        }
+
+        public Object resolveArgument(HttpServletRequest request, MethodParameter methodParameter) {
+            NativeWebRequest webRequest = new ServletWebRequest(request);
+
+            try {
+                return this.processor.resolveArgument(
+                        methodParameter, this.mavContainer, webRequest, this.binderFactory);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
         }
     }
 }

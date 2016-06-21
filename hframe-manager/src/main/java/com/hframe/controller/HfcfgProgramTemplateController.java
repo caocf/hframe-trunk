@@ -35,7 +35,7 @@ public class HfcfgProgramTemplateController   {
      * @return
      * @throws Throwable
      */
-    @RequestMapping(value = "/queryListByAjax.html")
+    @RequestMapping(value = "/queryListByAjax.json")
     @ResponseBody
     public ResultData list(@ModelAttribute("hfcfgProgramTemplate") HfcfgProgramTemplate hfcfgProgramTemplate,
                                       @ModelAttribute("example") HfcfgProgramTemplate_Example example, Pagination pagination){
@@ -62,7 +62,7 @@ public class HfcfgProgramTemplateController   {
      * @return
      * @throws Throwable
      */
-    @RequestMapping(value = "/queryOneByAjax.html")
+    @RequestMapping(value = "/queryOneByAjax.json")
     @ResponseBody
     public ResultData detail(@ModelAttribute("hfcfgProgramTemplate") HfcfgProgramTemplate hfcfgProgramTemplate){
         logger.debug("request : {},{}", hfcfgProgramTemplate.getHfcfgProgramTemplateId(), hfcfgProgramTemplate);
@@ -85,7 +85,7 @@ public class HfcfgProgramTemplateController   {
     * @return
     * @throws Throwable
     */
-    @RequestMapping(value = "/createByAjax.html")
+    @RequestMapping(value = "/createByAjax.json")
     @ResponseBody
     public ResultData create(@ModelAttribute("hfcfgProgramTemplate") HfcfgProgramTemplate hfcfgProgramTemplate) {
         logger.debug("request : {}", hfcfgProgramTemplate);
@@ -107,7 +107,7 @@ public class HfcfgProgramTemplateController   {
     * @return
     * @throws Throwable
     */
-    @RequestMapping(value = "/updateByAjax.html")
+    @RequestMapping(value = "/updateByAjax.json")
     @ResponseBody
     public ResultData update(@ModelAttribute("hfcfgProgramTemplate") HfcfgProgramTemplate hfcfgProgramTemplate) {
         logger.debug("request : {}", hfcfgProgramTemplate);
@@ -129,7 +129,7 @@ public class HfcfgProgramTemplateController   {
     * @return
     * @throws Throwable
     */
-    @RequestMapping(value = "/deleteByAjax.html")
+    @RequestMapping(value = "/deleteByAjax.json")
     @ResponseBody
     public ResultData delete(@ModelAttribute("hfcfgProgramTemplate") HfcfgProgramTemplate hfcfgProgramTemplate) {
         logger.debug("request : {}", hfcfgProgramTemplate);

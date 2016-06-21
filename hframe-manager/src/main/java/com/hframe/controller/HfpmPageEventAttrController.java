@@ -35,7 +35,7 @@ public class HfpmPageEventAttrController   {
      * @return
      * @throws Throwable
      */
-    @RequestMapping(value = "/queryListByAjax.html")
+    @RequestMapping(value = "/queryListByAjax.json")
     @ResponseBody
     public ResultData list(@ModelAttribute("hfpmPageEventAttr") HfpmPageEventAttr hfpmPageEventAttr,
                                       @ModelAttribute("example") HfpmPageEventAttr_Example example, Pagination pagination){
@@ -62,7 +62,7 @@ public class HfpmPageEventAttrController   {
      * @return
      * @throws Throwable
      */
-    @RequestMapping(value = "/queryOneByAjax.html")
+    @RequestMapping(value = "/queryOneByAjax.json")
     @ResponseBody
     public ResultData detail(@ModelAttribute("hfpmPageEventAttr") HfpmPageEventAttr hfpmPageEventAttr){
         logger.debug("request : {},{}", hfpmPageEventAttr.getHfpmPageEventAttrId(), hfpmPageEventAttr);
@@ -85,7 +85,7 @@ public class HfpmPageEventAttrController   {
     * @return
     * @throws Throwable
     */
-    @RequestMapping(value = "/createByAjax.html")
+    @RequestMapping(value = "/createByAjax.json")
     @ResponseBody
     public ResultData create(@ModelAttribute("hfpmPageEventAttr") HfpmPageEventAttr hfpmPageEventAttr) {
         logger.debug("request : {}", hfpmPageEventAttr);
@@ -107,7 +107,7 @@ public class HfpmPageEventAttrController   {
     * @return
     * @throws Throwable
     */
-    @RequestMapping(value = "/updateByAjax.html")
+    @RequestMapping(value = "/updateByAjax.json")
     @ResponseBody
     public ResultData update(@ModelAttribute("hfpmPageEventAttr") HfpmPageEventAttr hfpmPageEventAttr) {
         logger.debug("request : {}", hfpmPageEventAttr);
@@ -129,7 +129,7 @@ public class HfpmPageEventAttrController   {
     * @return
     * @throws Throwable
     */
-    @RequestMapping(value = "/deleteByAjax.html")
+    @RequestMapping(value = "/deleteByAjax.json")
     @ResponseBody
     public ResultData delete(@ModelAttribute("hfpmPageEventAttr") HfpmPageEventAttr hfpmPageEventAttr) {
         logger.debug("request : {}", hfpmPageEventAttr);

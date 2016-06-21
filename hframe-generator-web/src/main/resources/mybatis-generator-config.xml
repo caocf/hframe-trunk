@@ -42,6 +42,7 @@
             <property name="enableSubPackages" value="false"/>
         </sqlMapGenerator>
         <!-- DAO 对象实体 -->
+        <!-- ANNOTATEDMAPPER  MIXEDMAPPER   XMLMAPPER-->
         <javaClientGenerator targetPackage="com.hframe.dao" targetProject="hframe-core/src/main/java" type="XMLMAPPER">
             <property name="enableInsert" value="true"/>
             <property name="enableSubPackages" value=""/>

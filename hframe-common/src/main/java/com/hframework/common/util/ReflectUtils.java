@@ -55,7 +55,7 @@ public class ReflectUtils {
         operate(obj, fieldName, fieldVal, "set");
     }
 
-    private static Method getDeclaredMethod(Object object, String methodName, Class<?>[] parameterTypes) {
+    public static Method getDeclaredMethod(Object object, String methodName, Class<?>[] parameterTypes) {
         for (Class<?> superClass = object.getClass(); superClass != Object.class; superClass = superClass
                 .getSuperclass()) {
             try {

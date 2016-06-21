@@ -1,5 +1,7 @@
 package com.hframework.common.util.message;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.*;
@@ -11,6 +13,11 @@ import java.io.*;
 public class JsonUtils {
 
     private static ObjectMapper objectMapper = new ObjectMapper();
+    static {
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        objectMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+    }
+
 
     /**
      * Json内容转化为对象

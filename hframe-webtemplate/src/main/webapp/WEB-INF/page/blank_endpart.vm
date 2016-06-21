@@ -1,0 +1,48 @@
+<!-- start: JavaScript-->
+<script src="$staticResourcePath/js/jquery-1.10.2.min.js"></script>
+<script src="$staticResourcePath/js/jquery-migrate-1.2.1.min.js"></script>
+<script src="$staticResourcePath/js/jquery-ui-1.10.3.custom.min.js"></script>
+<script src="$staticResourcePath/js/jquery.ui.touch-punch.js"></script>
+<script src="$staticResourcePath/js/modernizr.js"></script>
+<script src="$staticResourcePath/js/bootstrap.min.js"></script>
+<script src="$staticResourcePath/js/jquery.cookie.js"></script>
+<script src='$staticResourcePath/js/fullcalendar.min.js'></script>
+<script src='$staticResourcePath/js/jquery.dataTables.min.js'></script>
+<script src="$staticResourcePath/js/excanvas.js"></script>
+<script src="$staticResourcePath/js/jquery.flot.js"></script>
+<script src="$staticResourcePath/js/jquery.flot.pie.js"></script>
+<script src="$staticResourcePath/js/jquery.flot.stack.js"></script>
+<script src="$staticResourcePath/js/jquery.flot.resize.min.js"></script>
+<script src="$staticResourcePath/js/jquery.flot.time.js"></script>
+
+<script src="$staticResourcePath/js/jquery.chosen.min.js"></script>
+<script src="$staticResourcePath/js/jquery.uniform.min.js"></script>
+<script src="$staticResourcePath/js/jquery.cleditor.min.js"></script>
+<script src="$staticResourcePath/js/jquery.noty.js"></script>
+<script src="$staticResourcePath/js/jquery.elfinder.min.js"></script>
+<script src="$staticResourcePath/js/jquery.raty.min.js"></script>
+<script src="$staticResourcePath/js/jquery.iphone.toggle.js"></script>
+<script src="$staticResourcePath/js/jquery.uploadify-3.1.min.js"></script>
+<script src="$staticResourcePath/js/jquery.gritter.min.js"></script>
+<script src="$staticResourcePath/js/jquery.imagesloaded.js"></script>
+<script src="$staticResourcePath/js/jquery.masonry.min.js"></script>
+<script src="$staticResourcePath/js/jquery.knob.modified.js"></script>
+<script src="$staticResourcePath/js/jquery.sparkline.min.js"></script>
+<script src="$staticResourcePath/js/counter.min.js"></script>
+<script src="$staticResourcePath/js/raphael.2.1.0.min.js"></script>
+<script src="$staticResourcePath/js/justgage.1.0.1.min.js"></script>
+<script src="$staticResourcePath/js/jquery.autosize.min.js"></script>
+<script src="$staticResourcePath/js/retina.js"></script>
+<script src="$staticResourcePath/js/jquery.placeholder.min.js"></script>
+<script src="$staticResourcePath/js/wizard.min.js"></script>
+<script src="$staticResourcePath/js/core.min.js"></script>
+<script src="$staticResourcePath/js/charts.min.js"></script>
+<script src="$staticResourcePath/js/custom.min.js"></script>
+
+<script type="text/javascript" src="/static/plugins/require/require.js"></script>
+<script type="text/javascript" src="/js/hframework/utils/require.config.js"></script>
+<script src="/js/hframework/fn.js"></script>
+<script src="/js/hframework/list.js"></script>
+<script src="/js/hframework/datainit.js"></script>
+<script src="/js/hframework/href.js"></script>
+<!-- end: JavaScript-->

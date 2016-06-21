@@ -133,6 +133,7 @@ public class FrameInitServlet extends HttpServlet {
         }
     }
 
+
     private Map<Long, HfmdEntityAttr> getHfmdEntityAttrIdEntityAttrMap(List<HfmdEntityAttr> hfmdEntityAttrAll) {
 
         Map<Long, HfmdEntityAttr> map = new HashMap<Long, HfmdEntityAttr>();

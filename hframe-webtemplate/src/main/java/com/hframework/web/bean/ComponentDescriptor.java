@@ -24,7 +24,7 @@ public class ComponentDescriptor extends ElementDescriptor{
     private ComponentDataContainer dataContainer;
 
     public void initComponentDataContainer() {
-        dataContainer = new ComponentDataContainer(component);
+        dataContainer = new ComponentDataContainer(component,getElement());
         List<Mapping> mappingList = mapper.getBaseMapper().getMappingList();
         for (Mapping mapping : mappingList) {
             dataContainer.addMappingAndDataSetDescriptor(mapping, dataSetDescriptor, true);

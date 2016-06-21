@@ -12,8 +12,10 @@ public class DataSet   {
 
 	@XStreamAlias("module")
 	private String module;
-	@XStreamAlias("code")
-	private String code;
+    @XStreamAlias("code")
+    private String code;
+    @XStreamAlias("icon")
+    private String icon;
 	@XStreamImplicit
     @XStreamAlias("entity")
 	private List<Entity> entityList;
@@ -65,5 +67,12 @@ public class DataSet   {
      public void setFields(Fields fields){
      	this.fields = fields;
      }
-	 
+
+     public String getIcon() {
+      return icon;
+     }
+
+     public void setIcon(String icon) {
+      this.icon = icon;
+     }
 }

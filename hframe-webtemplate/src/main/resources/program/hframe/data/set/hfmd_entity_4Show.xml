@@ -1,6 +1,7 @@
 <dataset>
     <module>hframe</module>
     <code>hfmd_entity_4Show</code>
+    <icon>hfmd_entity_4Show</icon>
     <entity is-main="true">hfmd_entity</entity>
     <entity>hfmd_entity_page</entity>
     <name>实体</name>

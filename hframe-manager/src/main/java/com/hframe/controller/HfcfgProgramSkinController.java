@@ -35,7 +35,7 @@ public class HfcfgProgramSkinController   {
      * @return
      * @throws Throwable
      */
-    @RequestMapping(value = "/queryListByAjax.html")
+    @RequestMapping(value = "/queryListByAjax.json")
     @ResponseBody
     public ResultData list(@ModelAttribute("hfcfgProgramSkin") HfcfgProgramSkin hfcfgProgramSkin,
                                       @ModelAttribute("example") HfcfgProgramSkin_Example example, Pagination pagination){
@@ -62,7 +62,7 @@ public class HfcfgProgramSkinController   {
      * @return
      * @throws Throwable
      */
-    @RequestMapping(value = "/queryOneByAjax.html")
+    @RequestMapping(value = "/queryOneByAjax.json")
     @ResponseBody
     public ResultData detail(@ModelAttribute("hfcfgProgramSkin") HfcfgProgramSkin hfcfgProgramSkin){
         logger.debug("request : {},{}", hfcfgProgramSkin.getHfcfgProgramSkinId(), hfcfgProgramSkin);
@@ -85,7 +85,7 @@ public class HfcfgProgramSkinController   {
     * @return
     * @throws Throwable
     */
-    @RequestMapping(value = "/createByAjax.html")
+    @RequestMapping(value = "/createByAjax.json")
     @ResponseBody
     public ResultData create(@ModelAttribute("hfcfgProgramSkin") HfcfgProgramSkin hfcfgProgramSkin) {
         logger.debug("request : {}", hfcfgProgramSkin);
@@ -107,7 +107,7 @@ public class HfcfgProgramSkinController   {
     * @return
     * @throws Throwable
     */
-    @RequestMapping(value = "/updateByAjax.html")
+    @RequestMapping(value = "/updateByAjax.json")
     @ResponseBody
     public ResultData update(@ModelAttribute("hfcfgProgramSkin") HfcfgProgramSkin hfcfgProgramSkin) {
         logger.debug("request : {}", hfcfgProgramSkin);
@@ -129,7 +129,7 @@ public class HfcfgProgramSkinController   {
     * @return
     * @throws Throwable
     */
-    @RequestMapping(value = "/deleteByAjax.html")
+    @RequestMapping(value = "/deleteByAjax.json")
     @ResponseBody
     public ResultData delete(@ModelAttribute("hfcfgProgramSkin") HfcfgProgramSkin hfcfgProgramSkin) {
         logger.debug("request : {}", hfcfgProgramSkin);
