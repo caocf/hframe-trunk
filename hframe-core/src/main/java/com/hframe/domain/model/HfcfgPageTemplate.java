@@ -13,6 +13,8 @@ public class HfcfgPageTemplate {
 
     private String hfcfgPageTemplateDesc;
 
+    private String templateUrl;
+
     private String snapshotUrl;
 
     private Long opId;
@@ -25,12 +27,13 @@ public class HfcfgPageTemplate {
 
     private Integer delFlag;
 
-    public HfcfgPageTemplate(Long hfcfgPageTemplateId, Integer hfcfgPageTemplateType, String hfcfgPageTemplateName, String hfcfgPageTemplateCode, String hfcfgPageTemplateDesc, String snapshotUrl, Long opId, Date createTime, Long modifyOpId, Date modifyTime, Integer delFlag) {
+    public HfcfgPageTemplate(Long hfcfgPageTemplateId, Integer hfcfgPageTemplateType, String hfcfgPageTemplateName, String hfcfgPageTemplateCode, String hfcfgPageTemplateDesc, String templateUrl, String snapshotUrl, Long opId, Date createTime, Long modifyOpId, Date modifyTime, Integer delFlag) {
         this.hfcfgPageTemplateId = hfcfgPageTemplateId;
         this.hfcfgPageTemplateType = hfcfgPageTemplateType;
         this.hfcfgPageTemplateName = hfcfgPageTemplateName;
         this.hfcfgPageTemplateCode = hfcfgPageTemplateCode;
         this.hfcfgPageTemplateDesc = hfcfgPageTemplateDesc;
+        this.templateUrl = templateUrl;
         this.snapshotUrl = snapshotUrl;
         this.opId = opId;
         this.createTime = createTime;
@@ -57,6 +60,10 @@ public class HfcfgPageTemplate {
 
     public String getHfcfgPageTemplateDesc() {
         return hfcfgPageTemplateDesc;
+    }
+
+    public String getTemplateUrl() {
+        return templateUrl;
     }
 
     public String getSnapshotUrl() {
@@ -101,6 +108,10 @@ public class HfcfgPageTemplate {
 
     public void setHfcfgPageTemplateDesc(String hfcfgPageTemplateDesc) {
         this.hfcfgPageTemplateDesc=hfcfgPageTemplateDesc;
+    }
+
+    public void setTemplateUrl(String templateUrl) {
+        this.templateUrl=templateUrl;
     }
 
     public void setSnapshotUrl(String snapshotUrl) {

@@ -455,6 +455,76 @@ public class HfcfgPageTemplate_Example {
             return (Criteria) this;
         }
 
+        public Criteria andTemplateUrlIsNull() {
+            addCriterion("template_url is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andTemplateUrlIsNotNull() {
+            addCriterion("template_url is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andTemplateUrlEqualTo(String value) {
+            addCriterion("template_url =", value, "templateUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andTemplateUrlNotEqualTo(String value) {
+            addCriterion("template_url <>", value, "templateUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andTemplateUrlGreaterThan(String value) {
+            addCriterion("template_url >", value, "templateUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andTemplateUrlGreaterThanOrEqualTo(String value) {
+            addCriterion("template_url >=", value, "templateUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andTemplateUrlLessThan(String value) {
+            addCriterion("template_url <", value, "templateUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andTemplateUrlLessThanOrEqualTo(String value) {
+            addCriterion("template_url <=", value, "templateUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andTemplateUrlLike(String value) {
+            addCriterion("template_url like", value, "templateUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andTemplateUrlNotLike(String value) {
+            addCriterion("template_url not like", value, "templateUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andTemplateUrlIn(List<String> values) {
+            addCriterion("template_url in", values, "templateUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andTemplateUrlNotIn(List<String> values) {
+            addCriterion("template_url not in", values, "templateUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andTemplateUrlBetween(String value1, String value2) {
+            addCriterion("template_url between", value1, value2, "templateUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andTemplateUrlNotBetween(String value1, String value2) {
+            addCriterion("template_url not between", value1, value2, "templateUrl");
+            return (Criteria) this;
+        }
+
         public Criteria andSnapshotUrlIsNull() {
             addCriterion("snapshot_url is null");
             return (Criteria) this;

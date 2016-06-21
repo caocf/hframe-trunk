@@ -31,12 +31,20 @@ public class ControllerV2Generator extends AbstractGenerator {
 		editClass.addImportClass("org.slf4j.LoggerFactory");
 
 		editClass.addImportClass("org.springframework.stereotype.Controller");
+		editClass.addImportClass("org.springframework.web.bind.annotation.InitBinder");
 		editClass.addImportClass("org.springframework.web.bind.annotation.ModelAttribute");
 		editClass.addImportClass("org.springframework.web.bind.annotation.RequestMapping");
 		editClass.addImportClass("org.springframework.web.bind.annotation.ResponseBody");
 		editClass.addImportClass("org.springframework.web.servlet.ModelAndView");
 		editClass.addImportClass("javax.annotation.Resource");
 		editClass.addImportClass("java.util.*");
+
+		editClass.addImportClass("javax.servlet.http.HttpServletRequest");
+		editClass.addImportClass("org.springframework.web.bind.ServletRequestDataBinder");
+		editClass.addImportClass("java.text.DateFormat");
+		editClass.addImportClass("java.text.SimpleDateFormat");
+		editClass.addImportClass("org.springframework.beans.propertyeditors.CustomDateEditor");
+
 
 		editClass.addImportClass(poClass.getClassPath());
 		editClass.addImportClass(poExampleClass.getClassPath());

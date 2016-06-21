@@ -11,6 +11,8 @@ public class HfcfgProgramTemplate {
 
     private String programTemplateDesc;
 
+    private String templateUrl;
+
     private String snapshotUrl;
 
     private Long opId;
@@ -23,11 +25,12 @@ public class HfcfgProgramTemplate {
 
     private Integer delFlag;
 
-    public HfcfgProgramTemplate(Long hfcfgProgramTemplateId, String programTemplateName, String programTemplateCode, String programTemplateDesc, String snapshotUrl, Long opId, Date createTime, Long modifyOpId, Date modifyTime, Integer delFlag) {
+    public HfcfgProgramTemplate(Long hfcfgProgramTemplateId, String programTemplateName, String programTemplateCode, String programTemplateDesc, String templateUrl, String snapshotUrl, Long opId, Date createTime, Long modifyOpId, Date modifyTime, Integer delFlag) {
         this.hfcfgProgramTemplateId = hfcfgProgramTemplateId;
         this.programTemplateName = programTemplateName;
         this.programTemplateCode = programTemplateCode;
         this.programTemplateDesc = programTemplateDesc;
+        this.templateUrl = templateUrl;
         this.snapshotUrl = snapshotUrl;
         this.opId = opId;
         this.createTime = createTime;
@@ -50,6 +53,10 @@ public class HfcfgProgramTemplate {
 
     public String getProgramTemplateDesc() {
         return programTemplateDesc;
+    }
+
+    public String getTemplateUrl() {
+        return templateUrl;
     }
 
     public String getSnapshotUrl() {
@@ -90,6 +97,10 @@ public class HfcfgProgramTemplate {
 
     public void setProgramTemplateDesc(String programTemplateDesc) {
         this.programTemplateDesc=programTemplateDesc;
+    }
+
+    public void setTemplateUrl(String templateUrl) {
+        this.templateUrl=templateUrl;
     }
 
     public void setSnapshotUrl(String snapshotUrl) {

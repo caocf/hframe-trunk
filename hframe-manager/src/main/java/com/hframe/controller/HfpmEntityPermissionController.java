@@ -1,21 +1,28 @@
 package com.hframe.controller;
 
+import com.hframe.domain.model.HfpmEntityPermission;
+import com.hframe.domain.model.HfpmEntityPermission_Example;
+import com.hframe.service.interfaces.IHfpmEntityPermissionSV;
 import com.hframework.beans.controller.Pagination;
 import com.hframework.beans.controller.ResultCode;
 import com.hframework.beans.controller.ResultData;
 import com.hframework.common.util.ExampleUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.ServletRequestDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
+
 import javax.annotation.Resource;
-import java.util.*;
-import com.hframe.domain.model.HfpmEntityPermission;
-import com.hframe.domain.model.HfpmEntityPermission_Example;
-import com.hframe.service.interfaces.IHfpmEntityPermissionSV;
+import javax.servlet.http.HttpServletRequest;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 @Controller
 @RequestMapping(value = "/hframe/hfpmEntityPermission")
@@ -28,6 +35,14 @@ public class HfpmEntityPermissionController   {
 
 
 
+
+    @InitBinder
+    protected void initBinder(HttpServletRequest request,
+        ServletRequestDataBinder binder) throws Exception {
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        CustomDateEditor editor = new CustomDateEditor(df, false);
+        binder.registerCustomEditor(Date.class, editor);
+    }
 
     /**
      * 查询展示实体权限列表

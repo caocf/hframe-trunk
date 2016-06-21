@@ -12,13 +12,21 @@
 ##模板内容
 
 
+    @InitBinder
+    protected void initBinder(HttpServletRequest request,
+        ServletRequestDataBinder binder) throws Exception {
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        CustomDateEditor editor = new CustomDateEditor(df, false);
+        binder.registerCustomEditor(Date.class, editor);
+    }
+
     /**
      * 查询展示${entityName}列表
      * @param ${varName}
      * @return
      * @throws Throwable
      */
-    @RequestMapping(value = "/queryListByAjax.html")
+    @RequestMapping(value = "/queryListByAjax.json")
     @ResponseBody
     public ResultData list(@ModelAttribute("${varName}") ${className} ${varName},
                                       @ModelAttribute("example") ${poExampleClassName} example, Pagination pagination){
@@ -45,7 +53,7 @@
      * @return
      * @throws Throwable
      */
-    @RequestMapping(value = "/queryOneByAjax.html")
+    @RequestMapping(value = "/queryOneByAjax.json")
     @ResponseBody
     public ResultData detail(@ModelAttribute("${varName}") ${className} ${varName}){
         logger.debug("request : {},{}", ${varName}.get${className}Id(), ${varName});
@@ -68,7 +76,7 @@
     * @return
     * @throws Throwable
     */
-    @RequestMapping(value = "/createByAjax.html")
+    @RequestMapping(value = "/createByAjax.json")
     @ResponseBody
     public ResultData create(@ModelAttribute("${varName}") ${className} ${varName}) {
         logger.debug("request : {}", ${varName});
@@ -90,7 +98,7 @@
     * @return
     * @throws Throwable
     */
-    @RequestMapping(value = "/updateByAjax.html")
+    @RequestMapping(value = "/updateByAjax.json")
     @ResponseBody
     public ResultData update(@ModelAttribute("${varName}") ${className} ${varName}) {
         logger.debug("request : {}", ${varName});
@@ -112,7 +120,7 @@
     * @return
     * @throws Throwable
     */
-    @RequestMapping(value = "/deleteByAjax.html")
+    @RequestMapping(value = "/deleteByAjax.json")
     @ResponseBody
     public ResultData delete(@ModelAttribute("${varName}") ${className} ${varName}) {
         logger.debug("request : {}", ${varName});

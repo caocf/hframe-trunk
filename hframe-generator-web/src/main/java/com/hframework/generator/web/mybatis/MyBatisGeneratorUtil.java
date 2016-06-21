@@ -24,7 +24,7 @@ public class MyBatisGeneratorUtil {
     }
 
     public static  void generate() throws IOException, XMLParserException, InvalidConfigurationException, SQLException, InterruptedException {
-       generate("mybatis-generator-config-lcs.xml");
+       generate("mybatis-generator-config.xml");
     }
 
     public static  List<TableConfiguration> getTableCfg() throws IOException, XMLParserException, InvalidConfigurationException, SQLException, InterruptedException {

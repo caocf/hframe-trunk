@@ -1,7 +1,9 @@
 
 import com.hframe.dao.HfpmProgramMapper;
+import com.hframe.dao.HfusWordStoreMapper;
 import com.hframe.domain.model.HfpmProgram;
 import com.hframe.domain.model.HfpmProgram_Example;
+import com.hframe.domain.model.HfusWordStore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -19,6 +21,9 @@ public class HfpmProgramMapperTest {
     @Resource
     private HfpmProgramMapper hfpmProgramMapper;
 
+    @Resource
+    private HfusWordStoreMapper hfusWordStoreMapper;
+
     @Test
     public void selectByExample(){
         hfpmProgramMapper.selectByExample(new HfpmProgram_Example());
@@ -30,5 +35,15 @@ public class HfpmProgramMapperTest {
         program.setHfpmProgramId(123L);
         program.setHfpmProgramCode("234");
         System.out.println(hfpmProgramMapper.insertSelective(program));
+    }
+
+    @Test
+    public void insertHfusWordStore(){
+        HfusWordStore wordStore = new HfusWordStore();
+        wordStore.setEnglishName("profit");
+        wordStore.setEnglishShortName("profit");
+        wordStore.setChineseChars("收益");
+        System.out.println(hfusWordStoreMapper.insertSelective(wordStore));
+        System.out.println(wordStore.getHfusWordStoreId());
     }
 }
