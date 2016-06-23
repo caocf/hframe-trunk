@@ -1,4 +1,4 @@
-<mapper component-id="list">
+<mapper component-id="eList">
     <baseMapper>
         <mapping id="id" value="${code}_list"></mapping>
         <mapping id="icon" value="${icon}"></mapping>
@@ -6,7 +6,7 @@
         <mapping id="columns" value="${columns}">
             <mapping id="code" value="${code}"></mapping>
             <mapping id="name" value="${name}"></mapping>
-            <mapping id="type" value="${editType}"></mapping>
+            <mapping id="editType" value="${editType}"></mapping>
             <mapping id="dataCode" value="${enumClass||entityCode}"></mapping>
             <mapping id="dataCondition" value="${relColumns}"></mapping>
         </mapping>
@@ -26,6 +26,8 @@
         <mapping id="create" value="${create}.html"></mapping>
         <mapping id="edit" value="${edit}.html"></mapping>
         <mapping id="detail" value="${detail}.html"></mapping>
-        <mapping id="batchDelete" value="${batchDelete}.html"></mapping>
+        <mapping id="batchDelete" value="${batchDelete}.json"></mapping>
+        <mapping id="batchCreate" value="${createsByAjax}.json"></mapping>
+
     </eventMapper>
 </mapper>

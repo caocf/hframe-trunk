@@ -2,12 +2,21 @@ package com.hframework.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.hframe.controller.HfmdEnumClassController;
+import com.hframe.domain.model.HfmdEnum;
+import com.hframe.domain.model.HfmdEnumClass;
+import com.hframe.domain.model.HfmdEnumClass_Example;
+import com.hframe.domain.model.HfmdEnum_Example;
+import com.hframe.service.interfaces.IHfmdEnumClassSV;
+import com.hframe.service.interfaces.IHfmdEnumSV;
 import com.hframework.base.bean.KVBean;
 import com.hframework.base.service.CommonDataService;
 import com.hframework.beans.class0.Class;
 import com.hframework.beans.controller.Pagination;
 import com.hframework.beans.controller.ResultCode;
 import com.hframework.beans.controller.ResultData;
+import com.hframework.common.ext.CollectionUtils;
+import com.hframework.common.ext.Mapping;
 import com.hframework.common.frame.ServiceFactory;
 import com.hframework.common.frame.cache.PropertyConfigurerUtils;
 import com.hframework.common.util.ReflectUtils;
@@ -54,6 +63,11 @@ public class DefaultController {
 
     private ModelAttributeSetter modelAttributeSetter = new ModelAttributeSetter();
 
+    @Resource
+    private IHfmdEnumClassSV iHfmdEnumClassSV;
+    @Resource
+    private IHfmdEnumSV iHfmdEnumSV;
+
 
     /**
      * 字典查询
@@ -69,16 +83,38 @@ public class DefaultController {
         try{
 
             final String[] split = dataCode.split("\\.");
-            Map<String, String> dicInfo = new HashMap<String, String>(){{
-                put("tableName", split[0]);
-                put("keyColumn", split[1]);
-                put("valueColumn", split[2]);
+            if(split.length != 3) {
+                HfmdEnumClass_Example hfmdEnumClass_example = new HfmdEnumClass_Example();
+                hfmdEnumClass_example.createCriteria().andHfmdEnumClassCodeEqualTo(dataCode);
+                List<HfmdEnumClass> hfmdEnumClassListByExample = iHfmdEnumClassSV.getHfmdEnumClassListByExample(hfmdEnumClass_example);
+                if(hfmdEnumClassListByExample != null && hfmdEnumClassListByExample.size() > 0) {
+                    Long hfmdEnumClassId = hfmdEnumClassListByExample.get(0).getHfmdEnumClassId();
+                    HfmdEnum_Example hfmdEnum_example = new HfmdEnum_Example();
+                    hfmdEnum_example.createCriteria().andHfmdEnumClassIdEqualTo(String.valueOf(hfmdEnumClassId));
+                    List<HfmdEnum> hfmdEnumList = iHfmdEnumSV.getHfmdEnumListByExample(hfmdEnum_example);
+                    List<KVBean> kvBeans = CollectionUtils.from(hfmdEnumList, new Mapping<HfmdEnum, KVBean>() {
+                        public KVBean from(HfmdEnum hfmdEnum) {
+                            KVBean kvBean = new KVBean();
+                            kvBean.setValue(hfmdEnum.getHfmdEnumValue());
+                            kvBean.setText(hfmdEnum.getHfmdEnumText());
+                            return kvBean;
+                        }
+                    });
+                    return ResultData.success(kvBeans);
+                }
+                return ResultData.error(ResultCode.RECODE_IS_NOT_EXISTS);
+            }else {
+                Map<String, String> dicInfo = new HashMap<String, String>(){{
+                    put("tableName", split[0]);
+                    put("keyColumn", split[1]);
+                    put("valueColumn", split[2]);
 //                put("extColumn", dictionary.getExtColumn());
-                put("condition", dataCondition);
-            }};
-            List<KVBean> kvBeans = commonDataService.selectDynamicTableDataList(dicInfo);
+                    put("condition", dataCondition);
+                }};
+                List<KVBean> kvBeans = commonDataService.selectDynamicTableDataList(dicInfo);
 
-            return ResultData.success(kvBeans);
+                return ResultData.success(kvBeans);
+            }
         }catch (Exception e) {
             logger.error("error : ", e);
             return ResultData.error(ResultCode.ERROR);
@@ -190,11 +226,16 @@ public class DefaultController {
 
         mav.addObject("isPop","true".equals(isPop)? true : false);
         mav.addObject("staticResourcePath", "/static");
-        if(StringUtils.isNotBlank(componentId)) {
+        if(StringUtils.isNotBlank(componentId) && "qList".equals(componentId)) {
+            mav.addObject("list",mav.getModelMap().get("qList"));
             mav.setViewName("/component/queryList");
 
+        }else if(StringUtils.isNotBlank(componentId) && "eList".equals(componentId)) {
+            mav.addObject("list",mav.getModelMap().get("eList"));
+            mav.setViewName("/component/editList");
+
         }else {
-            mav.setViewName(pageInfo.getPageTemplate().getId());
+            mav.setViewName(pageInfo.getPageTemplate().getPath().substring(0,pageInfo.getPageTemplate().getPath().indexOf(".vm")));
         }
 
         return mav;

@@ -6,7 +6,7 @@
         <!--<element id="personalCenter" type="component"></element>-->
         <element id="content" type="container"></element>
     </pagetemplate>
-    <pagetemplate id="list" path="list.vm" parent-id = "default" name="列表页" type="forward">
+    <pagetemplate id="qlist" path="list.vm" parent-id = "default" name="列表页" type="forward">
         <element id="qForm" type="component">
             <events>
                 <event name="query">
@@ -14,11 +14,14 @@
                         <appendElement type="button" param='{btnclass:"btn-primary",btnText:"查询"}'></appendElement>
                     </attach>
                     <source scope="thisForm"></source>
-                    <effect type="component.reload" target-id="list"></effect>
+                    <effect type="component.reload" target-id="qList"></effect>
                 </event>
             </events>
         </element>
-        <element id="list" type="component"></element>
+        <element id="qList" type="component"></element>
+    </pagetemplate>
+    <pagetemplate id="elist" path="eList.vm" parent-id = "default" name="可编辑列表页" type="forward">
+        <element id="eList" type="component"></element>
     </pagetemplate>
     <pagetemplate id="create" path="create.vm" parent-id = "default" name="创建页" type="forward">
         <element id="cForm" type="component"></element>

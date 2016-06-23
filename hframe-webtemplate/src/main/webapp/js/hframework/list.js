@@ -29,6 +29,11 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
             var $newHfList = $(data);
             $(compoContainer).find(".hflist-pager").html($newHfList.find(".hflist-pager").html());
             $(compoContainer).find(".hflist-data").html($newHfList.find(".hflist-data").html());
+
+            $(compoContainer).find("[data-code][data-condition]").each(function(){
+                var $this = $(this);
+                $.selectLoad($this);
+            });
         },'html');
     }
 

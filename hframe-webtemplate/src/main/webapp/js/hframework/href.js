@@ -30,6 +30,34 @@ require(['layer','ajax','js/hframework/errormsg','js/hframework/list'], function
                 delete $action[$type];
                 doEvent($action,$param,$this);
             });
+        }else if($type == "ajaxSubmitByJson") {
+            var _data;
+            if($param == "thisForm") {
+                $thisForm = $this.parents("form")[0];
+                _data = $($thisForm).serializeJson();
+            }else {
+                _data = parseUrlParamToObject($param);
+            }
+            //_data ='[{"hfpmProgramId":"123","hfpmProgramName":"test","hfpmProgramCode":"234","hfpmProgramDesc":"234","opId":"234","createTime":"2015-10-31 00:20:58","modifyOpId":"","modifyTime":"2015-10-31 00:20:58","delFlag":""},{"hfpmProgramId":"151031375370","hfpmProgramName":"框架","hfpmProgramCode":"hframe","hfpmProgramDesc":"框架","opId":"999","createTime":"2015-10-31 00:20:58","modifyOpId":"999","modifyTime":"2015-10-31 00:20:58","delFlag":"0"}]';
+            //console.log(_data);
+
+            $.ajax({
+                url: url,
+                data: _data,
+                type: 'post',
+                contentType : 'application/json;charset=utf-8',
+                dataType: 'json',
+                success: function(data){
+                    if(data.resultCode != '0') {
+                        alert(data.resultMessage);
+                        return;
+                    }
+
+                    delete $action[$type];
+                    doEvent($action,$param,$this);
+                }
+            });
+
         }else if($type == "ajaxSubmit") {
             var _data;
             if($param == "thisForm") {
@@ -60,6 +88,39 @@ require(['layer','ajax','js/hframework/errormsg','js/hframework/list'], function
                 delete $action[$type];
                 refreshList(1,$targetComponent);
             }
+        }else if($type == "component.row.add") {
+            $curRow = $this.parents("tr")[0];
+            $newRow = $($curRow).clone();
+            $($newRow).find("input").val("");
+            $($curRow).after($newRow);
+
+        }else if($type == "component.row.copy") {
+            $curRow = $this.parents("tr")[0];
+            $newRow = $($curRow).clone();
+            $($newRow).find("input[type=hidden]").val("");
+            $($curRow).find("select").each(function(i){
+                $($newRow).find("select").eq(i).val($(this).val());
+            });
+            $($curRow).after($newRow);
+        }else if($type == "component.row.up") {
+            $curRow = $this.parents("tr")[0];
+            $targetRow = $($curRow).prev();
+            $newRow = $($targetRow).clone();
+            $($targetRow).find("select").each(function(i){
+                $($newRow).find("select").eq(i).val($(this).val());
+            });
+            $($curRow).after($newRow);
+            $targetRow.remove();
+
+        }else if($type == "component.row.down") {
+            $curRow = $this.parents("tr")[0];
+            $targetRow = $($curRow).next();
+            $newRow = $($targetRow).clone();
+            $($targetRow).find("select").each(function(i){
+                $($newRow).find("select").eq(i).val($(this).val());
+            });
+            $($curRow).before($newRow);
+            $targetRow.remove();
         }else if($type == "dialog") {
             showDialog(url + "?" + "isPop=true&" +$param,function(){
                 delete $action[$type];
@@ -102,9 +163,19 @@ require(['layer','ajax','js/hframework/errormsg','js/hframework/list'], function
             var key = $params[$index].substring(0, $params[$index].indexOf("="));
             var value = $params[$index].substring($params[$index].indexOf("=") + 1);
             if(value != '') {
-                result[key] = value;
+                //if(result[key] != null) {
+                //    if(result[key] instanceof Array) {
+                //        result[key].push(value);
+                //    }else {
+                //        result[key] = [result[key],value];
+                //    }
+                //}else {
+                    if(key == "createTime" || key == "modifyTime") {
+                        continue;
+                    }
+                    result[key] = value;
+                //}
             }
-
         }
         return result;
     }
@@ -160,5 +231,45 @@ require(['layer','ajax','js/hframework/errormsg','js/hframework/list'], function
             }
         });
     }
+
+    (function($){
+        $.fn.serializeJson = function(){
+            var jsonData1 = {};
+            var serializeArray = this.serializeArray();
+            // 先转换成{"id": ["12","14"], "name": ["aaa","bbb"], "pwd":["pwd1","pwd2"]}这种形式
+            $(serializeArray).each(function () {
+                if (jsonData1[this.name] != null) {
+                    if ($.isArray(jsonData1[this.name])) {
+                        jsonData1[this.name].push(this.value);
+                    } else {
+                        jsonData1[this.name] = [jsonData1[this.name], this.value];
+                    }
+                } else {
+                    jsonData1[this.name] = this.value;
+                }
+            });
+            // 再转成[{"id": "12", "name": "aaa", "pwd":"pwd1"},{"id": "14", "name": "bb", "pwd":"pwd2"}]的形式
+            var vCount = 0;
+            // 计算json内部的数组最大长度
+            for(var item in jsonData1){
+                var tmp = $.isArray(jsonData1[item]) ? jsonData1[item].length : 1;
+                vCount = (tmp > vCount) ? tmp : vCount;
+            }
+
+            if(vCount > 1) {
+                var jsonData2 = new Array();
+                for(var i = 0; i < vCount; i++){
+                    var jsonObj = {};
+                    for(var item in jsonData1) {
+                        jsonObj[item] = jsonData1[item][i];
+                    }
+                    jsonData2.push(jsonObj);
+                }
+                return JSON.stringify(jsonData2);
+            }else{
+                return "[" + JSON.stringify(jsonData1) + "]";
+            }
+        };
+    })(jQuery);
 });
 

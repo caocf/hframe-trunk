@@ -11,13 +11,25 @@
     <field code="hfmd_entity_attr_name" name="实体属性名称" edit-type="input"/>
     <field code="hfmd_entity_attr_code" name="实体属性编码" edit-type="input"/>
     <field code="hfmd_entity_attr_desc" name="实体属性描述" edit-type="input"/>
-    <field code="attr_type" name="属性类型" edit-type="input"/>
+    <field code="attr_type" name="属性类型" edit-type="select">
+      <enum-class code="DEFAULT.BOOLEAN"/>
+    </field>
     <field code="size" name="大小" edit-type="input"/>
-    <field code="ispk" name="是否主键" edit-type="input"/>
-    <field code="nullable" name="是否为空" edit-type="input"/>
-    <field code="is_busi_attr" name="是否业务属性" edit-type="input"/>
-    <field code="is_redundant_attr" name="是否冗余属性" edit-type="input"/>
-    <field code="rel_hfmd_entity_attr_id" name="关联属性ID" edit-type="input"/>
+    <field code="ispk" name="是否主键" edit-type="select">
+      <enum-class code="DEFAULT.BOOLEAN"/>
+    </field>
+    <field code="nullable" name="是否为空" edit-type="select">
+      <enum-class code="DEFAULT.BOOLEAN"/>
+    </field>
+    <field code="is_busi_attr" name="是否业务属性" edit-type="select">
+      <enum-class code="DEFAULT.BOOLEAN"/>
+    </field>
+    <field code="is_redundant_attr" name="是否冗余属性" edit-type="select">
+      <enum-class code="DEFAULT.BOOLEAN"/>
+    </field>
+    <field code="rel_hfmd_entity_attr_id" name="关联属性ID" edit-type="select">
+      <rel entity-code="hfmd_entity_attr/hfmd_entity_attr_id/hfmd_entity_attr_name"/>
+    </field>
     <field code="hfmd_enum_class_id" name="枚举类ID" edit-type="select">
       <rel entity-code="hfmd_enum_class/hfmd_enum_class_id/hfmd_enum_class_name"/>
     </field>
@@ -50,8 +62,9 @@
       <create-edit-type>hidden</create-edit-type>
       <update-edit-type>hidden</update-edit-type>
     </field>
-    <field code="del_flag" name="删除标识" edit-type="input">
+    <field code="del_flag" name="删除标识" edit-type="select">
       <create-edit-type>hidden</create-edit-type>
+      <enum-class code="DEFAULT.BOOLEAN"/>
     </field>
   </fields>
 </dataset>

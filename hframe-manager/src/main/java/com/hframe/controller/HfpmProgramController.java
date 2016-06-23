@@ -12,10 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.ServletRequestDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -95,11 +92,11 @@ public class HfpmProgramController   {
     }
 
     /**
-    * 创建项目
-    * @param hfpmProgram
-    * @return
-    * @throws Throwable
-    */
+     * 创建项目
+     * @param hfpmProgram
+     * @return
+     * @throws Throwable
+     */
     @RequestMapping(value = "/createByAjax.json")
     @ResponseBody
     public ResultData create(@ModelAttribute("hfpmProgram") HfpmProgram hfpmProgram) {
@@ -109,6 +106,28 @@ public class HfpmProgramController   {
             if(result > 0) {
                 return ResultData.success(hfpmProgram);
             }
+        } catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+        return ResultData.error(ResultCode.UNKNOW);
+    }
+
+    /**
+     * 创建项目
+     * @param hfpmProgram
+     * @return
+     * @throws Throwable
+     */
+    @RequestMapping(value = "/createsByAjax.json")
+    @ResponseBody
+    public ResultData batchCreate(@RequestBody HfpmProgram[] hfpmProgram) {
+        logger.debug("request : {}", hfpmProgram);
+        try {
+//            int result = iHfpmProgramSV.create(hfpmProgram);
+//            if(result > 0) {
+//                return ResultData.success(hfpmProgram);
+//            }
         } catch (Exception e) {
             logger.error("error : ", e);
             return ResultData.error(ResultCode.ERROR);

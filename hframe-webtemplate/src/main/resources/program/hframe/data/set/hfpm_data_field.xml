@@ -13,8 +13,12 @@
       <rel entity-code="hfpm_field_show_type/hfpm_field_show_type_id/hfpm_field_show_type_name"/>
     </field>
     <field code="field_show_code" name="列展示码            " edit-type="input"/>
-    <field code="hfmd_entity_id" name="实体ID" edit-type="input"/>
-    <field code="hfmd_entity_attr_id" name="实体属性ID" edit-type="input"/>
+    <field code="hfmd_entity_id" name="实体ID" edit-type="select">
+      <rel entity-code="hfmd_entity/hfmd_entity_id/hfmd_entity_name"/>
+    </field>
+    <field code="hfmd_entity_attr_id" name="实体属性ID" edit-type="select">
+      <rel entity-code="hfmd_entity_attr/hfmd_entity_attr_id/hfmd_entity_attr_name"/>
+    </field>
     <field code="data_get_method" name="数据获取方式          " edit-type="input"/>
     <field code="hfpm_data_field_name" name="数据列名称" edit-type="input"/>
     <field code="hfpm_data_set_id" name="数据集ID" edit-type="select">

@@ -4,4 +4,4 @@
 ##       value='$oldObjectValue.get(${column.Name})'
 ##	#end
 ##        />
-<textarea class="cleditor" id="$column.code" value="$!data.get($column.code)" rows="3">$!data.get($column.code)</textarea>
+<textarea class="cleditor" id="$column.code" value="$!value" rows="3">$!value</textarea>

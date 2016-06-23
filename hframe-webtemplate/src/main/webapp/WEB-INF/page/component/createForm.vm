@@ -19,6 +19,8 @@
                             <label class="control-label" for="$column.code">$column.name</label>
                             <div class="controls">
                                 #set($data = $form.data)
+                                #set($value = $!data.get($column.code))
+                                #set($elementSize = "xlarge")
                                 #parse("component/element/field.vm")
                             </div>
                         </div>

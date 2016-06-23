@@ -25,10 +25,52 @@
         <context:include-filter type="regex" expression="com.hframework.controller.*;com.hframe.controller.*"/>
     </context:component-scan>
     <!-- Configures support for @Controllers -->
-    <mvc:annotation-driven/>
+    <mvc:annotation-driven  conversion-service="conversionService">
+        <mvc:message-converters>
+            <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+                <property name="supportedMediaTypes">
+                    <list>
+                        <value>application/json; charset=UTF-8</value>
+                        <value>text/html; charset=UTF-8</value>
+                    </list>
+                </property>
+                <property name="objectMapper" >
+                    <!--说明：设置Jackson日期格式化后对于String，Date的互换按照指定格式要求，否则需求使用DateJsonDeserializer，DateJsonSerializer注解标识每个DTO中date对象-->
+                    <bean class="com.fasterxml.jackson.databind.ObjectMapper">
+                        <property name="dateFormat">
+                            <bean class="java.text.SimpleDateFormat" >
+                                <constructor-arg value="yyyy-MM-dd HH:mm:ss"/>
+                            </bean>
+                        </property>
+                    </bean>
+                </property>
+            </bean>
+        </mvc:message-converters>
+
+    </mvc:annotation-driven>
+    <!--<mvc:annotation-driven conversion-service=""/>-->
     <!--&lt;!&ndash; 对静态资源文件的访问 &ndash;&gt;-->
     <mvc:default-servlet-handler/>
 
+
+    <!-- spring表单提交，对象spring标签输出时候格式化与封装配置 -->
+    <bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+        <property name="converters">
+            <set>
+                <bean class="com.hframework.DateConverter" >
+                    <constructor-arg value="yyyy-MM-dd HH:mm:ss"/>
+                </bean>
+            </set>
+        </property>
+        <!-- 格式化显示的配置-->
+        <property name="formatters">
+            <set>
+                <bean class="org.springframework.format.datetime.DateFormatter" >
+                    <constructor-arg value="yyyy-MM-dd HH:mm:ss"/>
+                </bean>
+            </set>
+        </property>
+    </bean>
 
     <!-- 模板信息设置 -->
     <bean id="velocityConfigurer"
@@ -56,6 +98,38 @@
         <property name="exposeSessionAttributes" value="true" />
     </bean>
 
+    <!-- ①注册ConversionService -->
+    <!--&lt;!&ndash; ②使用 ConfigurableWebBindingInitializer 注册conversionService &ndash;&gt;-->
+    <!--<bean id="webBindingInitializer"-->
+          <!--class="org.springframework.web.bind.support.ConfigurableWebBindingInitializer">-->
+        <!--<property name="conversionService" ref="conversionService" />-->
+    <!--</bean>-->
+
+    <!--<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">-->
+        <!--<property name="messageConverters">-->
+            <!--<list>-->
+                <!--<bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">-->
+                    <!--<property name="supportedMediaTypes">-->
+                        <!--<list>-->
+                            <!--<value>application/json; charset=UTF-8</value>-->
+                            <!--<value>text/html; charset=UTF-8</value>-->
+                        <!--</list>-->
+                    <!--</property>-->
+                    <!--<property name="objectMapper" >-->
+                        <!--<bean class="com.fasterxml.jackson.databind.ObjectMapper">-->
+                            <!--<property name="dateFormat">-->
+                                <!--<bean class="java.text.SimpleDateFormat" >-->
+                                    <!--<constructor-arg value="yyyy-MM-dd HH:mm:ss"/>-->
+                                <!--</bean>-->
+                            <!--</property>-->
+                        <!--</bean>-->
+                    <!--</property>-->
+                <!--</bean>-->
+                <!--<bean class="org.springframework.http.converter.FormHttpMessageConverter"/>-->
+            <!--</list>-->
+        <!--</property>-->
+        <!--&lt;!&ndash;<property name="webBindingInitializer" ref="webBindingInitializer"/>&ndash;&gt;-->
+    <!--</bean>-->
 
     <!--&lt;!&ndash; 视图解释类 &ndash;&gt;-->
     <!--<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">-->

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<component id="list" init="true" type="list" data-set="${dataSet}" data-auth="${dataAuth}">
+<component id="eList" init="true" type="list" data-set="${dataSet}" data-auth="${dataAuth}">
     <element id="id" type="characters" default-value=""></element>
     <element id="icon" type="enums" relId="icons" default-value=""></element>
     <element id="title" type="characters"  default-value=""></element>
     <element id="columns" type="objects"  default-value="">
         <element id="code" type="characters"  default-value=""></element>
         <element id="name" type="characters"  default-value=""></element>
-        <element id="type" type="enums" relId="#{TYPE}"  default-value=""></element>
+        <element id="editType" type="enums" relId="#{TYPE}"  default-value=""></element>
         <element id="dataCode" type="characters"  default-value=""></element>
         <element id="dataCondition" type="characters"  default-value=""></element>
     </element>
@@ -34,21 +34,32 @@
         </event>
     </baseEvents>
     <events>
-        <event name="create">
+
+        <event name="insert">
             <attach anchor="EOFR">
-                <appendElement type="icon" param='{fillclass:"btn-success",iconclass:"icon-zoom-in"}'></appendElement>
+                <appendElement type="icon" param='{fillclass:"btn-success",iconclass:" icon-file-alt"}'></appendElement>
             </attach>
-            <effect type="pageFwd" action='${create}' isStack="true"></effect>
-            <effect type="component.reload"></effect>
+            <effect type="component.row.add"></effect>
         </event>
-        <event name="edit">
+        <event name="copy">
             <attach anchor="EOFR">
-                <appendElement type="icon" param='{fillclass:"btn-info",iconclass:"icon-edit"}'></appendElement>
+                <appendElement type="icon" param='{fillclass:"btn-success",iconclass:" icon-copy"}'></appendElement>
             </attach>
-            <source scope="CROW" param="${id}"></source>
-            <effect type="dialog" action='${edit}' isStack="true"></effect>
-            <effect type="component.reload"></effect>
+            <effect type="component.row.copy"></effect>
         </event>
+        <event name="down">
+            <attach anchor="EOFR">
+                <appendElement type="icon" param='{fillclass:"btn-info",iconclass:"icon-circle-arrow-down"}'></appendElement>
+            </attach>
+            <effect type="component.row.down"></effect>
+        </event>
+        <event name="up">
+            <attach anchor="EOFR">
+                <appendElement type="icon" param='{fillclass:"btn-info",iconclass:" icon-circle-arrow-up"}'></appendElement>
+            </attach>
+            <effect type="component.row.up"></effect>
+        </event>
+
         <event name="delete">
             <attach anchor="EOFR">
                 <appendElement type="icon" param='{fillclass:"btn-danger",iconclass:"icon-trash"}'></appendElement>
@@ -63,10 +74,17 @@
             <source scope="CROW" param="${id}"></source>
             <effect type="pageFwd" action='${detail}' isStack="true"></effect>
         </event>
-
-        <event name="batchDelete">
+        <event name="submit">
             <attach anchor="EOFC">
-                <appendElement type="button" param='{btnclass:"btn-primary",btnText:"批量删除"}'></appendElement>
+                <appendElement type="button" param='{btnclass:"btn-primary",btnText:" 提 交 "}'></appendElement>
+            </attach>
+            <source scope="EOC" param="thisForm"></source>
+            <effect type="ajaxSubmitByJson" action="${batchCreate}"></effect>
+            <effect type="component.reload"></effect>
+        </event>
+        <event name="reset">
+            <attach anchor="EOFC">
+                <appendElement type="button" param='{btnclass:"btn-info",btnText:" 重 置 "}'></appendElement>
             </attach>
             <source scope="BOFR">
                 <appendElement type="checkbox" param='${id}|${name}'></appendElement>

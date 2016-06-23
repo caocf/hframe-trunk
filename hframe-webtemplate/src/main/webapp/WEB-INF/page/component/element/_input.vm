@@ -6,6 +6,5 @@
 ##        />
 
 
-
-
-<input class="input-large focused" id="$column.code"  name="$column.code" type="text" value="$!data.get($column.code)">
+## mini  small  medium large xlarge xxlarge
+<input class="input-$!{elementSize} focused" id="$column.code"  name="$column.code" type="text" value="$!value">

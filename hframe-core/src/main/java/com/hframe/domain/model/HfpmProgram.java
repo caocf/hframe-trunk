@@ -1,5 +1,10 @@
 package com.hframe.domain.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.hframework.DateJsonDeserializer;
+import com.hframework.DateJsonSerializer;
+
 import java.util.Date;
 
 public class HfpmProgram {
@@ -12,14 +17,22 @@ public class HfpmProgram {
     private String hfpmProgramDesc;
 
     private Long opId;
-
+//
+//    @JsonSerialize(using = DateJsonSerializer.class)
+//    @JsonDeserialize(using = DateJsonDeserializer.class)
     private Date createTime;
 
     private Long modifyOpId;
 
+    @JsonSerialize(using = DateJsonSerializer.class)
+    @JsonDeserialize(using = DateJsonDeserializer.class)
     private Date modifyTime;
 
     private Integer delFlag;
+
+    public HfpmProgram() {
+        super();
+    }
 
     public HfpmProgram(Long hfpmProgramId, String hfpmProgramName, String hfpmProgramCode, String hfpmProgramDesc, Long opId, Date createTime, Long modifyOpId, Date modifyTime, Integer delFlag) {
         this.hfpmProgramId = hfpmProgramId;
@@ -105,7 +118,5 @@ public class HfpmProgram {
         this.delFlag=delFlag;
     }
 
-    public HfpmProgram() {
-        super();
-    }
+
 }

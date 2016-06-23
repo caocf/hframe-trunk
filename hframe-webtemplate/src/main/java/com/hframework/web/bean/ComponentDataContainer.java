@@ -5,9 +5,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hframework.beans.controller.Pagination;
-import com.hframework.common.util.EnumUtils;
-import com.hframework.common.util.RegexUtils;
-import com.hframework.common.util.ResourceWrapper;
+import com.hframework.common.util.*;
 import com.hframework.web.config.bean.Component;
 import com.hframework.web.config.bean.DataSet;
 import com.hframework.web.config.bean.component.AppendElement;
@@ -17,6 +15,7 @@ import com.hframework.web.config.bean.component.Event;
 import com.hframework.web.config.bean.dataset.Field;
 import com.hframework.web.config.bean.mapper.Mapping;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.BeanUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
@@ -120,7 +119,7 @@ public class ComponentDataContainer {
                 value = ResourceWrapper.JavaUtil.getJavaVarName(value.replace("${" + var + "}",dataSet.getCode() + "_" + var));
             }else if("name".equals(var)) {
                 value = ResourceWrapper.JavaUtil.getJavaVarName(value.replace("${" + var + "}", dataSet.getCode() + "_" + var));
-            }else if("createByAjax".equals(var) || "updateByAjax".equals(var)|| "deleteByAjax".equals(var)) {
+            }else if(var != null && var.endsWith("ByAjax")) {//"createByAjax".equals(var) || "updateByAjax".equals(var)|| "deleteByAjax".equals(var)
                 value = value.replace("${" + var + "}", /*ResourceWrapper.JavaUtil.getJavaVarName(dataSet.getModule())
                         + "/" + */ResourceWrapper.JavaUtil.getJavaVarName(dataSet.getCode()) + "/" + var);
             }else {//create, edit , detail, batchDelete
@@ -392,9 +391,20 @@ public class ComponentDataContainer {
                         }
                     }else {
                         for (Object column : columns) {
+                            String propertyName = ResourceWrapper.JavaUtil.getJavaVarName(((JSONObject) column).getString("code"));
                             try {
-                                value.add(org.apache.commons.beanutils.BeanUtils.getProperty(object,
-                                        ResourceWrapper.JavaUtil.getJavaVarName(((JSONObject) column).getString("code"))));
+                                Class<?> type = BeanUtils.findPropertyType(propertyName, object.getClass());
+                                if(type == Date.class) {
+                                    Date date = (Date)ReflectUtils.getFieldValue(object, propertyName);
+                                    if(date != null) {
+                                        value.add(DateUtils.getDateYYYYMMDDHHMMSS(date));
+                                    }else {
+                                        value.add("");
+                                    }
+                                }else {
+                                    value.add(org.apache.commons.beanutils.BeanUtils.getProperty(object,
+                                            ResourceWrapper.JavaUtil.getJavaVarName(((JSONObject) column).getString("code"))));
+                                }
                             } catch (IllegalAccessException e) {
                                 e.printStackTrace();
                             } catch (InvocationTargetException e) {
@@ -579,6 +589,8 @@ public class ComponentDataContainer {
                     return StringUtils.isNotBlank(field.getCreateEditType()) ? field.getCreateEditType() : field.getEditType();
                 }else if(this.componentType.startsWith("e")){
                     return StringUtils.isNotBlank(field.getUpdateEditType()) ? field.getUpdateEditType() : field.getEditType();
+                }else if(this.componentType.startsWith("list")){//eList组件
+                    return StringUtils.isNotBlank(field.getCreateEditType()) ? field.getCreateEditType() : field.getEditType();
                 }else{
                     return field.getEditType();
                 }

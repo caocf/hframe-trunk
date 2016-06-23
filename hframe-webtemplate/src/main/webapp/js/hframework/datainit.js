@@ -4,11 +4,11 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
     var ajax = require('ajax');
     var errormsg = require('js/hframework/errormsg');
 
-    $("[data-code][data-condition]").each(function(){
-        var $this = $(this);
+    $.selectLoad = function ($this) {
         var $tagName = $this[0].tagName;
         var  dataCode = $this.attr("data-code");
         var  dataCondition = $this.attr("data-condition");
+        var dataValue = $this.attr("data-value");
         var _url =  "/dictionary.json";
         var _data = {"dataCode":dataCode,"dataCondition" : dataCondition};
         ajax.Post(_url,_data,function(data){
@@ -20,6 +20,7 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
                         _html.push('<option value="' + data.data[i].value + '" data-hide=' + data.data[i].extInfo + '>' + data.data[i].text + '</option>');
                     }
                     $this.html(_html.join(''));
+                    $this.val(dataValue);
                 }else {
 
                     for (var i = 0; i < data.data.length; i++) {
@@ -34,6 +35,11 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
                 }
             }
         });
+    }
+
+    $("[data-code][data-condition]").each(function(){
+        var $this = $(this);
+        $.selectLoad($this);
     });
 
     function dealData1(_source, _data, _list) {

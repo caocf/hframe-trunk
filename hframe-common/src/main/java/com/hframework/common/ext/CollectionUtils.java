@@ -222,6 +222,17 @@ public class CollectionUtils {
         return srcMap;
     }
 
+    public static <F,T> List<T> from(List<F> originList, Mapping<F, T> mapping) {
+        if(originList == null) {
+            return null;
+        }
+        List<T> targetList = new ArrayList<T>();
+        for (F f : originList) {
+            targetList.add(mapping.from(f));
+        }
+        return targetList;
+    }
+
 
     public static void main(String[] args) {
         List<UsrBean> userList = new ArrayList<UsrBean>();

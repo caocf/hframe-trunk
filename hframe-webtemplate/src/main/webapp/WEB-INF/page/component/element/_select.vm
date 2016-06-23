@@ -7,4 +7,4 @@
 ##		>$option.Text</option>
 ##	#end
 ##</select>
-<select name='$column.code' class="form-control"  style='$widthStype' data-code="$column.dataCode" data-condition="1=1" relat-element="spvId"></select>
+<select name='$column.code' class="input-$!{elementSize}" data-value="$!value"  style='$widthStype' data-code="$column.dataCode" data-condition="1=1" relat-element="spvId"></select>

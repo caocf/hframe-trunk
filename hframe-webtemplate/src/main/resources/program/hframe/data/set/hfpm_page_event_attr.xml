@@ -12,8 +12,12 @@
       <rel entity-code="hfpm_page_event/hfpm_page_event_id/hfpm_event_name"/>
     </field>
     <field code="hfpm_page_event_attr_type" name="页面事件属性类型        " edit-type="input"/>
-    <field code="hfmd_entity_attr_id" name="实体属性ID" edit-type="input"/>
-    <field code="hfmd_entity_id" name="实体ID" edit-type="input"/>
+    <field code="hfmd_entity_attr_id" name="实体属性ID" edit-type="select">
+      <rel entity-code="hfmd_entity_attr/hfmd_entity_attr_id/hfmd_entity_attr_name"/>
+    </field>
+    <field code="hfmd_entity_id" name="实体ID" edit-type="select">
+      <rel entity-code="hfmd_entity/hfmd_entity_id/hfmd_entity_name"/>
+    </field>
     <field code="value_type" name="值类型" edit-type="input"/>
     <field code="value" name="值" edit-type="input"/>
     <field code="op_id" name="创建人" edit-type="input">
