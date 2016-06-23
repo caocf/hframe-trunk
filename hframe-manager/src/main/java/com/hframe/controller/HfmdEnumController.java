@@ -6,16 +6,14 @@ import com.hframe.service.interfaces.IHfmdEnumSV;
 import com.hframework.beans.controller.Pagination;
 import com.hframework.beans.controller.ResultCode;
 import com.hframework.beans.controller.ResultData;
+import com.hframework.common.helper.ControllerHelper;
 import com.hframework.common.util.ExampleUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.ServletRequestDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -109,6 +107,28 @@ public class HfmdEnumController   {
             if(result > 0) {
                 return ResultData.success(hfmdEnum);
             }
+        } catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+        return ResultData.error(ResultCode.UNKNOW);
+    }
+
+    /**
+    * 批量维护枚举
+    * @param hfmdEnums
+    * @return
+    * @throws Throwable
+    */
+    @RequestMapping(value = "/createsByAjax.json")
+    @ResponseBody
+    public ResultData batchCreate(@RequestBody HfmdEnum[] hfmdEnums) {
+        logger.debug("request : {}", hfmdEnums);
+
+        ControllerHelper.reorderProperty(hfmdEnums);
+
+        try {
+            iHfmdEnumSV.batchOperate(hfmdEnums);
         } catch (Exception e) {
             logger.error("error : ", e);
             return ResultData.error(ResultCode.ERROR);

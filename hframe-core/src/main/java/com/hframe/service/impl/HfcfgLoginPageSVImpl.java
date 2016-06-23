@@ -25,6 +25,26 @@ public class HfcfgLoginPageSVImpl  implements IHfcfgLoginPageSV {
     }
 
     /**
+    * 批量维护登陆页
+    * @param hfcfgLoginPages
+    * @return
+    * @throws Exception
+    */
+    public int batchOperate(HfcfgLoginPage[] hfcfgLoginPages) throws  Exception{
+        int result = 0;
+        if(hfcfgLoginPages != null) {
+            for (HfcfgLoginPage hfcfgLoginPage : hfcfgLoginPages) {
+                if(hfcfgLoginPage.getHfcfgLoginPageId() == null) {
+                    result += hfcfgLoginPageMapper.insertSelective(hfcfgLoginPage);
+                }else {
+                    result += hfcfgLoginPageMapper.updateByPrimaryKey(hfcfgLoginPage);
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
     * 更新登陆页
     * @param hfcfgLoginPage
     * @return

@@ -16,7 +16,13 @@ public interface IHfpmDataSetSV   {
     */
     public int create(HfpmDataSet hfpmDataSet) throws  Exception;
 
-
+    /**
+    * 批量维护数据集
+    * @param hfpmDataSets
+    * @return
+    * @throws Exception
+    */
+    public int batchOperate(HfpmDataSet[] hfpmDataSets) throws  Exception;
     /**
     * 更新数据集
     * @param hfpmDataSet

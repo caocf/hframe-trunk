@@ -25,6 +25,26 @@ public class HfpmPageEntityRelSVImpl  implements IHfpmPageEntityRelSV {
     }
 
     /**
+    * 批量维护页面关联实体
+    * @param hfpmPageEntityRels
+    * @return
+    * @throws Exception
+    */
+    public int batchOperate(HfpmPageEntityRel[] hfpmPageEntityRels) throws  Exception{
+        int result = 0;
+        if(hfpmPageEntityRels != null) {
+            for (HfpmPageEntityRel hfpmPageEntityRel : hfpmPageEntityRels) {
+                if(hfpmPageEntityRel.getHfpmPageEntityRelId() == null) {
+                    result += hfpmPageEntityRelMapper.insertSelective(hfpmPageEntityRel);
+                }else {
+                    result += hfpmPageEntityRelMapper.updateByPrimaryKey(hfpmPageEntityRel);
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
     * 更新页面关联实体
     * @param hfpmPageEntityRel
     * @return

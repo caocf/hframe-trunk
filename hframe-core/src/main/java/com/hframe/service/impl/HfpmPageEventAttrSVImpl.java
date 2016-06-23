@@ -25,6 +25,26 @@ public class HfpmPageEventAttrSVImpl  implements IHfpmPageEventAttrSV {
     }
 
     /**
+    * 批量维护事件属性
+    * @param hfpmPageEventAttrs
+    * @return
+    * @throws Exception
+    */
+    public int batchOperate(HfpmPageEventAttr[] hfpmPageEventAttrs) throws  Exception{
+        int result = 0;
+        if(hfpmPageEventAttrs != null) {
+            for (HfpmPageEventAttr hfpmPageEventAttr : hfpmPageEventAttrs) {
+                if(hfpmPageEventAttr.getHfpmPageEventAttrId() == null) {
+                    result += hfpmPageEventAttrMapper.insertSelective(hfpmPageEventAttr);
+                }else {
+                    result += hfpmPageEventAttrMapper.updateByPrimaryKey(hfpmPageEventAttr);
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
     * 更新事件属性
     * @param hfpmPageEventAttr
     * @return

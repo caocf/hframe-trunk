@@ -16,7 +16,13 @@ public interface IHfusWordStoreSV   {
     */
     public int create(HfusWordStore hfusWordStore) throws  Exception;
 
-
+    /**
+    * 批量维护单词库
+    * @param hfusWordStores
+    * @return
+    * @throws Exception
+    */
+    public int batchOperate(HfusWordStore[] hfusWordStores) throws  Exception;
     /**
     * 更新单词库
     * @param hfusWordStore

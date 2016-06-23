@@ -16,7 +16,13 @@ public interface IHfpmProgramCfgSV   {
     */
     public int create(HfpmProgramCfg hfpmProgramCfg) throws  Exception;
 
-
+    /**
+    * 批量维护项目配置
+    * @param hfpmProgramCfgs
+    * @return
+    * @throws Exception
+    */
+    public int batchOperate(HfpmProgramCfg[] hfpmProgramCfgs) throws  Exception;
     /**
     * 更新项目配置
     * @param hfpmProgramCfg

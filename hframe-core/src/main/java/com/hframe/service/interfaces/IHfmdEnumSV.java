@@ -16,7 +16,13 @@ public interface IHfmdEnumSV   {
     */
     public int create(HfmdEnum hfmdEnum) throws  Exception;
 
-
+    /**
+    * 批量维护枚举
+    * @param hfmdEnums
+    * @return
+    * @throws Exception
+    */
+    public int batchOperate(HfmdEnum[] hfmdEnums) throws  Exception;
     /**
     * 更新枚举
     * @param hfmdEnum

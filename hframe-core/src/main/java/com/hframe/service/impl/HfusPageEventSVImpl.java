@@ -25,6 +25,26 @@ public class HfusPageEventSVImpl  implements IHfusPageEventSV {
     }
 
     /**
+    * 批量维护常用页面事件
+    * @param hfusPageEvents
+    * @return
+    * @throws Exception
+    */
+    public int batchOperate(HfusPageEvent[] hfusPageEvents) throws  Exception{
+        int result = 0;
+        if(hfusPageEvents != null) {
+            for (HfusPageEvent hfusPageEvent : hfusPageEvents) {
+                if(hfusPageEvent.getHfusPageEventId() == null) {
+                    result += hfusPageEventMapper.insertSelective(hfusPageEvent);
+                }else {
+                    result += hfusPageEventMapper.updateByPrimaryKey(hfusPageEvent);
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
     * 更新常用页面事件
     * @param hfusPageEvent
     * @return

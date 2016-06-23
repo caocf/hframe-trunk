@@ -16,7 +16,13 @@ public interface IHfusPageEventSV   {
     */
     public int create(HfusPageEvent hfusPageEvent) throws  Exception;
 
-
+    /**
+    * 批量维护常用页面事件
+    * @param hfusPageEvents
+    * @return
+    * @throws Exception
+    */
+    public int batchOperate(HfusPageEvent[] hfusPageEvents) throws  Exception;
     /**
     * 更新常用页面事件
     * @param hfusPageEvent

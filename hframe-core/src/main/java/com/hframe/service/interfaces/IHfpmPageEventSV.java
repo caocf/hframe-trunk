@@ -16,7 +16,13 @@ public interface IHfpmPageEventSV   {
     */
     public int create(HfpmPageEvent hfpmPageEvent) throws  Exception;
 
-
+    /**
+    * 批量维护页面事件
+    * @param hfpmPageEvents
+    * @return
+    * @throws Exception
+    */
+    public int batchOperate(HfpmPageEvent[] hfpmPageEvents) throws  Exception;
     /**
     * 更新页面事件
     * @param hfpmPageEvent

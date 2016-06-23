@@ -16,7 +16,13 @@ public interface IHfpmDataFieldSV   {
     */
     public int create(HfpmDataField hfpmDataField) throws  Exception;
 
-
+    /**
+    * 批量维护数据列
+    * @param hfpmDataFields
+    * @return
+    * @throws Exception
+    */
+    public int batchOperate(HfpmDataField[] hfpmDataFields) throws  Exception;
     /**
     * 更新数据列
     * @param hfpmDataField

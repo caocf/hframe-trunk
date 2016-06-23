@@ -25,6 +25,26 @@ public class HfpmDataSetSVImpl  implements IHfpmDataSetSV {
     }
 
     /**
+    * 批量维护数据集
+    * @param hfpmDataSets
+    * @return
+    * @throws Exception
+    */
+    public int batchOperate(HfpmDataSet[] hfpmDataSets) throws  Exception{
+        int result = 0;
+        if(hfpmDataSets != null) {
+            for (HfpmDataSet hfpmDataSet : hfpmDataSets) {
+                if(hfpmDataSet.getHfpmDataSetId() == null) {
+                    result += hfpmDataSetMapper.insertSelective(hfpmDataSet);
+                }else {
+                    result += hfpmDataSetMapper.updateByPrimaryKey(hfpmDataSet);
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
     * 更新数据集
     * @param hfpmDataSet
     * @return

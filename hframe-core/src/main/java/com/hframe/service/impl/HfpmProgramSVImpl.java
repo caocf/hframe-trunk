@@ -25,6 +25,26 @@ public class HfpmProgramSVImpl  implements IHfpmProgramSV {
     }
 
     /**
+    * 批量维护项目
+    * @param hfpmPrograms
+    * @return
+    * @throws Exception
+    */
+    public int batchOperate(HfpmProgram[] hfpmPrograms) throws  Exception{
+        int result = 0;
+        if(hfpmPrograms != null) {
+            for (HfpmProgram hfpmProgram : hfpmPrograms) {
+                if(hfpmProgram.getHfpmProgramId() == null) {
+                    result += hfpmProgramMapper.insertSelective(hfpmProgram);
+                }else {
+                    result += hfpmProgramMapper.updateByPrimaryKey(hfpmProgram);
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
     * 更新项目
     * @param hfpmProgram
     * @return

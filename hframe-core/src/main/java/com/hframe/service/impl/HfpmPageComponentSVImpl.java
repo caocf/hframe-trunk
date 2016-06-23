@@ -25,6 +25,26 @@ public class HfpmPageComponentSVImpl  implements IHfpmPageComponentSV {
     }
 
     /**
+    * 批量维护页面组件
+    * @param hfpmPageComponents
+    * @return
+    * @throws Exception
+    */
+    public int batchOperate(HfpmPageComponent[] hfpmPageComponents) throws  Exception{
+        int result = 0;
+        if(hfpmPageComponents != null) {
+            for (HfpmPageComponent hfpmPageComponent : hfpmPageComponents) {
+                if(hfpmPageComponent.getHfpmPageComponentId() == null) {
+                    result += hfpmPageComponentMapper.insertSelective(hfpmPageComponent);
+                }else {
+                    result += hfpmPageComponentMapper.updateByPrimaryKey(hfpmPageComponent);
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
     * 更新页面组件
     * @param hfpmPageComponent
     * @return

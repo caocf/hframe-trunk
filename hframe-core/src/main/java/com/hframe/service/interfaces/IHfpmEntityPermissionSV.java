@@ -16,7 +16,13 @@ public interface IHfpmEntityPermissionSV   {
     */
     public int create(HfpmEntityPermission hfpmEntityPermission) throws  Exception;
 
-
+    /**
+    * 批量维护实体权限
+    * @param hfpmEntityPermissions
+    * @return
+    * @throws Exception
+    */
+    public int batchOperate(HfpmEntityPermission[] hfpmEntityPermissions) throws  Exception;
     /**
     * 更新实体权限
     * @param hfpmEntityPermission

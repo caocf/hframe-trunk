@@ -16,7 +16,13 @@ public interface IHfusProgramEntityAttrSV   {
     */
     public int create(HfusProgramEntityAttr hfusProgramEntityAttr) throws  Exception;
 
-
+    /**
+    * 批量维护常用项目实体属性
+    * @param hfusProgramEntityAttrs
+    * @return
+    * @throws Exception
+    */
+    public int batchOperate(HfusProgramEntityAttr[] hfusProgramEntityAttrs) throws  Exception;
     /**
     * 更新常用项目实体属性
     * @param hfusProgramEntityAttr

@@ -25,6 +25,26 @@ public class HfcfgProgramTemplateSVImpl  implements IHfcfgProgramTemplateSV {
     }
 
     /**
+    * 批量维护项目模板
+    * @param hfcfgProgramTemplates
+    * @return
+    * @throws Exception
+    */
+    public int batchOperate(HfcfgProgramTemplate[] hfcfgProgramTemplates) throws  Exception{
+        int result = 0;
+        if(hfcfgProgramTemplates != null) {
+            for (HfcfgProgramTemplate hfcfgProgramTemplate : hfcfgProgramTemplates) {
+                if(hfcfgProgramTemplate.getHfcfgProgramTemplateId() == null) {
+                    result += hfcfgProgramTemplateMapper.insertSelective(hfcfgProgramTemplate);
+                }else {
+                    result += hfcfgProgramTemplateMapper.updateByPrimaryKey(hfcfgProgramTemplate);
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
     * 更新项目模板
     * @param hfcfgProgramTemplate
     * @return

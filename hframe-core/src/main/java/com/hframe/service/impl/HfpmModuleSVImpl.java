@@ -25,6 +25,26 @@ public class HfpmModuleSVImpl  implements IHfpmModuleSV {
     }
 
     /**
+    * 批量维护模块
+    * @param hfpmModules
+    * @return
+    * @throws Exception
+    */
+    public int batchOperate(HfpmModule[] hfpmModules) throws  Exception{
+        int result = 0;
+        if(hfpmModules != null) {
+            for (HfpmModule hfpmModule : hfpmModules) {
+                if(hfpmModule.getHfpmModuleId() == null) {
+                    result += hfpmModuleMapper.insertSelective(hfpmModule);
+                }else {
+                    result += hfpmModuleMapper.updateByPrimaryKey(hfpmModule);
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
     * 更新模块
     * @param hfpmModule
     * @return

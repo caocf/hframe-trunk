@@ -16,7 +16,13 @@ public interface IHfcfgProgramTemplateSV   {
     */
     public int create(HfcfgProgramTemplate hfcfgProgramTemplate) throws  Exception;
 
-
+    /**
+    * 批量维护项目模板
+    * @param hfcfgProgramTemplates
+    * @return
+    * @throws Exception
+    */
+    public int batchOperate(HfcfgProgramTemplate[] hfcfgProgramTemplates) throws  Exception;
     /**
     * 更新项目模板
     * @param hfcfgProgramTemplate

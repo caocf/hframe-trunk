@@ -25,6 +25,26 @@ public class HfpmFieldShowTypeSVImpl  implements IHfpmFieldShowTypeSV {
     }
 
     /**
+    * 批量维护列展示类型
+    * @param hfpmFieldShowTypes
+    * @return
+    * @throws Exception
+    */
+    public int batchOperate(HfpmFieldShowType[] hfpmFieldShowTypes) throws  Exception{
+        int result = 0;
+        if(hfpmFieldShowTypes != null) {
+            for (HfpmFieldShowType hfpmFieldShowType : hfpmFieldShowTypes) {
+                if(hfpmFieldShowType.getHfpmFieldShowTypeId() == null) {
+                    result += hfpmFieldShowTypeMapper.insertSelective(hfpmFieldShowType);
+                }else {
+                    result += hfpmFieldShowTypeMapper.updateByPrimaryKey(hfpmFieldShowType);
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
     * 更新列展示类型
     * @param hfpmFieldShowType
     * @return

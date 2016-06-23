@@ -16,7 +16,13 @@ public interface IHfmdEntityRelSV   {
     */
     public int create(HfmdEntityRel hfmdEntityRel) throws  Exception;
 
-
+    /**
+    * 批量维护实体关系
+    * @param hfmdEntityRels
+    * @return
+    * @throws Exception
+    */
+    public int batchOperate(HfmdEntityRel[] hfmdEntityRels) throws  Exception;
     /**
     * 更新实体关系
     * @param hfmdEntityRel

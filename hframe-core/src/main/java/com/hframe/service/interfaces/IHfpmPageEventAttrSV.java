@@ -16,7 +16,13 @@ public interface IHfpmPageEventAttrSV   {
     */
     public int create(HfpmPageEventAttr hfpmPageEventAttr) throws  Exception;
 
-
+    /**
+    * 批量维护事件属性
+    * @param hfpmPageEventAttrs
+    * @return
+    * @throws Exception
+    */
+    public int batchOperate(HfpmPageEventAttr[] hfpmPageEventAttrs) throws  Exception;
     /**
     * 更新事件属性
     * @param hfpmPageEventAttr

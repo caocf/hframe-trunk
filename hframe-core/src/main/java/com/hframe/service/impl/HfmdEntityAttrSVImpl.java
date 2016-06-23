@@ -25,6 +25,26 @@ public class HfmdEntityAttrSVImpl  implements IHfmdEntityAttrSV {
     }
 
     /**
+    * 批量维护实体属性
+    * @param hfmdEntityAttrs
+    * @return
+    * @throws Exception
+    */
+    public int batchOperate(HfmdEntityAttr[] hfmdEntityAttrs) throws  Exception{
+        int result = 0;
+        if(hfmdEntityAttrs != null) {
+            for (HfmdEntityAttr hfmdEntityAttr : hfmdEntityAttrs) {
+                if(hfmdEntityAttr.getHfmdEntityAttrId() == null) {
+                    result += hfmdEntityAttrMapper.insertSelective(hfmdEntityAttr);
+                }else {
+                    result += hfmdEntityAttrMapper.updateByPrimaryKey(hfmdEntityAttr);
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
     * 更新实体属性
     * @param hfmdEntityAttr
     * @return

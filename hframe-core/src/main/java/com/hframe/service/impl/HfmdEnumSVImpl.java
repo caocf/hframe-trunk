@@ -25,6 +25,26 @@ public class HfmdEnumSVImpl  implements IHfmdEnumSV {
     }
 
     /**
+    * 批量维护枚举
+    * @param hfmdEnums
+    * @return
+    * @throws Exception
+    */
+    public int batchOperate(HfmdEnum[] hfmdEnums) throws  Exception{
+        int result = 0;
+        if(hfmdEnums != null) {
+            for (HfmdEnum hfmdEnum : hfmdEnums) {
+                if(hfmdEnum.getHfmdEnumId() == null) {
+                    result += hfmdEnumMapper.insertSelective(hfmdEnum);
+                }else {
+                    result += hfmdEnumMapper.updateByPrimaryKey(hfmdEnum);
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
     * 更新枚举
     * @param hfmdEnum
     * @return

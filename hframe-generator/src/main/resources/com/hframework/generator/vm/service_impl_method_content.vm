@@ -16,6 +16,26 @@
     }
 
     /**
+    * 批量维护${entityName}
+    * @param ${varName}s
+    * @return
+    * @throws Exception
+    */
+    public int batchOperate(${className}[] ${varName}s) throws  Exception{
+        int result = 0;
+        if(${varName}s != null) {
+            for (${className} ${varName} : ${varName}s) {
+                if(${varName}.get${className}Id() == null) {
+                    result += ${varName}Mapper.insertSelective(${varName});
+                }else {
+                    result += ${varName}Mapper.updateByPrimaryKey(${varName});
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
     * 更新${entityName}
     * @param ${varName}
     * @return

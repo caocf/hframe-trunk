@@ -16,7 +16,13 @@ public interface IHfpmPageSV   {
     */
     public int create(HfpmPage hfpmPage) throws  Exception;
 
-
+    /**
+    * 批量维护页面
+    * @param hfpmPages
+    * @return
+    * @throws Exception
+    */
+    public int batchOperate(HfpmPage[] hfpmPages) throws  Exception;
     /**
     * 更新页面
     * @param hfpmPage

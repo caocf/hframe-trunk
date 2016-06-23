@@ -16,7 +16,13 @@ public interface IHfmdEntityAttrSV   {
     */
     public int create(HfmdEntityAttr hfmdEntityAttr) throws  Exception;
 
-
+    /**
+    * 批量维护实体属性
+    * @param hfmdEntityAttrs
+    * @return
+    * @throws Exception
+    */
+    public int batchOperate(HfmdEntityAttr[] hfmdEntityAttrs) throws  Exception;
     /**
     * 更新实体属性
     * @param hfmdEntityAttr

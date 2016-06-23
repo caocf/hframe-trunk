@@ -25,6 +25,26 @@ public class HfpmEntityBindRuleSVImpl  implements IHfpmEntityBindRuleSV {
     }
 
     /**
+    * 批量维护实体捆绑规则
+    * @param hfpmEntityBindRules
+    * @return
+    * @throws Exception
+    */
+    public int batchOperate(HfpmEntityBindRule[] hfpmEntityBindRules) throws  Exception{
+        int result = 0;
+        if(hfpmEntityBindRules != null) {
+            for (HfpmEntityBindRule hfpmEntityBindRule : hfpmEntityBindRules) {
+                if(hfpmEntityBindRule.getHfpmEntityBindRuleId() == null) {
+                    result += hfpmEntityBindRuleMapper.insertSelective(hfpmEntityBindRule);
+                }else {
+                    result += hfpmEntityBindRuleMapper.updateByPrimaryKey(hfpmEntityBindRule);
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
     * 更新实体捆绑规则
     * @param hfpmEntityBindRule
     * @return

@@ -25,6 +25,26 @@ public class HfcfgPageTemplateSVImpl  implements IHfcfgPageTemplateSV {
     }
 
     /**
+    * 批量维护页面模板
+    * @param hfcfgPageTemplates
+    * @return
+    * @throws Exception
+    */
+    public int batchOperate(HfcfgPageTemplate[] hfcfgPageTemplates) throws  Exception{
+        int result = 0;
+        if(hfcfgPageTemplates != null) {
+            for (HfcfgPageTemplate hfcfgPageTemplate : hfcfgPageTemplates) {
+                if(hfcfgPageTemplate.getHfcfgPageTemplateId() == null) {
+                    result += hfcfgPageTemplateMapper.insertSelective(hfcfgPageTemplate);
+                }else {
+                    result += hfcfgPageTemplateMapper.updateByPrimaryKey(hfcfgPageTemplate);
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
     * 更新页面模板
     * @param hfcfgPageTemplate
     * @return

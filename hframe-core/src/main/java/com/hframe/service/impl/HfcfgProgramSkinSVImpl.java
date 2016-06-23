@@ -25,6 +25,26 @@ public class HfcfgProgramSkinSVImpl  implements IHfcfgProgramSkinSV {
     }
 
     /**
+    * 批量维护皮肤
+    * @param hfcfgProgramSkins
+    * @return
+    * @throws Exception
+    */
+    public int batchOperate(HfcfgProgramSkin[] hfcfgProgramSkins) throws  Exception{
+        int result = 0;
+        if(hfcfgProgramSkins != null) {
+            for (HfcfgProgramSkin hfcfgProgramSkin : hfcfgProgramSkins) {
+                if(hfcfgProgramSkin.getHfcfgProgramSkinId() == null) {
+                    result += hfcfgProgramSkinMapper.insertSelective(hfcfgProgramSkin);
+                }else {
+                    result += hfcfgProgramSkinMapper.updateByPrimaryKey(hfcfgProgramSkin);
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
     * 更新皮肤
     * @param hfcfgProgramSkin
     * @return

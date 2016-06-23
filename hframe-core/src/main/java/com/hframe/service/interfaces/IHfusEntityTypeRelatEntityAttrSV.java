@@ -16,7 +16,13 @@ public interface IHfusEntityTypeRelatEntityAttrSV   {
     */
     public int create(HfusEntityTypeRelatEntityAttr hfusEntityTypeRelatEntityAttr) throws  Exception;
 
-
+    /**
+    * 批量维护常用实体类型关联属性
+    * @param hfusEntityTypeRelatEntityAttrs
+    * @return
+    * @throws Exception
+    */
+    public int batchOperate(HfusEntityTypeRelatEntityAttr[] hfusEntityTypeRelatEntityAttrs) throws  Exception;
     /**
     * 更新常用实体类型关联属性
     * @param hfusEntityTypeRelatEntityAttr

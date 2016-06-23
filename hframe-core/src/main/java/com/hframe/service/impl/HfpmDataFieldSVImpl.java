@@ -25,6 +25,26 @@ public class HfpmDataFieldSVImpl  implements IHfpmDataFieldSV {
     }
 
     /**
+    * 批量维护数据列
+    * @param hfpmDataFields
+    * @return
+    * @throws Exception
+    */
+    public int batchOperate(HfpmDataField[] hfpmDataFields) throws  Exception{
+        int result = 0;
+        if(hfpmDataFields != null) {
+            for (HfpmDataField hfpmDataField : hfpmDataFields) {
+                if(hfpmDataField.getHfpmDataFieldId() == null) {
+                    result += hfpmDataFieldMapper.insertSelective(hfpmDataField);
+                }else {
+                    result += hfpmDataFieldMapper.updateByPrimaryKey(hfpmDataField);
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
     * 更新数据列
     * @param hfpmDataField
     * @return

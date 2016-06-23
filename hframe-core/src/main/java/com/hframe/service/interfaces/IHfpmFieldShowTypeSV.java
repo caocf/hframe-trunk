@@ -16,7 +16,13 @@ public interface IHfpmFieldShowTypeSV   {
     */
     public int create(HfpmFieldShowType hfpmFieldShowType) throws  Exception;
 
-
+    /**
+    * 批量维护列展示类型
+    * @param hfpmFieldShowTypes
+    * @return
+    * @throws Exception
+    */
+    public int batchOperate(HfpmFieldShowType[] hfpmFieldShowTypes) throws  Exception;
     /**
     * 更新列展示类型
     * @param hfpmFieldShowType

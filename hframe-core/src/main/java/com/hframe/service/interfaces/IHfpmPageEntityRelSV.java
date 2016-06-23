@@ -16,7 +16,13 @@ public interface IHfpmPageEntityRelSV   {
     */
     public int create(HfpmPageEntityRel hfpmPageEntityRel) throws  Exception;
 
-
+    /**
+    * 批量维护页面关联实体
+    * @param hfpmPageEntityRels
+    * @return
+    * @throws Exception
+    */
+    public int batchOperate(HfpmPageEntityRel[] hfpmPageEntityRels) throws  Exception;
     /**
     * 更新页面关联实体
     * @param hfpmPageEntityRel

@@ -16,7 +16,13 @@ public interface IHfcfgPageTemplateSV   {
     */
     public int create(HfcfgPageTemplate hfcfgPageTemplate) throws  Exception;
 
-
+    /**
+    * 批量维护页面模板
+    * @param hfcfgPageTemplates
+    * @return
+    * @throws Exception
+    */
+    public int batchOperate(HfcfgPageTemplate[] hfcfgPageTemplates) throws  Exception;
     /**
     * 更新页面模板
     * @param hfcfgPageTemplate

@@ -25,6 +25,26 @@ public class HfusWordStoreSVImpl  implements IHfusWordStoreSV {
     }
 
     /**
+    * 批量维护单词库
+    * @param hfusWordStores
+    * @return
+    * @throws Exception
+    */
+    public int batchOperate(HfusWordStore[] hfusWordStores) throws  Exception{
+        int result = 0;
+        if(hfusWordStores != null) {
+            for (HfusWordStore hfusWordStore : hfusWordStores) {
+                if(hfusWordStore.getHfusWordStoreId() == null) {
+                    result += hfusWordStoreMapper.insertSelective(hfusWordStore);
+                }else {
+                    result += hfusWordStoreMapper.updateByPrimaryKey(hfusWordStore);
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
     * 更新单词库
     * @param hfusWordStore
     * @return

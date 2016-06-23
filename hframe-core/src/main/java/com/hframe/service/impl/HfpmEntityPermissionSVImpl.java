@@ -25,6 +25,26 @@ public class HfpmEntityPermissionSVImpl  implements IHfpmEntityPermissionSV {
     }
 
     /**
+    * 批量维护实体权限
+    * @param hfpmEntityPermissions
+    * @return
+    * @throws Exception
+    */
+    public int batchOperate(HfpmEntityPermission[] hfpmEntityPermissions) throws  Exception{
+        int result = 0;
+        if(hfpmEntityPermissions != null) {
+            for (HfpmEntityPermission hfpmEntityPermission : hfpmEntityPermissions) {
+                if(hfpmEntityPermission.getHfpmEntityPermissionId() == null) {
+                    result += hfpmEntityPermissionMapper.insertSelective(hfpmEntityPermission);
+                }else {
+                    result += hfpmEntityPermissionMapper.updateByPrimaryKey(hfpmEntityPermission);
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
     * 更新实体权限
     * @param hfpmEntityPermission
     * @return

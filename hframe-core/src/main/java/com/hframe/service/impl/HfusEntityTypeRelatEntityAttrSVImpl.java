@@ -25,6 +25,26 @@ public class HfusEntityTypeRelatEntityAttrSVImpl  implements IHfusEntityTypeRela
     }
 
     /**
+    * 批量维护常用实体类型关联属性
+    * @param hfusEntityTypeRelatEntityAttrs
+    * @return
+    * @throws Exception
+    */
+    public int batchOperate(HfusEntityTypeRelatEntityAttr[] hfusEntityTypeRelatEntityAttrs) throws  Exception{
+        int result = 0;
+        if(hfusEntityTypeRelatEntityAttrs != null) {
+            for (HfusEntityTypeRelatEntityAttr hfusEntityTypeRelatEntityAttr : hfusEntityTypeRelatEntityAttrs) {
+                if(hfusEntityTypeRelatEntityAttr.getHfusEntityTypeRelatEntityAttrId() == null) {
+                    result += hfusEntityTypeRelatEntityAttrMapper.insertSelective(hfusEntityTypeRelatEntityAttr);
+                }else {
+                    result += hfusEntityTypeRelatEntityAttrMapper.updateByPrimaryKey(hfusEntityTypeRelatEntityAttr);
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
     * 更新常用实体类型关联属性
     * @param hfusEntityTypeRelatEntityAttr
     * @return

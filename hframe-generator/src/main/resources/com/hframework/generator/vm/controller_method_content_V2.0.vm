@@ -93,6 +93,28 @@
     }
 
     /**
+    * 批量维护${entityName}
+    * @param ${varName}s
+    * @return
+    * @throws Throwable
+    */
+    @RequestMapping(value = "/createsByAjax.json")
+    @ResponseBody
+    public ResultData batchCreate(@RequestBody ${className}[] ${varName}s) {
+        logger.debug("request : {}", ${varName}s);
+
+        ControllerHelper.reorderProperty(${varName}s);
+
+        try {
+            ${seviceVarName}.batchOperate(${varName}s);
+        } catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+        return ResultData.error(ResultCode.UNKNOW);
+    }
+
+    /**
     * 更新${entityName}
     * @param ${varName}
     * @return

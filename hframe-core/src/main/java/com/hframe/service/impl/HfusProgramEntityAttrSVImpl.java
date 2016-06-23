@@ -25,6 +25,26 @@ public class HfusProgramEntityAttrSVImpl  implements IHfusProgramEntityAttrSV {
     }
 
     /**
+    * 批量维护常用项目实体属性
+    * @param hfusProgramEntityAttrs
+    * @return
+    * @throws Exception
+    */
+    public int batchOperate(HfusProgramEntityAttr[] hfusProgramEntityAttrs) throws  Exception{
+        int result = 0;
+        if(hfusProgramEntityAttrs != null) {
+            for (HfusProgramEntityAttr hfusProgramEntityAttr : hfusProgramEntityAttrs) {
+                if(hfusProgramEntityAttr.getHfusProgramEntityAttrId() == null) {
+                    result += hfusProgramEntityAttrMapper.insertSelective(hfusProgramEntityAttr);
+                }else {
+                    result += hfusProgramEntityAttrMapper.updateByPrimaryKey(hfusProgramEntityAttr);
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
     * 更新常用项目实体属性
     * @param hfusProgramEntityAttr
     * @return

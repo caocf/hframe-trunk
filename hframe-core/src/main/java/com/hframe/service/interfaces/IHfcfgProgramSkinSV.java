@@ -16,7 +16,13 @@ public interface IHfcfgProgramSkinSV   {
     */
     public int create(HfcfgProgramSkin hfcfgProgramSkin) throws  Exception;
 
-
+    /**
+    * 批量维护皮肤
+    * @param hfcfgProgramSkins
+    * @return
+    * @throws Exception
+    */
+    public int batchOperate(HfcfgProgramSkin[] hfcfgProgramSkins) throws  Exception;
     /**
     * 更新皮肤
     * @param hfcfgProgramSkin

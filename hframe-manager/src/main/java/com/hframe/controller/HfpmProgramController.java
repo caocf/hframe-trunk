@@ -6,6 +6,7 @@ import com.hframe.service.interfaces.IHfpmProgramSV;
 import com.hframework.beans.controller.Pagination;
 import com.hframework.beans.controller.ResultCode;
 import com.hframework.beans.controller.ResultData;
+import com.hframework.common.helper.ControllerHelper;
 import com.hframework.common.util.ExampleUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -92,11 +93,11 @@ public class HfpmProgramController   {
     }
 
     /**
-     * 创建项目
-     * @param hfpmProgram
-     * @return
-     * @throws Throwable
-     */
+    * 创建项目
+    * @param hfpmProgram
+    * @return
+    * @throws Throwable
+    */
     @RequestMapping(value = "/createByAjax.json")
     @ResponseBody
     public ResultData create(@ModelAttribute("hfpmProgram") HfpmProgram hfpmProgram) {
@@ -114,20 +115,20 @@ public class HfpmProgramController   {
     }
 
     /**
-     * 创建项目
-     * @param hfpmProgram
-     * @return
-     * @throws Throwable
-     */
+    * 批量维护项目
+    * @param hfpmPrograms
+    * @return
+    * @throws Throwable
+    */
     @RequestMapping(value = "/createsByAjax.json")
     @ResponseBody
-    public ResultData batchCreate(@RequestBody HfpmProgram[] hfpmProgram) {
-        logger.debug("request : {}", hfpmProgram);
+    public ResultData batchCreate(@RequestBody HfpmProgram[] hfpmPrograms) {
+        logger.debug("request : {}", hfpmPrograms);
+
+        ControllerHelper.reorderProperty(hfpmPrograms);
+
         try {
-//            int result = iHfpmProgramSV.create(hfpmProgram);
-//            if(result > 0) {
-//                return ResultData.success(hfpmProgram);
-//            }
+            iHfpmProgramSV.batchOperate(hfpmPrograms);
         } catch (Exception e) {
             logger.error("error : ", e);
             return ResultData.error(ResultCode.ERROR);

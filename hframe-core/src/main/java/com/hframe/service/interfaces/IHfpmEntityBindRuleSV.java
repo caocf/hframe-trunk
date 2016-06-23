@@ -16,7 +16,13 @@ public interface IHfpmEntityBindRuleSV   {
     */
     public int create(HfpmEntityBindRule hfpmEntityBindRule) throws  Exception;
 
-
+    /**
+    * 批量维护实体捆绑规则
+    * @param hfpmEntityBindRules
+    * @return
+    * @throws Exception
+    */
+    public int batchOperate(HfpmEntityBindRule[] hfpmEntityBindRules) throws  Exception;
     /**
     * 更新实体捆绑规则
     * @param hfpmEntityBindRule

@@ -16,7 +16,13 @@ public interface IHfcfgLoginPageSV   {
     */
     public int create(HfcfgLoginPage hfcfgLoginPage) throws  Exception;
 
-
+    /**
+    * 批量维护登陆页
+    * @param hfcfgLoginPages
+    * @return
+    * @throws Exception
+    */
+    public int batchOperate(HfcfgLoginPage[] hfcfgLoginPages) throws  Exception;
     /**
     * 更新登陆页
     * @param hfcfgLoginPage
