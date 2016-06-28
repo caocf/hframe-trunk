@@ -1,26 +1,29 @@
 package com.hframe.controller;
 
-import com.hframe.domain.model.HfcfgProgramSkin;
-import com.hframe.domain.model.HfcfgProgramSkin_Example;
-import com.hframe.service.interfaces.IHfcfgProgramSkinSV;
 import com.hframework.beans.controller.Pagination;
 import com.hframework.beans.controller.ResultCode;
 import com.hframework.beans.controller.ResultData;
-import com.hframework.common.helper.ControllerHelper;
 import com.hframework.common.util.ExampleUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.ServletRequestDataBinder;
-import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
+import java.util.*;
 import javax.servlet.http.HttpServletRequest;
+import org.springframework.web.bind.ServletRequestDataBinder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
+import com.hframework.web.ControllerHelper;
+import com.hframe.domain.model.HfcfgProgramSkin;
+import com.hframe.domain.model.HfcfgProgramSkin_Example;
+import com.hframe.service.interfaces.IHfcfgProgramSkinSV;
 
 @Controller
 @RequestMapping(value = "/hframe/hfcfgProgramSkin")
@@ -103,6 +106,7 @@ public class HfcfgProgramSkinController   {
     public ResultData create(@ModelAttribute("hfcfgProgramSkin") HfcfgProgramSkin hfcfgProgramSkin) {
         logger.debug("request : {}", hfcfgProgramSkin);
         try {
+            ControllerHelper.setDefaultValue(hfcfgProgramSkin, "hfcfgProgramSkinId");
             int result = iHfcfgProgramSkinSV.create(hfcfgProgramSkin);
             if(result > 0) {
                 return ResultData.success(hfcfgProgramSkin);
@@ -125,10 +129,14 @@ public class HfcfgProgramSkinController   {
     public ResultData batchCreate(@RequestBody HfcfgProgramSkin[] hfcfgProgramSkins) {
         logger.debug("request : {}", hfcfgProgramSkins);
 
-        ControllerHelper.reorderProperty(hfcfgProgramSkins);
-
         try {
-            iHfcfgProgramSkinSV.batchOperate(hfcfgProgramSkins);
+            ControllerHelper.setDefaultValue(hfcfgProgramSkins, "hfcfgProgramSkinId");
+            ControllerHelper.reorderProperty(hfcfgProgramSkins);
+
+            int result = iHfcfgProgramSkinSV.batchOperate(hfcfgProgramSkins);
+            if(result > 0) {
+                return ResultData.success(hfcfgProgramSkins);
+            }
         } catch (Exception e) {
             logger.error("error : ", e);
             return ResultData.error(ResultCode.ERROR);
@@ -147,6 +155,7 @@ public class HfcfgProgramSkinController   {
     public ResultData update(@ModelAttribute("hfcfgProgramSkin") HfcfgProgramSkin hfcfgProgramSkin) {
         logger.debug("request : {}", hfcfgProgramSkin);
         try {
+            ControllerHelper.setDefaultValue(hfcfgProgramSkin, "hfcfgProgramSkinId");
             int result = iHfcfgProgramSkinSV.update(hfcfgProgramSkin);
             if(result > 0) {
                 return ResultData.success(hfcfgProgramSkin);
@@ -170,6 +179,7 @@ public class HfcfgProgramSkinController   {
         logger.debug("request : {}", hfcfgProgramSkin);
 
         try {
+            ControllerHelper.setDefaultValue(hfcfgProgramSkin, "hfcfgProgramSkinId");
             int result = iHfcfgProgramSkinSV.delete(hfcfgProgramSkin);
             if(result > 0) {
                 return ResultData.success(hfcfgProgramSkin);

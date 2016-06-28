@@ -38,7 +38,7 @@
                         #set($column = ${list.columns.get($count)})
                         #if($column.editType != "hidden")
                             <td>
-                                #set($elementSize = "large")
+                                #set($elementSize = "mini")
                                 #parse("component/element/field.vm")
                             </td>
                         #else

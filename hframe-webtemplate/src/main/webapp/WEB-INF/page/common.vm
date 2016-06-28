@@ -1,0 +1,35 @@
+#if($isPop)
+    #parse("blank_startpart.vm")
+#else
+    #parse("default_startpart.vm")
+#end
+
+#foreach($element in $elements.entrySet())
+    <div class="row-fluid">
+        #if($element.key == "cForm")
+            #set($form = $element.value)
+            #parse("component/createForm.vm")
+        #elseif($element.key == "eForm")
+            #set($form = $element.value)
+            #parse("component/createForm.vm")
+        #elseif($element.key == "qForm")
+            #set($form = $element.value)
+            #parse("component/queryForm.vm")
+        #elseif($element.key == "cList")
+            #set($list = $element.value)
+            #parse("component/editList.vm")
+        #elseif($element.key == "eList")
+            #set($list = $element.value)
+            #parse("component/editList.vm")
+        #elseif($element.key == "qList")
+            #set($list = $element.value)
+            #parse("component/queryList.vm")
+        #end
+    </div>
+#end
+
+#if($isPop)
+    #parse("blank_endpart.vm")
+#else
+    #parse("default_endpart.vm")
+#end

@@ -10,38 +10,6 @@
     <div class="box-content">
         <form class="form-horizontal">
             <fieldset>
-##                <div class="row-fluid">
-##                        <div class="span4">
-##                            <div id="DataTables_Table_0_length" class="dataTables_length">
-##                                <label class="control-label" for="$column.code">$column.name</label>
-##                                <div class="controls">
-##                                    #set($data = $form.data)
-##                                    #parse("component/element/field.vm")
-##                                    <input type="text" aria-controls="DataTables_Table_0">
-##                                </div>
-##                            </div>
-##                        </div>
-##                    <div class="span4">
-##                        <div id="DataTables_Table_0_length" class="dataTables_length">
-##                            <label class="control-label" for="$column.code">$column.name</label>
-##                            <div class="controls">
-##                                #set($data = $form.data)
-##                                #parse("component/element/field.vm")
-##                                <input type="text" aria-controls="DataTables_Table_0">
-##                            </div>
-##                        </div>
-##                    </div>
-##                    <div class="span4">
-##                        <div id="DataTables_Table_0_length" class="dataTables_length">
-##                            <label class="control-label" for="$column.code">$column.name</label>
-##                            <div class="controls">
-##                                #set($data = $form.data)
-##                                #parse("component/element/field.vm")
-##                                <input type="text" aria-controls="DataTables_Table_0">
-##                            </div>
-##                        </div>
-##                    </div>
-##                </div>
                 #set($columnCount = 0)
                 #set($showColumns = 6)
                 #foreach($column in $form.columns)
@@ -69,8 +37,7 @@
                         #set($columnCount = $columnCount + 2)
                     #end
                 #end
-
-                #if($columnCount%$showColumns != ${showColumns})
+                #if($columnCount%$showColumns != 0)
 ##                    <div class="span4">
 ##                        <div class="control-group" style="text-align: center">
 ##                            <button type="submit" class="btn btn-primary">查询</button>

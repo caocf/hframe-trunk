@@ -1,26 +1,29 @@
 package com.hframe.controller;
 
-import com.hframe.domain.model.HfpmPageCfg;
-import com.hframe.domain.model.HfpmPageCfg_Example;
-import com.hframe.service.interfaces.IHfpmPageCfgSV;
 import com.hframework.beans.controller.Pagination;
 import com.hframework.beans.controller.ResultCode;
 import com.hframework.beans.controller.ResultData;
-import com.hframework.common.helper.ControllerHelper;
 import com.hframework.common.util.ExampleUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.ServletRequestDataBinder;
-import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
+import java.util.*;
 import javax.servlet.http.HttpServletRequest;
+import org.springframework.web.bind.ServletRequestDataBinder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
+import com.hframework.web.ControllerHelper;
+import com.hframe.domain.model.HfpmPageCfg;
+import com.hframe.domain.model.HfpmPageCfg_Example;
+import com.hframe.service.interfaces.IHfpmPageCfgSV;
 
 @Controller
 @RequestMapping(value = "/hframe/hfpmPageCfg")
@@ -103,6 +106,7 @@ public class HfpmPageCfgController   {
     public ResultData create(@ModelAttribute("hfpmPageCfg") HfpmPageCfg hfpmPageCfg) {
         logger.debug("request : {}", hfpmPageCfg);
         try {
+            ControllerHelper.setDefaultValue(hfpmPageCfg, "hfpmPageCfgId");
             int result = iHfpmPageCfgSV.create(hfpmPageCfg);
             if(result > 0) {
                 return ResultData.success(hfpmPageCfg);
@@ -125,10 +129,14 @@ public class HfpmPageCfgController   {
     public ResultData batchCreate(@RequestBody HfpmPageCfg[] hfpmPageCfgs) {
         logger.debug("request : {}", hfpmPageCfgs);
 
-        ControllerHelper.reorderProperty(hfpmPageCfgs);
-
         try {
-            iHfpmPageCfgSV.batchOperate(hfpmPageCfgs);
+            ControllerHelper.setDefaultValue(hfpmPageCfgs, "hfpmPageCfgId");
+            ControllerHelper.reorderProperty(hfpmPageCfgs);
+
+            int result = iHfpmPageCfgSV.batchOperate(hfpmPageCfgs);
+            if(result > 0) {
+                return ResultData.success(hfpmPageCfgs);
+            }
         } catch (Exception e) {
             logger.error("error : ", e);
             return ResultData.error(ResultCode.ERROR);
@@ -147,6 +155,7 @@ public class HfpmPageCfgController   {
     public ResultData update(@ModelAttribute("hfpmPageCfg") HfpmPageCfg hfpmPageCfg) {
         logger.debug("request : {}", hfpmPageCfg);
         try {
+            ControllerHelper.setDefaultValue(hfpmPageCfg, "hfpmPageCfgId");
             int result = iHfpmPageCfgSV.update(hfpmPageCfg);
             if(result > 0) {
                 return ResultData.success(hfpmPageCfg);
@@ -170,6 +179,7 @@ public class HfpmPageCfgController   {
         logger.debug("request : {}", hfpmPageCfg);
 
         try {
+            ControllerHelper.setDefaultValue(hfpmPageCfg, "hfpmPageCfgId");
             int result = iHfpmPageCfgSV.delete(hfpmPageCfg);
             if(result > 0) {
                 return ResultData.success(hfpmPageCfg);

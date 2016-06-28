@@ -1,26 +1,29 @@
 package com.hframe.controller;
 
-import com.hframe.domain.model.HfpmModule;
-import com.hframe.domain.model.HfpmModule_Example;
-import com.hframe.service.interfaces.IHfpmModuleSV;
 import com.hframework.beans.controller.Pagination;
 import com.hframework.beans.controller.ResultCode;
 import com.hframework.beans.controller.ResultData;
-import com.hframework.common.helper.ControllerHelper;
 import com.hframework.common.util.ExampleUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.ServletRequestDataBinder;
-import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
+import java.util.*;
 import javax.servlet.http.HttpServletRequest;
+import org.springframework.web.bind.ServletRequestDataBinder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
+import com.hframework.web.ControllerHelper;
+import com.hframe.domain.model.HfpmModule;
+import com.hframe.domain.model.HfpmModule_Example;
+import com.hframe.service.interfaces.IHfpmModuleSV;
 
 @Controller
 @RequestMapping(value = "/hframe/hfpmModule")
@@ -103,6 +106,7 @@ public class HfpmModuleController   {
     public ResultData create(@ModelAttribute("hfpmModule") HfpmModule hfpmModule) {
         logger.debug("request : {}", hfpmModule);
         try {
+            ControllerHelper.setDefaultValue(hfpmModule, "hfpmModuleId");
             int result = iHfpmModuleSV.create(hfpmModule);
             if(result > 0) {
                 return ResultData.success(hfpmModule);
@@ -125,10 +129,14 @@ public class HfpmModuleController   {
     public ResultData batchCreate(@RequestBody HfpmModule[] hfpmModules) {
         logger.debug("request : {}", hfpmModules);
 
-        ControllerHelper.reorderProperty(hfpmModules);
-
         try {
-            iHfpmModuleSV.batchOperate(hfpmModules);
+            ControllerHelper.setDefaultValue(hfpmModules, "hfpmModuleId");
+            ControllerHelper.reorderProperty(hfpmModules);
+
+            int result = iHfpmModuleSV.batchOperate(hfpmModules);
+            if(result > 0) {
+                return ResultData.success(hfpmModules);
+            }
         } catch (Exception e) {
             logger.error("error : ", e);
             return ResultData.error(ResultCode.ERROR);
@@ -147,6 +155,7 @@ public class HfpmModuleController   {
     public ResultData update(@ModelAttribute("hfpmModule") HfpmModule hfpmModule) {
         logger.debug("request : {}", hfpmModule);
         try {
+            ControllerHelper.setDefaultValue(hfpmModule, "hfpmModuleId");
             int result = iHfpmModuleSV.update(hfpmModule);
             if(result > 0) {
                 return ResultData.success(hfpmModule);
@@ -170,6 +179,7 @@ public class HfpmModuleController   {
         logger.debug("request : {}", hfpmModule);
 
         try {
+            ControllerHelper.setDefaultValue(hfpmModule, "hfpmModuleId");
             int result = iHfpmModuleSV.delete(hfpmModule);
             if(result > 0) {
                 return ResultData.success(hfpmModule);

@@ -11,7 +11,7 @@
       <arg column="pri" jdbcType="DECIMAL" javaType="java.math.BigDecimal" />
       <arg column="ext1" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="ext2" jdbcType="VARCHAR" javaType="java.lang.String" />
-      <arg column="hfmd_enum_class_id" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="hfmd_enum_class_id" jdbcType="BIGINT" javaType="java.lang.Long" />
       <arg column="hfmd_enum_class_code" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="hfpm_program_id" jdbcType="BIGINT" javaType="java.lang.Long" />
       <arg column="op_id" jdbcType="BIGINT" javaType="java.lang.Long" />
@@ -268,7 +268,7 @@
         ext2 = #{record.ext2,jdbcType=VARCHAR},
       </if>
       <if test="record.hfmdEnumClassId != null" >
-        hfmd_enum_class_id = #{record.hfmdEnumClassId,jdbcType=VARCHAR},
+        hfmd_enum_class_id = #{record.hfmdEnumClassId,jdbcType=BIGINT},
       </if>
       <if test="record.hfmdEnumClassCode != null" >
         hfmd_enum_class_code = #{record.hfmdEnumClassCode,jdbcType=VARCHAR},
@@ -306,7 +306,7 @@
       pri = #{record.pri,jdbcType=DECIMAL},
       ext1 = #{record.ext1,jdbcType=VARCHAR},
       ext2 = #{record.ext2,jdbcType=VARCHAR},
-      hfmd_enum_class_id = #{record.hfmdEnumClassId,jdbcType=VARCHAR},
+      hfmd_enum_class_id = #{record.hfmdEnumClassId,jdbcType=BIGINT},
       hfmd_enum_class_code = #{record.hfmdEnumClassCode,jdbcType=VARCHAR},
       hfpm_program_id = #{record.hfpmProgramId,jdbcType=BIGINT},
       op_id = #{record.opId,jdbcType=BIGINT},
@@ -343,7 +343,7 @@
         ext2 = #{ext2,jdbcType=VARCHAR},
       </if>
       <if test="hfmdEnumClassId != null" >
-        hfmd_enum_class_id = #{hfmdEnumClassId,jdbcType=VARCHAR},
+        hfmd_enum_class_id = #{hfmdEnumClassId,jdbcType=BIGINT},
       </if>
       <if test="hfmdEnumClassCode != null" >
         hfmd_enum_class_code = #{hfmdEnumClassCode,jdbcType=VARCHAR},
@@ -378,7 +378,7 @@
       pri = #{pri,jdbcType=DECIMAL},
       ext1 = #{ext1,jdbcType=VARCHAR},
       ext2 = #{ext2,jdbcType=VARCHAR},
-      hfmd_enum_class_id = #{hfmdEnumClassId,jdbcType=VARCHAR},
+      hfmd_enum_class_id = #{hfmdEnumClassId,jdbcType=BIGINT},
       hfmd_enum_class_code = #{hfmdEnumClassCode,jdbcType=VARCHAR},
       hfpm_program_id = #{hfpmProgramId,jdbcType=BIGINT},
       op_id = #{opId,jdbcType=BIGINT},

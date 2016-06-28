@@ -1,26 +1,29 @@
 package com.hframe.controller;
 
-import com.hframe.domain.model.HfcfgLoginPage;
-import com.hframe.domain.model.HfcfgLoginPage_Example;
-import com.hframe.service.interfaces.IHfcfgLoginPageSV;
 import com.hframework.beans.controller.Pagination;
 import com.hframework.beans.controller.ResultCode;
 import com.hframework.beans.controller.ResultData;
-import com.hframework.common.helper.ControllerHelper;
 import com.hframework.common.util.ExampleUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.ServletRequestDataBinder;
-import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
+import java.util.*;
 import javax.servlet.http.HttpServletRequest;
+import org.springframework.web.bind.ServletRequestDataBinder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
+import com.hframework.web.ControllerHelper;
+import com.hframe.domain.model.HfcfgLoginPage;
+import com.hframe.domain.model.HfcfgLoginPage_Example;
+import com.hframe.service.interfaces.IHfcfgLoginPageSV;
 
 @Controller
 @RequestMapping(value = "/hframe/hfcfgLoginPage")
@@ -103,6 +106,7 @@ public class HfcfgLoginPageController   {
     public ResultData create(@ModelAttribute("hfcfgLoginPage") HfcfgLoginPage hfcfgLoginPage) {
         logger.debug("request : {}", hfcfgLoginPage);
         try {
+            ControllerHelper.setDefaultValue(hfcfgLoginPage, "hfcfgLoginPageId");
             int result = iHfcfgLoginPageSV.create(hfcfgLoginPage);
             if(result > 0) {
                 return ResultData.success(hfcfgLoginPage);
@@ -125,10 +129,14 @@ public class HfcfgLoginPageController   {
     public ResultData batchCreate(@RequestBody HfcfgLoginPage[] hfcfgLoginPages) {
         logger.debug("request : {}", hfcfgLoginPages);
 
-        ControllerHelper.reorderProperty(hfcfgLoginPages);
-
         try {
-            iHfcfgLoginPageSV.batchOperate(hfcfgLoginPages);
+            ControllerHelper.setDefaultValue(hfcfgLoginPages, "hfcfgLoginPageId");
+            ControllerHelper.reorderProperty(hfcfgLoginPages);
+
+            int result = iHfcfgLoginPageSV.batchOperate(hfcfgLoginPages);
+            if(result > 0) {
+                return ResultData.success(hfcfgLoginPages);
+            }
         } catch (Exception e) {
             logger.error("error : ", e);
             return ResultData.error(ResultCode.ERROR);
@@ -147,6 +155,7 @@ public class HfcfgLoginPageController   {
     public ResultData update(@ModelAttribute("hfcfgLoginPage") HfcfgLoginPage hfcfgLoginPage) {
         logger.debug("request : {}", hfcfgLoginPage);
         try {
+            ControllerHelper.setDefaultValue(hfcfgLoginPage, "hfcfgLoginPageId");
             int result = iHfcfgLoginPageSV.update(hfcfgLoginPage);
             if(result > 0) {
                 return ResultData.success(hfcfgLoginPage);
@@ -170,6 +179,7 @@ public class HfcfgLoginPageController   {
         logger.debug("request : {}", hfcfgLoginPage);
 
         try {
+            ControllerHelper.setDefaultValue(hfcfgLoginPage, "hfcfgLoginPageId");
             int result = iHfcfgLoginPageSV.delete(hfcfgLoginPage);
             if(result > 0) {
                 return ResultData.success(hfcfgLoginPage);

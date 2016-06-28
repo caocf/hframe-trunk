@@ -1,26 +1,29 @@
 package com.hframe.controller;
 
-import com.hframe.domain.model.HfpmPageEventAttr;
-import com.hframe.domain.model.HfpmPageEventAttr_Example;
-import com.hframe.service.interfaces.IHfpmPageEventAttrSV;
 import com.hframework.beans.controller.Pagination;
 import com.hframework.beans.controller.ResultCode;
 import com.hframework.beans.controller.ResultData;
-import com.hframework.common.helper.ControllerHelper;
 import com.hframework.common.util.ExampleUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.ServletRequestDataBinder;
-import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
+import java.util.*;
 import javax.servlet.http.HttpServletRequest;
+import org.springframework.web.bind.ServletRequestDataBinder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
+import com.hframework.web.ControllerHelper;
+import com.hframe.domain.model.HfpmPageEventAttr;
+import com.hframe.domain.model.HfpmPageEventAttr_Example;
+import com.hframe.service.interfaces.IHfpmPageEventAttrSV;
 
 @Controller
 @RequestMapping(value = "/hframe/hfpmPageEventAttr")
@@ -103,6 +106,7 @@ public class HfpmPageEventAttrController   {
     public ResultData create(@ModelAttribute("hfpmPageEventAttr") HfpmPageEventAttr hfpmPageEventAttr) {
         logger.debug("request : {}", hfpmPageEventAttr);
         try {
+            ControllerHelper.setDefaultValue(hfpmPageEventAttr, "hfpmPageEventAttrId");
             int result = iHfpmPageEventAttrSV.create(hfpmPageEventAttr);
             if(result > 0) {
                 return ResultData.success(hfpmPageEventAttr);
@@ -125,10 +129,14 @@ public class HfpmPageEventAttrController   {
     public ResultData batchCreate(@RequestBody HfpmPageEventAttr[] hfpmPageEventAttrs) {
         logger.debug("request : {}", hfpmPageEventAttrs);
 
-        ControllerHelper.reorderProperty(hfpmPageEventAttrs);
-
         try {
-            iHfpmPageEventAttrSV.batchOperate(hfpmPageEventAttrs);
+            ControllerHelper.setDefaultValue(hfpmPageEventAttrs, "hfpmPageEventAttrId");
+            ControllerHelper.reorderProperty(hfpmPageEventAttrs);
+
+            int result = iHfpmPageEventAttrSV.batchOperate(hfpmPageEventAttrs);
+            if(result > 0) {
+                return ResultData.success(hfpmPageEventAttrs);
+            }
         } catch (Exception e) {
             logger.error("error : ", e);
             return ResultData.error(ResultCode.ERROR);
@@ -147,6 +155,7 @@ public class HfpmPageEventAttrController   {
     public ResultData update(@ModelAttribute("hfpmPageEventAttr") HfpmPageEventAttr hfpmPageEventAttr) {
         logger.debug("request : {}", hfpmPageEventAttr);
         try {
+            ControllerHelper.setDefaultValue(hfpmPageEventAttr, "hfpmPageEventAttrId");
             int result = iHfpmPageEventAttrSV.update(hfpmPageEventAttr);
             if(result > 0) {
                 return ResultData.success(hfpmPageEventAttr);
@@ -170,6 +179,7 @@ public class HfpmPageEventAttrController   {
         logger.debug("request : {}", hfpmPageEventAttr);
 
         try {
+            ControllerHelper.setDefaultValue(hfpmPageEventAttr, "hfpmPageEventAttrId");
             int result = iHfpmPageEventAttrSV.delete(hfpmPageEventAttr);
             if(result > 0) {
                 return ResultData.success(hfpmPageEventAttr);

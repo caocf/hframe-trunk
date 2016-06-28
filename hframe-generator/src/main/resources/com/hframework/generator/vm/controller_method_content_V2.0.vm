@@ -81,6 +81,7 @@
     public ResultData create(@ModelAttribute("${varName}") ${className} ${varName}) {
         logger.debug("request : {}", ${varName});
         try {
+            ControllerHelper.setDefaultValue(${varName}, "${varName}Id");
             int result = ${seviceVarName}.create(${varName});
             if(result > 0) {
                 return ResultData.success(${varName});
@@ -103,10 +104,14 @@
     public ResultData batchCreate(@RequestBody ${className}[] ${varName}s) {
         logger.debug("request : {}", ${varName}s);
 
-        ControllerHelper.reorderProperty(${varName}s);
-
         try {
-            ${seviceVarName}.batchOperate(${varName}s);
+            ControllerHelper.setDefaultValue(${varName}s, "${varName}Id");
+            ControllerHelper.reorderProperty(${varName}s);
+
+            int result = ${seviceVarName}.batchOperate(${varName}s);
+            if(result > 0) {
+                return ResultData.success(${varName}s);
+            }
         } catch (Exception e) {
             logger.error("error : ", e);
             return ResultData.error(ResultCode.ERROR);
@@ -125,6 +130,7 @@
     public ResultData update(@ModelAttribute("${varName}") ${className} ${varName}) {
         logger.debug("request : {}", ${varName});
         try {
+            ControllerHelper.setDefaultValue(${varName}, "${varName}Id");
             int result = ${seviceVarName}.update(${varName});
             if(result > 0) {
                 return ResultData.success(${varName});
@@ -148,6 +154,7 @@
         logger.debug("request : {}", ${varName});
 
         try {
+            ControllerHelper.setDefaultValue(${varName}, "${varName}Id");
             int result = ${seviceVarName}.delete(${varName});
             if(result > 0) {
                 return ResultData.success(${varName});

@@ -1,26 +1,29 @@
 package com.hframe.controller;
 
-import com.hframe.domain.model.HfpmPageEntityRel;
-import com.hframe.domain.model.HfpmPageEntityRel_Example;
-import com.hframe.service.interfaces.IHfpmPageEntityRelSV;
 import com.hframework.beans.controller.Pagination;
 import com.hframework.beans.controller.ResultCode;
 import com.hframework.beans.controller.ResultData;
-import com.hframework.common.helper.ControllerHelper;
 import com.hframework.common.util.ExampleUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.ServletRequestDataBinder;
-import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
+import java.util.*;
 import javax.servlet.http.HttpServletRequest;
+import org.springframework.web.bind.ServletRequestDataBinder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
+import com.hframework.web.ControllerHelper;
+import com.hframe.domain.model.HfpmPageEntityRel;
+import com.hframe.domain.model.HfpmPageEntityRel_Example;
+import com.hframe.service.interfaces.IHfpmPageEntityRelSV;
 
 @Controller
 @RequestMapping(value = "/hframe/hfpmPageEntityRel")
@@ -103,6 +106,7 @@ public class HfpmPageEntityRelController   {
     public ResultData create(@ModelAttribute("hfpmPageEntityRel") HfpmPageEntityRel hfpmPageEntityRel) {
         logger.debug("request : {}", hfpmPageEntityRel);
         try {
+            ControllerHelper.setDefaultValue(hfpmPageEntityRel, "hfpmPageEntityRelId");
             int result = iHfpmPageEntityRelSV.create(hfpmPageEntityRel);
             if(result > 0) {
                 return ResultData.success(hfpmPageEntityRel);
@@ -125,10 +129,14 @@ public class HfpmPageEntityRelController   {
     public ResultData batchCreate(@RequestBody HfpmPageEntityRel[] hfpmPageEntityRels) {
         logger.debug("request : {}", hfpmPageEntityRels);
 
-        ControllerHelper.reorderProperty(hfpmPageEntityRels);
-
         try {
-            iHfpmPageEntityRelSV.batchOperate(hfpmPageEntityRels);
+            ControllerHelper.setDefaultValue(hfpmPageEntityRels, "hfpmPageEntityRelId");
+            ControllerHelper.reorderProperty(hfpmPageEntityRels);
+
+            int result = iHfpmPageEntityRelSV.batchOperate(hfpmPageEntityRels);
+            if(result > 0) {
+                return ResultData.success(hfpmPageEntityRels);
+            }
         } catch (Exception e) {
             logger.error("error : ", e);
             return ResultData.error(ResultCode.ERROR);
@@ -147,6 +155,7 @@ public class HfpmPageEntityRelController   {
     public ResultData update(@ModelAttribute("hfpmPageEntityRel") HfpmPageEntityRel hfpmPageEntityRel) {
         logger.debug("request : {}", hfpmPageEntityRel);
         try {
+            ControllerHelper.setDefaultValue(hfpmPageEntityRel, "hfpmPageEntityRelId");
             int result = iHfpmPageEntityRelSV.update(hfpmPageEntityRel);
             if(result > 0) {
                 return ResultData.success(hfpmPageEntityRel);
@@ -170,6 +179,7 @@ public class HfpmPageEntityRelController   {
         logger.debug("request : {}", hfpmPageEntityRel);
 
         try {
+            ControllerHelper.setDefaultValue(hfpmPageEntityRel, "hfpmPageEntityRelId");
             int result = iHfpmPageEntityRelSV.delete(hfpmPageEntityRel);
             if(result > 0) {
                 return ResultData.success(hfpmPageEntityRel);

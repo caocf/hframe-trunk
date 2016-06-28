@@ -45,7 +45,7 @@ public class ControllerV2Generator extends AbstractGenerator {
 		editClass.addImportClass("java.text.DateFormat");
 		editClass.addImportClass("java.text.SimpleDateFormat");
 		editClass.addImportClass("org.springframework.beans.propertyeditors.CustomDateEditor");
-		editClass.addImportClass("com.hframework.common.helper.ControllerHelper");
+		editClass.addImportClass("com.hframework.web.ControllerHelper");
 
 
 

@@ -1,26 +1,29 @@
 package com.hframe.controller;
 
-import com.hframe.domain.model.HfusEntityTypeRelatEntityAttr;
-import com.hframe.domain.model.HfusEntityTypeRelatEntityAttr_Example;
-import com.hframe.service.interfaces.IHfusEntityTypeRelatEntityAttrSV;
 import com.hframework.beans.controller.Pagination;
 import com.hframework.beans.controller.ResultCode;
 import com.hframework.beans.controller.ResultData;
-import com.hframework.common.helper.ControllerHelper;
 import com.hframework.common.util.ExampleUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.ServletRequestDataBinder;
-import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
+import java.util.*;
 import javax.servlet.http.HttpServletRequest;
+import org.springframework.web.bind.ServletRequestDataBinder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
+import com.hframework.web.ControllerHelper;
+import com.hframe.domain.model.HfusEntityTypeRelatEntityAttr;
+import com.hframe.domain.model.HfusEntityTypeRelatEntityAttr_Example;
+import com.hframe.service.interfaces.IHfusEntityTypeRelatEntityAttrSV;
 
 @Controller
 @RequestMapping(value = "/hframe/hfusEntityTypeRelatEntityAttr")
@@ -103,6 +106,7 @@ public class HfusEntityTypeRelatEntityAttrController   {
     public ResultData create(@ModelAttribute("hfusEntityTypeRelatEntityAttr") HfusEntityTypeRelatEntityAttr hfusEntityTypeRelatEntityAttr) {
         logger.debug("request : {}", hfusEntityTypeRelatEntityAttr);
         try {
+            ControllerHelper.setDefaultValue(hfusEntityTypeRelatEntityAttr, "hfusEntityTypeRelatEntityAttrId");
             int result = iHfusEntityTypeRelatEntityAttrSV.create(hfusEntityTypeRelatEntityAttr);
             if(result > 0) {
                 return ResultData.success(hfusEntityTypeRelatEntityAttr);
@@ -125,10 +129,14 @@ public class HfusEntityTypeRelatEntityAttrController   {
     public ResultData batchCreate(@RequestBody HfusEntityTypeRelatEntityAttr[] hfusEntityTypeRelatEntityAttrs) {
         logger.debug("request : {}", hfusEntityTypeRelatEntityAttrs);
 
-        ControllerHelper.reorderProperty(hfusEntityTypeRelatEntityAttrs);
-
         try {
-            iHfusEntityTypeRelatEntityAttrSV.batchOperate(hfusEntityTypeRelatEntityAttrs);
+            ControllerHelper.setDefaultValue(hfusEntityTypeRelatEntityAttrs, "hfusEntityTypeRelatEntityAttrId");
+            ControllerHelper.reorderProperty(hfusEntityTypeRelatEntityAttrs);
+
+            int result = iHfusEntityTypeRelatEntityAttrSV.batchOperate(hfusEntityTypeRelatEntityAttrs);
+            if(result > 0) {
+                return ResultData.success(hfusEntityTypeRelatEntityAttrs);
+            }
         } catch (Exception e) {
             logger.error("error : ", e);
             return ResultData.error(ResultCode.ERROR);
@@ -147,6 +155,7 @@ public class HfusEntityTypeRelatEntityAttrController   {
     public ResultData update(@ModelAttribute("hfusEntityTypeRelatEntityAttr") HfusEntityTypeRelatEntityAttr hfusEntityTypeRelatEntityAttr) {
         logger.debug("request : {}", hfusEntityTypeRelatEntityAttr);
         try {
+            ControllerHelper.setDefaultValue(hfusEntityTypeRelatEntityAttr, "hfusEntityTypeRelatEntityAttrId");
             int result = iHfusEntityTypeRelatEntityAttrSV.update(hfusEntityTypeRelatEntityAttr);
             if(result > 0) {
                 return ResultData.success(hfusEntityTypeRelatEntityAttr);
@@ -170,6 +179,7 @@ public class HfusEntityTypeRelatEntityAttrController   {
         logger.debug("request : {}", hfusEntityTypeRelatEntityAttr);
 
         try {
+            ControllerHelper.setDefaultValue(hfusEntityTypeRelatEntityAttr, "hfusEntityTypeRelatEntityAttrId");
             int result = iHfusEntityTypeRelatEntityAttrSV.delete(hfusEntityTypeRelatEntityAttr);
             if(result > 0) {
                 return ResultData.success(hfusEntityTypeRelatEntityAttr);

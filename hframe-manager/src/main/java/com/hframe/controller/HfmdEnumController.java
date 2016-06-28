@@ -1,26 +1,29 @@
 package com.hframe.controller;
 
-import com.hframe.domain.model.HfmdEnum;
-import com.hframe.domain.model.HfmdEnum_Example;
-import com.hframe.service.interfaces.IHfmdEnumSV;
 import com.hframework.beans.controller.Pagination;
 import com.hframework.beans.controller.ResultCode;
 import com.hframework.beans.controller.ResultData;
-import com.hframework.common.helper.ControllerHelper;
 import com.hframework.common.util.ExampleUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.ServletRequestDataBinder;
-import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
+import java.util.*;
 import javax.servlet.http.HttpServletRequest;
+import org.springframework.web.bind.ServletRequestDataBinder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
+import com.hframework.web.ControllerHelper;
+import com.hframe.domain.model.HfmdEnum;
+import com.hframe.domain.model.HfmdEnum_Example;
+import com.hframe.service.interfaces.IHfmdEnumSV;
 
 @Controller
 @RequestMapping(value = "/hframe/hfmdEnum")
@@ -103,6 +106,7 @@ public class HfmdEnumController   {
     public ResultData create(@ModelAttribute("hfmdEnum") HfmdEnum hfmdEnum) {
         logger.debug("request : {}", hfmdEnum);
         try {
+            ControllerHelper.setDefaultValue(hfmdEnum, "hfmdEnumId");
             int result = iHfmdEnumSV.create(hfmdEnum);
             if(result > 0) {
                 return ResultData.success(hfmdEnum);
@@ -125,10 +129,14 @@ public class HfmdEnumController   {
     public ResultData batchCreate(@RequestBody HfmdEnum[] hfmdEnums) {
         logger.debug("request : {}", hfmdEnums);
 
-        ControllerHelper.reorderProperty(hfmdEnums);
-
         try {
-            iHfmdEnumSV.batchOperate(hfmdEnums);
+            ControllerHelper.setDefaultValue(hfmdEnums, "hfmdEnumId");
+            ControllerHelper.reorderProperty(hfmdEnums);
+
+            int result = iHfmdEnumSV.batchOperate(hfmdEnums);
+            if(result > 0) {
+                return ResultData.success(hfmdEnums);
+            }
         } catch (Exception e) {
             logger.error("error : ", e);
             return ResultData.error(ResultCode.ERROR);
@@ -147,6 +155,7 @@ public class HfmdEnumController   {
     public ResultData update(@ModelAttribute("hfmdEnum") HfmdEnum hfmdEnum) {
         logger.debug("request : {}", hfmdEnum);
         try {
+            ControllerHelper.setDefaultValue(hfmdEnum, "hfmdEnumId");
             int result = iHfmdEnumSV.update(hfmdEnum);
             if(result > 0) {
                 return ResultData.success(hfmdEnum);
@@ -170,6 +179,7 @@ public class HfmdEnumController   {
         logger.debug("request : {}", hfmdEnum);
 
         try {
+            ControllerHelper.setDefaultValue(hfmdEnum, "hfmdEnumId");
             int result = iHfmdEnumSV.delete(hfmdEnum);
             if(result > 0) {
                 return ResultData.success(hfmdEnum);

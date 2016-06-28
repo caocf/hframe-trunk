@@ -1,26 +1,29 @@
 package com.hframe.controller;
 
-import com.hframe.domain.model.HfpmEntityPermission;
-import com.hframe.domain.model.HfpmEntityPermission_Example;
-import com.hframe.service.interfaces.IHfpmEntityPermissionSV;
 import com.hframework.beans.controller.Pagination;
 import com.hframework.beans.controller.ResultCode;
 import com.hframework.beans.controller.ResultData;
-import com.hframework.common.helper.ControllerHelper;
 import com.hframework.common.util.ExampleUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.ServletRequestDataBinder;
-import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
+import java.util.*;
 import javax.servlet.http.HttpServletRequest;
+import org.springframework.web.bind.ServletRequestDataBinder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
+import com.hframework.web.ControllerHelper;
+import com.hframe.domain.model.HfpmEntityPermission;
+import com.hframe.domain.model.HfpmEntityPermission_Example;
+import com.hframe.service.interfaces.IHfpmEntityPermissionSV;
 
 @Controller
 @RequestMapping(value = "/hframe/hfpmEntityPermission")
@@ -103,6 +106,7 @@ public class HfpmEntityPermissionController   {
     public ResultData create(@ModelAttribute("hfpmEntityPermission") HfpmEntityPermission hfpmEntityPermission) {
         logger.debug("request : {}", hfpmEntityPermission);
         try {
+            ControllerHelper.setDefaultValue(hfpmEntityPermission, "hfpmEntityPermissionId");
             int result = iHfpmEntityPermissionSV.create(hfpmEntityPermission);
             if(result > 0) {
                 return ResultData.success(hfpmEntityPermission);
@@ -125,10 +129,14 @@ public class HfpmEntityPermissionController   {
     public ResultData batchCreate(@RequestBody HfpmEntityPermission[] hfpmEntityPermissions) {
         logger.debug("request : {}", hfpmEntityPermissions);
 
-        ControllerHelper.reorderProperty(hfpmEntityPermissions);
-
         try {
-            iHfpmEntityPermissionSV.batchOperate(hfpmEntityPermissions);
+            ControllerHelper.setDefaultValue(hfpmEntityPermissions, "hfpmEntityPermissionId");
+            ControllerHelper.reorderProperty(hfpmEntityPermissions);
+
+            int result = iHfpmEntityPermissionSV.batchOperate(hfpmEntityPermissions);
+            if(result > 0) {
+                return ResultData.success(hfpmEntityPermissions);
+            }
         } catch (Exception e) {
             logger.error("error : ", e);
             return ResultData.error(ResultCode.ERROR);
@@ -147,6 +155,7 @@ public class HfpmEntityPermissionController   {
     public ResultData update(@ModelAttribute("hfpmEntityPermission") HfpmEntityPermission hfpmEntityPermission) {
         logger.debug("request : {}", hfpmEntityPermission);
         try {
+            ControllerHelper.setDefaultValue(hfpmEntityPermission, "hfpmEntityPermissionId");
             int result = iHfpmEntityPermissionSV.update(hfpmEntityPermission);
             if(result > 0) {
                 return ResultData.success(hfpmEntityPermission);
@@ -170,6 +179,7 @@ public class HfpmEntityPermissionController   {
         logger.debug("request : {}", hfpmEntityPermission);
 
         try {
+            ControllerHelper.setDefaultValue(hfpmEntityPermission, "hfpmEntityPermissionId");
             int result = iHfpmEntityPermissionSV.delete(hfpmEntityPermission);
             if(result > 0) {
                 return ResultData.success(hfpmEntityPermission);

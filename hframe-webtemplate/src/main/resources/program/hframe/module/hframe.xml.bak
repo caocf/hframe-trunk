@@ -1,71 +1,43 @@
 <module code="hframe">
-
-
-    <page id="hfpm_program_mgr" name="项目管理" page-template="qlist" data-set="hframe/hfpm_program">
-        <component id="qForm" data-set="hframe/hfpm_program_DS4Q"></component>
-    </page>
-    <page id="hfpm_program_create" name="项目添加" page-template="cComb" data-set="hframe/hfpm_program" rel-page="hfpm_program_mgr">
-        <component id="cForm" data-set="hframe/hfpm_program"></component>
-        <component id="cList" data-set="hframe/hfpm_module"></component>
-    </page>
-    <page id="hfpm_program_edit" name="项目修改" page-template="eComb" data-set="hframe/hfpm_program"  rel-page="hfpm_program_mgr">
-        <component id="eForm" data-set="hframe/hfpm_program"></component>
-        <component id="eList" data-set="hframe/hfpm_module"></component>
-    </page>
-    <page id="hfpm_program_detail" name="项目查看" page-template="dComb" data-set="hframe/hfpm_program"  rel-page="hfpm_program_mgr">
-        <component id="dForm" data-set="hframe/hfpm_program"></component>
-        <component id="qList" data-set="hframe/hfpm_module"></component>
-    </page>
-
-
-    <page id="hfmd_entity_mgr" name="实体管理" page-template="qlist" data-set="hframe/hfmd_entity" >
+    <page id="hfmd_entity_query" name="实体查询" page-template="qlist" data-set="hframe/hfmd_entity">
         <component id="qForm" data-set="hframe/hfmd_entity_DS4Q"></component>
     </page>
-    <page id="hfmd_entity_create" name="实体添加" page-template="cComb" data-set="hframe/hfmd_entity"  rel-page="hfmd_entity_mgr">
-        <component id="cForm" data-set="hframe/hfmd_entity"></component>
-        <component id="cList" data-set="hframe/hfmd_entity_attr"></component>
-    </page>
-    <page id="hfmd_entity_edit" name="实体修改" page-template="eComb" data-set="hframe/hfmd_entity"   rel-page="hfmd_entity_mgr">
-        <component id="eForm" data-set="hframe/hfmd_entity"></component>
-        <component id="eList" data-set="hframe/hfmd_entity_attr"></component>
-    </page>
-    <page id="hfmd_entity_detail" name="实体查看" page-template="dComb" data-set="hframe/hfmd_entity"   rel-page="hfmd_entity_mgr">
-        <component id="dForm" data-set="hframe/hfmd_entity"></component>
-        <component id="qList" data-set="hframe/hfmd_entity_attr"></component>
-    </page>
+    <page id="hfmd_entity_create" name="实体创建" page-template="create" data-set="hframe/hfmd_entity"></page>
+    <page id="hfmd_entity_edit" name="实体修改" page-template="edit" data-set="hframe/hfmd_entity"></page>
+    <page id="hfmd_entity_detail" name="实体明细" page-template="edit" data-set="hframe/hfmd_entity"></page>
+    <page id="hfmd_entity_edits" name="实体批量修改" page-template="elist" data-set="hframe/hfmd_entity"></page>
 
 
-    <page id="hfmd_enum_class_mgr" name="枚举管理" page-template="qlist" data-set="hframe/hfmd_enum_class">
+    <page id="hfmd_entity_attr_query" name="实体查询" page-template="qlist" data-set="hframe/hfmd_entity_attr">
+        <component id="qForm" data-set="hframe/hfmd_entity_attr_DS4Q"></component>
+    </page>
+    <page id="hfmd_entity_attr_create" name="实体创建" page-template="create" data-set="hframe/hfmd_entity_attr"></page>
+    <page id="hfmd_entity_attr_edit" name="实体修改" page-template="edit" data-set="hframe/hfmd_entity_attr"></page>
+    <page id="hfmd_entity_attr_detail" name="实体明细" page-template="edit" data-set="hframe/hfmd_entity_attr"></page>
+
+
+    <page id="hfpm_program_query" name="项目查询" page-template="qlist" data-set="hframe/hfpm_program"></page>
+    <page id="hfpm_program_edits" name="项目批量修改" page-template="elist" data-set="hframe/hfpm_program"></page>
+
+
+    <page id="hfmd_enum_class_query" name="枚举查询" page-template="qlist" data-set="hframe/hfmd_enum_class">
         <component id="qForm" data-set="hframe/hfmd_enum_class_DS4Q"></component>
     </page>
-    <page id="hfmd_enum_class_create" name="枚举添加" page-template="cComb" data-set="hframe/hfmd_enum_class"   rel-page="hfmd_enum_class_mgr">
+
+    <page id="hfmd_enum_class_create" name="枚举添加" page-template="cComb" data-set="hframe/hfmd_enum_class">
         <component id="cForm" data-set="hframe/hfmd_enum_class"></component>
         <component id="cList" data-set="hframe/hfmd_enum"></component>
     </page>
-    <page id="hfmd_enum_class_edit" name="枚举修改" page-template="eComb" data-set="hframe/hfmd_enum_class"  rel-page="hfmd_enum_class_mgr">
+    <page id="hfmd_enum_class_edit" name="枚举修改" page-template="eComb" data-set="hframe/hfmd_enum_class">
         <component id="eForm" data-set="hframe/hfmd_enum_class"></component>
         <component id="eList" data-set="hframe/hfmd_enum"></component>
     </page>
-    <page id="hfmd_enum_class_detail" name="枚举查看" page-template="dComb" data-set="hframe/hfmd_enum_class" rel-page="hfmd_enum_class_mgr">
+    <page id="hfmd_enum_class_detail" name="枚举查看" page-template="dComb" data-set="hframe/hfmd_enum_class">
         <component id="dForm" data-set="hframe/hfmd_enum_class"></component>
         <component id="qList" data-set="hframe/hfmd_enum"></component>
     </page>
 
-    <page id="hfpm_data_set_mgr" name="数据集管理" page-template="qlist" data-set="hframe/hfpm_data_set" >
-        <component id="qForm" data-set="hframe/hfpm_data_set_DS4Q"></component>
-    </page>
-    <page id="hfpm_data_set_create" name="数据集添加" page-template="cComb" data-set="hframe/hfpm_data_set" rel-page="hfpm_data_set_mgr">
-        <component id="cForm" data-set="hframe/hfpm_data_set"></component>
-        <component id="cList" data-set="hframe/hfpm_data_field"></component>
-    </page>
-    <page id="hfpm_data_set_edit" name="数据集修改" page-template="eComb" data-set="hframe/hfpm_data_set"  rel-page="hfpm_data_set_mgr">
-        <component id="eForm" data-set="hframe/hfpm_data_set"></component>
-        <component id="eList" data-set="hframe/hfpm_data_field"></component>
-    </page>
-    <page id="hfpm_data_set_detail" name="数据集查看" page-template="dComb" data-set="hframe/hfpm_data_set"  rel-page="hfpm_data_set_mgr">
-        <component id="dForm" data-set="hframe/hfpm_data_set"></component>
-        <component id="qList" data-set="hframe/hfpm_data_field"></component>
-    </page>
+
 </module>
 
 <!--<module code="hfmd" name="数据建模">-->

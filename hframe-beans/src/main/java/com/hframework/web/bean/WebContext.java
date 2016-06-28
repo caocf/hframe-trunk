@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.hframework.common.util.EnumUtils;
 import com.hframework.common.util.StringUtils;
 import com.hframework.common.util.message.XmlUtils;
+import com.hframework.web.CreatorUtil;
 import com.hframework.web.config.bean.*;
 import com.hframework.web.config.bean.Component;
 import com.hframework.web.config.bean.Module;
@@ -15,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.lang.Class;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -72,6 +74,7 @@ public class WebContext {
 
     private Map<String, DataSetDescriptor> dataSets = new HashMap<String, DataSetDescriptor>();
 
+    private Map<Class, DataSetDescriptor> dataSetCache = new HashMap<Class, DataSetDescriptor>();
 
     public void init() throws Exception {
 
@@ -85,12 +88,24 @@ public class WebContext {
 
     }
 
-    private void loadDataSet() throws IOException {
+    private void loadDataSet() throws Exception {
 
         //加载数据源信息
         List<DataSet> dataSetList = XmlUtils.readValuesFromDirectory(DATA_SET_DIR, DataSet.class);
         for (DataSet dataSet : dataSetList) {
-            dataSets.put(dataSet.getModule() + "/" + dataSet.getCode(), new DataSetDescriptor(dataSet));
+            DataSetDescriptor dataSetDescriptor = new DataSetDescriptor(dataSet);
+            dataSets.put(dataSet.getModule() + "/" + dataSet.getCode(), dataSetDescriptor);
+            com.hframework.beans.class0.Class defPoClass = CreatorUtil.getDefPoClass("",
+                    program.getCode(), dataSet.getModule(), dataSet.getCode());
+            try {
+                Class<?> aClass = Class.forName(defPoClass.getClassPath());
+                dataSetCache.put(aClass, dataSetDescriptor);
+            }catch (Exception e) {
+                //针对于查询类的dateset无需缓存
+            }
+
+
+
         }
     }
 
@@ -215,7 +230,7 @@ public class WebContext {
         //加载项目信息
         program = XmlUtils.readValueFromFile(PROGRAM_FILE, Program.class);
         //加载模块信息
-        List<Module> moduleList = XmlUtils.readValuesFromDirectory(MODULE_DIR, Module.class);
+        List<Module> moduleList = XmlUtils.readValuesFromDirectory(MODULE_DIR, Module.class, ".xml");
         for (Module module : moduleList) {
             this.modules.put(module.getCode(),module);
         }
@@ -268,5 +283,76 @@ public class WebContext {
 
     public void setProgram(Program program) {
         this.program = program;
+    }
+
+    public Map<Class, DataSetDescriptor> getDataSetCache() {
+        return dataSetCache;
+    }
+
+    public DataSetDescriptor getDataSet(Class clazz) {
+        return dataSetCache.get(clazz);
+    }
+
+    public void setDataSetCache(Map<Class, DataSetDescriptor> dataSetCache) {
+        this.dataSetCache = dataSetCache;
+    }
+
+    public static <T> void add(T data) {
+        Class<?> aClass = data.getClass();
+        String simpleName = aClass.getName();
+        Context.put(simpleName,data);
+    }
+
+    public static void clear() {
+        Context.clear();
+    }
+
+    public static <T> void put(String key, T data) {
+        Context.put(key,data);
+    }
+
+    public static <T> T get(String key) {
+        return Context.get(key);
+    }
+
+    public static class Context{
+        private static ThreadLocal<Map<String, Item>> itemsTL = new ThreadLocal<Map<String, Item>>();
+
+        public static <T> void put(String key, T data) {
+            if(itemsTL.get() == null) {
+                itemsTL.set(new HashMap<String, Item>());
+            }
+            itemsTL.get().put(key, new Item(data));
+        }
+
+        public static void clear() {
+            itemsTL.remove();
+        }
+
+        public static <T> T get(String key) {
+            if(itemsTL.get() != null && itemsTL.get().containsKey(key)) {
+                return (T) itemsTL.get().get(key).getT();
+            }
+            return null;
+        }
+    }
+
+
+
+    public static class Item<T>{
+
+        private T t ;
+
+        public Item(T t) {
+            this.t = t;
+        }
+
+        public T getT() {
+            return t;
+        }
+
+        public void setT(T t) {
+            this.t = t;
+        }
     }
 }

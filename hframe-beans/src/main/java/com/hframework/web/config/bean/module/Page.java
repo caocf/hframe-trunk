@@ -26,9 +26,13 @@ public class Page   {
 	@XStreamAsAttribute
     @XStreamAlias("page-template")
 	private String pageTemplate;
-	@XStreamAsAttribute
-    @XStreamAlias("data-set")
+
 	private String dataSet;
+
+
+    @XStreamAsAttribute
+    @XStreamAlias("rel-page")
+    private String relPage;
 
     public Page() {
     }
@@ -81,5 +85,12 @@ public class Page   {
      public void setDataSet(String dataSet){
      	this.dataSet = dataSet;
      }
-	 
+
+    public String getRelPage() {
+        return relPage;
+    }
+
+    public void setRelPage(String relPage) {
+        this.relPage = relPage;
+    }
 }

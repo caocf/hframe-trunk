@@ -1,4 +1,4 @@
-<div class="box span12" id='$form.id'>
+<div class="box span12" id='$form.id' component="$form.component">
     <div class="box-header">
         <h2><i class="$form.icon"></i>$form.title</h2>
         <div class="box-icon">
@@ -13,6 +13,7 @@
                 #foreach($column in $form.columns)
                     #if($column.editType == "hidden")
                         #set($data = $form.data)
+                        #set($value = $!data.get($column.code))
                         #parse("component/element/field.vm")
                     #else
                         <div class="control-group">

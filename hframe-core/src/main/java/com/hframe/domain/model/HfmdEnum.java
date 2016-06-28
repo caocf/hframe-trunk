@@ -20,7 +20,7 @@ public class HfmdEnum {
 
     private String ext2;
 
-    private String hfmdEnumClassId;
+    private Long hfmdEnumClassId;
 
     private String hfmdEnumClassCode;
 
@@ -36,7 +36,7 @@ public class HfmdEnum {
 
     private Integer delFlag;
 
-    public HfmdEnum(Long hfmdEnumId, String hfmdEnumValue, String hfmdEnumText, String hfmdEnumDesc, Integer isDefault, BigDecimal pri, String ext1, String ext2, String hfmdEnumClassId, String hfmdEnumClassCode, Long hfpmProgramId, Long opId, Date createTime, Long modifyOpId, Date modifyTime, Integer delFlag) {
+    public HfmdEnum(Long hfmdEnumId, String hfmdEnumValue, String hfmdEnumText, String hfmdEnumDesc, Integer isDefault, BigDecimal pri, String ext1, String ext2, Long hfmdEnumClassId, String hfmdEnumClassCode, Long hfpmProgramId, Long opId, Date createTime, Long modifyOpId, Date modifyTime, Integer delFlag) {
         this.hfmdEnumId = hfmdEnumId;
         this.hfmdEnumValue = hfmdEnumValue;
         this.hfmdEnumText = hfmdEnumText;
@@ -87,7 +87,7 @@ public class HfmdEnum {
         return ext2;
     }
 
-    public String getHfmdEnumClassId() {
+    public Long getHfmdEnumClassId() {
         return hfmdEnumClassId;
     }
 
@@ -151,7 +151,7 @@ public class HfmdEnum {
         this.ext2=ext2;
     }
 
-    public void setHfmdEnumClassId(String hfmdEnumClassId) {
+    public void setHfmdEnumClassId(Long hfmdEnumClassId) {
         this.hfmdEnumClassId=hfmdEnumClassId;
     }
 

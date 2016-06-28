@@ -1,26 +1,29 @@
 package com.hframe.controller;
 
-import com.hframe.domain.model.HfpmDataSet;
-import com.hframe.domain.model.HfpmDataSet_Example;
-import com.hframe.service.interfaces.IHfpmDataSetSV;
 import com.hframework.beans.controller.Pagination;
 import com.hframework.beans.controller.ResultCode;
 import com.hframework.beans.controller.ResultData;
-import com.hframework.common.helper.ControllerHelper;
 import com.hframework.common.util.ExampleUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.ServletRequestDataBinder;
-import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
+import java.util.*;
 import javax.servlet.http.HttpServletRequest;
+import org.springframework.web.bind.ServletRequestDataBinder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
+import com.hframework.web.ControllerHelper;
+import com.hframe.domain.model.HfpmDataSet;
+import com.hframe.domain.model.HfpmDataSet_Example;
+import com.hframe.service.interfaces.IHfpmDataSetSV;
 
 @Controller
 @RequestMapping(value = "/hframe/hfpmDataSet")
@@ -103,6 +106,7 @@ public class HfpmDataSetController   {
     public ResultData create(@ModelAttribute("hfpmDataSet") HfpmDataSet hfpmDataSet) {
         logger.debug("request : {}", hfpmDataSet);
         try {
+            ControllerHelper.setDefaultValue(hfpmDataSet, "hfpmDataSetId");
             int result = iHfpmDataSetSV.create(hfpmDataSet);
             if(result > 0) {
                 return ResultData.success(hfpmDataSet);
@@ -125,10 +129,14 @@ public class HfpmDataSetController   {
     public ResultData batchCreate(@RequestBody HfpmDataSet[] hfpmDataSets) {
         logger.debug("request : {}", hfpmDataSets);
 
-        ControllerHelper.reorderProperty(hfpmDataSets);
-
         try {
-            iHfpmDataSetSV.batchOperate(hfpmDataSets);
+            ControllerHelper.setDefaultValue(hfpmDataSets, "hfpmDataSetId");
+            ControllerHelper.reorderProperty(hfpmDataSets);
+
+            int result = iHfpmDataSetSV.batchOperate(hfpmDataSets);
+            if(result > 0) {
+                return ResultData.success(hfpmDataSets);
+            }
         } catch (Exception e) {
             logger.error("error : ", e);
             return ResultData.error(ResultCode.ERROR);
@@ -147,6 +155,7 @@ public class HfpmDataSetController   {
     public ResultData update(@ModelAttribute("hfpmDataSet") HfpmDataSet hfpmDataSet) {
         logger.debug("request : {}", hfpmDataSet);
         try {
+            ControllerHelper.setDefaultValue(hfpmDataSet, "hfpmDataSetId");
             int result = iHfpmDataSetSV.update(hfpmDataSet);
             if(result > 0) {
                 return ResultData.success(hfpmDataSet);
@@ -170,6 +179,7 @@ public class HfpmDataSetController   {
         logger.debug("request : {}", hfpmDataSet);
 
         try {
+            ControllerHelper.setDefaultValue(hfpmDataSet, "hfpmDataSetId");
             int result = iHfpmDataSetSV.delete(hfpmDataSet);
             if(result > 0) {
                 return ResultData.success(hfpmDataSet);

@@ -46,9 +46,17 @@
                 <appendElement type="icon" param='{fillclass:"btn-info",iconclass:"icon-edit"}'></appendElement>
             </attach>
             <source scope="CROW" param="${id}"></source>
-            <effect type="dialog" action='${edit}' isStack="true"></effect>
+            <effect type="pageFwd" action='${edit}' isStack="true"></effect>
             <effect type="component.reload"></effect>
         </event>
+        <!--<event name="edit">-->
+            <!--<attach anchor="EOFR">-->
+                <!--<appendElement type="icon" param='{fillclass:"btn-info",iconclass:"icon-edit"}'></appendElement>-->
+            <!--</attach>-->
+            <!--<source scope="CROW" param="${id}"></source>-->
+            <!--<effect type="dialog" action='${edit}' isStack="true"></effect>-->
+            <!--<effect type="component.reload"></effect>-->
+        <!--</event>-->
         <event name="delete">
             <attach anchor="EOFR">
                 <appendElement type="icon" param='{fillclass:"btn-danger",iconclass:"icon-trash"}'></appendElement>

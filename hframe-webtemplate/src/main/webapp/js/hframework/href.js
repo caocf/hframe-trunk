@@ -32,7 +32,18 @@ require(['layer','ajax','js/hframework/errormsg','js/hframework/list'], function
             });
         }else if($type == "ajaxSubmitByJson") {
             var _data;
-            if($param == "thisForm") {
+            var targetId =$action[$type].targetId;
+
+            if(targetId != null) {
+                var json = {};
+                var targetIds = targetId.split(",");
+               for(var tarId in targetIds) {
+                   $component = $("[component= " + targetIds[tarId] +"]");
+                   json[targetIds[tarId]] = JSON.parse($($component.find("form")[0]).serializeJson());
+               }
+                //console.log(JSON.stringify(json));
+                _data = JSON.stringify(json);
+            }else if($param == "thisForm") {
                 $thisForm = $this.parents("form")[0];
                 _data = $($thisForm).serializeJson();
             }else {
@@ -42,7 +53,7 @@ require(['layer','ajax','js/hframework/errormsg','js/hframework/list'], function
             //console.log(_data);
 
             $.ajax({
-                url: url,
+                url: "/" + url,
                 data: _data,
                 type: 'post',
                 contentType : 'application/json;charset=utf-8',

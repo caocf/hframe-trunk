@@ -1,26 +1,29 @@
 package com.hframe.controller;
 
-import com.hframe.domain.model.HfpmFieldShowType;
-import com.hframe.domain.model.HfpmFieldShowType_Example;
-import com.hframe.service.interfaces.IHfpmFieldShowTypeSV;
 import com.hframework.beans.controller.Pagination;
 import com.hframework.beans.controller.ResultCode;
 import com.hframework.beans.controller.ResultData;
-import com.hframework.common.helper.ControllerHelper;
 import com.hframework.common.util.ExampleUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.ServletRequestDataBinder;
-import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
+import java.util.*;
 import javax.servlet.http.HttpServletRequest;
+import org.springframework.web.bind.ServletRequestDataBinder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
+import com.hframework.web.ControllerHelper;
+import com.hframe.domain.model.HfpmFieldShowType;
+import com.hframe.domain.model.HfpmFieldShowType_Example;
+import com.hframe.service.interfaces.IHfpmFieldShowTypeSV;
 
 @Controller
 @RequestMapping(value = "/hframe/hfpmFieldShowType")
@@ -103,6 +106,7 @@ public class HfpmFieldShowTypeController   {
     public ResultData create(@ModelAttribute("hfpmFieldShowType") HfpmFieldShowType hfpmFieldShowType) {
         logger.debug("request : {}", hfpmFieldShowType);
         try {
+            ControllerHelper.setDefaultValue(hfpmFieldShowType, "hfpmFieldShowTypeId");
             int result = iHfpmFieldShowTypeSV.create(hfpmFieldShowType);
             if(result > 0) {
                 return ResultData.success(hfpmFieldShowType);
@@ -125,10 +129,14 @@ public class HfpmFieldShowTypeController   {
     public ResultData batchCreate(@RequestBody HfpmFieldShowType[] hfpmFieldShowTypes) {
         logger.debug("request : {}", hfpmFieldShowTypes);
 
-        ControllerHelper.reorderProperty(hfpmFieldShowTypes);
-
         try {
-            iHfpmFieldShowTypeSV.batchOperate(hfpmFieldShowTypes);
+            ControllerHelper.setDefaultValue(hfpmFieldShowTypes, "hfpmFieldShowTypeId");
+            ControllerHelper.reorderProperty(hfpmFieldShowTypes);
+
+            int result = iHfpmFieldShowTypeSV.batchOperate(hfpmFieldShowTypes);
+            if(result > 0) {
+                return ResultData.success(hfpmFieldShowTypes);
+            }
         } catch (Exception e) {
             logger.error("error : ", e);
             return ResultData.error(ResultCode.ERROR);
@@ -147,6 +155,7 @@ public class HfpmFieldShowTypeController   {
     public ResultData update(@ModelAttribute("hfpmFieldShowType") HfpmFieldShowType hfpmFieldShowType) {
         logger.debug("request : {}", hfpmFieldShowType);
         try {
+            ControllerHelper.setDefaultValue(hfpmFieldShowType, "hfpmFieldShowTypeId");
             int result = iHfpmFieldShowTypeSV.update(hfpmFieldShowType);
             if(result > 0) {
                 return ResultData.success(hfpmFieldShowType);
@@ -170,6 +179,7 @@ public class HfpmFieldShowTypeController   {
         logger.debug("request : {}", hfpmFieldShowType);
 
         try {
+            ControllerHelper.setDefaultValue(hfpmFieldShowType, "hfpmFieldShowTypeId");
             int result = iHfpmFieldShowTypeSV.delete(hfpmFieldShowType);
             if(result > 0) {
                 return ResultData.success(hfpmFieldShowType);

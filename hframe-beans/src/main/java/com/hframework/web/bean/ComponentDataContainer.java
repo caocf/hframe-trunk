@@ -65,7 +65,10 @@ public class ComponentDataContainer {
 
         List<Event> allEvent = new ArrayList<Event>();
         allEvent.addAll(component.getBaseEvents().getEventList());
-        allEvent.addAll(component.getEvents().getEventList());
+        if(!"false".equals(pageElementDesc.getEventExtend())) {
+            allEvent.addAll(component.getEvents().getEventList());
+        }
+
         if(pageElementDesc.getEvents() != null) {
             allEvent.addAll(pageElementDesc.getEvents().getEventList());
         }
@@ -357,8 +360,10 @@ public class ComponentDataContainer {
 
         public JSON getJsonObject() {
             JSONArray array = new JSONArray();
-            for (String[] value : values) {
-                array.add(JSONArray.toJSON(value));
+            if(values != null) {
+                for (String[] value : values) {
+                    array.add(JSONArray.toJSON(value));
+                }
             }
             return array;
         }
@@ -384,7 +389,8 @@ public class ComponentDataContainer {
                         for (String string : initMap.values()) {
                             String propertyName = string.substring(2,string.length()-1);
                             try {
-                                value.add(org.apache.commons.beanutils.BeanUtils.getProperty(object,propertyName));
+                                String stringVal = org.apache.commons.beanutils.BeanUtils.getProperty(object,propertyName);
+                                value.add(stringVal == null ? "" : stringVal);
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -402,8 +408,8 @@ public class ComponentDataContainer {
                                         value.add("");
                                     }
                                 }else {
-                                    value.add(org.apache.commons.beanutils.BeanUtils.getProperty(object,
-                                            ResourceWrapper.JavaUtil.getJavaVarName(((JSONObject) column).getString("code"))));
+                                    String stringVal = org.apache.commons.beanutils.BeanUtils.getProperty(object,propertyName);
+                                    value.add(stringVal == null ? "" : stringVal);
                                 }
                             } catch (IllegalAccessException e) {
                                 e.printStackTrace();
@@ -495,30 +501,42 @@ public class ComponentDataContainer {
         public void setData(Object data, JSONArray columns) {
 
             if (data != null) {
+                List<String> propertyNames = new ArrayList<String>();
                 if (expressesMap.size() != 0) {
                     for (String string : expressesMap.values()) {
                         String propertyName = string.substring(2, string.length() - 1);
-                        try {
-                            resultMap.put(propertyName, org.apache.commons.beanutils.BeanUtils.getProperty(data, propertyName));
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                        propertyNames.add(propertyName);
                     }
                 } else {
                     for (Object column : columns) {
-                        try {
-                            resultMap.put(((JSONObject) column).getString("code"),
-                                    org.apache.commons.beanutils.BeanUtils.getProperty(data,
-                                            ResourceWrapper.JavaUtil.getJavaVarName(((JSONObject) column).getString("code"))));
-                        } catch (IllegalAccessException e) {
-                            e.printStackTrace();
-                        } catch (InvocationTargetException e) {
-                            e.printStackTrace();
-                        } catch (NoSuchMethodException e) {
-                            e.printStackTrace();
-                        }
+                        propertyNames.add(ResourceWrapper.JavaUtil.getJavaVarName(((JSONObject) column).getString("code")));
                     }
                 }
+
+                for (String propertyName : propertyNames) {
+                    try {
+                        Class<?> type = BeanUtils.findPropertyType(propertyName, data.getClass());
+                        if(type == Date.class) {
+                            Date date = (Date)ReflectUtils.getFieldValue(data, propertyName);
+                            if(date != null) {
+                                resultMap.put(propertyName, DateUtils.getDateYYYYMMDDHHMMSS(date));
+                            }else {
+                                resultMap.put(propertyName, "");
+                            }
+                        }else {
+                            String stringVal = org.apache.commons.beanutils.BeanUtils.getProperty(data,propertyName);
+                            resultMap.put(propertyName, stringVal == null ? "" : stringVal);
+                        }
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    } catch (InvocationTargetException e) {
+                        e.printStackTrace();
+                    } catch (NoSuchMethodException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+
             }
         }
     }
@@ -585,12 +603,12 @@ public class ComponentDataContainer {
             }else if("name".equals(code)) {
                 return field.getName();
             }else if("editType".equals(code)) {
-                if(this.componentType.startsWith("c")){
+                if(this.componentType.startsWith("eList")){//eList组件
+                    return StringUtils.isNotBlank(field.getCreateEditType()) ? field.getCreateEditType() : field.getEditType();
+                }else if(this.componentType.startsWith("c")){
                     return StringUtils.isNotBlank(field.getCreateEditType()) ? field.getCreateEditType() : field.getEditType();
                 }else if(this.componentType.startsWith("e")){
                     return StringUtils.isNotBlank(field.getUpdateEditType()) ? field.getUpdateEditType() : field.getEditType();
-                }else if(this.componentType.startsWith("list")){//eList组件
-                    return StringUtils.isNotBlank(field.getCreateEditType()) ? field.getCreateEditType() : field.getEditType();
                 }else{
                     return field.getEditType();
                 }

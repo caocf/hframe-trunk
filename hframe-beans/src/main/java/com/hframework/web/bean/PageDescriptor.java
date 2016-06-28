@@ -3,6 +3,7 @@ package com.hframework.web.bean;
 import com.hframework.web.config.bean.pagetemplates.Pagetemplate;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -16,10 +17,10 @@ public class PageDescriptor{
     private Pagetemplate pageTemplate;
 
     //组件信息
-    private Map<String, ComponentDescriptor> components = new HashMap<String, ComponentDescriptor>();
+    private Map<String, ComponentDescriptor> components = new LinkedHashMap<String, ComponentDescriptor>();
 
     //元素信息
-    private Map<String, ElementDescriptor> elements = new HashMap<String, ElementDescriptor>();
+    private Map<String, ElementDescriptor> elements = new LinkedHashMap<String, ElementDescriptor>();
 
     //容器信息
     private Map<String, ContainerDescriptor> containers = new HashMap<String, ContainerDescriptor>();

@@ -1,26 +1,29 @@
 package com.hframe.controller;
 
-import com.hframe.domain.model.HfpmDataField;
-import com.hframe.domain.model.HfpmDataField_Example;
-import com.hframe.service.interfaces.IHfpmDataFieldSV;
 import com.hframework.beans.controller.Pagination;
 import com.hframework.beans.controller.ResultCode;
 import com.hframework.beans.controller.ResultData;
-import com.hframework.common.helper.ControllerHelper;
 import com.hframework.common.util.ExampleUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.ServletRequestDataBinder;
-import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
+import java.util.*;
 import javax.servlet.http.HttpServletRequest;
+import org.springframework.web.bind.ServletRequestDataBinder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
+import com.hframework.web.ControllerHelper;
+import com.hframe.domain.model.HfpmDataField;
+import com.hframe.domain.model.HfpmDataField_Example;
+import com.hframe.service.interfaces.IHfpmDataFieldSV;
 
 @Controller
 @RequestMapping(value = "/hframe/hfpmDataField")
@@ -103,6 +106,7 @@ public class HfpmDataFieldController   {
     public ResultData create(@ModelAttribute("hfpmDataField") HfpmDataField hfpmDataField) {
         logger.debug("request : {}", hfpmDataField);
         try {
+            ControllerHelper.setDefaultValue(hfpmDataField, "hfpmDataFieldId");
             int result = iHfpmDataFieldSV.create(hfpmDataField);
             if(result > 0) {
                 return ResultData.success(hfpmDataField);
@@ -125,10 +129,14 @@ public class HfpmDataFieldController   {
     public ResultData batchCreate(@RequestBody HfpmDataField[] hfpmDataFields) {
         logger.debug("request : {}", hfpmDataFields);
 
-        ControllerHelper.reorderProperty(hfpmDataFields);
-
         try {
-            iHfpmDataFieldSV.batchOperate(hfpmDataFields);
+            ControllerHelper.setDefaultValue(hfpmDataFields, "hfpmDataFieldId");
+            ControllerHelper.reorderProperty(hfpmDataFields);
+
+            int result = iHfpmDataFieldSV.batchOperate(hfpmDataFields);
+            if(result > 0) {
+                return ResultData.success(hfpmDataFields);
+            }
         } catch (Exception e) {
             logger.error("error : ", e);
             return ResultData.error(ResultCode.ERROR);
@@ -147,6 +155,7 @@ public class HfpmDataFieldController   {
     public ResultData update(@ModelAttribute("hfpmDataField") HfpmDataField hfpmDataField) {
         logger.debug("request : {}", hfpmDataField);
         try {
+            ControllerHelper.setDefaultValue(hfpmDataField, "hfpmDataFieldId");
             int result = iHfpmDataFieldSV.update(hfpmDataField);
             if(result > 0) {
                 return ResultData.success(hfpmDataField);
@@ -170,6 +179,7 @@ public class HfpmDataFieldController   {
         logger.debug("request : {}", hfpmDataField);
 
         try {
+            ControllerHelper.setDefaultValue(hfpmDataField, "hfpmDataFieldId");
             int result = iHfpmDataFieldSV.delete(hfpmDataField);
             if(result > 0) {
                 return ResultData.success(hfpmDataField);

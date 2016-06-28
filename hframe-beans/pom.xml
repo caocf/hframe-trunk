@@ -11,5 +11,11 @@
 
     <artifactId>hframe-beans</artifactId>
 
-
+    <dependencies>
+        <dependency>
+            <groupId>com.hframe</groupId>
+            <artifactId>hframe-common</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 </project>

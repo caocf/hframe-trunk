@@ -15,6 +15,11 @@ public class Element   {
 	@XStreamAsAttribute
     @XStreamAlias("type")
 	private String type;
+    @XStreamAsAttribute
+    @XStreamAlias("event-extend")
+    private String eventExtend;
+
+
 
     @XStreamAlias("events")
     private Events events;
@@ -45,5 +50,13 @@ public class Element   {
 
     public void setEvents(Events events) {
         this.events = events;
+    }
+
+    public String getEventExtend() {
+        return eventExtend;
+    }
+
+    public void setEventExtend(String eventExtend) {
+        this.eventExtend = eventExtend;
     }
 }

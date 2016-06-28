@@ -1,26 +1,29 @@
 package com.hframe.controller;
 
-import com.hframe.domain.model.HfpmProgramCfg;
-import com.hframe.domain.model.HfpmProgramCfg_Example;
-import com.hframe.service.interfaces.IHfpmProgramCfgSV;
 import com.hframework.beans.controller.Pagination;
 import com.hframework.beans.controller.ResultCode;
 import com.hframework.beans.controller.ResultData;
-import com.hframework.common.helper.ControllerHelper;
 import com.hframework.common.util.ExampleUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.ServletRequestDataBinder;
-import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
+import java.util.*;
 import javax.servlet.http.HttpServletRequest;
+import org.springframework.web.bind.ServletRequestDataBinder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
+import com.hframework.web.ControllerHelper;
+import com.hframe.domain.model.HfpmProgramCfg;
+import com.hframe.domain.model.HfpmProgramCfg_Example;
+import com.hframe.service.interfaces.IHfpmProgramCfgSV;
 
 @Controller
 @RequestMapping(value = "/hframe/hfpmProgramCfg")
@@ -103,6 +106,7 @@ public class HfpmProgramCfgController   {
     public ResultData create(@ModelAttribute("hfpmProgramCfg") HfpmProgramCfg hfpmProgramCfg) {
         logger.debug("request : {}", hfpmProgramCfg);
         try {
+            ControllerHelper.setDefaultValue(hfpmProgramCfg, "hfpmProgramCfgId");
             int result = iHfpmProgramCfgSV.create(hfpmProgramCfg);
             if(result > 0) {
                 return ResultData.success(hfpmProgramCfg);
@@ -125,10 +129,14 @@ public class HfpmProgramCfgController   {
     public ResultData batchCreate(@RequestBody HfpmProgramCfg[] hfpmProgramCfgs) {
         logger.debug("request : {}", hfpmProgramCfgs);
 
-        ControllerHelper.reorderProperty(hfpmProgramCfgs);
-
         try {
-            iHfpmProgramCfgSV.batchOperate(hfpmProgramCfgs);
+            ControllerHelper.setDefaultValue(hfpmProgramCfgs, "hfpmProgramCfgId");
+            ControllerHelper.reorderProperty(hfpmProgramCfgs);
+
+            int result = iHfpmProgramCfgSV.batchOperate(hfpmProgramCfgs);
+            if(result > 0) {
+                return ResultData.success(hfpmProgramCfgs);
+            }
         } catch (Exception e) {
             logger.error("error : ", e);
             return ResultData.error(ResultCode.ERROR);
@@ -147,6 +155,7 @@ public class HfpmProgramCfgController   {
     public ResultData update(@ModelAttribute("hfpmProgramCfg") HfpmProgramCfg hfpmProgramCfg) {
         logger.debug("request : {}", hfpmProgramCfg);
         try {
+            ControllerHelper.setDefaultValue(hfpmProgramCfg, "hfpmProgramCfgId");
             int result = iHfpmProgramCfgSV.update(hfpmProgramCfg);
             if(result > 0) {
                 return ResultData.success(hfpmProgramCfg);
@@ -170,6 +179,7 @@ public class HfpmProgramCfgController   {
         logger.debug("request : {}", hfpmProgramCfg);
 
         try {
+            ControllerHelper.setDefaultValue(hfpmProgramCfg, "hfpmProgramCfgId");
             int result = iHfpmProgramCfgSV.delete(hfpmProgramCfg);
             if(result > 0) {
                 return ResultData.success(hfpmProgramCfg);

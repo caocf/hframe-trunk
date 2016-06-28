@@ -1,26 +1,29 @@
 package com.hframe.controller;
 
-import com.hframe.domain.model.HfmdEntityAttr;
-import com.hframe.domain.model.HfmdEntityAttr_Example;
-import com.hframe.service.interfaces.IHfmdEntityAttrSV;
 import com.hframework.beans.controller.Pagination;
 import com.hframework.beans.controller.ResultCode;
 import com.hframework.beans.controller.ResultData;
-import com.hframework.common.helper.ControllerHelper;
 import com.hframework.common.util.ExampleUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.ServletRequestDataBinder;
-import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
+import java.util.*;
 import javax.servlet.http.HttpServletRequest;
+import org.springframework.web.bind.ServletRequestDataBinder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
+import com.hframework.web.ControllerHelper;
+import com.hframe.domain.model.HfmdEntityAttr;
+import com.hframe.domain.model.HfmdEntityAttr_Example;
+import com.hframe.service.interfaces.IHfmdEntityAttrSV;
 
 @Controller
 @RequestMapping(value = "/hframe/hfmdEntityAttr")
@@ -103,6 +106,7 @@ public class HfmdEntityAttrController   {
     public ResultData create(@ModelAttribute("hfmdEntityAttr") HfmdEntityAttr hfmdEntityAttr) {
         logger.debug("request : {}", hfmdEntityAttr);
         try {
+            ControllerHelper.setDefaultValue(hfmdEntityAttr, "hfmdEntityAttrId");
             int result = iHfmdEntityAttrSV.create(hfmdEntityAttr);
             if(result > 0) {
                 return ResultData.success(hfmdEntityAttr);
@@ -125,10 +129,14 @@ public class HfmdEntityAttrController   {
     public ResultData batchCreate(@RequestBody HfmdEntityAttr[] hfmdEntityAttrs) {
         logger.debug("request : {}", hfmdEntityAttrs);
 
-        ControllerHelper.reorderProperty(hfmdEntityAttrs);
-
         try {
-            iHfmdEntityAttrSV.batchOperate(hfmdEntityAttrs);
+            ControllerHelper.setDefaultValue(hfmdEntityAttrs, "hfmdEntityAttrId");
+            ControllerHelper.reorderProperty(hfmdEntityAttrs);
+
+            int result = iHfmdEntityAttrSV.batchOperate(hfmdEntityAttrs);
+            if(result > 0) {
+                return ResultData.success(hfmdEntityAttrs);
+            }
         } catch (Exception e) {
             logger.error("error : ", e);
             return ResultData.error(ResultCode.ERROR);
@@ -147,6 +155,7 @@ public class HfmdEntityAttrController   {
     public ResultData update(@ModelAttribute("hfmdEntityAttr") HfmdEntityAttr hfmdEntityAttr) {
         logger.debug("request : {}", hfmdEntityAttr);
         try {
+            ControllerHelper.setDefaultValue(hfmdEntityAttr, "hfmdEntityAttrId");
             int result = iHfmdEntityAttrSV.update(hfmdEntityAttr);
             if(result > 0) {
                 return ResultData.success(hfmdEntityAttr);
@@ -170,6 +179,7 @@ public class HfmdEntityAttrController   {
         logger.debug("request : {}", hfmdEntityAttr);
 
         try {
+            ControllerHelper.setDefaultValue(hfmdEntityAttr, "hfmdEntityAttrId");
             int result = iHfmdEntityAttrSV.delete(hfmdEntityAttr);
             if(result > 0) {
                 return ResultData.success(hfmdEntityAttr);

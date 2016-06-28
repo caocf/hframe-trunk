@@ -24,8 +24,8 @@ public class HfpmProgram {
 
     private Long modifyOpId;
 
-    @JsonSerialize(using = DateJsonSerializer.class)
-    @JsonDeserialize(using = DateJsonDeserializer.class)
+//    @JsonSerialize(using = DateJsonSerializer.class)
+//    @JsonDeserialize(using = DateJsonDeserializer.class)
     private Date modifyTime;
 
     private Integer delFlag;
