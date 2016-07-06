@@ -1,6 +1,6 @@
 <dateset>
     <module>hfmd</module>
-    <code>hfmd_entity</code>
+    <code>hfmd_entity121</code>
     <name>实体</name>
     <fields>
         <field code="hfpm_program_id" name="项目ID" edit-type="hidden">

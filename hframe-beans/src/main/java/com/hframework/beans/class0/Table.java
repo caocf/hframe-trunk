@@ -21,6 +21,9 @@ public class Table implements java.io.Serializable {
 	private List<Column> columnList;
 //	private List<CoreTableColumnRelationVo> CoreTableColumnRelationVo;
 
+
+	private String parentId;
+
 	// Constructors
 
 	/** default constructor */
@@ -95,7 +98,11 @@ public class Table implements java.io.Serializable {
 //	}
 
 
+	public String getParentId() {
+		return parentId;
+	}
 
-	
-	
+	public void setParentId(String parentId) {
+		this.parentId = parentId;
+	}
 }

@@ -11,7 +11,7 @@ import java.io.IOException;
  */
 public class Bootstrap {
     public static void main(String[] args) throws IOException {
-        String thirdName = "oapi.xml";
+        String thirdName = "beetle.xml";
 
         GeneratorConfig generatorConfig = GeneratorConfig.getInstance();
         System.out.println(generatorConfig.getJavaRootPath());

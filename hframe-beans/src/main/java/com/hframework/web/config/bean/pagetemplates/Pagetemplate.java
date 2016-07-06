@@ -2,6 +2,8 @@ package com.hframework.web.config.bean.pagetemplates;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
+
+import java.util.ArrayList;
 import java.util.List;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
@@ -34,7 +36,7 @@ public class Pagetemplate   {
    
  	 	 
      public List<Element> getElementList(){
-     	return elementList;
+     	return elementList == null ? new ArrayList<Element>() : elementList;
      }
 
      public void setElementList(List<Element> elementList){

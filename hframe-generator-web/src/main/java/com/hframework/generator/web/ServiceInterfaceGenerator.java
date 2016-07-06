@@ -1,5 +1,6 @@
 package com.hframework.generator.web;
 
+import com.hframework.common.util.StringUtils;
 import com.hframework.common.util.message.VelocityUtil;
 import com.hframework.beans.class0.Table;
 import com.hframework.generator.util.CreatorUtil;
@@ -37,6 +38,9 @@ public class ServiceInterfaceGenerator extends AbstractGenerator{
 		contentMap.put("ClassName", CreatorUtil.getJavaClassName(table.getTableName()));
 		contentMap.put("VarName", CreatorUtil.getJavaVarName(table.getTableName()));
 		contentMap.put("EntityName", table.getTableDesc());
+		if(StringUtils.isNotBlank(table.getParentId())) {
+			contentMap.put("ParentIdPropertyClassName", CreatorUtil.getJavaClassName(table.getParentId()));
+		}
 		String methodStr = VelocityUtil.produceTemplateContent(
 				"com/hframework/generator/vm/service_interface_method_content.vm", contentMap);
 

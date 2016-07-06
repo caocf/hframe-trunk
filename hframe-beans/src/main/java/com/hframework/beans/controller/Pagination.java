@@ -44,7 +44,7 @@ public class Pagination {
         return ( pageNo-1 ) * pageSize;
     }
     public int getEndIndex(){
-        return pageNo * pageSize;
+        return pageSize;
     }
 
     public static class PagerUtils {

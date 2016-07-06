@@ -14,4 +14,5 @@
         <property name="threadWaitMaxTime" value="${sendMsg.threadWaitMaxTime}"/>
     </bean>
     -->
+    <bean id="dataSetLoaderService" class="com.hframework.base.service.DataSetLoaderService"></bean>
 </beans>

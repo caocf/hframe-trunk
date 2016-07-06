@@ -38,13 +38,13 @@ public class SQLParseUtil {
 
 	private static int delFlag = 0;
 
-	private static final String CREATE_TABLE = "CREATE TABLE";
-	private static final String COMMENT = "COMMENT";
-	private static final String ADD_CONSTRAINT = "ADD CONSTRAINT";
-	private static final String REFERENCES = "REFERENCES";
-	private static final String FOREIGN_KEY = "FOREIGN KEY";
-	private static final String ALTER_TABLE = "ALTER TABLE";
-	private static final String DROP_TABLE_IF_EXISTS = "DROP TABLE IF EXISTS";
+	private static final String CREATE_TABLE = "create table";
+	private static final String COMMENT = "comment";
+	private static final String ADD_CONSTRAINT = "add constraint";
+	private static final String REFERENCES = "references";
+	private static final String FOREIGN_KEY = "foreign key";
+	private static final String ALTER_TABLE = "alter table";
+	private static final String DROP_TABLE_IF_EXISTS = "drop table if exists";
 
 
 	public static String parseSQL2Model(String content) {

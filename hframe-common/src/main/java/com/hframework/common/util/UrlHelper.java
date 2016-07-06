@@ -50,5 +50,18 @@ public class UrlHelper {
         return map;
     }
 
+    public static String getUrlQueryString(Map<String, String> paramMap) {
+        StringBuffer sb = new StringBuffer();
+        for (String key : paramMap.keySet()) {
+            if(StringUtils.isBlank(paramMap.get(key))) {
+                continue;
+            }
+            if(sb.length() > 0) {
+                sb.append("&");
+            }
+            sb.append(key).append("=").append(paramMap.get(key));
+        }
+        return sb.toString();
+    }
 
 }

@@ -97,22 +97,22 @@ public class DemoController {
         return modelAndView;
     }
 
-        @RequestMapping(value = "/{operate}.html")
-        public ModelAndView gotoModify(@PathVariable("operate") String operate, @ModelAttribute("account") String account, @ModelAttribute("password") String password) throws IOException {
-                logger.debug("request : {}", account, password);
-                ModelAndView modelAndView = this.gotoDefault(account, password);
-
-                modelAndView.addObject("form", JSONObject.parse(
-                        FileUtils.readFile(Thread.currentThread().getContextClassLoader().getResource(
-                                "program\\demo\\data\\demo\\form.json").getPath())));
-
-                modelAndView.addObject("list", JSONObject.parse(
-                        FileUtils.readFile(Thread.currentThread().getContextClassLoader().getResource(
-                                "program\\demo\\data\\demo\\list.json").getPath())));
-
-                modelAndView.setViewName("/" + operate);
-                return modelAndView;
-        }
+//        @RequestMapping(value = "/{operate}.html")
+//        public ModelAndView gotoModify(@PathVariable("operate") String operate, @ModelAttribute("account") String account, @ModelAttribute("password") String password) throws IOException {
+//                logger.debug("request : {}", account, password);
+//                ModelAndView modelAndView = this.gotoDefault(account, password);
+//
+//                modelAndView.addObject("form", JSONObject.parse(
+//                        FileUtils.readFile(Thread.currentThread().getContextClassLoader().getResource(
+//                                "program\\demo\\data\\demo\\form.json").getPath())));
+//
+//                modelAndView.addObject("list", JSONObject.parse(
+//                        FileUtils.readFile(Thread.currentThread().getContextClassLoader().getResource(
+//                                "program\\demo\\data\\demo\\list.json").getPath())));
+//
+//                modelAndView.setViewName("/" + operate);
+//                return modelAndView;
+//        }
 
     @RequestMapping(value = "/uc/userlist.html")
     public ModelAndView list(@PathVariable("module") String module, @PathVariable("dataset") String dataset, @ModelAttribute("account") String account, @ModelAttribute("password") String password) throws IOException {

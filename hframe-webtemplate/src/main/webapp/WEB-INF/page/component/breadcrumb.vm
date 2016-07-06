@@ -1,0 +1,24 @@
+<div class="row-fluid collapse in" style="margin-top: -10px;"  id="breadcrumb">
+    <div class="span12">
+        <form>
+        <div class="">
+            <h2>
+                <i class="icon-home"></i>
+                Home
+
+        #foreach($column in $breadcrumb.columns)
+            &nbsp;>&nbsp;
+            #set($data = $breadcrumb.data)
+            #set($value = $!data.get($column.code))
+            #set($elementSize = "medium")
+            #parse("component/element/field.vm")
+            #set($value = "" )
+        #end
+##        #foreach($item in $breadcrumb.EOF)
+##            &nbsp;&nbsp;$item.component
+##        #end
+            </h2>
+        </div>
+        </form>
+    </div>
+</div>

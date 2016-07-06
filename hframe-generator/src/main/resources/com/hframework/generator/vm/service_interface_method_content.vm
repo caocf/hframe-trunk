@@ -3,6 +3,7 @@
 #set($className = $map.get("ClassName"))
 #set($varName = $map.get("VarName"))
 #set($entityName = $map.get("EntityName"))
+#set($parentIdPropertyClassName = $map.get("ParentIdPropertyClassName"))
 
 ##模板内容
     /**
@@ -85,6 +86,16 @@
     * @throws Exception
     */
     public List<${className}> get${className}ListByExample(${className}_Example example) throws  Exception;
+
+#if($!{parentIdPropertyClassName} != "" )
+    /**
+    * 通过父级${entityName}ID查询${entityName}树
+    * @param ${varName}
+    * @return
+    * @throws Exception
+    */
+    public Map<Long, List<${className}>> get${className}TreeByParentId(${className} ${varName}, ${className}_Example example)  throws  Exception;
+#end
 
     /**
     * 通过MAP参数查询${entityName}数量

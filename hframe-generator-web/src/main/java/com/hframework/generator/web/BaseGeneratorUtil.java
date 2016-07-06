@@ -76,7 +76,8 @@ public class BaseGeneratorUtil {
             Table table = new Table();
             table.setTableName(tableConfiguration.getTableName());
             table.setTableDesc(tableConfiguration.getProperty("chineseName"));
-//            serviceGenerate("", "hframe", "hframe", table);
+            table.setParentId(tableConfiguration.getProperty("parentId"));
+            serviceGenerate("", "hframe", "hframe", table);
             controllerGenerate("", "hframe", "hframe", table);
         }
     }

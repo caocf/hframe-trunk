@@ -117,7 +117,19 @@
             </request>
             <response extend="false" message="json" beanName = "GetAdListResponse"></response>
         </interface>
-
+        <interface  path="/apibeetle/get_invest_customers" name="getInvestCustomers"  method="get" usePublicParams ="true" template="beetle/get_invest_customers.xml">
+            <request>
+                <parameters>
+                    <parameter name="node" type="String" nullable="false"  visiable="true"  ruleId="" value="" />
+                    <parameter name="cycle" type="String" nullable="false"  visiable="true"  ruleId="" value="" />
+                    <parameter name="sort" type="String" nullable="false"  visiable="true"  ruleId="" value="" />
+                    <parameter name="tt" type="int" nullable="true"  visiable="true"  ruleId="" value="" />
+                    <parameter name="offset" type="int" nullable="true"  visiable="true"  ruleId="" value="" />
+                    <parameter name="total" type="int" nullable="true"  visiable="true"  ruleId="" value="" />
+                </parameters>
+            </request>
+            <response extend="false" message="json" beanName = "GetInvestCustomers"></response>
+        </interface>
 
     </interfaces>
 </descriptor>

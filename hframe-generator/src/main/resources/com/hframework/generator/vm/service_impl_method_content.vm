@@ -3,6 +3,9 @@
 #set($className = $map.get("ClassName"))
 #set($varName = $map.get("VarName"))
 #set($entityName = $map.get("EntityName"))
+#set($parentIdPropertyClassName = $map.get("ParentIdPropertyClassName"))
+
+
 
 ##模板内容
     /**
@@ -93,6 +96,56 @@
     public ${className} get${className}ByPK(long ${varName}Id)  throws  Exception {
         return ${varName}Mapper.selectByPrimaryKey(${varName}Id);
     }
+
+#if($!{parentIdPropertyClassName} != "" )
+    /**
+    * 通过父级${entityName}ID查询${entityName}树
+    * @param ${varName}
+    * @return
+    * @throws Exception
+    */
+    public Map<Long, List<${className}>> get${className}TreeByParentId(${className} ${varName}, ${className}_Example example)  throws  Exception {
+
+        Map<Long, List<${className}>> result = new HashMap<Long, List<${className}>>();
+
+        fill${className}TreeCascade(result, Lists.newArrayList(${varName}.get${parentIdPropertyClassName}()), example);
+        return result;
+    }
+
+    private void fill${className}TreeCascade(Map<Long, List<${className}>> result, List<Long> parentIds, ${className}_Example example) {
+        if(parentIds.size() == 0) {
+            return ;
+        }
+        if(example == null) {
+            example = new ${className}_Example();
+        }
+
+        example.createCriteria().and${parentIdPropertyClassName}In(parentIds);
+        List<${className}> ${varName}s = ${varName}Mapper.selectByExample(example);
+        if(${varName}s == null || ${varName}s.size() == 0) {
+            return;
+        }
+
+        if(parentIds.size() == 1) {
+            result.put(parentIds.get(0), ${varName}s);
+        }else {
+            for (${className} ${varName} : ${varName}s) {
+                Long parentId = ${varName}.get${parentIdPropertyClassName}();
+                if(!result.containsKey(parentId)) {
+                    result.put(parentId, new ArrayList<${className}>());
+                }
+                result.get(parentId).add(${varName});
+            }
+        }
+
+        List subIds = new ArrayList();
+        for (${className} ${varName} : ${varName}s) {
+            subIds.add(${varName}.get${className}Id());
+        }
+
+        fill${className}TreeCascade(result,subIds, null);
+    }
+#end
 
     /**
     * 通过MAP参数查询${entityName}

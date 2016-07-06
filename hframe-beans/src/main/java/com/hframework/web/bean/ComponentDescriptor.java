@@ -41,6 +41,8 @@ public class ComponentDescriptor extends ElementDescriptor{
         if(resultData.getData() != null) {
             dataInstance = this.dataContainer.getDataInstance(resultData.getData());
             return dataInstance.getJson();
+        }else {
+
         }
         return null;
     }

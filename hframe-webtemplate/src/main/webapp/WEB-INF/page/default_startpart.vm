@@ -11,19 +11,22 @@
             </a>
             <a id="main-menu-toggle" class="hidden-phone open"><i class="icon-reorder"></i></a>
             <div class="row-fluid">
-                <a class="brand span2" href="index.html"><span>${programName}</span></a>
+                <a class="brand span2" href="/index.html"><span>${programName}</span></a>
             </div>
             <!-- start: Header Menu -->
             <div class="nav-no-collapse header-nav">
+                <ul class="nav pull-right">
                 #parse("component/topFastMenu.vm")
+                #parse("component/personal.vm")
+                </ul>
             </div>
             <!-- end: Header Menu -->
 
         </div>
     </div>
 </div>
-<!-- start: Header -->
 
+<!-- start: Header -->
 <div class="container-fluid-full">
     <div class="row-fluid">
 
@@ -37,6 +40,7 @@
             </div>
 
             <div class="nav-collapse sidebar-nav">
+                #set($menus = $leftMenuTree.menus)
                 #parse("component/leftMenuTree.vm")
             </div>
         </div>
@@ -44,3 +48,4 @@
 
         <!-- start: Content -->
         <div id="content" class="span10">
+            #parse("component/breadcrumb.vm")

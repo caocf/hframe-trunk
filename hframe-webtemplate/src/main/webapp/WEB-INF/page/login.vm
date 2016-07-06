@@ -1,0 +1,15 @@
+#parse("blank_startpart.vm")
+
+<body>
+		<div class="container-fluid-full">
+		<div class="row-fluid">
+
+			#parse("component/login.vm")
+
+				</div><!--/fluid-row-->
+				
+	</div><!--/.fluid-container-->
+
+			#parse("blank_endpart.vm")
+</body>
+</html>

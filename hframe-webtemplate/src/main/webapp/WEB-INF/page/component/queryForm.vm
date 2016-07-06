@@ -15,7 +15,9 @@
                 #foreach($column in $form.columns)
                     #if($column.editType == "hidden")
                         #set($data = $form.data)
+                        #set($value = $!data.get($column.code))
                         #parse("component/element/field.vm")
+                        #set($value = "")
                     #else
                         #if($columnCount%$showColumns == 0)
                             <div class="row-fluid">
@@ -28,6 +30,7 @@
                                             #set($value = $!data.get($column.code))
                                             #set($elementSize = "medium")
                                             #parse("component/element/field.vm")
+                                            #set($value = "")
                                         </div>
                                     </div>
                                 </div>

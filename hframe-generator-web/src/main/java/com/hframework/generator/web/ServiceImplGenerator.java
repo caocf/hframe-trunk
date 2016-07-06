@@ -25,6 +25,8 @@ public class ServiceImplGenerator extends AbstractGenerator{
 		editClass.addImportClass("java.util.*");
 		editClass.addImportClass("org.springframework.stereotype.Service");
 		editClass.addImportClass("javax.annotation.Resource");
+		editClass.addImportClass("com.google.common.collect.Lists");
+
 
 		editClass.addImportClass(poClass.getClassPath());
 		editClass.addImportClass(poExampleClass.getClassPath());
@@ -47,6 +49,10 @@ public class ServiceImplGenerator extends AbstractGenerator{
 		contentMap.put("ClassName", CreatorUtil.getJavaClassName(table.getTableName()));
 		contentMap.put("VarName", CreatorUtil.getJavaVarName(table.getTableName()));
 		contentMap.put("EntityName", table.getTableDesc());
+		if(StringUtils.isNotBlank(table.getParentId())) {
+			contentMap.put("ParentIdPropertyClassName", CreatorUtil.getJavaClassName(table.getParentId()));
+		}
+
 		String methodStr = VelocityUtil.produceTemplateContent(
 				"com/hframework/generator/vm/service_impl_method_content.vm", contentMap);
 

@@ -73,12 +73,12 @@ public class SqlParseUtilTest {
             }
             hfModelContainer.setEntityMap(entityMap);
 
-            //获取实体属�?�信�?
+            //获取实体属�?�信�?
             HfmdEntityAttr_Example entityAttrExample = new HfmdEntityAttr_Example();
             entityAttrExample.or().andHfpmProgramIdEqualTo(programId);
             List<HfmdEntityAttr> hfmdEntityAttrList = iHfmdEntityAttrSV.getHfmdEntityAttrListByExample(entityAttrExample);
             if(hfmdEntityAttrList != null && hfmdEntityAttrList.size() > 0) {
-                //实体属�?�信�?<entityCode.entityAttrCode,HfmdEntityAttr>
+                //实体属�?�信�?<entityCode.entityAttrCode,HfmdEntityAttr>
                 Map<String,HfmdEntityAttr> entityAttrMap = new HashMap<String, HfmdEntityAttr>();
                 for (HfmdEntityAttr hfmdEntityAttr : hfmdEntityAttrList) {
                     HfmdEntity entity =  entityIdEntityMap.get(hfmdEntityAttr.getHfmdEntityId());
@@ -87,7 +87,7 @@ public class SqlParseUtilTest {
                 hfModelContainer.setEntityAttrMap(entityAttrMap);
             }
 
-            //获取数据集信�?
+            //获取数据集信�?
             HfpmDataSet_Example dataSetExample = new HfpmDataSet_Example();
             dataSetExample.or() .andHfpmProgramIdEqualTo(programId);
             List<HfpmDataSet> hfpmDataSets = iHfpmDataSetSV.getHfpmDataSetListByExample(dataSetExample);
@@ -98,7 +98,7 @@ public class SqlParseUtilTest {
                 hfModelContainer.setDataFieldListMap(dataFieldListMap);
                 for (HfpmDataSet hfpmDataSet : hfpmDataSets) {
                     dataSetMap.put(hfpmDataSet.getHfpmDataSetCode(),hfpmDataSet);
-                    //获取数据列信�?
+                    //获取数据列信�?
                     HfpmDataField_Example dataFieldExample = new HfpmDataField_Example();
                     dataFieldExample.or().andHfpmDataSetIdEqualTo(hfpmDataSet.getHfpmDataSetId());
                     List<HfpmDataField> hfpmDataFieldList = iHfpmDataFieldSV.getHfpmDataFieldListByExample(dataFieldExample);
@@ -147,7 +147,7 @@ public class SqlParseUtilTest {
         String rootClassPath = Thread.currentThread().getContextClassLoader ().getResource("").getPath();
         System.out.println(rootClassPath);
 //        String filePath = rootClassPath + "\\reversesql\\sql.sql";
-        String filePath ="/E:/myworkspace/hframe-trunk/hframe-generator/target/classes/reversesql/sql.sql";
+        String filePath ="/D:/my_workspace/hframe-trunk/hframe-generator/target/classes/reversesql/sql.sql";
 
         String programCode = "hframe";
         String programeName = "框架";
@@ -203,7 +203,7 @@ public class SqlParseUtilTest {
             }
         }
 
-        //实体属�?�信�?
+        //实体属�?�信�?
         Map<String,HfmdEntityAttr> targetEntityAttrMap = hfModelContainer.getEntityAttrMap();
         if(targetEntityAttrMap != null) {
             for (String emtityAttrCode : targetEntityAttrMap.keySet()) {
@@ -227,9 +227,11 @@ public class SqlParseUtilTest {
         }
         Map<String, List<HfpmDataField>> dataFieldListMap = hfModelContainer.getDataFieldListMap();
         if(dataFieldListMap != null) {
-            for (List<HfpmDataField> hfpmDataFieldList : dataFieldListMap.values()) {
+            for (String dataSetCode : dataFieldListMap.keySet()) {
+                List<HfpmDataField> hfpmDataFieldList =  dataFieldListMap.get(dataSetCode);
                 if(hfpmDataFieldList != null) {
                     for (HfpmDataField hfpmDataField : hfpmDataFieldList) {
+                        hfpmDataField.setHfpmDataSetId(dataSetMap.get(dataSetCode).getHfpmDataSetId());
                         if(operType == 1) {
                             iHfpmDataFieldSV.create(hfpmDataField);
                         }else {

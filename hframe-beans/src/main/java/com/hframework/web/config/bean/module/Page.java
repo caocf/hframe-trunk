@@ -15,6 +15,9 @@ public class Page   {
 	@XStreamImplicit
     @XStreamAlias("component")
 	private List<Component> componentList;
+    @XStreamImplicit
+    @XStreamAlias("element")
+    private List<Element> elementList;
 	@XStreamAlias("event")
 	private String event;
 	@XStreamAsAttribute
@@ -26,10 +29,9 @@ public class Page   {
 	@XStreamAsAttribute
     @XStreamAlias("page-template")
 	private String pageTemplate;
-
+    @XStreamAsAttribute
+    @XStreamAlias("data-set")
 	private String dataSet;
-
-
     @XStreamAsAttribute
     @XStreamAlias("rel-page")
     private String relPage;
@@ -39,7 +41,7 @@ public class Page   {
    
  	 	 
      public List<Component> getComponentList(){
-     	return componentList == null ? new ArrayList<Component>() : componentList;
+     	return componentList == null ? componentList = new ArrayList<Component>() : componentList;
      }
 
      public void setComponentList(List<Component> componentList){
@@ -92,5 +94,13 @@ public class Page   {
 
     public void setRelPage(String relPage) {
         this.relPage = relPage;
+    }
+
+    public List<Element> getElementList() {
+        return elementList == null ? new ArrayList<Element>() : elementList;
+    }
+
+    public void setElementList(List<Element> elementList) {
+        this.elementList = elementList;
     }
 }

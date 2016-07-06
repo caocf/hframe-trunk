@@ -32,7 +32,7 @@
                     <th width="20px">$list.BOFR.get(0).component</th>
                 #end
                 #foreach($column in $list.columns)
-                    <th>$column.name</th>
+                    <th width="$!column.width">$column.name</th>
                 #end
                 #if($list.EOFR)
                     <th width="150px;">操作</th>

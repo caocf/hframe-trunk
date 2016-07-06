@@ -1,5 +1,5 @@
 
-<div class="box span12 hflist" id='$list.id'  module="$module" page="$page" param="$!param" component="$list.component">
+<div class="box span12 hflist" id='$list.id'  module="$module" page="$page" param="$!list.param" component="$list.component">
     <div class="box-header">
         <h2><i class="$list.icon"></i><span class="break"></span>$list.title</h2>
         <div class="box-icon">
@@ -18,11 +18,11 @@
                 #end
                 #foreach($column in $list.columns)
                     #if($column.editType != "hidden")
-                        <th>$column.name</th>
+                        <th width="$column.width">$column.name</th>
                     #end
                 #end
                 #if($list.EOFR)
-                    <th width="200px;">操作</th>
+                    <th width="20%;">操作</th>
                 #end
             </tr>
             </thead>
@@ -38,7 +38,7 @@
                         #set($column = ${list.columns.get($count)})
                         #if($column.editType != "hidden")
                             <td>
-                                #set($elementSize = "mini")
+                                #set($elementSize = "mini span12")
                                 #parse("component/element/field.vm")
                             </td>
                         #else

@@ -17,8 +17,12 @@
 #parse("component/element/_field.vm")
 ##拥有多个类型的时候
 
-<div class="form-group form-inline">
-#foreach($showType in $column.ShowTypes)
-	#parse("component/element/_field.vm")
+
+#if($column.ShowTypes)
+	<div class="form-group form-inline">
+		#foreach($showType in $column.ShowTypes)
+		#parse("component/element/_field.vm")
+	#end
+	</div>
 #end
-</div>
+

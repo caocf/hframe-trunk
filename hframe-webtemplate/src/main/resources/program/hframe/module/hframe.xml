@@ -1,6 +1,5 @@
 <module code="hframe">
 
-
     <page id="hfpm_program_mgr" name="项目管理" page-template="qlist" data-set="hframe/hfpm_program">
         <component id="qForm" data-set="hframe/hfpm_program_DS4Q"></component>
     </page>
@@ -66,6 +65,14 @@
         <component id="dForm" data-set="hframe/hfpm_data_set"></component>
         <component id="qList" data-set="hframe/hfpm_data_field"></component>
     </page>
+
+    <page id="hfsec_menu_mgr" name="菜单管理" page-template="qlist" data-set="hframe/hfsec_menu">
+        <component id="qForm" data-set="hframe/hfsec_menu_DS4Q"></component>
+    </page>
+    <page id="hfsec_menu_create" name="菜单创建" page-template="create" data-set="hframe/hfsec_menu"></page>
+    <page id="hfsec_menu_edit" name="菜单修改" page-template="edit" data-set="hframe/hfsec_menu"></page>
+    <page id="hfsec_menu_detail" name="菜单明细" page-template="edit" data-set="hframe/hfsec_menu"></page>
+
 </module>
 
 <!--<module code="hfmd" name="数据建模">-->

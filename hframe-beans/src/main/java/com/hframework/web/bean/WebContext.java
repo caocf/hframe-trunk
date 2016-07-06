@@ -2,12 +2,15 @@ package com.hframework.web.bean;
 
 import com.alibaba.fastjson.JSONObject;
 import com.hframework.common.util.EnumUtils;
+import com.hframework.common.util.ReflectUtils;
 import com.hframework.common.util.StringUtils;
 import com.hframework.common.util.message.XmlUtils;
 import com.hframework.web.CreatorUtil;
 import com.hframework.web.config.bean.*;
 import com.hframework.web.config.bean.Component;
 import com.hframework.web.config.bean.Module;
+import com.hframework.web.config.bean.dataset.Field;
+import com.hframework.web.config.bean.mapper.Mapping;
 import com.hframework.web.config.bean.module.*;
 import com.hframework.web.config.bean.pagetemplates.Element;
 import com.hframework.web.config.bean.pagetemplates.Pagetemplate;
@@ -46,11 +49,19 @@ public class WebContext {
     private static final String COMPONENT_DEFAULT_MAPPER_DIR = "hframework/template/default/compMapper";
     private static final String PAGE_DESCRIPTER_FILE = "hframework/template/default/page/pagedescripter.xml";
 
+
+    private Map<String, com.hframework.web.config.bean.module.Component> defaultComponentMap
+            = new HashMap<String, com.hframework.web.config.bean.module.Component>();
+    private Map<String, com.hframework.web.config.bean.module.Element> defaultElementMap
+            = new HashMap<String, com.hframework.web.config.bean.module.Element>();
+
+
     private static WebContext context = new WebContext();
-    static {
+
+    public WebContext() {
         try {
             logger.info("web context init ..");
-            context.init();
+            init();
             logger.info("web context init ok !", JSONObject.toJSONString(context));
         } catch (Exception e) {
             logger.error("web context init error : ", e);
@@ -103,9 +114,22 @@ public class WebContext {
             }catch (Exception e) {
                 //针对于查询类的dateset无需缓存
             }
+        }
 
-
-
+        for (DataSetDescriptor dataSetDescriptor : dataSetCache.values()) {
+            List<Field> fieldList = dataSetDescriptor.getDataSet().getFields().getFieldList();
+            for (Field field : fieldList) {
+                if(field.getRel() != null && field.getRel().getEntityCode() != null) {
+                    String entityCode = field.getRel().getEntityCode();
+                    String dataSetCode = entityCode.substring(0, entityCode.indexOf("/"));
+                    String relFieldCode = entityCode.substring(entityCode.indexOf("/") + 1, entityCode.lastIndexOf("/"));
+                    com.hframework.beans.class0.Class relPoClass =
+                            CreatorUtil.getDefPoClass("",
+                                    program.getCode(), "hframe", dataSetCode);
+                    DataSetDescriptor relDataSetDescriptor = dataSetCache.get(Class.forName(relPoClass.getClassPath()));
+                    dataSetDescriptor.addRelDataSet(field.getCode(), dataSetCode + "/" + relFieldCode, relDataSetDescriptor);
+                }
+            }
         }
     }
 
@@ -118,6 +142,18 @@ public class WebContext {
                 continue;
             }
             for (Page page : pageList) {
+                if(StringUtils.isBlank(page.getId()) && StringUtils.isBlank(moduleCode)) {
+                    List<com.hframework.web.config.bean.module.Component> pubComponentList = page.getComponentList();
+                    for (com.hframework.web.config.bean.module.Component component : pubComponentList) {
+                        defaultComponentMap.put(component.getId(), component);
+                    }
+                    List<com.hframework.web.config.bean.module.Element> elementList = page.getElementList();
+                    for (com.hframework.web.config.bean.module.Element element : elementList) {
+                        defaultElementMap.put(element.getId(),element);
+                    }
+
+                    continue;
+                }
                 pageSetting.get(moduleCode).put(page.getId(), parsePageDescriptor(page, moduleCode));
             }
         }
@@ -166,13 +202,15 @@ public class WebContext {
 
         //获取组件级初始化信息。
         List<com.hframework.web.config.bean.module.Component> componentList = page.getComponentList();
+        //将默认的组件配置添加到每一个page，如果page中没有该组件，需要兼容处理
+        componentList.addAll(defaultComponentMap.values());
         for (com.hframework.web.config.bean.module.Component component : componentList) {
             if(StringUtils.isBlank(component.getDataSet())) {
                 component.setDataSet(page.getDataSet());
             }
             Mapper mapper = null;
-            if(mappers.get(page.getDataSet() + "_" + component.getId()) != null) {
-                mapper = mappers.get(page.getDataSet() + "_" + component.getId());
+            if(mappers.get(component.getDataSet() + "_" + component.getId()) != null) {
+                mapper = mappers.get(component.getDataSet() + "_" + component.getId());
             }
 
             if(mappers.get(component.getId()) != null) {
@@ -184,13 +222,40 @@ public class WebContext {
                 continue;
             }
             ComponentDescriptor componentDescriptor = pageDescriptor.getComponentDescriptor(component.getId());
-            componentDescriptor.setMapper(mapper);
-            componentDescriptor.setDataSetDescriptor(dataSets.get(component.getDataSet()));
-            componentDescriptor.initComponentDataContainer();
+            if(componentDescriptor != null) {
+                componentDescriptor.setMapper(mapper);
+                componentDescriptor.setDataSetDescriptor(dataSets.get(component.getDataSet()));
+                componentDescriptor.initComponentDataContainer();
+            }
+//            Map<String, ElementDescriptor> elements = pageDescriptor.getElements();
+//            for (String key : elements.keySet()) {
+//                ElementDescriptor elementDescriptor = elements.get(key);
+//                if (elementDescriptor instanceof StringDescriptor) {
+//                    StringDescriptor descriptor = (StringDescriptor) elementDescriptor;
+//                    List<Mapping> mappingList = mapper.getBaseMapper().getMappingList();
+//                    for (Mapping mapping : mappingList) {
+//                        if(key.equals(mapping.getId())) {
+//                            descriptor.setValue(mapping.getValue());
+//                        }
+//                    }
+//                }
+//            }
+
         }
 
 
         return pageDescriptor;
+    }
+
+    public Mapper getMapper(String dataSet, String componentId) {
+        if(mappers.get(dataSet + "_" + componentId) != null) {
+            return mappers.get(dataSet + "_" + componentId);
+        }
+        return mappers.get(componentId);
+    }
+
+    public String getElementValue(String elementId) {
+        return defaultElementMap.get(elementId) != null ? defaultElementMap.get(elementId).getValue() : null;
     }
 
     private ElementDescriptor parseContainerDescriptor(Element element) {
@@ -217,7 +282,8 @@ public class WebContext {
 
     private Stack<Pagetemplate>  getPageTemplateStack(String pageTemplateId, Stack<Pagetemplate> pageTemplateStack) {
         Pagetemplate pageTemplate = pageTemplates.get(pageTemplateId);
-        pageTemplateStack.add(pageTemplate);
+        pageTemplateStack.add(0,pageTemplate);
+//        pageTemplateStack.add(pageTemplate);
         if(StringUtils.isNotBlank(pageTemplate.getParentId())) {
             getPageTemplateStack(pageTemplate.getParentId(), pageTemplateStack);
         }
@@ -267,6 +333,14 @@ public class WebContext {
         return context;
     }
 
+    public synchronized static WebContext reload(){
+        WebContext newContext = new WebContext();
+        context = newContext;
+        return context;
+    }
+
+
+
     public PageDescriptor getPageInfo(String module, String pageCode) {
 //        try {
 //            context.init();
@@ -297,10 +371,18 @@ public class WebContext {
         this.dataSetCache = dataSetCache;
     }
 
+    public Map<String, com.hframework.web.config.bean.module.Component> getDefaultComponentMap() {
+        return defaultComponentMap;
+    }
+
+    public void setDefaultComponentMap(Map<String, com.hframework.web.config.bean.module.Component> defaultComponentMap) {
+        this.defaultComponentMap = defaultComponentMap;
+    }
+
     public static <T> void add(T data) {
         Class<?> aClass = data.getClass();
         String simpleName = aClass.getName();
-        Context.put(simpleName,data);
+        Context.put(simpleName, data);
     }
 
     public static void clear() {
@@ -308,11 +390,30 @@ public class WebContext {
     }
 
     public static <T> void put(String key, T data) {
-        Context.put(key,data);
+        Context.put(key, data);
     }
 
     public static <T> T get(String key) {
         return Context.get(key);
+    }
+
+    public static <T> boolean fillProperty(String key, T t, String propertyName, String relPropertyName) {
+        Object cacheObject = get(key);
+        if(cacheObject != null) {
+            Object propertyValue;
+            if(cacheObject instanceof Map) {
+                propertyValue  = ((Map)cacheObject).get(relPropertyName);
+            }else {
+                propertyValue = ReflectUtils.getFieldValue(cacheObject, relPropertyName);
+            }
+            if(propertyValue != null) {
+                ReflectUtils.setFieldValue(t,propertyName, propertyValue);
+                return true;
+            }
+
+        }
+
+        return false;
     }
 
     public static class Context{
@@ -355,4 +456,5 @@ public class WebContext {
             this.t = t;
         }
     }
+
 }

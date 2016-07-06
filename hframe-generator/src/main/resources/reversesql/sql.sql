@@ -617,8 +617,53 @@ create table hfus_entity_attr
    del_flag             int(2) comment '删除标识',
    primary key (hfus_entity_attr_id)
 );
-
 alter table hfus_entity_attr comment '常用实体属性';
+
+
+create table hfsec_user
+(
+   hfsec_user_id  bigint not null comment '用户ID',
+   hfsec_user_name varchar(64) not null comment '用户名称',
+   account varchar(64) not null comment '用户账号',
+   password varchar(128) default NULL comment '用户密码',
+   gender            int(2) default NULL comment '性别',
+   mobile             varchar(6) comment '手机号',
+   email             int(2) default NULL comment '邮箱',
+   addr             int(2) default NULL comment '地址',
+   last_login_time datetime comment '上次登录时间',
+   status     int(2)  comment '状态' ,
+   hfuc_org_id bigint comment '归属组织ID',
+   creator_id                bigint comment '创建人',
+   create_time          datetime comment '创建时间',
+   modifier_id         bigint comment '修改人',
+   modify_time          datetime comment '修改时间',
+   del_flag             int(2) comment '删除标识',
+   primary key (hfsec_user_id)
+);
+alter table hfsec_user comment '用户';
+
+
+create table hfsec_menu (
+  hfsec_menu_id bigint(20) not null  comment '菜单ID',
+  hfsec_menu_code varchar(64) not null comment '菜单编码',
+  hfsec_menu_name varchar(128) not null comment '菜单名称',
+  hfsec_menu_desc varchar(128)  comment '菜单描述',
+  menu_level int(2)  comment '菜单级别',
+  icon varchar(64)  comment '图标',
+  url varchar(128)  comment '地址',
+  parent_hfsec_menu_id bigint(20) comment '父级菜单ID',
+  hfpm_program_id bigint(20) comment '项目ID',
+  hfpm_module_id bigint(20) comment '模块ID',
+  pri decimal(6,2) comment '优先级',
+  creator_id bigint(20) comment '创建人',
+  create_time datetime comment '创建时间',
+  modifier_id bigint(20) comment '修改人',
+  modify_time datetime comment '修改时间',
+  del_flag int(2) comment '删除标识',
+  primary key (hfsec_menu_id)
+);
+alter table hfsec_menu comment '菜单';
+
 
 /*==============================================================*/
 /* Table: hfus_entity_type_relat_entity_attr                    */

@@ -2,7 +2,7 @@
     <name>get_repay_plan</name>
     <url>
         <![CDATA[
-            http://test.lcs.ncfgroup.com/apibeetle/get_repay_plan?p2p_id=1&page=0&page_num=20&status=0&sign=6ce7a626c836c59f620025fe6fe9efbe&time=1461139244&client=face&sign_type=md5
+            http://test.lcs.ncfgroup.com/apibeetle/get_invest_customers?sign=ff46b857068928a2ccf420880f616f5a&node=503589&cycle=total&sort=invest_money&offset=1&total=10&time=1461139221&client=face&sign_type=md5&tt=1
                 ]]>
         </url>
     <requestMessage>

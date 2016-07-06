@@ -8,7 +8,9 @@ import org.springframework.beans.BeanUtils;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by zhangquanhong on 2016/6/23.
@@ -69,28 +71,84 @@ public class ControllerHelper {
 
     private static <T> void setRelationFieldValue(T object, OperateType operateType) throws Exception {
         DataSetDescriptor dataSet = WebContext.get().getDataSet(object.getClass());
-        List<Field> fieldList = dataSet.getDataSet().getFields().getFieldList();
-        for (Field field : fieldList) {
-            if(field.getRel() != null && field.getRel().getEntityCode() != null) {
-                String fieldCode = CreatorUtil.getJavaVarName(field.getCode());
-                Object origFieldValue = ReflectUtils.getFieldValue(object, fieldCode);
-                if(origFieldValue != null && !"".equals(origFieldValue)) {
-                    continue;
-                }
-                String entityCode = field.getRel().getEntityCode();
-                String dataSetCode = entityCode.substring(0, entityCode.indexOf("/"));
-                String relFieldCode = entityCode.substring(entityCode.indexOf("/") + 1, entityCode.lastIndexOf("/"));
-                com.hframework.beans.class0.Class relPoClass =
-                        CreatorUtil.getDefPoClass("",
-                                WebContext.get().getProgram().getCode(), "hframe", dataSetCode);
-                Object relPo = WebContext.get(Class.forName(relPoClass.getClassPath()).getName());
-                if(relPo != null) {
-                    String relFieldName = CreatorUtil.getJavaVarName(relFieldCode);
-                    Object fieldValue = ReflectUtils.getFieldValue(relPo, relFieldName);
-                    ReflectUtils.setFieldValue(object,fieldCode, fieldValue);
-                }
+        Map<String, String> relFieldKeyMap = dataSet.getRelFieldKeyMap();
+        Map<String, DataSetDescriptor> relDataSetMap = dataSet.getRelDataSetMap();
+        Map<String, Object> relFieldValueMap = new HashMap<String, Object>();
+        //对页面及页面流中对象外键直接赋值
+        for (String fieldCode : relFieldKeyMap.keySet()) {
+            String propertyName = CreatorUtil.getJavaVarName(fieldCode);
+            Object origFieldValue = ReflectUtils.getFieldValue(object, propertyName);
+            if(origFieldValue != null && !"".equals(origFieldValue)) {
+                continue;
+            }
+
+            String relFieldCode = relFieldKeyMap.get(fieldCode).substring(relFieldKeyMap.get(fieldCode).indexOf("/") + 1);
+            DataSetDescriptor relDataSetDescriptor = relDataSetMap.get(relFieldKeyMap.get(fieldCode));
+
+            com.hframework.beans.class0.Class relPoClass =
+                    CreatorUtil.getDefPoClass("",
+                            WebContext.get().getProgram().getCode(), "hframe", relDataSetDescriptor.getDataSet().getCode());
+            Object relPo = WebContext.get(Class.forName(relPoClass.getClassPath()).getName());
+
+            //从页面上下文中获取数据
+            boolean fillResult = WebContext.fillProperty(
+                    Class.forName(relPoClass.getClassPath()).getName(), object, propertyName, CreatorUtil.getJavaVarName(relFieldCode));
+            if(relPo != null) {
+                relFieldValueMap.putAll(relDataSetDescriptor.getRelFieldValueMap(relPo));;
+            }
+            if(!fillResult) {
+                //从页面流上线文中获取数据
+                WebContext.fillProperty(Map.class.getName(), object, propertyName, CreatorUtil.getJavaVarName(relFieldCode));
             }
         }
+        //对页面及页面流中对象的对象进行赋值
+        for (String fieldCode : relFieldKeyMap.keySet()) {
+            String propertyName = CreatorUtil.getJavaVarName(fieldCode);
+            Object origFieldValue = ReflectUtils.getFieldValue(object, propertyName);
+            if(origFieldValue != null && !"".equals(origFieldValue)) {
+                continue;
+            }
+            String key = relFieldKeyMap.get(fieldCode);
+            if(relFieldValueMap.containsKey(key)) {
+                ReflectUtils.setFieldValue(object,propertyName, relFieldValueMap.get(key));
+            }
+        }
+
+        //TODO 对页面及页面流中对象的对象的对象(迭代）进行赋值
+//        List<Field> fieldList = dataSet.getDataSet().getFields().getFieldList();
+//        for (Field field : fieldList) {
+//            if(field.getRel() != null && field.getRel().getEntityCode() != null) {
+//                String fieldCode = CreatorUtil.getJavaVarName(field.getCode());
+//                Object origFieldValue = ReflectUtils.getFieldValue(object, fieldCode);
+//                if(origFieldValue != null && !"".equals(origFieldValue)) {
+//                    continue;
+//                }
+//                String entityCode = field.getRel().getEntityCode();
+//                String dataSetCode = entityCode.substring(0, entityCode.indexOf("/"));
+//                String relFieldCode = entityCode.substring(entityCode.indexOf("/") + 1, entityCode.lastIndexOf("/"));
+//                com.hframework.beans.class0.Class relPoClass =
+//                        CreatorUtil.getDefPoClass("",
+//                                WebContext.get().getProgram().getCode(), "hframe", dataSetCode);
+//                //从页面上下文中获取数据
+//                boolean fillResult = WebContext.fillProperty(
+//                        Class.forName(relPoClass.getClassPath()).getName(), object, fieldCode, CreatorUtil.getJavaVarName(relFieldCode));
+//                if(!fillResult) {
+//                    //从页面流上线文中获取数据
+//                    WebContext.fillProperty(Map.class.getName(), object, fieldCode, CreatorUtil.getJavaVarName(relFieldCode));
+//                }
+//
+//                if(!fillResult) {
+//
+//                }
+////                Object relPo = WebContext.get(Class.forName(relPoClass.getClassPath()).getName());
+////                if(relPo != null) {
+////                    String relFieldName = CreatorUtil.getJavaVarName(relFieldCode);
+////                    Object fieldValue = ReflectUtils.getFieldValue(relPo, relFieldName);
+////                    ReflectUtils.setFieldValue(object,fieldCode, fieldValue);
+////                }
+//
+//            }
+//        }
     }
 
     public static <T> void setDefaultValue(T[] objects, String keyPropertyName) throws Exception {

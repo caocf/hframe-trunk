@@ -7,11 +7,25 @@ require(['layer','ajax','js/hframework/errormsg','js/hframework/list'], function
         return false;
     });
 
+    $("a").click(function(){
+        var href = $(this).attr("href");
+        if(href.endsWith(".json") || href.endsWith(".html")) {
+            $(this).attr("orig-href", $(this).attr("href"));
+            $(this).attr("href", $(this).attr("orig-href") + "?" +　getPageContextInfo());
+        }
+
+    });
+
     $(".hfhref").live("click", function(){
         $action =JSON.parse($(this).attr("action"));
         $param  = formatContent($(this).attr("params"), $(this));
+        $contextValues = getPageContextInfo();
+        if($contextValues) {
+            $param = $contextValues + "&" + $param;
+        }
         doEvent($action, $param, $(this));
     });
+
 
     function doEvent($action, $param, $this){
         $type = null;
@@ -25,6 +39,12 @@ require(['layer','ajax','js/hframework/errormsg','js/hframework/list'], function
             var isStack =$action[$type].isStack;
             location.href = url + "?" + $param;
         }else if($type == "confirm") {
+            var content = formatContent($action[$type].content,$this);
+            showConfirmDialog(content,function(){
+                delete $action[$type];
+                doEvent($action,$param,$this);
+            });
+        }else if($type == "alert") {
             var content = formatContent($action[$type].content,$this);
             showConfirmDialog(content,function(){
                 delete $action[$type];
@@ -91,14 +111,15 @@ require(['layer','ajax','js/hframework/errormsg','js/hframework/list'], function
         }else if($type == "component.reload") {
 
             var targetId = $action[$type].targetId;
+            $targetComponent = $this.parents("[component]")[0]
             if(targetId) {
                 $targetComponent = $("[component=" + targetId + "]");
-                $thisForm = $this.parents("form")[0];
-                $targetComponent.attr("param",$($thisForm).serialize());
-                alert($($thisForm).serialize());
-                delete $action[$type];
-                refreshList(1,$targetComponent);
             }
+            $thisForm = $this.parents("form")[0];
+            $($targetComponent).attr("param",$($thisForm).serialize());
+            //alert($($thisForm).serialize());
+            delete $action[$type];
+            refreshList(1,$targetComponent);
         }else if($type == "component.row.add") {
             $curRow = $this.parents("tr")[0];
             $newRow = $($curRow).clone();
@@ -169,6 +190,9 @@ require(['layer','ajax','js/hframework/errormsg','js/hframework/list'], function
 
     function parseUrlParamToObject($paramStr){
         var result = {};
+        if(!$paramStr) {
+            return result;
+        }
         $params = $paramStr.split("&");
         for($index in $params) {
             var key = $params[$index].substring(0, $params[$index].indexOf("="));
@@ -192,10 +216,19 @@ require(['layer','ajax','js/hframework/errormsg','js/hframework/list'], function
     }
 
     function formatContent($param, $this){
-        $position = $param.substring($param.indexOf("{") + 1, $param.indexOf("}"));
-        $value = $this.parents("tr").find("span[code="+ $position +"]").text();
-        return $param.replace("{" + $position +"}",$value);
+        if($param) {
+            $position = $param.substring($param.indexOf("{") + 1, $param.indexOf("}"));
+            $value = $this.parents("tr").find("span[code="+ $position +"]").text();
+            return $param.replace("{" + $position +"}",$value);
+        }
+       return null;
     }
+
+    function getPageContextInfo(){
+        $pageContextValues = $($("#breadcrumb").find("form")[0]).serialize();
+        return $pageContextValues;
+    }
+
 
     function showDialog(url, ok){
         layer.open({

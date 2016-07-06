@@ -16,18 +16,17 @@ public class CommonGeneratorTest {
     @Test
     public void serviceGenerate() throws Exception {
         Table table = new Table();
-        table.setTableName("sec_user");
+        table.setTableName("hfsec_user");
         table.setTableDesc("用户");
-
         BaseGeneratorUtil.serviceGenerate("", "hframe", "hframe", table);
     }
 
     @Test
     public void controllerGenerate() throws Exception {
         Table table = new Table();
-        table.setTableName("sec_user");
+        table.setTableName("hfsec_user");
         table.setTableDesc("用户");
-
+//        table.setParentId("parent_hfsec_menu_id");
         BaseGeneratorUtil.controllerGenerate("", "hframe", "hframe", table);
     }
 

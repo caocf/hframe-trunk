@@ -3,6 +3,8 @@
 #set($className = $map.get("ClassName"))
 #set($varName = $map.get("VarName"))
 #set($entityName = $map.get("EntityName"))
+#set($parentIdPropertyClassName = $map.get("ParentIdPropertyClassName"))
+
 
 #set($seviceVarName = $map.get("SeviceVarName"))
 #set($poExampleClassName = $map.get("PoExampleClassName"))
@@ -47,6 +49,33 @@
         }
     }
 
+
+#if($!{parentIdPropertyClassName} != "" )
+    /**
+    * 查询展示${entityName}树
+    * @param ${varName}
+    * @return
+    * @throws Throwable
+    */
+    @RequestMapping(value = "/queryTeeByAjax.json")
+    @ResponseBody
+    public ResultData tree(@ModelAttribute("${varName}") ${className} ${varName},
+                         @ModelAttribute("example") ${poExampleClassName} example){
+        logger.debug("request : {},{}", ${varName}, example);
+        try{
+            ExampleUtils.parseExample(${varName}, example);
+
+            Map<Long, List< ${className}>> treeMap =
+                    ${seviceVarName}.get${className}TreeByParentId(${varName}, example);
+
+            return ResultData.success(treeMap);
+        }catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+    }
+#end
+
     /**
      * 查询展示${entityName}明细
      * @param ${varName}
@@ -59,6 +88,43 @@
         logger.debug("request : {},{}", ${varName}.get${className}Id(), ${varName});
         try{
             ${className} result = ${seviceVarName}.get${className}ByPK(${varName}.get${className}Id());
+            if(result != null) {
+                return ResultData.success(result);
+            }else {
+                return ResultData.error(ResultCode.RECODE_IS_NOT_EXISTS);
+            }
+        }catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+    }
+
+    /**
+    * 搜索一个${entityName}
+    * @param  ${varName}
+    * @return
+    * @throws Throwable
+    */
+    @RequestMapping(value = "/searchOneByAjax.json")
+    @ResponseBody
+    public ResultData search(@ModelAttribute(" ${varName}") ${className}  ${varName}){
+        logger.debug("request : {}",  ${varName});
+        try{
+            ${className} result = null;
+            if(${varName}.get${className}Id() != null) {
+                result =  ${seviceVarName}.get${className}ByPK(${varName}.get${className}Id());
+            }else {
+                ${poExampleClassName} example = ExampleUtils.parseExample( ${varName}, ${poExampleClassName}.class);
+
+                example.setLimitStart(0);
+                example.setLimitEnd(1);
+
+                List<${className}> list =  ${seviceVarName}.get${className}ListByExample(example);
+                if(list != null && list.size() > 0) {
+                    result = list.get(0);
+                }
+            }
+
             if(result != null) {
                 return ResultData.success(result);
             }else {

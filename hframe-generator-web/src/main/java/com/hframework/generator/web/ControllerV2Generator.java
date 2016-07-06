@@ -76,6 +76,9 @@ public class ControllerV2Generator extends AbstractGenerator {
 		Map contentMap=new HashMap();
 		contentMap.put("ClassName", CreatorUtil.getJavaClassName(table.getTableName()));
 		contentMap.put("VarName", CreatorUtil.getJavaVarName(table.getTableName()));
+		if(StringUtils.isNotBlank(table.getParentId())) {
+			contentMap.put("ParentIdPropertyClassName", CreatorUtil.getJavaClassName(table.getParentId()));
+		}
 		contentMap.put("EntityName", table.getTableDesc());
 		contentMap.put("SeviceClassName", CreatorUtil.getJavaClassName(serviceClass.getClassName()));
 		contentMap.put("SeviceVarName", StringUtils.lowerCaseFirstChar(serviceClass.getClassName()));
