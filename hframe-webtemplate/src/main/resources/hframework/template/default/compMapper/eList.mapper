@@ -7,6 +7,7 @@
             <mapping id="code" value="${code}"></mapping>
             <mapping id="name" value="${name}"></mapping>
             <mapping id="editType" value="${editType}"></mapping>
+            <mapping id="width" value="${width}"></mapping>
             <mapping id="dataCode" value="${enumClass||entityCode}"></mapping>
             <mapping id="dataCondition" value="${relColumns}"></mapping>
         </mapping>

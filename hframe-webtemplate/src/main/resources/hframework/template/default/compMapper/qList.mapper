@@ -26,6 +26,7 @@
         <mapping id="create" value="${create}.html"></mapping>
         <mapping id="edit" value="${edit}.html"></mapping>
         <mapping id="detail" value="${detail}.html"></mapping>
+        <mapping id="delete" value="${deleteByAjax}.json"></mapping>
         <mapping id="batchDelete" value="${batchDelete}.html"></mapping>
     </eventMapper>
 </mapper>
