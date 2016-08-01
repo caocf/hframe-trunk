@@ -1,4 +1,5 @@
-<div class="box span12" id='$form.id' component="$form.component">
+<div class="box span12 hfform" id='$form.id' component="$form.component">
+    <span  class="ruler" style="display: none;">$!form.ruler</span>
     <div class="box-header">
         <h2><i class="$form.icon"></i>$form.title</h2>
         <div class="box-icon">

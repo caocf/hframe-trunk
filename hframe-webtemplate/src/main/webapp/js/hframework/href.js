@@ -1,7 +1,7 @@
-require(['layer','ajax','js/hframework/errormsg','js/hframework/list'], function () {
+require(['layer','ajax','js/hframework/errormsg'], function () {
     var layer = require('layer');
     var ajax = require('ajax');
-    var flist = require('js/hframework/list');
+    //var flist = require('js/hframework/list');
 
     $('form').submit(function(){
         return false;
@@ -133,6 +133,15 @@ require(['layer','ajax','js/hframework/errormsg','js/hframework/list'], function
             $($curRow).find("select").each(function(i){
                 $($newRow).find("select").eq(i).val($(this).val());
             });
+            $($curRow).find(".hfselect").each(function(i){
+                var $target = $($newRow).find(".hfselect").eq(i);
+                $target.removeClass("city-picker-input");
+                $target.next().remove();
+                $target.next().remove();
+                //$target.citypicker.Constructor
+
+                  $.selectPanelLoad($target);;
+            });
             $($curRow).after($newRow);
         }else if($type == "component.row.up") {
             $curRow = $this.parents("tr")[0];
@@ -170,9 +179,11 @@ require(['layer','ajax','js/hframework/errormsg','js/hframework/list'], function
         var _url =  "/" + module + "/" + page + ".html";
         var _data = {"pageNo":pageNo,"component" : component};
         if(param) {
-            var params =JSON.parse("{\"" + (param + "&1=1").replace(new RegExp("=","gm"),"\":").replace(new RegExp("&","gm"),",\"").replace(new RegExp(":,","gm"),":null,")  + "}");
+            console.log("{\"" + (param + "&1=1").replace(new RegExp("=","gm"),"\":").replace(new RegExp("&","gm"),",\"").replace(new RegExp(":,","gm"),":null,")  + "}");
+            var params =JSON.parse("{\"" + (param + "&1=1").replace(new RegExp("=","gm"),"\":\"").replace(new RegExp("&","gm"),"\",\"").replace(new RegExp(":,","gm"),"\":null,")  + "\"}")
+            //var params =JSON.parse("{\"" + (param + "&1=1").replace(new RegExp("=","gm"),"\":").replace(new RegExp("&","gm"),",\"").replace(new RegExp(":,","gm"),":null,")  + "}");
             for (var key in params) {
-                _data[key]=params[key];
+                _data[key]=decodeURI(params[key]).trim();
             }
         }
          console.log(_data);

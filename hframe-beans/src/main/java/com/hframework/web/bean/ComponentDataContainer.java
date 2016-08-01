@@ -13,6 +13,7 @@ import com.hframework.web.config.bean.component.Effect;
 import com.hframework.web.config.bean.component.Element;
 import com.hframework.web.config.bean.component.Event;
 import com.hframework.web.config.bean.dataset.Field;
+import com.hframework.web.config.bean.dataset.Rel;
 import com.hframework.web.config.bean.mapper.Mapping;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -166,6 +167,13 @@ public class ComponentDataContainer {
                         Array2JsonSegmentParser segmentParser = (Array2JsonSegmentParser) jsonSegmentParser;
                         JSONArray columns = (JSONArray) this.elements.get("columns").getJsonObject();
                         segmentParser.setData(map.get("list"),columns);
+                    }
+                }if ("helperData".equals(key)) {
+                    JsonSegmentParser jsonSegmentParser = runtimeDataMap.get("${helperData}");
+                    if (jsonSegmentParser instanceof Array2JsonSegmentParser) {
+                        Array2JsonSegmentParser segmentParser = (Array2JsonSegmentParser) jsonSegmentParser;
+                        JSONArray columns = (JSONArray) this.elements.get("columns").getJsonObject();
+                        segmentParser.setData(map.get("helperData"),columns);
                     }
                 } else if ("pager".equals(key)) {
                     JsonSegmentParser jsonSegmentParser = runtimeDataMap.get("${pager}");
@@ -656,11 +664,29 @@ public class ComponentDataContainer {
                     return field.getEnumClass().getCode();
                 }
                 if(field.getRel() != null && field.getRel().getEntityCode() != null) {
+                    StringBuffer sb = new StringBuffer();
+                    if(field.getRel().getRelList() != null && field.getRel().getRelList().size() > 0) {
+                        for (Rel rel : field.getRel().getRelList()) {
+                            if(rel.getEntityCode() != null) {
+                                if(sb.length() != 0) {
+                                    sb.append(";");
+                                }
+                                sb.append(rel.getEntityCode().replaceAll("/","."));
+                            }
+                        }
+                    }
+
+                    if(sb.length() != 0) {
+                        sb.append(";").append(field.getRel().getEntityCode().replaceAll("/","."));
+                    }else {
+                        sb.append(field.getRel().getEntityCode().replaceAll("/","."));
+                    }
+
 //                    String entityCode = field.getRel().getEntityCode();
 //                    String entityName = entityCode.substring(0,entityCode.indexOf("/"));
 //                    String entityKey = entityCode.substring(entityCode.indexOf("/") + 1, entityCode.lastIndexOf("/"));
 //                    String entityShowName = entityCode.substring(entityCode.lastIndexOf("/"));
-                    return field.getRel().getEntityCode().replaceAll("/",".");
+                    return sb.toString();
                 }
             }
             return null;

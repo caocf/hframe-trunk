@@ -15,6 +15,8 @@ public class HfusEntityAttr {
 
     private String size;
 
+    private Integer ispk;
+
     private Integer nullable;
 
     private Integer isBusiAttr;
@@ -31,13 +33,14 @@ public class HfusEntityAttr {
 
     private Integer delFlag;
 
-    public HfusEntityAttr(Long hfusEntityAttrId, String hfusEntityAttrName, String hfusEntityAttrCode, String hfusEntityAttrDesc, Integer attrType, String size, Integer nullable, Integer isBusiAttr, Integer isRedundantAttr, Long opId, Date createTime, Long modifyOpId, Date modifyTime, Integer delFlag) {
+    public HfusEntityAttr(Long hfusEntityAttrId, String hfusEntityAttrName, String hfusEntityAttrCode, String hfusEntityAttrDesc, Integer attrType, String size, Integer ispk, Integer nullable, Integer isBusiAttr, Integer isRedundantAttr, Long opId, Date createTime, Long modifyOpId, Date modifyTime, Integer delFlag) {
         this.hfusEntityAttrId = hfusEntityAttrId;
         this.hfusEntityAttrName = hfusEntityAttrName;
         this.hfusEntityAttrCode = hfusEntityAttrCode;
         this.hfusEntityAttrDesc = hfusEntityAttrDesc;
         this.attrType = attrType;
         this.size = size;
+        this.ispk = ispk;
         this.nullable = nullable;
         this.isBusiAttr = isBusiAttr;
         this.isRedundantAttr = isRedundantAttr;
@@ -70,6 +73,10 @@ public class HfusEntityAttr {
 
     public String getSize() {
         return size;
+    }
+
+    public Integer getIspk() {
+        return ispk;
     }
 
     public Integer getNullable() {
@@ -126,6 +133,10 @@ public class HfusEntityAttr {
 
     public void setSize(String size) {
         this.size=size;
+    }
+
+    public void setIspk(Integer ispk) {
+        this.ispk=ispk;
     }
 
     public void setNullable(Integer nullable) {

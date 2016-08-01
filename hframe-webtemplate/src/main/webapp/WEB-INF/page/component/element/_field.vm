@@ -34,6 +34,8 @@
 	#parse("component/element/_textarea.vm")
 #elseif($column.editType=='text')
 	#parse("component/element/_text.vm")
+#elseif($column.editType=='select-panel')
+	#parse("component/element/_select-panel.vm")
 #else
 	UNKOWN
 #end

@@ -73,6 +73,14 @@
     <page id="hfsec_menu_edit" name="菜单修改" page-template="edit" data-set="hframe/hfsec_menu"></page>
     <page id="hfsec_menu_detail" name="菜单明细" page-template="edit" data-set="hframe/hfsec_menu"></page>
 
+    <page id="hfus_entity_attr_mgr" name="通用实体属性管理" page-template="qlist" data-set="hframe/hfus_entity_attr">
+        <component id="qForm" data-set="hframe/hfus_entity_attr_DS4Q"></component>
+    </page>
+    <page id="hfus_entity_attr_create" name="通用实体属性创建" page-template="create" data-set="hframe/hfus_entity_attr"></page>
+    <page id="hfus_entity_attr_edit" name="通用实体属性修改" page-template="edit" data-set="hframe/hfus_entity_attr"></page>
+    <page id="hfus_entity_attr_detail" name="通用实体属性明细" page-template="edit" data-set="hframe/hfus_entity_attr"></page>
+
+
 </module>
 
 <!--<module code="hfmd" name="数据建模">-->

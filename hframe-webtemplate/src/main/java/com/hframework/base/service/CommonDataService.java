@@ -27,4 +27,14 @@ public class CommonDataService {
     public List<KVBean> selectDynamicTableDataList(Map entity) throws Exception {
         return commonDataMapper.selectDynamicTableDataList(entity);
     }
+
+    /**
+     * 动态查询表数据
+     * @param entity
+     * @return
+     * @throws Exception
+     */
+    public Map<String, Object> selectDynamicTableDataOne(Map entity) throws Exception {
+        return commonDataMapper.selectDynamicTableDataOne(entity);
+    }
 }

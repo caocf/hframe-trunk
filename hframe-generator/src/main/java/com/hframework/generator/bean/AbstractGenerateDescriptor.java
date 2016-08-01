@@ -5,7 +5,7 @@ package com.hframework.generator.bean;
  */
 public abstract class AbstractGenerateDescriptor implements GenerateDescriptor {
     private String javaPackage = "com.hframework.web.config.bean";
-    private String javaRootPath = "D:/my_workspace/hframe-trunk/hframe-webtemplate/src/main/java/";
+    private String javaRootPath = "D:/my_workspace/hframe-trunk/hframe-beans/src/main/java/";
     private String templatePath = "com/hframework/generator/vm/bean.vm";
 
     public String getJavaPackage() {

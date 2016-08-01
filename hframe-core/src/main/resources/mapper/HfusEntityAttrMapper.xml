@@ -9,6 +9,7 @@
       <arg column="hfus_entity_attr_desc" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="attr_type" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="size" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="ispk" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="nullable" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="is_busi_attr" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="is_redundant_attr" jdbcType="INTEGER" javaType="java.lang.Integer" />
@@ -79,8 +80,8 @@
   </sql>
   <sql id="Base_Column_List" >
     hfus_entity_attr_id, hfus_entity_attr_name, hfus_entity_attr_code, hfus_entity_attr_desc, 
-    attr_type, size, nullable, is_busi_attr, is_redundant_attr, op_id, create_time, modify_op_id, 
-    modify_time, del_flag
+    attr_type, size, ispk, nullable, is_busi_attr, is_redundant_attr, op_id, create_time, 
+    modify_op_id, modify_time, del_flag
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.hframe.domain.model.HfusEntityAttr_Example" >
     select
@@ -121,14 +122,16 @@
     </selectKey>
     insert into hfus_entity_attr (hfus_entity_attr_name, hfus_entity_attr_code, 
       hfus_entity_attr_desc, attr_type, size, 
-      nullable, is_busi_attr, is_redundant_attr, 
-      op_id, create_time, modify_op_id, 
-      modify_time, del_flag)
+      ispk, nullable, is_busi_attr, 
+      is_redundant_attr, op_id, create_time, 
+      modify_op_id, modify_time, del_flag
+      )
     values (#{hfusEntityAttrName,jdbcType=VARCHAR}, #{hfusEntityAttrCode,jdbcType=VARCHAR}, 
       #{hfusEntityAttrDesc,jdbcType=VARCHAR}, #{attrType,jdbcType=INTEGER}, #{size,jdbcType=VARCHAR}, 
-      #{nullable,jdbcType=INTEGER}, #{isBusiAttr,jdbcType=INTEGER}, #{isRedundantAttr,jdbcType=INTEGER}, 
-      #{opId,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{modifyOpId,jdbcType=BIGINT}, 
-      #{modifyTime,jdbcType=TIMESTAMP}, #{delFlag,jdbcType=INTEGER})
+      #{ispk,jdbcType=INTEGER}, #{nullable,jdbcType=INTEGER}, #{isBusiAttr,jdbcType=INTEGER}, 
+      #{isRedundantAttr,jdbcType=INTEGER}, #{opId,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{modifyOpId,jdbcType=BIGINT}, #{modifyTime,jdbcType=TIMESTAMP}, #{delFlag,jdbcType=INTEGER}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.hframe.domain.model.HfusEntityAttr" >
     <selectKey resultType="java.lang.Long" keyProperty="hfusEntityAttrId" order="AFTER" >
@@ -150,6 +153,9 @@
       </if>
       <if test="size != null" >
         size,
+      </if>
+      <if test="ispk != null" >
+        ispk,
       </if>
       <if test="nullable != null" >
         nullable,
@@ -191,6 +197,9 @@
       </if>
       <if test="size != null" >
         #{size,jdbcType=VARCHAR},
+      </if>
+      <if test="ispk != null" >
+        #{ispk,jdbcType=INTEGER},
       </if>
       <if test="nullable != null" >
         #{nullable,jdbcType=INTEGER},
@@ -245,6 +254,9 @@
       <if test="record.size != null" >
         size = #{record.size,jdbcType=VARCHAR},
       </if>
+      <if test="record.ispk != null" >
+        ispk = #{record.ispk,jdbcType=INTEGER},
+      </if>
       <if test="record.nullable != null" >
         nullable = #{record.nullable,jdbcType=INTEGER},
       </if>
@@ -282,6 +294,7 @@
       hfus_entity_attr_desc = #{record.hfusEntityAttrDesc,jdbcType=VARCHAR},
       attr_type = #{record.attrType,jdbcType=INTEGER},
       size = #{record.size,jdbcType=VARCHAR},
+      ispk = #{record.ispk,jdbcType=INTEGER},
       nullable = #{record.nullable,jdbcType=INTEGER},
       is_busi_attr = #{record.isBusiAttr,jdbcType=INTEGER},
       is_redundant_attr = #{record.isRedundantAttr,jdbcType=INTEGER},
@@ -311,6 +324,9 @@
       </if>
       <if test="size != null" >
         size = #{size,jdbcType=VARCHAR},
+      </if>
+      <if test="ispk != null" >
+        ispk = #{ispk,jdbcType=INTEGER},
       </if>
       <if test="nullable != null" >
         nullable = #{nullable,jdbcType=INTEGER},
@@ -346,6 +362,7 @@
       hfus_entity_attr_desc = #{hfusEntityAttrDesc,jdbcType=VARCHAR},
       attr_type = #{attrType,jdbcType=INTEGER},
       size = #{size,jdbcType=VARCHAR},
+      ispk = #{ispk,jdbcType=INTEGER},
       nullable = #{nullable,jdbcType=INTEGER},
       is_busi_attr = #{isBusiAttr,jdbcType=INTEGER},
       is_redundant_attr = #{isRedundantAttr,jdbcType=INTEGER},

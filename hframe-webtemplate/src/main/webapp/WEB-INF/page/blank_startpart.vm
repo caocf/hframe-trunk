@@ -22,6 +22,10 @@
     <link href="$staticResourcePath/css/retina.css" rel="stylesheet" />
 
     <link href="/static/plugins/layer/skin/layer.css" rel="stylesheet" />
+
+##    <link href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.css" rel="stylesheet">
+    <link href="/static/plugins/cityPicker/css/city-picker.css" rel="stylesheet">
+##    <link href="/static/plugins/cityPicker/css/main.css" rel="stylesheet">
     <!-- end: CSS -->
 
 

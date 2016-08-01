@@ -25,7 +25,7 @@ import java.util.Map;
 
 @Controller
 @RequestMapping(value = "/hframe/hfsecMenu")
-public class HfsecMenuController {
+public class HfsecMenuController   {
     private static final Logger logger = LoggerFactory.getLogger(HfsecMenuController.class);
 
 	@Resource
@@ -90,6 +90,42 @@ public class HfsecMenuController {
                     iHfsecMenuSV.getHfsecMenuTreeByParentId(hfsecMenu, example);
 
             return ResultData.success(treeMap);
+        }catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+    }
+
+    /**
+     * 搜索一个菜单
+     * @param hfsecMenu
+     * @return
+     * @throws Throwable
+     */
+    @RequestMapping(value = "/searchOneByAjax.json")
+    @ResponseBody
+    public ResultData search(@ModelAttribute("hfsecMenu") HfsecMenu hfsecMenu){
+        logger.debug("request : {},{}", hfsecMenu.getHfsecMenuId(), hfsecMenu);
+        try{
+            HfsecMenu result = null;
+            if(hfsecMenu.getHfsecMenuId() != null) {
+                result = iHfsecMenuSV.getHfsecMenuByPK(hfsecMenu.getHfsecMenuId());
+            }else {
+                HfsecMenu_Example example = ExampleUtils.parseExample(hfsecMenu, HfsecMenu_Example.class);
+                example.setLimitStart(0);
+                example.setLimitEnd(1);
+
+                List<HfsecMenu> hfsecMenuListByExample = iHfsecMenuSV.getHfsecMenuListByExample(example);
+                if(hfsecMenuListByExample != null && hfsecMenuListByExample.size() > 0) {
+                    result = hfsecMenuListByExample.get(0);
+                }
+            }
+
+            if(result != null) {
+                return ResultData.success(result);
+            }else {
+                return ResultData.error(ResultCode.RECODE_IS_NOT_EXISTS);
+            }
         }catch (Exception e) {
             logger.error("error : ", e);
             return ResultData.error(ResultCode.ERROR);

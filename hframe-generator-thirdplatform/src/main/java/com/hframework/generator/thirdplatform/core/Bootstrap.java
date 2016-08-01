@@ -11,7 +11,7 @@ import java.io.IOException;
  */
 public class Bootstrap {
     public static void main(String[] args) throws IOException {
-        String thirdName = "beetle.xml";
+        String thirdName = "weixinpay.xml";
 
         GeneratorConfig generatorConfig = GeneratorConfig.getInstance();
         System.out.println(generatorConfig.getJavaRootPath());
@@ -35,6 +35,7 @@ public class Bootstrap {
 
         ClientTestBeanGenerator clientTestBeanGenerator = new ClientTestBeanGenerator();
         clientTestBeanGenerator.clientClass = clientBeanGenerator.clientClass;
+        clientTestBeanGenerator.setRequestBeanMap(clientBeanGenerator.getRequestBeanMap());
         clientTestBeanGenerator.generate(generatorConfig,descriptor);
     }
 }

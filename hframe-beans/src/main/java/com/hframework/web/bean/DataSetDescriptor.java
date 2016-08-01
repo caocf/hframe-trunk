@@ -1,10 +1,20 @@
 package com.hframework.web.bean;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.hframework.common.util.ReflectUtils;
+import com.hframework.common.util.ResourceWrapper;
+import com.hframework.common.util.StringUtils;
+import com.hframework.common.util.UrlHelper;
 import com.hframework.web.CreatorUtil;
 import com.hframework.web.config.bean.DataSet;
+import com.hframework.web.config.bean.DataSetHelper;
+import com.hframework.web.config.bean.DataSetRuler;
+import com.hframework.web.config.bean.datasetruler.Rule;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -18,6 +28,13 @@ public class DataSetDescriptor {
 
     //<hfpm_program/hfpm_program_id,ProgramDescriptor.class>
     private Map<String, DataSetDescriptor> relDataSetMap = new HashMap<String, DataSetDescriptor>();
+
+
+    private List<DataSetHelper> dataSetHelpers = new ArrayList<DataSetHelper>();
+
+    private List<DataSetRuler> dataSetRulers = new ArrayList<DataSetRuler>();
+
+    private JSONObject dataSetRulerJsonObject = new JSONObject();
 
     public void addRelDataSet(String fieldName, String key, DataSetDescriptor descriptor) {
         relDataSetMap.put(key,descriptor);
@@ -54,5 +71,100 @@ public class DataSetDescriptor {
 
 
         return result;
+    }
+
+    public void addDataSetHelper(DataSetHelper dataSetHelper) {
+        dataSetHelpers.add(dataSetHelper);
+    }
+    public void addDataSetRuler(DataSetRuler dataSetRuler) {
+        dataSetRulers.add(dataSetRuler);
+    }
+
+    public List<DataSetHelper> getDataSetHelpers() {
+        return dataSetHelpers;
+    }
+
+    public static Map<String, String> getConditionMap(String helpDatascore) {
+        Map<String, String> urlParameters = UrlHelper.getUrlParameters("?" + helpDatascore, true);
+        return urlParameters;
+
+    }
+
+    public JSONObject getDynamicHelper() {
+        JSONObject result = new JSONObject();
+        List<DataSetHelper> dataSetHelpers = this.dataSetHelpers;
+        if(dataSetHelpers != null) {
+            for (DataSetHelper dataSetHelper : dataSetHelpers) {
+                String helpDatascore = dataSetHelper.getHelpDatascore();
+                if(StringUtils.isNotBlank(helpDatascore)) {
+                    Map<String, String> condition = getConditionMap(helpDatascore);
+                    for (String propertyName : condition.keySet()) {
+                        String propertyValue = condition.get(propertyName);
+                        if(!propertyValue.startsWith("{") && !propertyValue.endsWith("}") ) {
+                            continue ;
+                        }
+                        propertyValue = propertyValue.substring(1, propertyValue.length() - 1);
+                        String referDataSetCode = propertyValue.substring(0, propertyValue.indexOf("/"));
+                        String referDataFiledCode = propertyValue.substring(propertyValue.indexOf("/") + 1);
+                        String referDataFiledPropertyName = CreatorUtil.getJavaVarName(referDataFiledCode);
+
+                        JSONObject object = new JSONObject();
+                        object.put("sourceCode",referDataFiledPropertyName);
+                        object.put("targetCode",propertyValue);
+                        object.put("ruleType",3);
+                        result.put(referDataFiledPropertyName,object);
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+
+
+    public void setDataSetHelpers(List<DataSetHelper> dataSetHelpers) {
+        this.dataSetHelpers = dataSetHelpers;
+    }
+
+    public List<DataSetRuler> getDataSetRulers() {
+        return dataSetRulers;
+    }
+
+    public void setDataSetRulers() {
+        for (DataSetRuler dataSetRuler : dataSetRulers) {
+            List<Rule> ruleList = dataSetRuler.getRuleList();
+            if(ruleList != null) {
+                dataSetRulerJsonObject = new JSONObject();
+                for (Rule rule : ruleList) {
+                    String sourceCode = CreatorUtil.getJavaVarName(rule.getSourceCode());
+                    String sourceValue = rule.getSourceValue();
+                    String targetCode = CreatorUtil.getJavaVarName(rule.getTargetCode());
+                    String targetValue = rule.getTargetValue();
+                    String editable = rule.getEditable();
+                    String key = sourceCode;
+                    String ruleType = rule.getRuleType();
+                    JSONObject object = new JSONObject();
+                    object.put("sourceCode",sourceCode);
+                    object.put("sourceValue",sourceValue);
+                    object.put("targetCode",targetCode);
+                    object.put("targetValue",targetValue);
+                    object.put("editable",editable);
+                    object.put("ruleType",ruleType);
+
+                    if("1".equals(ruleType)) {//1值映射 2 值关联
+                        key = key + "=" + sourceValue;
+                    }
+                    if(!dataSetRulerJsonObject.containsKey(key)) {
+                        dataSetRulerJsonObject.put(key, new JSONArray());
+                    }
+                    JSONArray jsonArray = dataSetRulerJsonObject.getJSONArray(key);
+                    jsonArray.add(object);
+                }
+            }
+        }
+    }
+
+    public JSONObject getDataSetRulerJsonObject() {
+        return dataSetRulerJsonObject;
     }
 }

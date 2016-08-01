@@ -21,6 +21,7 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
                     }
                     $this.html(_html.join(''));
                     $this.val(dataValue);
+                    $this.change();
                 }else {
 
                     for (var i = 0; i < data.data.length; i++) {
@@ -37,9 +38,53 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
         });
     }
 
+    var treeDataCache = {};
+    $.selectPanelLoad = function ($this, $option) {
+        var  dataCode = $this.attr("data-code");
+        var  dataCondition = $this.attr("data-condition");
+        var dataValue = $this.attr("data-value");
+
+        if(treeDataCache[dataCode] == null) {
+            var _url =  "/treeData.json";
+            var _data = {"dataCode":dataCode,"dataCondition" : dataCondition, "dataValue" : dataValue};
+            ajax.Post(_url,_data,function(data){
+                if(data.resultCode == 0) {
+                    //console.info(data.data);
+                    treeDataCache[dataCode] = data.data.data;
+                    $($this).val(data.data.disValue);
+                    //$($this).attr("level","city");
+                    $($this).citypicker(treeDataCache[dataCode], $option);
+
+                    var event = document.createEvent('HTMLEvents'); //创建事件
+                    event.initEvent("input", true, true); //设置事件类型为 input
+                    console.info($this);
+                    $this[0].dispatchEvent(event); //触发下 该事件（input 事件）
+                    //$($this).val(data.data.disValue);
+                    //$($this).change();
+                    //window.ChineseDistricts = data.data;
+                }
+            });
+        }else {
+            $($this).citypicker(treeDataCache[dataCode], $option);
+            var event = document.createEvent('HTMLEvents'); //创建事件
+            event.initEvent("input", true, true); //设置事件类型为 input
+            console.info($this);
+            $this[0].dispatchEvent(event); //触发下 该事件（input 事件）
+            //$($this).input();
+            //$($this).change();
+        }
+
+
+    }
+
     $("[data-code][data-condition]").each(function(){
         var $this = $(this);
-        $.selectLoad($this);
+        if($this.is('select')) {
+            $.selectLoad($this);
+        }else {
+            $.selectPanelLoad($this);
+            //console.info($this.tagName);
+        }
     });
 
     function dealData1(_source, _data, _list) {

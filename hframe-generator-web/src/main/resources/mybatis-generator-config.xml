@@ -147,10 +147,10 @@
             <!--<generatedKey column="hfpm_program_cfg_id" sqlStatement="MySql" identity="true" />-->
         <!--</table>-->
 
-        <!--<table schema="" tableName="hfus_entity_attr">-->
-            <!--<property name="chineseName" value="常用实体属性"></property>-->
-            <!--<generatedKey column="hfus_entity_attr_id" sqlStatement="MySql" identity="true" />-->
-        <!--</table>-->
+        <table schema="" tableName="hfus_entity_attr">
+            <property name="chineseName" value="常用实体属性"></property>
+            <generatedKey column="hfus_entity_attr_id" sqlStatement="MySql" identity="true" />
+        </table>
         <!--<table schema="" tableName="hfus_entity_type_relat_entity_attr">-->
             <!--<property name="chineseName" value="常用实体类型关联属性"></property>-->
             <!--<generatedKey column="hfus_entity_type_relat_entity_attr_id" sqlStatement="MySql" identity="true" />-->
@@ -173,10 +173,14 @@
             <!--<property name="parentId" value="parent_hfsec_menu_id"></property>-->
             <!--<generatedKey column="hfsec_menu_id" sqlStatement="MySql" identity="true" />-->
         <!--</table>-->
-        <table schema="" tableName="hfsec_user">
-            <property name="chineseName" value="用户"></property>
-            <generatedKey column="hfsec_user_id" sqlStatement="MySql" identity="true" />
-        </table>
+        <!--<table schema="" tableName="hfsec_user">-->
+            <!--<property name="chineseName" value="用户"></property>-->
+            <!--<generatedKey column="hfsec_user_id" sqlStatement="MySql" identity="true" />-->
+        <!--</table>-->
+        <!--<table schema="" tableName="hfmd_entity_join_rule">-->
+            <!--<property name="chineseName" value="实体属性连带规则"></property>-->
+            <!--<generatedKey column="hfmd_entity_join_rule_id" sqlStatement="MySql" identity="true" />-->
+        <!--</table>-->
         <!--
         <table schema="" tableName="v_test"
                domainObjectName="QTest"

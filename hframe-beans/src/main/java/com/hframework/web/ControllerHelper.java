@@ -88,14 +88,14 @@ public class ControllerHelper {
             com.hframework.beans.class0.Class relPoClass =
                     CreatorUtil.getDefPoClass("",
                             WebContext.get().getProgram().getCode(), "hframe", relDataSetDescriptor.getDataSet().getCode());
-            Object relPo = WebContext.get(Class.forName(relPoClass.getClassPath()).getName());
 
-            //从页面上下文中获取数据
-            boolean fillResult = WebContext.fillProperty(
-                    Class.forName(relPoClass.getClassPath()).getName(), object, propertyName, CreatorUtil.getJavaVarName(relFieldCode));
+            Object relPo = WebContext.get(Class.forName(relPoClass.getClassPath()).getName());
             if(relPo != null) {
                 relFieldValueMap.putAll(relDataSetDescriptor.getRelFieldValueMap(relPo));;
             }
+            //从页面上下文中获取数据
+            boolean fillResult = WebContext.fillProperty(
+                    Class.forName(relPoClass.getClassPath()).getName(), object, propertyName, CreatorUtil.getJavaVarName(relFieldCode));
             if(!fillResult) {
                 //从页面流上线文中获取数据
                 WebContext.fillProperty(Map.class.getName(), object, propertyName, CreatorUtil.getJavaVarName(relFieldCode));

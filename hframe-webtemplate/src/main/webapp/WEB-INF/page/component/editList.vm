@@ -1,5 +1,6 @@
-
 <div class="box span12 hflist" id='$list.id'  module="$module" page="$page" param="$!list.param" component="$list.component">
+    <span  class="ruler" style="display: none;">$!list.ruler</span>
+    <span  class="helper" style="display: none;">$!list.helper</span>
     <div class="box-header">
         <h2><i class="$list.icon"></i><span class="break"></span>$list.title</h2>
         <div class="box-icon">
@@ -8,8 +9,18 @@
             <a href="#" class="btn-close"><i class="icon-remove"></i></a>
         </div>
     </div>
-    <div class="box-content">
-        <form class="form-horizontal">
+##    #if($list.helperData.size() > 0)
+        <h2 class="span12 hflist-tools"  style="margin-right: 5px;;float: left;display: #if($list.helperData.size() > 0) #else none #end">
+##                <div class="hflist-tools-button badge badge-info " style="position: relative;cursor:pointer"><i class="icon-plus-sign"></i> ID</div>
+##                <div class="hflist-tools-button badge badge-info " style="position: relative;cursor:pointer"><i class="icon-plus-sign"></i> 名称</div>
+##                <div class="hflist-tools-button badge badge-info " style="position: relative;cursor:pointer"><i class="icon-plus-sign"></i> 描述</div>
+##                <div class="hflist-tools-button badge badge-info " style="position: relative;cursor:pointer"><i class="icon-plus-sign"></i> 生效时间</div>
+##                <div class="hflist-tools-button badge badge-info " style="position: relative;cursor:pointer"><i class="icon-plus-sign"></i> 失效时间</div>
+##                <div class="hflist-tools-button badge badge-info " style="position: relative;cursor:pointer"><i class="icon-plus-sign"></i> 商户ID</div>
+        </h2>
+##    #end
+    <div    class="box-content">
+
         <table class="table table-bordered table-striped table-condensed">
             <thead>
             <tr>
@@ -26,6 +37,40 @@
                 #end
             </tr>
             </thead>
+            <tbody class='hflist-fast-data' style="display:none ;">
+                #foreach($row in $list.helperData)
+                <tr>
+                    #if($list.BOFR)
+                        <th>$list.BOFR.get(0).component</th>
+                    #end
+                    #set($count=0)
+                    #foreach($item in $row)
+                        #set($value =$item)
+                        #set($column = ${list.columns.get($count)})
+                        #if($column.editType != "hidden")
+                            <td>
+                                #set($elementSize = "mini span12")
+                                #parse("component/element/field.vm")
+                            </td>
+                        #else
+                            #parse("component/element/field.vm")
+                        #end
+                        #set($count=$count+1)
+                    #end
+
+                    #if($list.EOFR)
+                        <td class="center">
+                            #foreach($item in $list.EOFR)
+                                <a class="btn ${item.fillclass} hfhref" href="javascript:void(0)"  params="$!{item.params}" action='${item.action}'>
+                                    $item.component
+                                </a>
+                            #end
+                        </td>
+                    #end
+                </tr>
+                #end
+            </tbody>
+            <form class="form-horizontal" >
             <tbody class='hflist-data'>
                 #foreach($row in $list.data)
                 <tr>
@@ -56,10 +101,10 @@
                             #end
                         </td>
                     #end
-
                 </tr>
                 #end
             </tbody>
+            </form>
         </table>
         <div class="pagination pagination-centered">
             <ul class='hflist-pager'>
@@ -76,6 +121,5 @@
                 #end
             </div>
         #end
-        </form>
     </div>
 </div>

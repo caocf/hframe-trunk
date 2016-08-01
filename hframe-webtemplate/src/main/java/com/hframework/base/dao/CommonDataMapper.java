@@ -16,4 +16,14 @@ public interface CommonDataMapper {
      * @throws Exception
      */
     public List<KVBean> selectDynamicTableDataList(Map entity) throws Exception;
+
+
+    /**
+     * 动态查询表数据
+     * @param entity
+     * @return
+     * @throws Exception
+     */
+    public Map<String, Object> selectDynamicTableDataOne(Map entity) throws Exception;
+
 }

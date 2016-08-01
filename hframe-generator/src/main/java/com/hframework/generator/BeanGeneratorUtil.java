@@ -140,8 +140,8 @@ public class BeanGeneratorUtil {
      * @param rootClassName
      * @param xmlString
      */
-    public static void generateByXml(GenerateDescriptor descriptor, String xmlString, String rootClassName)  throws IOException {
-        generateClassByXmlNode(descriptor, rootClassName, getXmlNodeByXml(descriptor, xmlString), true,"xml");
+    public static Class generateByXml(GenerateDescriptor descriptor, String xmlString, String rootClassName)  throws IOException {
+        return generateClassByXmlNode(descriptor, rootClassName, getXmlNodeByXml(descriptor, xmlString), true,"xml");
     }
 
     /**
@@ -221,7 +221,7 @@ public class BeanGeneratorUtil {
      * @param rootXmlNode
      * @param isRoot
      */
-    private static void generateClassByXmlNode(GenerateDescriptor descriptor, String rootClassName, XmlNode rootXmlNode, boolean isRoot, String beanType) {
+    private static Class generateClassByXmlNode(GenerateDescriptor descriptor, String rootClassName, XmlNode rootXmlNode, boolean isRoot, String beanType) {
 
         Class beanClass = generateDefaultClassByXmlNode(descriptor,rootClassName,rootXmlNode,isRoot, beanType);
         //类扩展处理
@@ -265,6 +265,8 @@ public class BeanGeneratorUtil {
             System.out.println(content);
             FileUtils.writeFile(beanClass.getFilePath(), content);
         }
+
+        return beanClass;
 
     }
     private static Class generateDefaultClassByXmlNode(GenerateDescriptor descriptor, String rootClassName, XmlNode rootXmlNode, boolean isRoot, String beanType) {
@@ -707,7 +709,7 @@ public class BeanGeneratorUtil {
 
         GenerateDescriptor descriptor = new DefaultGenerateDescriptor();
 
-        generateByXml(descriptor, xmlString, "PageTemplates");
+        generateByXml(descriptor, xmlString, "DataSetRuler");
 
     }
 

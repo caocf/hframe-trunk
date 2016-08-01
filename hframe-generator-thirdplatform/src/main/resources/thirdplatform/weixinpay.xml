@@ -99,13 +99,18 @@
             </request>
             <response load="body" extend="false" message="xml" beanName = "RefundResponse">
             </response>
-        </interface><interface  path="pay/refundquery" name="refundquery"  method="post" usePublicParams ="true" template="weixinpay/refundquery.xml">
-        <request load="head#body" message="xml" beanName = "RefundQueryRequest">
-        </request>
-        <response load="body" extend="false" message="xml" beanName = "RefundQueryResponse">
-        </response>
-    </interface>
-
-
-    </interfaces>
+        </interface>
+        <interface  path="pay/refundquery" name="refundquery"  method="post" usePublicParams ="true" template="weixinpay/refundquery.xml">
+            <request load="head#body" message="xml" beanName = "RefundQueryRequest">
+            </request>
+            <response load="body" extend="false" message="xml" beanName = "RefundQueryResponse">
+            </response>
+        </interface>
+        <interface name="notice"  method="post" usePublicParams ="false" template="weixinpay/notice.xml">
+            <request load="head#body" message="xml" beanName = "WXPayNotifyReplay">
+            </request>
+            <response load="body" extend="false" message="xml" beanName = "WXPayNotifyResult">
+            </response>
+        </interface>
+     </interfaces>
 </descriptor>

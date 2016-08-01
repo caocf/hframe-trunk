@@ -29,6 +29,8 @@ public class ClientBeanGenerator extends AbstractGenerator implements Generator<
     private RequestConfig requestConfig;
     private ResponseConfig responseConfig;
 
+    private Map<String, Class> requestBeanMap = new HashMap<String, Class>();
+
 
     @Override
     protected boolean generateInternal(GeneratorConfig generatorConfig, Descriptor descriptor) {
@@ -69,7 +71,10 @@ public class ClientBeanGenerator extends AbstractGenerator implements Generator<
             //生成request请求对象
             if(StringUtils.isNotBlank(anInterface.getRequest().getMessage())) {
                 method.addParameter(new Field(requestBeanName, "requestData"));
-                createRequestBean(anInterface, requestBeanName);
+                Class requestBean = createRequestBean(anInterface, requestBeanName);
+                if(requestBean != null) {
+                    requestBeanMap.put(method.getName(), requestBean);
+                }
             }
 
             //生成response请求对象
@@ -124,7 +129,7 @@ public class ClientBeanGenerator extends AbstractGenerator implements Generator<
         return false;
     }
 
-    private void createRequestBean(Interface anInterface, String requestDataName) {
+    private Class createRequestBean(Interface anInterface, String requestDataName) {
         List<Node> ruleNodeList = new ArrayList<Node>();
         listAddAll(ruleNodeList, requestConfig.getPublicNodes().getNodeList());
         listAddAll(ruleNodeList, anInterface.getRequest().getNodes().getNodeList());
@@ -141,13 +146,16 @@ public class ClientBeanGenerator extends AbstractGenerator implements Generator<
                     if("json".equals(anInterface.getRequest().getMessage())) {
                         BeanGeneratorUtil.generateByJsonNew(descriptor, requestMessage, requestDataName);
                     }else if("xml".equals(anInterface.getRequest().getMessage())) {
-                        BeanGeneratorUtil.generateByXml(descriptor, requestMessage, requestDataName);
+                        Class requestBean = BeanGeneratorUtil.generateByXml(descriptor, requestMessage, requestDataName);
+                        return requestBean;
                     }
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        return null;
     }
 
     private void createResponseBean(Interface anInterface, String responseBeanName) {
@@ -489,5 +497,9 @@ public class ClientBeanGenerator extends AbstractGenerator implements Generator<
         public void setRequestBean(boolean requestBean) {
             this.requestBean = requestBean;
         }
+    }
+
+    public Map<String, Class> getRequestBeanMap() {
+        return requestBeanMap;
     }
 }

@@ -39,10 +39,20 @@
 <script src="$staticResourcePath/js/charts.min.js"></script>
 <script src="$staticResourcePath/js/custom.min.js"></script>
 
+
+##<script src="//cdn.bootcss.com/jquery/1.11.3/jquery.js"></script>
+##<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.js"></script>
+<script src="/static/plugins/cityPicker/js/city-picker.data.js"></script>
+<script src="/static/plugins/cityPicker/js/city-picker.js"></script>
+<script src="/static/plugins/cityPicker/js/main.js"></script>
+
 <script type="text/javascript" src="/static/plugins/require/require.js"></script>
 <script type="text/javascript" src="/js/hframework/utils/require.config.js"></script>
 <script src="/js/hframework/fn.js"></script>
 <script src="/js/hframework/list.js"></script>
 <script src="/js/hframework/datainit.js"></script>
 <script src="/js/hframework/href.js"></script>
+
+
+
 <!-- end: JavaScript-->

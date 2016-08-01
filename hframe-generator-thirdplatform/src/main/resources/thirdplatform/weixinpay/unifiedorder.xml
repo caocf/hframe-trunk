@@ -34,6 +34,8 @@
            <xml>
              <return_code>SUCCESS</return_code>
               <return_msg>OK</return_msg>
+              <app>{"appId":"wx02bbd426c5ef2548","partnerId":"1352074301","prepayId":"wx201607121352598d54d316170278339328","package":"Sign=WXPay","nonceStr":"578485bb19c84","timeStamp":"1468302779","sign":"D7C0900C8A71C54B350B654DE18AE1E4"}</app>
+
               <appid>wx2421b1c4370ec43b</appid>
               <mch_id>10000100</mch_id>
               <device_info>10000100</device_info>

@@ -11,6 +11,7 @@
     <field code="attr_type" name="属性类型" edit-type="input"/>
     <field code="size" name="大小" edit-type="input"/>
     <field code="nullable" name="是否可为空" edit-type="input"/>
+    <field code="ispk" name="是否主键" edit-type="input"/>
     <field code="is_busi_attr" name="是否业务属性" edit-type="input"/>
     <field code="op_id" name="创建人" edit-type="input"/>
     <field code="create_time_LEQ" name="创建结束时间" edit-type="datetime"/>

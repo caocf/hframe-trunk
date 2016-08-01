@@ -3,6 +3,7 @@ package com.hframework.common.util.message;
 import com.hframework.common.util.FileUtils;
 import com.hframework.common.util.StringUtils;
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.naming.NoNameCoder;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,6 +73,8 @@ public class XmlUtils {
 
     public static  <T> String writeValueAsString(T t) throws IOException {
         XStream xstream = new XStream(new DomDriver("utf8"));
+//        XStream xstream = new XStream(new DomDriver("UTF-8", new NoNameCoder()));
+
         xstream.processAnnotations(t.getClass());// 识别obj类中的注解
         /*
          // 以压缩的方式输出XML

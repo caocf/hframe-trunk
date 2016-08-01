@@ -26,6 +26,8 @@ public class ClientTestBeanGenerator extends AbstractGenerator implements Genera
     private RequestConfig requestConfig;
     private ResponseConfig responseConfig;
 
+    private Map<String, Class> requestBeanMap = new HashMap<String, Class>();
+
 
     @Override
     protected boolean generateInternal(GeneratorConfig generatorConfig, Descriptor descriptor) {
@@ -48,6 +50,25 @@ public class ClientTestBeanGenerator extends AbstractGenerator implements Genera
             newMethod.setName(method.getName());
             newMethod.setExceptionStr(method.getExceptionStr());
             newMethod.addAnnotation("@Test");
+
+
+            for (Field field : method.getParameterList()) {
+
+                if(!"String".equals(field.getType()) && !"int".equals(field.getType()) && !"long".equals(field.getType())) {
+                    newMethod.addCodeLn(field.getType() + " " + field.getType().substring(0,1).toLowerCase()
+                            + field.getType().substring(1) + " = new " + field.getType() + "();");
+
+                    Class requestBean = requestBeanMap.get(method.getName());
+
+                    List<Field> fieldList = requestBean.getFieldList();
+                    for (Field field1 : fieldList) {
+                        if(field1.isSetGetMethod()) {
+                            Method setMethod = MethodHelper.getSetMethod(field1);
+                            newMethod.addCodeLn(field.getType().substring(0,1).toLowerCase() + field.getType().substring(1) + "." + setMethod.getName() + "(\"1\");");
+                        }
+                    }
+                }
+            }
 
             newMethod.addCodeLn(method.getReturnType() + " result =" + clientClass.getClassName() + "." + method.getName() + "("
                     + getMethodInvoke(method, interfaceList)
@@ -91,7 +112,8 @@ public class ClientTestBeanGenerator extends AbstractGenerator implements Genera
                 code += urlParameters.get(field.getName()) + ",";
             }else {
                 //what ???
-                code += "new " + field.getType() + "(),";
+                code += field.getType().substring(0,1).toLowerCase()
+                        + field.getType().substring(1);
             }
         }
         code = code.endsWith(",") ? code.substring(0, code.length()-1) : code;
@@ -453,5 +475,13 @@ public class ClientTestBeanGenerator extends AbstractGenerator implements Genera
         public void setRequestBean(boolean requestBean) {
             this.requestBean = requestBean;
         }
+    }
+
+    public Map<String, Class> getRequestBeanMap() {
+        return requestBeanMap;
+    }
+
+    public void setRequestBeanMap(Map<String, Class> requestBeanMap) {
+        this.requestBeanMap = requestBeanMap;
     }
 }

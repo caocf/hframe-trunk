@@ -12,7 +12,7 @@
     <field code="hfmd_entity_attr_code" name="实体属性编码" edit-type="input"/>
     <field code="hfmd_entity_attr_desc" name="实体属性描述" edit-type="input"/>
     <field code="attr_type" name="属性类型" edit-type="select">
-      <enum-class code="DEFAULT.BOOLEAN"/>
+      <enum-class code="hfmd_entity_attr.attr_type"/>
     </field>
     <field code="size" name="大小" edit-type="input"/>
     <field code="ispk" name="是否主键" edit-type="select">
@@ -27,8 +27,10 @@
     <field code="is_redundant_attr" name="是否冗余属性" edit-type="select">
       <enum-class code="DEFAULT.BOOLEAN"/>
     </field>
-    <field code="rel_hfmd_entity_attr_id" name="关联属性ID" edit-type="select">
-      <rel entity-code="hfmd_entity_attr/hfmd_entity_attr_id/hfmd_entity_attr_name"/>
+    <field code="rel_hfmd_entity_attr_id" name="关联属性ID" edit-type="select-panel">
+      <rel entity-code="hfmd_entity_attr/hfmd_entity_attr_id/hfmd_entity_attr_name/hfmd_entity_id">
+        <rel entity-code="hfmd_entity/hfmd_entity_id/hfmd_entity_name"/>
+      </rel>
     </field>
     <field code="hfmd_enum_class_id" name="枚举类ID" edit-type="select">
       <rel entity-code="hfmd_enum_class/hfmd_enum_class_id/hfmd_enum_class_name"/>

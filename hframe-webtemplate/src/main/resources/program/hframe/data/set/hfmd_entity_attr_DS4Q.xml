@@ -9,7 +9,7 @@
     <field code="hfmd_entity_attr_code" name="实体属性编码" edit-type="input"/>
     <field code="hfmd_entity_attr_desc" name="实体属性描述" edit-type="input"/>
     <field code="attr_type" name="属性类型" edit-type="select">
-      <enum-class code="DEFAULT.BOOLEAN"/>
+      <enum-class code="hfmd_entity_attr.attr_type"/>
     </field>
     <field code="size" name="大小" edit-type="input"/>
     <field code="ispk" name="是否主键" edit-type="select">

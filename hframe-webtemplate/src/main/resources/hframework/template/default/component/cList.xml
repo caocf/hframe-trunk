@@ -12,6 +12,7 @@
         <element id="dataCondition" type="characters"  default-value=""></element>
     </element>
     <element id="data" type="array2"  default-value=""></element>
+    <element id="helperData" type="array2"  default-value=""></element>
     <element id="pager" type="array2"  default-value="" >
         <element id="text" position="0" type="int"  default-value=""></element>
         <element id="value" position="1" type="int"  default-value=""></element>

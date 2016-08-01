@@ -16,16 +16,16 @@ public class CommonGeneratorTest {
     @Test
     public void serviceGenerate() throws Exception {
         Table table = new Table();
-        table.setTableName("hfsec_user");
-        table.setTableDesc("用户");
+        table.setTableName("hfmd_entity_join_rule");
+        table.setTableDesc("实体属性连带规则");
         BaseGeneratorUtil.serviceGenerate("", "hframe", "hframe", table);
     }
 
     @Test
     public void controllerGenerate() throws Exception {
         Table table = new Table();
-        table.setTableName("hfsec_user");
-        table.setTableDesc("用户");
+        table.setTableName("hfmd_entity_join_rule");
+        table.setTableDesc("实体属性连带规则");
 //        table.setParentId("parent_hfsec_menu_id");
         BaseGeneratorUtil.controllerGenerate("", "hframe", "hframe", table);
     }

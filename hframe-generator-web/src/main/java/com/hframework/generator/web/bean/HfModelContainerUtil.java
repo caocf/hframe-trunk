@@ -160,6 +160,11 @@ public class HfModelContainerUtil {
             }
 
             HfmdEntity hfmdEntity = dbEntityMap.get(emtityAttrCode.split("\\.")[0].trim());
+            if(hfmdEntity == null) {
+                hfmdEntity = targetEntityMap.get(emtityAttrCode.split("\\.")[0].trim());
+            }
+
+
             if(oldProgramId != -1 && hfmdEntity != null) {
                 targetEntityAttr.setHfpmProgramId(hfmdEntity.getHfpmProgramId());
                 targetEntityAttr.setHfpmModuleId(hfmdEntity.getHfpmModuleId());
@@ -202,7 +207,7 @@ public class HfModelContainerUtil {
             for (String entityCode : entityMap.keySet()) {
                 HfmdEntity hfmdEntity = entityMap.get(entityCode);
                 dataSetMap.put(entityCode,getDataSetFromEntity(hfmdEntity));
-                dataSetMap.put(entityCode+"_QDS",getQryDataSetFromEntity(hfmdEntity));
+                dataSetMap.put(entityCode+"_DS4Q",getQryDataSetFromEntity(hfmdEntity));
 
             }
         }
@@ -226,17 +231,17 @@ public class HfModelContainerUtil {
 
                 dataFieldListMap.get(entityCode).add(getDataFieldFromEntityAttr(hfmdEntityAttr,dataSet));
 
-                if(!dataFieldListMap.containsKey(entityCode+"_QDS")) {
-                    dataFieldListMap.put(entityCode+"_QDS",new ArrayList<HfpmDataField>());
+                if(!dataFieldListMap.containsKey(entityCode+"_DS4Q")) {
+                    dataFieldListMap.put(entityCode+"_DS4Q",new ArrayList<HfpmDataField>());
                 }
 
-                if(dataSetMap.containsKey(entityCode+"_QDS")) {
-                    dataSet = dataSetMap.get(entityCode+"_QDS");
+                if(dataSetMap.containsKey(entityCode+"_DS4Q")) {
+                    dataSet = dataSetMap.get(entityCode+"_DS4Q");
                 }else {
-                    dataSet =  dbModelContainer.getDataSetMap().get(entityCode+"_QDS");
+                    dataSet =  dbModelContainer.getDataSetMap().get(entityCode+"_DS4Q");
                 }
 
-                dataFieldListMap.get(entityCode+"_QDS").addAll(getDS4QryDataFieldFromEntityAttr(hfmdEntityAttr, dataSet));
+                dataFieldListMap.get(entityCode+"_DS4Q").addAll(getDS4QryDataFieldFromEntityAttr(hfmdEntityAttr, dataSet));
             }
         }
     }

@@ -525,6 +525,66 @@ public class HfusEntityAttr_Example {
             return (Criteria) this;
         }
 
+        public Criteria andIspkIsNull() {
+            addCriterion("ispk is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIspkIsNotNull() {
+            addCriterion("ispk is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIspkEqualTo(Integer value) {
+            addCriterion("ispk =", value, "ispk");
+            return (Criteria) this;
+        }
+
+        public Criteria andIspkNotEqualTo(Integer value) {
+            addCriterion("ispk <>", value, "ispk");
+            return (Criteria) this;
+        }
+
+        public Criteria andIspkGreaterThan(Integer value) {
+            addCriterion("ispk >", value, "ispk");
+            return (Criteria) this;
+        }
+
+        public Criteria andIspkGreaterThanOrEqualTo(Integer value) {
+            addCriterion("ispk >=", value, "ispk");
+            return (Criteria) this;
+        }
+
+        public Criteria andIspkLessThan(Integer value) {
+            addCriterion("ispk <", value, "ispk");
+            return (Criteria) this;
+        }
+
+        public Criteria andIspkLessThanOrEqualTo(Integer value) {
+            addCriterion("ispk <=", value, "ispk");
+            return (Criteria) this;
+        }
+
+        public Criteria andIspkIn(List<Integer> values) {
+            addCriterion("ispk in", values, "ispk");
+            return (Criteria) this;
+        }
+
+        public Criteria andIspkNotIn(List<Integer> values) {
+            addCriterion("ispk not in", values, "ispk");
+            return (Criteria) this;
+        }
+
+        public Criteria andIspkBetween(Integer value1, Integer value2) {
+            addCriterion("ispk between", value1, value2, "ispk");
+            return (Criteria) this;
+        }
+
+        public Criteria andIspkNotBetween(Integer value1, Integer value2) {
+            addCriterion("ispk not between", value1, value2, "ispk");
+            return (Criteria) this;
+        }
+
         public Criteria andNullableIsNull() {
             addCriterion("nullable is null");
             return (Criteria) this;

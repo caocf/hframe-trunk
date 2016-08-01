@@ -41,6 +41,8 @@ public class WebContext {
 
     private static final String PROGRAM_ROOT_DIR = "program/hframe";
     private static final String DATA_SET_DIR = PROGRAM_ROOT_DIR + "/data/set";
+    private static final String DATA_SET_HELPER_DIR = PROGRAM_ROOT_DIR + "/data/set/helper";
+    private static final String DATA_SET_RULER_DIR = PROGRAM_ROOT_DIR + "/data/set/ruler";
     private static final String MODULE_DIR = PROGRAM_ROOT_DIR + "/module";
     private static final String MAPPER_DIR = PROGRAM_ROOT_DIR + "/mapper";
     private static final String PROGRAM_FILE = PROGRAM_ROOT_DIR + "/program.xml";
@@ -94,6 +96,11 @@ public class WebContext {
 
         //加载数据集信息
         loadDataSet();
+        //加载数据集信息
+        loadDataSetHelper();
+
+        //加载数据集连带规则信息
+        loadDataSetRuler();
         //页面架构数据初始化
         pageSettingInitial();
 
@@ -102,7 +109,7 @@ public class WebContext {
     private void loadDataSet() throws Exception {
 
         //加载数据源信息
-        List<DataSet> dataSetList = XmlUtils.readValuesFromDirectory(DATA_SET_DIR, DataSet.class);
+        List<DataSet> dataSetList = XmlUtils.readValuesFromDirectory(DATA_SET_DIR, DataSet.class, ".xml");
         for (DataSet dataSet : dataSetList) {
             DataSetDescriptor dataSetDescriptor = new DataSetDescriptor(dataSet);
             dataSets.put(dataSet.getModule() + "/" + dataSet.getCode(), dataSetDescriptor);
@@ -130,6 +137,28 @@ public class WebContext {
                     dataSetDescriptor.addRelDataSet(field.getCode(), dataSetCode + "/" + relFieldCode, relDataSetDescriptor);
                 }
             }
+        }
+    }
+
+    private void loadDataSetHelper() throws Exception {
+
+        List<DataSetHelper> dataSetHelperList = XmlUtils.readValuesFromDirectory(DATA_SET_HELPER_DIR, DataSetHelper.class, ".xml");
+        for (DataSetHelper dataSetHelper : dataSetHelperList) {
+            String effectModuleCode = dataSetHelper.getEffectModule();
+            String effectDatasetCode = dataSetHelper.getEffectDataset();
+            DataSetDescriptor dataSetDescriptor = dataSets.get(effectModuleCode + "/" + effectDatasetCode);
+            dataSetDescriptor.addDataSetHelper(dataSetHelper);
+        }
+    }
+
+    private void loadDataSetRuler() throws Exception {
+
+        List<DataSetRuler> dataSetRulers = XmlUtils.readValuesFromDirectory(DATA_SET_RULER_DIR, DataSetRuler.class, ".xml");
+        for (DataSetRuler dataSetRuler : dataSetRulers) {
+            String module = dataSetRuler.getModule();
+            String entity = dataSetRuler.getEntity();
+            DataSetDescriptor dataSetDescriptor = dataSets.get(module + "/" + entity);
+            dataSetDescriptor.addDataSetRuler(dataSetRuler);
         }
     }
 

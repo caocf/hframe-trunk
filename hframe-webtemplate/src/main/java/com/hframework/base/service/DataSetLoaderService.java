@@ -1,5 +1,6 @@
 package com.hframework.base.service;
 
+import com.google.common.collect.Lists;
 import com.hframe.domain.model.*;
 import com.hframe.service.interfaces.*;
 import com.hframe.tag.bean.Option;
@@ -166,24 +167,13 @@ public class DataSetLoaderService {
                     }
                     if(hfmdEntityAttr.getRelHfmdEntityAttrId() != null && hfmdEntityAttr.getRelHfmdEntityAttrId() > 0) {
                         HfmdEntityAttr relEntityAttr = hfmdEntityAttrIdEntityAttrMap.get(hfmdEntityAttr.getRelHfmdEntityAttrId());
-                        Rel rel = new Rel();
-                        Long hfpmModuleId = relEntityAttr.getHfpmModuleId();
-                        HfpmModule hfpmModule = hfpmModuleMap.get(hfpmModuleId);
-                        Long hfmdEntityId = relEntityAttr.getHfmdEntityId();
-                        HfmdEntity hfmdEntity = hfmdEntityIdEntityMap.get(hfmdEntityId);
-                        List<HfmdEntityAttr> hfmdEntityAttrs = hfmdEntityAttrMap.get(hfmdEntityId);
-                        String name = null;
-                        for (HfmdEntityAttr entityAttr : hfmdEntityAttrs) {
-                            if(entityAttr.getHfmdEntityAttrCode().endsWith("ame")) {
-                                name = entityAttr.getHfmdEntityAttrCode();
-                                break;
-                            }
-                        }
-//                        if(name == null) {
-//                            name = relEntityAttr.getHfmdEntityAttrCode().substring(0,)
-//                        }
-                        rel.setEntityCode( hfmdEntity.getHfmdEntityCode() + "/" + relEntityAttr.getHfmdEntityAttrCode() + "/" + name);
+                        Rel rel = getRel(relEntityAttr);
                         field.setRel(rel);
+                        if("select-panel".equals(editType)) {
+                            rel.setEntityCode(rel.getEntityCode() + "/hfmd_entity_id");
+                            relEntityAttr = hfmdEntityAttrIdEntityAttrMap.get(151031185115L);
+                            field.getRel().setRelList(Lists.newArrayList(getRel(relEntityAttr)));;
+                        }
                     }
                 }
 
@@ -233,6 +223,27 @@ public class DataSetLoaderService {
         }
 
 
+    }
+
+    private Rel getRel(HfmdEntityAttr relEntityAttr) {
+        Rel rel = new Rel();
+        Long hfpmModuleId = relEntityAttr.getHfpmModuleId();
+        HfpmModule hfpmModule = hfpmModuleMap.get(hfpmModuleId);
+        Long hfmdEntityId = relEntityAttr.getHfmdEntityId();
+        HfmdEntity hfmdEntity = hfmdEntityIdEntityMap.get(hfmdEntityId);
+        List<HfmdEntityAttr> hfmdEntityAttrs = hfmdEntityAttrMap.get(hfmdEntityId);
+        String name = null;
+        for (HfmdEntityAttr entityAttr : hfmdEntityAttrs) {
+            if(entityAttr.getHfmdEntityAttrCode().endsWith("ame")) {
+                name = entityAttr.getHfmdEntityAttrCode();
+                break;
+            }
+        }
+//                        if(name == null) {
+//                            name = relEntityAttr.getHfmdEntityAttrCode().substring(0,)
+//                        }
+        rel.setEntityCode(hfmdEntity.getHfmdEntityCode() + "/" + relEntityAttr.getHfmdEntityAttrCode() + "/" + name);
+        return rel;
     }
 
     private Map<Long, HfmdEntityAttr> getHfmdEntityAttrIdEntityAttrMap(List<HfmdEntityAttr> hfmdEntityAttrAll) {
@@ -590,12 +601,12 @@ public class DataSetLoaderService {
         column.setName(hfmdEntityAttr.getHfmdEntityAttrCode());
         column.setJavaVarName(CreatorUtil.getJavaVarName(hfmdEntityAttr.getHfmdEntityAttrCode()));
         column.setDisplayName(hfmdEntityAttr.getHfmdEntityAttrName());
-        column.setNullable(hfmdEntityAttr.getNullable());
+        column.setNullable(hfmdEntityAttr.getNullable() == null ? 0 : hfmdEntityAttr.getNullable());
         ///column.setDefaultValue(coreColumn.get)  //TODO
 
         //设置showType----------------------------一个column可以配置多个showType,分别用“，”分割
         if (StringUtils.isBlank(showTypeIds)) {
-            if (hfmdEntityAttr.getIsBusiAttr() == 0) {
+            if (hfmdEntityAttr.getIsBusiAttr() == null || hfmdEntityAttr.getIsBusiAttr() == 0) {
                 column.setShowType(new ShowType("hidden"));
             } else {
                 column.setShowType(new ShowType("input"));
@@ -611,7 +622,7 @@ public class DataSetLoaderService {
         fillShowTypeList(showTypeList, hfmdEnumClassId);
         if (showTypeList != null) {
             if (showTypeList.size() == 1) {
-                if (hfmdEntityAttr.getIsBusiAttr() == 0) {
+                if (hfmdEntityAttr.getIsBusiAttr() == null || hfmdEntityAttr.getIsBusiAttr() == 0) {
                     column.setShowType(new ShowType("hidden"));
                 } else {
                     column.setShowType(showTypeList.get(0));

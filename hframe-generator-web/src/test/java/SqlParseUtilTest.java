@@ -191,33 +191,48 @@ public class SqlParseUtilTest {
             }
         }
         //实体信息
+        Map<Long, Long> entityIdChangeMap = new HashMap<Long, Long>();
         Map<String, HfmdEntity> targetEntityMap = hfModelContainer.getEntityMap();
         if(targetEntityMap != null) {
             for (String entityCode : targetEntityMap.keySet()) {
                 HfmdEntity targetEntity = targetEntityMap.get(entityCode);
+                Long tempId = targetEntity.getHfmdEntityId();
                 if(operType == 1) {
                     iHfmdEntitySV.create(targetEntity);
                 }else {
                     iHfmdEntitySV.update(targetEntity);
                 }
+                entityIdChangeMap.put(tempId,targetEntity.getHfmdEntityId());
             }
         }
 
         //实体属�?�信�?
+        Map<Long, Long> entityAttrIdChangeMap = new HashMap<Long, Long>();
         Map<String,HfmdEntityAttr> targetEntityAttrMap = hfModelContainer.getEntityAttrMap();
         if(targetEntityAttrMap != null) {
             for (String emtityAttrCode : targetEntityAttrMap.keySet()) {
                 HfmdEntityAttr targetEntityAttr = targetEntityAttrMap.get(emtityAttrCode);
+                Long tempId = targetEntityAttr.getHfmdEntityAttrId();
+                Long hfmdEntityId = entityIdChangeMap.get(targetEntityAttr.getHfmdEntityId());
+                if (hfmdEntityId != null) {
+                    targetEntityAttr.setHfmdEntityId(hfmdEntityId);
+                }
+
                 if(operType == 1) {
                     iHfmdEntityAttrSV.create(targetEntityAttr);
                 }else {
                     iHfmdEntityAttrSV.update(targetEntityAttr);
                 }
+                entityAttrIdChangeMap.put(tempId, targetEntityAttr.getHfmdEntityAttrId());
             }
         }
         Map<String, HfpmDataSet> dataSetMap = hfModelContainer.getDataSetMap();
         if (dataSetMap != null) {
             for (HfpmDataSet hfpmDataSet : dataSetMap.values()) {
+                Long hfmdEntityId = entityIdChangeMap.get(hfpmDataSet.getMainHfmdEntityId());
+                if (hfmdEntityId != null) {
+                    hfpmDataSet.setMainHfmdEntityId(hfmdEntityId);
+                }
                 if(operType == 1) {
                     iHfpmDataSetSV.create(hfpmDataSet);
                 }else {
@@ -231,7 +246,18 @@ public class SqlParseUtilTest {
                 List<HfpmDataField> hfpmDataFieldList =  dataFieldListMap.get(dataSetCode);
                 if(hfpmDataFieldList != null) {
                     for (HfpmDataField hfpmDataField : hfpmDataFieldList) {
-                        hfpmDataField.setHfpmDataSetId(dataSetMap.get(dataSetCode).getHfpmDataSetId());
+                        if(dataSetMap.get(dataSetCode) != null) {
+                            hfpmDataField.setHfpmDataSetId(dataSetMap.get(dataSetCode).getHfpmDataSetId());
+                        }
+
+                        Long hfmdEntityId = entityIdChangeMap.get(hfpmDataField.getHfmdEntityId());
+                        if (hfmdEntityId != null) {
+                            hfpmDataField.setHfmdEntityId(hfmdEntityId);
+                        }
+                        Long entityAttrId = entityAttrIdChangeMap.get(hfpmDataField.getHfmdEntityAttrId());
+                        if(entityAttrId != null) {
+                            hfpmDataField.setHfmdEntityAttrId(entityAttrId);
+                        }
                         if(operType == 1) {
                             iHfpmDataFieldSV.create(hfpmDataField);
                         }else {
@@ -241,7 +267,6 @@ public class SqlParseUtilTest {
                 }
             }
         }
-
     }
 
     private void executeModelUpdate(HfModelContainer hfModelContainer) throws Exception {

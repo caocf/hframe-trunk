@@ -1,9 +1,13 @@
 package com.hframework.web.bean;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hframework.beans.controller.ResultData;
 import com.hframework.web.config.bean.Component;
+import com.hframework.web.config.bean.DataSetHelper;
+import com.hframework.web.config.bean.DataSetRuler;
 import com.hframework.web.config.bean.Mapper;
+import com.hframework.web.config.bean.datasetruler.Rule;
 import com.hframework.web.config.bean.mapper.Mapping;
 import com.hframework.web.config.bean.pagetemplates.Element;
 
@@ -34,6 +38,8 @@ public class ComponentDescriptor extends ElementDescriptor{
         for (Mapping mapping : mappingList1) {
             dataContainer.addMappingAndDataSetDescriptor(mapping, dataSetDescriptor, false);
         }
+
+        dataSetDescriptor.setDataSetRulers();
     }
 
     public JSONObject getJson(ResultData resultData){

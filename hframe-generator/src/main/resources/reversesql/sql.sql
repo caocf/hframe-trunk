@@ -201,6 +201,22 @@ create table hfmd_entity_attr
 
 alter table hfmd_entity_attr comment '实体属性';
 
+
+create table hfmd_entity_join_rule(
+ hfmd_entity_join_rule_id bigint(20) primary key auto_increment comment '实体连带id',
+ source_hfmd_entity_id bigint(20) not null comment '源实体id',
+ source_hfmd_entity_attr_id bigint(20) not null comment '源实体属性id',
+ source_hfmd_entity_attr_value varchar(64) comment '源实体属性值',
+ join_type tinyint(2) not null comment '连带类型',
+ target_hfmd_entity_id bigint(20) not null comment '目标实体id',
+ target_hfmd_entity_attr_id bigint(20) not null comment '目标实体属性id',
+ target_hfmd_entity_attr_value varchar(64) comment '目标实体属性值',
+ editable tinyint(2) comment '是否可编辑'
+);
+
+alter table hfmd_entity_join_rule comment '实体连带关系';
+
+
 /*==============================================================*/
 /* Table: hfmd_entity_rel                                       */
 /*==============================================================*/
@@ -608,6 +624,7 @@ create table hfus_entity_attr
    hfus_entity_attr_desc varchar(128) default NULL comment '实体描述',
    attr_type            int(2) default NULL comment '属性类型',
    size                 varchar(6) comment '大小',
+   ispk                int(2) comment '是否主键',
    nullable             int(2) default NULL comment '是否可为空',
    is_busi_attr         int(2) default NULL comment '是否业务属性',
    op_id                bigint comment '创建人',
