@@ -1,7 +1,6 @@
 package com.ucfgroup.client.weixinpay;
 
-import com.hframework.common.annotation.Key;
-import com.hframework.common.annotation.Source;
+import com.hframework.common.annotation.*;
 import com.hframework.common.util.ResourceWrapper;
 import java.lang.reflect.InvocationTargetException;
 
@@ -44,6 +43,8 @@ public class WeixinpayConfig   {
 	private String refund;
 	@Key( "third.weixinpay.interface.refundquery")
 	private String refundquery;
+	@Key( "third.weixinpay.interface.notice")
+	private String notice;
   
  
  	
@@ -206,6 +207,15 @@ public class WeixinpayConfig   {
 
 	public void setRefundquery(String refundquery){
     	this.refundquery = refundquery;
+    }
+
+ 	
+	public String getNotice(){
+		return notice;
+	}
+
+	public void setNotice(String notice){
+    	this.notice = notice;
     }
 
 	private static WeixinpayConfig instance;
