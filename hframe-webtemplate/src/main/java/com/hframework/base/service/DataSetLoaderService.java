@@ -151,30 +151,36 @@ public class DataSetLoaderService {
                     field.setName(hfpmDataField.getHfpmDataFieldName());
                     field.setCode(hfpmDataField.getHfpmDataFieldCode());
                     field.setEditType(editType);
-                    field.setCreateEditType("0".equals(String.valueOf(hfpmDataField.getFieldShowCode().charAt(0))) ? "hidden"
-                            : "1".equals(String.valueOf(hfpmDataField.getFieldShowCode().charAt(0))) ? "text" : null);
-                    field.setUpdateEditType("0".equals(String.valueOf(hfpmDataField.getFieldShowCode().charAt(1))) ? "hidden"
-                            : "1".equals(String.valueOf(hfpmDataField.getFieldShowCode().charAt(1))) ? "text" : null);
+                    if(hfpmDataField.getFieldShowCode().length() > 1) {
+                        field.setCreateEditType("0".equals(String.valueOf(hfpmDataField.getFieldShowCode().charAt(0))) ? "hidden"
+                                : "1".equals(String.valueOf(hfpmDataField.getFieldShowCode().charAt(0))) ? "text" : null);
+                        field.setUpdateEditType("0".equals(String.valueOf(hfpmDataField.getFieldShowCode().charAt(1))) ? "hidden"
+                                : "1".equals(String.valueOf(hfpmDataField.getFieldShowCode().charAt(1))) ? "text" : null);
+                    }
+
 //                    field.setAction();
 
-                    Long hfmdEnumClassId = hfmdEntityAttr.getHfmdEnumClassId();
-                    if(hfmdEnumClassId != null && hfmdEnumClassId > 0) {
-                        HfmdEnumClass hfmdEnumClass = hfmdEnumClassMap.get(hfmdEnumClassId);
-                        EnumClass enumClass = new EnumClass();
-                        enumClass.setCode(hfmdEnumClass.getHfmdEnumClassCode());
-                        field.setEnumClass(enumClass);
+                    if(hfmdEntityAttr != null) {
+                        Long hfmdEnumClassId = hfmdEntityAttr.getHfmdEnumClassId();
+                        if(hfmdEnumClassId != null && hfmdEnumClassId > 0) {
+                            HfmdEnumClass hfmdEnumClass = hfmdEnumClassMap.get(hfmdEnumClassId);
+                            EnumClass enumClass = new EnumClass();
+                            enumClass.setCode(hfmdEnumClass.getHfmdEnumClassCode());
+                            field.setEnumClass(enumClass);
 
-                    }
-                    if(hfmdEntityAttr.getRelHfmdEntityAttrId() != null && hfmdEntityAttr.getRelHfmdEntityAttrId() > 0) {
-                        HfmdEntityAttr relEntityAttr = hfmdEntityAttrIdEntityAttrMap.get(hfmdEntityAttr.getRelHfmdEntityAttrId());
-                        Rel rel = getRel(relEntityAttr);
-                        field.setRel(rel);
-                        if("select-panel".equals(editType)) {
-                            rel.setEntityCode(rel.getEntityCode() + "/hfmd_entity_id");
-                            relEntityAttr = hfmdEntityAttrIdEntityAttrMap.get(151031185115L);
-                            field.getRel().setRelList(Lists.newArrayList(getRel(relEntityAttr)));;
+                        }
+                        if(hfmdEntityAttr.getRelHfmdEntityAttrId() != null && hfmdEntityAttr.getRelHfmdEntityAttrId() > 0) {
+                            HfmdEntityAttr relEntityAttr = hfmdEntityAttrIdEntityAttrMap.get(hfmdEntityAttr.getRelHfmdEntityAttrId());
+                            Rel rel = getRel(relEntityAttr);
+                            field.setRel(rel);
+                            if("select-panel".equals(editType)) {
+                                rel.setEntityCode(rel.getEntityCode() + "/hfmd_entity_id");
+                                relEntityAttr = hfmdEntityAttrIdEntityAttrMap.get(151031185115L);
+                                field.getRel().setRelList(Lists.newArrayList(getRel(relEntityAttr)));;
+                            }
                         }
                     }
+
                 }
 
                 List<Entity> entitys = new ArrayList<Entity>();
@@ -182,7 +188,7 @@ public class DataSetLoaderService {
                 Set<HfmdEntity> entityList = getEntityFromDataFieldList(hfpmDataFieldList);
                 for (HfmdEntity entity : entityList) {
                     Entity entity1 = new Entity();
-                    entity1.setText(entity.getHfmdEntityCode());
+                    entity1.setText(entity == null ? "" : entity.getHfmdEntityCode());
                     entitys.add(entity1);
                 }
 
@@ -275,6 +281,9 @@ public class DataSetLoaderService {
                 Set<HfmdEntity> entityList = getEntityFromDataFieldList(hfpmDataFieldList);
                 String entityCodes = "";
                 for (HfmdEntity entity : entityList) {
+                    if(entity == null) {
+                        continue;
+                    }
                     if (!"".equals(entityCodes)) {
                         entityCodes += ",";
                     }
@@ -369,7 +378,7 @@ public class DataSetLoaderService {
         if (hfpmDataFieldList != null) {
             for (HfpmDataField hfpmDataField : hfpmDataFieldList) {
                 HfmdEntityAttr hfmdEntityAttr = hfmdEntityAttrIdEntityAttrMap.get(hfpmDataField.getHfmdEntityAttrId());
-                if(!"0".equals(String.valueOf(hfpmDataField.getFieldShowCode().charAt(showTypeCodeIndex)))) {
+                if(showTypeCodeIndex < hfpmDataField.getFieldShowCode().length() && !"0".equals(String.valueOf(hfpmDataField.getFieldShowCode().charAt(showTypeCodeIndex)))) {
                     com.hframe.tag.bean.Column column = getColumnFromHfmdEntityAttr(hfmdEntityAttr, hfpmDataField.getHfpmFieldShowTypeId());
                     if (StringUtils.isNotBlank(hfpmDataField.getHfpmDataFieldName())) {
                         column.setDisplayName(hfpmDataField.getHfpmDataFieldName());
@@ -401,7 +410,7 @@ public class DataSetLoaderService {
 
             for (HfpmDataField hfpmDataField : hfpmDataFieldList) {
                 HfmdEntityAttr hfmdEntityAttr = hfmdEntityAttrIdEntityAttrMap.get(hfpmDataField.getHfmdEntityAttrId());
-                if(hfmdEntityAttr.getIspk() == 1) {
+                if(hfmdEntityAttr != null && hfmdEntityAttr.getIspk() != null && hfmdEntityAttr.getIspk() == 1) {
                     fieldList.add(new com.hframe.tag.bean.Field(hfmdEntityAttr.getHfmdEntityAttrId()+"111",
                             "全选${sys:allSelect}",
                             "checkbox","",
@@ -412,14 +421,16 @@ public class DataSetLoaderService {
             }
             for (HfpmDataField hfpmDataField : hfpmDataFieldList) {
                 //TODO
-                HfpmFieldShowType showType = hfpmFieldShowTypeMap.get(Long.valueOf(hfpmDataField.getHfpmFieldShowTypeId()));
+//                HfpmFieldShowType showType = hfpmFieldShowTypeMap.get(Long.valueOf(hfpmDataField.getHfpmFieldShowTypeId()));
                 Long hfmdEntityAttrId = hfpmDataField.getHfmdEntityAttrId();
-                if(!"0".equals(hfpmDataField.getFieldShowCode().charAt(2))) {
+                if(hfpmDataField.getFieldShowCode() !=null && hfpmDataField.getFieldShowCode().length() > 1
+                        && !"0".equals(hfpmDataField.getFieldShowCode().charAt(2))) {
                     fieldList.add(new com.hframe.tag.bean.Field(
                             String.valueOf(hfpmDataField.getHfpmDataFieldId()),
                             hfpmDataField.getHfpmDataFieldName(),
                             "text",
-                            "${column:" + hfmdEntityAttrIdEntityAttrMap.get(hfmdEntityAttrId).getHfmdEntityAttrCode() + "}", ""));
+                            "${column:" + (hfmdEntityAttrIdEntityAttrMap.containsKey(hfmdEntityAttrId) ?
+                                    hfmdEntityAttrIdEntityAttrMap.get(hfmdEntityAttrId).getHfmdEntityAttrCode() : "" + "}"), ""));
                 }
             }
         }
@@ -435,7 +446,11 @@ public class DataSetLoaderService {
             HfmdEntityAttr pkEntityAttr = null;
             for (HfpmDataField hfpmDataField : hfpmDataFieldList) {
                 HfmdEntityAttr hfmdEntityAttr = hfmdEntityAttrIdEntityAttrMap.get(hfpmDataField.getHfmdEntityAttrId());
-                if(hfmdEntityAttr.getIspk() == 1) {
+                if(hfmdEntityAttr == null) {
+                    System.out.println("warning : HfmdEntityAttrId : " + hfpmDataField.getHfmdEntityAttrId() + "; hfpmDataField:" + hfpmDataField.getHfpmDataFieldId());
+                    continue;
+                }
+                if(hfmdEntityAttr.getIspk() != null && hfmdEntityAttr.getIspk() == 1) {
                     pkEntityAttr = hfmdEntityAttr;
                 }
             }
@@ -447,6 +462,9 @@ public class DataSetLoaderService {
 
             for (HfpmDataField hfpmDataField : hfpmDataFieldList) {
                 HfmdEntityAttr hfmdEntityAttr = hfmdEntityAttrIdEntityAttrMap.get(hfpmDataField.getHfmdEntityAttrId());
+                if(hfmdEntityAttr == null) {
+                    continue;
+                }
 
                 //判断是否为自循环
                 if(hfmdEntityAttr.getRelHfmdEntityAttrId() != null && hfmdEntityAttr.getRelHfmdEntityAttrId() > 0L
@@ -472,6 +490,7 @@ public class DataSetLoaderService {
 
             for (HfpmDataField hfpmDataField : hfpmDataFieldList) {
                 Long hfmdEntityAttrId = hfpmDataField.getHfmdEntityAttrId();
+
                 if(hfmdEntityAttrIdEntityAttrMap.get(hfmdEntityAttrId).getHfmdEntityAttrCode().toLowerCase().contains("name")) {
                     fieldList.add(new com.hframe.tag.bean.Field(
                             String.valueOf(hfpmDataField.getHfpmDataFieldId()),
@@ -502,7 +521,10 @@ public class DataSetLoaderService {
 
                 if (hfmdEntityAttrs != null) {
                     for (HfmdEntityAttr hfmdEntityAttr : hfmdEntityAttrs) {
-                        if (hfmdEntityAttr.getIspk() == 1) {
+                        if(hfmdEntityAttr == null) {
+                            System.out.println(1);
+                        }
+                        if (hfmdEntityAttr.getIspk()  != null && hfmdEntityAttr.getIspk() == 1) {
                             map.put(PRIMARY_KEY, hfmdEntityAttr.getHfmdEntityAttrCode());
                         }
                     }
@@ -596,6 +618,12 @@ public class DataSetLoaderService {
 
     private com.hframe.tag.bean.Column getColumnFromHfmdEntityAttr(HfmdEntityAttr hfmdEntityAttr, String showTypeIds) {
         com.hframe.tag.bean.Column column = new com.hframe.tag.bean.Column();
+
+        if(hfmdEntityAttr == null) {
+            column.setShowType(new ShowType("input"));
+            return column;
+        }
+
 
         column.setId(String.valueOf(hfmdEntityAttr.getHfmdEntityAttrId()));
         column.setName(hfmdEntityAttr.getHfmdEntityAttrCode());

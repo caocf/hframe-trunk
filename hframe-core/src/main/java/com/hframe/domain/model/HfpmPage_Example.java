@@ -995,6 +995,126 @@ public class HfpmPage_Example {
             addCriterion("del_flag not between", value1, value2, "delFlag");
             return (Criteria) this;
         }
+
+        public Criteria andHfpmDataSetIdIsNull() {
+            addCriterion("hfpm_data_set_id is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmDataSetIdIsNotNull() {
+            addCriterion("hfpm_data_set_id is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmDataSetIdEqualTo(Long value) {
+            addCriterion("hfpm_data_set_id =", value, "hfpmDataSetId");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmDataSetIdNotEqualTo(Long value) {
+            addCriterion("hfpm_data_set_id <>", value, "hfpmDataSetId");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmDataSetIdGreaterThan(Long value) {
+            addCriterion("hfpm_data_set_id >", value, "hfpmDataSetId");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmDataSetIdGreaterThanOrEqualTo(Long value) {
+            addCriterion("hfpm_data_set_id >=", value, "hfpmDataSetId");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmDataSetIdLessThan(Long value) {
+            addCriterion("hfpm_data_set_id <", value, "hfpmDataSetId");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmDataSetIdLessThanOrEqualTo(Long value) {
+            addCriterion("hfpm_data_set_id <=", value, "hfpmDataSetId");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmDataSetIdIn(List<Long> values) {
+            addCriterion("hfpm_data_set_id in", values, "hfpmDataSetId");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmDataSetIdNotIn(List<Long> values) {
+            addCriterion("hfpm_data_set_id not in", values, "hfpmDataSetId");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmDataSetIdBetween(Long value1, Long value2) {
+            addCriterion("hfpm_data_set_id between", value1, value2, "hfpmDataSetId");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmDataSetIdNotBetween(Long value1, Long value2) {
+            addCriterion("hfpm_data_set_id not between", value1, value2, "hfpmDataSetId");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfcfgPageTemplateIdIsNull() {
+            addCriterion("hfcfg_page_template_id is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfcfgPageTemplateIdIsNotNull() {
+            addCriterion("hfcfg_page_template_id is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfcfgPageTemplateIdEqualTo(Long value) {
+            addCriterion("hfcfg_page_template_id =", value, "hfcfgPageTemplateId");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfcfgPageTemplateIdNotEqualTo(Long value) {
+            addCriterion("hfcfg_page_template_id <>", value, "hfcfgPageTemplateId");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfcfgPageTemplateIdGreaterThan(Long value) {
+            addCriterion("hfcfg_page_template_id >", value, "hfcfgPageTemplateId");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfcfgPageTemplateIdGreaterThanOrEqualTo(Long value) {
+            addCriterion("hfcfg_page_template_id >=", value, "hfcfgPageTemplateId");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfcfgPageTemplateIdLessThan(Long value) {
+            addCriterion("hfcfg_page_template_id <", value, "hfcfgPageTemplateId");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfcfgPageTemplateIdLessThanOrEqualTo(Long value) {
+            addCriterion("hfcfg_page_template_id <=", value, "hfcfgPageTemplateId");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfcfgPageTemplateIdIn(List<Long> values) {
+            addCriterion("hfcfg_page_template_id in", values, "hfcfgPageTemplateId");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfcfgPageTemplateIdNotIn(List<Long> values) {
+            addCriterion("hfcfg_page_template_id not in", values, "hfcfgPageTemplateId");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfcfgPageTemplateIdBetween(Long value1, Long value2) {
+            addCriterion("hfcfg_page_template_id between", value1, value2, "hfcfgPageTemplateId");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfcfgPageTemplateIdNotBetween(Long value1, Long value2) {
+            addCriterion("hfcfg_page_template_id not between", value1, value2, "hfcfgPageTemplateId");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {

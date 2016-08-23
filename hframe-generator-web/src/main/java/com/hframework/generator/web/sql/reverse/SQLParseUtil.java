@@ -5,10 +5,7 @@ import java.util.*;
 
 import com.hframework.common.frame.cache.PropertyConfigurerUtils;
 
-import com.hframework.common.util.CommonUtils;
-import com.hframework.common.util.DateUtils;
-import com.hframework.common.util.FileUtils;
-import com.hframework.common.util.StringUtils;
+import com.hframework.common.util.*;
 import com.hframework.common.ext.CollectionUtils;
 import com.hframe.domain.model.HfmdEntity;
 import com.hframe.domain.model.HfmdEntityAttr;
@@ -66,7 +63,7 @@ public class SQLParseUtil {
 //					}
 
 					parseSQL2ModelContainer(modelContainer,
-							cmd.replaceAll("/\\*[ a-zA-Z:0-9_\\=. /]+\\*/", ""));
+							cmd.replaceAll("/\\*[ a-zA-Z:0-9_\\=. /]+\\*/", "").replaceAll("`", ""));
 
 					System.out.println(cmd.replaceAll("/\\*[ a-zA-Z:0-9_\\=. /]+\\*/", "").trim());
 				}
@@ -82,19 +79,32 @@ public class SQLParseUtil {
 
 	private static void parseSQL2ModelContainer(
 			HfModelContainer modelContainer, String cmdStr) {
-		if(cmdStr.startsWith(CREATE_TABLE)) {
+		if(cmdStr.toLowerCase().startsWith(CREATE_TABLE)) {
 			String tableName = cmdStr.substring(CREATE_TABLE.length(),cmdStr.indexOf("(")).trim();
 			HfmdEntity entity = modelContainer.getEntity(tableName);
 
 
 			String tableContent =  cmdStr.substring(cmdStr.indexOf("(")+1,cmdStr.lastIndexOf(")")).trim();
+			String tablesDesc = cmdStr.replace(tableContent, "");
+//			System.out.println("==>" + tablesDesc + ";" +tablesDesc.toLowerCase().indexOf(COMMENT + "="));
+			if(tablesDesc.toLowerCase().indexOf(COMMENT + "=") > 0) {
+//				System.out.println("==>" + tablesDesc + ";" +tablesDesc.toLowerCase().indexOf(COMMENT + "="));
+				String tmpString = tablesDesc.substring(tablesDesc.toLowerCase().indexOf(COMMENT + "=") + 8);
+				tmpString = tmpString.substring(tmpString.indexOf("'") + 1);
+//				System.out.println("==>" + tmpString);
+				tmpString = tmpString.substring(0, tmpString.indexOf("'"));
+				entity.setHfmdEntityName(tmpString);
+				entity.setHfmdEntityDesc(tmpString);
+
+//				System.out.println("==>" + tmpString);
+			}
 			String[] splitStrs = tableContent.split(",");
 			String columnInfo = "";
 			for (String splitStr : splitStrs) {
 				columnInfo += splitStr;
 
 				//表明为描述中带有",",该行信息并没有正常结束
-				if(columnInfo.indexOf(COMMENT)> 2 &&  columnInfo.indexOf("'") == columnInfo.lastIndexOf("'")) {
+				if(columnInfo.toLowerCase().indexOf(COMMENT)> 2 &&  columnInfo.indexOf("'") == columnInfo.lastIndexOf("'")) {
 					continue;
 				}
 
@@ -105,16 +115,16 @@ public class SQLParseUtil {
 				}
 
 				String comment = "";
-				if(columnInfo.indexOf(COMMENT)> 2){
-					comment = columnInfo.substring(columnInfo.indexOf(COMMENT)+7).trim();
-					columnInfo = columnInfo.substring(0,columnInfo.indexOf(COMMENT));
+				if(columnInfo.toLowerCase().indexOf(COMMENT)> 2){
+					comment = columnInfo.substring(columnInfo.toLowerCase().indexOf(COMMENT)+7).trim();
+					columnInfo = columnInfo.substring(0,columnInfo.toLowerCase().indexOf(COMMENT));
 				}
 
 				parseColumnInfo(entity,columnInfo,comment);
 				columnInfo = "";
 			}
 
-		}else if(cmdStr.startsWith(ALTER_TABLE)) {
+		}else if(cmdStr.toLowerCase().startsWith(ALTER_TABLE)) {
 			cmdStr = cmdStr.substring(ALTER_TABLE.length()).trim();
 			String tableName = cmdStr.substring(0,cmdStr.indexOf(" ")).trim();
 			String alterInfo = cmdStr.substring(cmdStr.indexOf(" ")).trim();
@@ -122,7 +132,7 @@ public class SQLParseUtil {
 			HfmdEntity entity = modelContainer.getEntity(tableName);
 			parseAlterInfo(entity,alterInfo);
 
-		}else if(cmdStr.startsWith(DROP_TABLE_IF_EXISTS)) {
+		}else if(cmdStr.toLowerCase().startsWith(DROP_TABLE_IF_EXISTS)) {
 			String tableName = cmdStr.substring(DROP_TABLE_IF_EXISTS.length()).trim();
 			modelContainer.removeEntity(tableName);
 		}
@@ -131,19 +141,19 @@ public class SQLParseUtil {
 	}
 
 	private static void parseAlterInfo(HfmdEntity entity, String alterInfo) {
-		if(alterInfo.contains(COMMENT)) {
-			entity.setHfmdEntityName(alterInfo.substring(alterInfo.indexOf(COMMENT) + 7).trim().replaceAll("'",""));
-			entity.setHfmdEntityDesc(alterInfo.substring(alterInfo.indexOf(COMMENT)+7).trim().replaceAll("'",""));
+		if(alterInfo.toLowerCase().contains(COMMENT)) {
+			entity.setHfmdEntityName(alterInfo.substring(alterInfo.toLowerCase().indexOf(COMMENT) + 7).trim().replaceAll("'",""));
+			entity.setHfmdEntityDesc(alterInfo.substring(alterInfo.toLowerCase().indexOf(COMMENT)+7).trim().replaceAll("'",""));
 
 		}
-		if(alterInfo.contains(ADD_CONSTRAINT)) {
+		if(alterInfo.toLowerCase().contains(ADD_CONSTRAINT)) {
 			String attrName = alterInfo.substring(
-					alterInfo.indexOf(FOREIGN_KEY + " (")+13,alterInfo.indexOf(")")).trim();
+					alterInfo.toLowerCase().indexOf(FOREIGN_KEY + " (")+13,alterInfo.indexOf(")")).trim();
 			String relEntityInfo = alterInfo.substring(
-					alterInfo.indexOf(REFERENCES)+10,alterInfo.lastIndexOf(")")).trim();
+					alterInfo.toLowerCase().indexOf(REFERENCES)+10,alterInfo.lastIndexOf(")")).trim();
 			String relEntityName = relEntityInfo.split("\\(")[0].trim();
 			String relEntityAttrName = relEntityInfo.split("\\(")[1].trim();
-			HfmdEntityAttr entityAttr = modelContainer.getEntityAttr(entity.getHfmdEntityCode(),attrName);
+			HfmdEntityAttr entityAttr = modelContainer.getEntityAttr(entity.getHfmdEntityCode(), attrName);
 			HfmdEntityAttr relEntityAttr = modelContainer.getEntityAttr(relEntityName, relEntityAttrName);
 			entityAttr.setRelHfmdEntityAttrId(relEntityAttr.getHfmdEntityAttrId());
 		}
@@ -205,7 +215,8 @@ public class SQLParseUtil {
 			if(columnInfo.toLowerCase().matches("not[ ]+null")) {
 				isNull = false;
 			}
-			if(columnInfo.toLowerCase().matches("primary[ ]+key")) {
+
+			if(RegexUtils.find(columnInfo.toLowerCase(), "primary[ ]+key").length > 0) {
 				isPK = true;
 			}
 
@@ -221,11 +232,16 @@ public class SQLParseUtil {
 		}
 	}
 	public static HfModelContainer parseModelContainerFromSQLFile(String filePath, String programCode, String programName, String moduleCode, String moduleName) throws IOException {
+		return parseModelContainerFromSQL(FileUtils.readFile(filePath),programCode,programName,moduleCode,moduleName);
+
+	}
+
+	public static HfModelContainer parseModelContainerFromSQL(String sql, String programCode, String programName, String moduleCode, String moduleName) {
 		opId = 999L;
 		curDate = new Date();
 		programId = CommonUtils.uuidL();
 		moduleId = CommonUtils.uuidL();
-        modelContainer = null;
+		modelContainer = null;
 
 		//创建项目信息
 		createHfpmProgram(programCode, programName);
@@ -234,7 +250,7 @@ public class SQLParseUtil {
 		createHfpmModule(moduleCode, moduleName);
 
 		//创建实体信息
-		parseSQL2Model(FileUtils.readFile(filePath));
+		parseSQL2Model(sql);
 
 		autoFullEntityContainer();
 		return modelContainer;

@@ -37,7 +37,7 @@ public class HfpmProgramCfgSVImpl  implements IHfpmProgramCfgSV {
                 if(hfpmProgramCfg.getHfpmProgramCfgId() == null) {
                     result += hfpmProgramCfgMapper.insertSelective(hfpmProgramCfg);
                 }else {
-                    result += hfpmProgramCfgMapper.updateByPrimaryKey(hfpmProgramCfg);
+                    result += hfpmProgramCfgMapper.updateByPrimaryKeySelective(hfpmProgramCfg);
                 }
             }
         }

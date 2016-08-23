@@ -734,6 +734,66 @@ public class HfpmPageComponent_Example {
             addCriterion("del_flag not between", value1, value2, "delFlag");
             return (Criteria) this;
         }
+
+        public Criteria andHfcfgComponentTemplateIdIsNull() {
+            addCriterion("hfcfg_component_template_id is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfcfgComponentTemplateIdIsNotNull() {
+            addCriterion("hfcfg_component_template_id is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfcfgComponentTemplateIdEqualTo(Long value) {
+            addCriterion("hfcfg_component_template_id =", value, "hfcfgComponentTemplateId");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfcfgComponentTemplateIdNotEqualTo(Long value) {
+            addCriterion("hfcfg_component_template_id <>", value, "hfcfgComponentTemplateId");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfcfgComponentTemplateIdGreaterThan(Long value) {
+            addCriterion("hfcfg_component_template_id >", value, "hfcfgComponentTemplateId");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfcfgComponentTemplateIdGreaterThanOrEqualTo(Long value) {
+            addCriterion("hfcfg_component_template_id >=", value, "hfcfgComponentTemplateId");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfcfgComponentTemplateIdLessThan(Long value) {
+            addCriterion("hfcfg_component_template_id <", value, "hfcfgComponentTemplateId");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfcfgComponentTemplateIdLessThanOrEqualTo(Long value) {
+            addCriterion("hfcfg_component_template_id <=", value, "hfcfgComponentTemplateId");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfcfgComponentTemplateIdIn(List<Long> values) {
+            addCriterion("hfcfg_component_template_id in", values, "hfcfgComponentTemplateId");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfcfgComponentTemplateIdNotIn(List<Long> values) {
+            addCriterion("hfcfg_component_template_id not in", values, "hfcfgComponentTemplateId");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfcfgComponentTemplateIdBetween(Long value1, Long value2) {
+            addCriterion("hfcfg_component_template_id between", value1, value2, "hfcfgComponentTemplateId");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfcfgComponentTemplateIdNotBetween(Long value1, Long value2) {
+            addCriterion("hfcfg_component_template_id not between", value1, value2, "hfcfgComponentTemplateId");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {

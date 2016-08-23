@@ -76,7 +76,7 @@
             </attach>
             <source scope="EOC" param="thisForm"></source>
             <effect type="ajaxSubmitByJson" action="${batchCreate}"></effect>
-            <effect type="component.reload"></effect>
+            <effect type="pageFwd" action='${mgr}' isStack="true"></effect>
         </event>
         <event name="reset">
             <attach anchor="EOFC">

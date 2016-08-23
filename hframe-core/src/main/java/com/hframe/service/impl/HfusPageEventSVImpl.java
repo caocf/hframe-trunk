@@ -37,7 +37,7 @@ public class HfusPageEventSVImpl  implements IHfusPageEventSV {
                 if(hfusPageEvent.getHfusPageEventId() == null) {
                     result += hfusPageEventMapper.insertSelective(hfusPageEvent);
                 }else {
-                    result += hfusPageEventMapper.updateByPrimaryKey(hfusPageEvent);
+                    result += hfusPageEventMapper.updateByPrimaryKeySelective(hfusPageEvent);
                 }
             }
         }

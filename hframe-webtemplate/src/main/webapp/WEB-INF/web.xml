@@ -10,6 +10,9 @@
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
     <listener>
+        <listener-class>com.hframework.listener.ModelLoaderListener</listener-class>
+    </listener>
+    <listener>
         <listener-class>com.hframework.listener.DataSetLoaderListener</listener-class>
     </listener>
 

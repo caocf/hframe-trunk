@@ -23,6 +23,16 @@
     <if test="condition != null  and condition != ''"> where ${condition}</if>
   </select>
 
+  <insert id="executeDBStructChange" parameterType="java.util.Map" statementType="STATEMENT">
+    ${sql}
+  </insert>
 
+  <select id="showTables" parameterType="java.util.Map" resultType="String"  >
+    SHOW TABLES;
+  </select>
+
+  <select id="showCreateTable" parameterType="java.util.Map" resultType="java.util.Map"  >
+    SHOW CREATE TABLE ${tableName};
+  </select>
 
 </mapper>

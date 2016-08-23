@@ -16,7 +16,7 @@
         <plugin type="com.hframework.generator.web.mybatis.plugins.JointQueryPlugin"></plugin>
         <plugin type="com.hframework.generator.web.mybatis.plugins.MapperAnnotationPlugin"></plugin>
         <plugin type="com.hframework.generator.web.mybatis.plugins.NoParamConstructorPlugin"></plugin>
-
+        <plugin type="com.hframework.generator.web.mybatis.plugins.MapperXmlOverwritePlugin"></plugin>
 
 
         <commentGenerator type="com.hframework.generator.web.mybatis.override.MybatisCommentGenerator">

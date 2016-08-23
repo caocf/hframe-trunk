@@ -1,5 +1,5 @@
 
-<div class="box span12 hflist" id='$list.id'  module="$module" page="$page" param="$!param" component="$list.component">
+<div class="box span12 hflist" id='$list.id'  module="$module" page="$page" param="$!list.param" component="$list.component">
     <div class="box-header">
         <h2><i class="$list.icon"></i><span class="break"></span>$list.title</h2>
         <div class="box-icon">
@@ -75,14 +75,18 @@
                 #end
             </tbody>
         </table>
-        <div class="pagination pagination-centered">
-            <ul class='hflist-pager'>
-                #foreach($pageObj in $list.pager)
-                    <li  #if($pageObj.get(2) == "active")   class="active"  #end
-                    ><a href="javascript:void(0)" class='hflist-pager-button' pageNo='$pageObj.get(1)' disabled='$pageObj.get(3)'>$pageObj.get(0)</a></li>
-                #end
-            </ul>
-        </div>
+
+        #if($list.pager.size() > 3)
+            <div class="pagination pagination-centered">
+                <ul class='hflist-pager'>
+                    #foreach($pageObj in $list.pager)
+                        <li  #if($pageObj.get(2) == "active")   class="active"  #end
+                                ><a href="javascript:void(0)" class='hflist-pager-button' pageNo='$pageObj.get(1)' disabled='$pageObj.get(3)'>$pageObj.get(0)</a></li>
+                    #end
+                </ul>
+            </div>
+        #end
+
         #if($list.EOF)
             <div class="form-actions" align="center">
                 #foreach($item in $list.EOF)

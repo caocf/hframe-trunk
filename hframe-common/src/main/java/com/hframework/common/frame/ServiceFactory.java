@@ -19,7 +19,7 @@ public class ServiceFactory implements ApplicationContextAware {
     public static Object getService(String beanName) {
         if(webappcontext == null) {
             try {
-                initContext();
+                initContext(null);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -27,8 +27,22 @@ public class ServiceFactory implements ApplicationContextAware {
         return webappcontext.getBean(beanName);
     }
 
-    private static void initContext() throws Exception{
-        throw new Exception("ServiceFactory init error");
+    public static <T> T getService(Class<T> clazz) {
+        if(webappcontext == null) {
+            try {
+                initContext(null);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return webappcontext.getBean(clazz);
+    }
+
+    public static void initContext(ApplicationContext applicationContext) throws Exception{
+        if(applicationContext == null) {
+            throw new Exception("ServiceFactory init error");
+        }
+        webappcontext = applicationContext;
     }
 
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {

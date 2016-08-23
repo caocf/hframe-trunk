@@ -2,16 +2,24 @@
   <module>hframe</module>
   <code>hfpm_page_component</code>
   <entity>hfpm_page_component</entity>
-  <name>页面组件【默认】</name>
+  <name>页面组件</name>
   <fields>
     <field code="hfpm_page_component_id" name="页面组件ID" edit-type="input">
       <create-edit-type>hidden</create-edit-type>
       <update-edit-type>text</update-edit-type>
     </field>
-    <field code="hfpm_page_component_name" name="页面组件名称" edit-type="input"/>
-    <field code="hfpm_page_component_type" name="页面组件类型" edit-type="input"/>
+    <field code="hfpm_page_component_name" name="页面组件名称" edit-type="input">
+      <create-edit-type>hidden</create-edit-type>
+      <update-edit-type>hidden</update-edit-type>
+    </field>
+    <field code="hfpm_page_component_type" name="页面组件类型" edit-type="input">
+      <create-edit-type>hidden</create-edit-type>
+      <update-edit-type>hidden</update-edit-type>
+    </field>
     <field code="hfpm_page_id" name="页面ID" edit-type="select">
       <rel entity-code="hfpm_page/hfpm_page_id/hfpm_page_name"/>
+      <create-edit-type>hidden</create-edit-type>
+      <update-edit-type>hidden</update-edit-type>
     </field>
     <field code="hfpm_data_set_id" name="数据集ID" edit-type="select">
       <rel entity-code="hfpm_data_set/hfpm_data_set_id/hfpm_data_set_name"/>
@@ -34,6 +42,9 @@
     </field>
     <field code="del_flag" name="删除标识" edit-type="input">
       <create-edit-type>hidden</create-edit-type>
+    </field>
+    <field code="hfcfg_component_template_id" name="组件模板id" edit-type="select">
+      <rel entity-code="hfcfg_component_template/hfcfg_component_template_id/hfcfg_component_template_name"/>
     </field>
   </fields>
 </dataset>

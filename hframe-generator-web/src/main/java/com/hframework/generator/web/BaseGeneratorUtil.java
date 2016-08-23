@@ -1,16 +1,33 @@
 package com.hframework.generator.web;
 
 import com.hframework.beans.class0.Table;
+import com.hframework.common.util.FileUtils;
+import com.hframework.common.util.message.VelocityUtil;
+import com.hframework.generator.util.CreatorUtil;
 import com.hframework.generator.web.mybatis.MyBatisGeneratorUtil;
 import org.mybatis.generator.config.TableConfiguration;
 
+import java.io.File;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by zhangqh6 on 2015/10/18.
  */
 public class BaseGeneratorUtil {
+
+    public static  String generateMybatisConfig(List<Map<String, String>> tables, String rootPath) throws Exception {
+
+        Map map = new HashMap();
+        map.put("Tables", tables);
+        map.put("RootPath", rootPath);
+        String content = VelocityUtil.produceTemplateContent("com/hframework/generator/vm/mybatis-generator-config.vm", map);
+        System.out.println(content);
+        FileUtils.writeFile(CreatorUtil.getGeneratorConfigFilePath("hframe", "hframe", "hframe"), content);
+        return CreatorUtil.getGeneratorConfigFilePath("hframe", "hframe", "hframe");
+    }
 
     /**
      * 服务生成
@@ -67,6 +84,18 @@ public class BaseGeneratorUtil {
                 ControllerV2Generator controllerGenerator = new ControllerV2Generator(companyName, projectName, moduleName, table);
                 controllerGenerator.create();
             }
+        }
+    }
+
+    public static void generator(String mybatisConfigFile) throws Exception {
+        List<TableConfiguration> tableConfigurations = MyBatisGeneratorUtil.getTableCfg(new File(mybatisConfigFile));
+        for (TableConfiguration tableConfiguration : tableConfigurations) {
+            Table table = new Table();
+            table.setTableName(tableConfiguration.getTableName());
+            table.setTableDesc(tableConfiguration.getProperty("chineseName"));
+            table.setParentId(tableConfiguration.getProperty("parentId"));
+            serviceGenerate("", "hframe", "hframe", table);
+            controllerGenerate("", "hframe", "hframe", table);
         }
     }
 

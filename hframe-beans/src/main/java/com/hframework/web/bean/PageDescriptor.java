@@ -74,7 +74,12 @@ public class PageDescriptor{
     }
 
     public void addComponentDescriptor(String componentId, ComponentDescriptor descriptor) {
-        components.put(componentId,descriptor);
+        descriptor.setPageDescriptor(this);
+        if(components.containsKey(componentId)) {
+            components.put(componentId,descriptor);
+        }else {
+            components.put(componentId,descriptor);
+        }
     }
 
     public ComponentDescriptor getComponentDescriptor(String componentId) {

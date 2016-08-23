@@ -1,0 +1,312 @@
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+
+
+<%
+	String path = request.getContextPath();
+	String basePath = request.getScheme() + "://"
+			+ request.getServerName() + ":" + request.getServerPort()
+			+ path + "/";
+%>
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+	<head>
+
+		<title>智能系统-设计首页</title>
+<%@ include file="/webframe/commonhead.jsp" %>
+<%@ include file="/webframe/mycommonhead.jsp" %>
+		<meta http-equiv="pragma" content="no-cache">
+		<meta http-equiv="cache-control" content="no-cache">
+		<meta http-equiv="expires" content="0">
+		<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+		<meta http-equiv="description" content="This is my page">
+
+		<link rel="stylesheet" type="text/css"
+			href="<%=path%>/design/css/index.css">
+
+		<script type="text/javascript" src="<%=path%>/js/jquery.js"></script>
+		<script type="text/javascript" src="<%=request.getContextPath() %>/js/common/table.js"></script>
+
+		<script type="text/javascript">
+		$(function(){
+			$("#createBtn").click(function(){
+				
+				var str="<tr>";
+				str+='<td><input type="checkbox" name="columnIdBox" value="unknown" /><input type="hidden" name="columnId" value="unknown" /></td>';
+				str+='<td><input name="columnName" value="" size="3"></td>';
+				str+='<td><select name="columnType" size="1"><option value="varchar" >varchar</option><option value="int" >int</option><option value="datetime" >datetime</option><option value="date" >date</option></select></td>';
+				str+='<td><input name="columnSize"  size="3"></td>';
+				str+='<td><input type="checkbox" name="ispkBox" value="1"   /><input type="hidden" name="ispk" value="0"></td>';
+				str+='<td><input type="checkbox" name="nullableBox" value="1"  checked="checked" /><input type="hidden" name="nullable" value="1"></td>';
+				str+='<td><input type="checkbox" name="showableBox" value="1"  checked="checked" /><input type="hidden" name="showable" value="1"></td>';
+				str+='<td><input name="showName"  size="3"></td>';
+				str+='<td><input name="description"  size="7"></td>';
+				str+='</tr>';
+				//$("table>tbody>tr:last").append(str);
+				$("table").append(str);
+				
+			
+			});
+			$("#copyBtn").click(function(){
+				var id=$("input[name=columnIdBox][checked]").val();
+				
+				if(id!="undefined"){
+					var selectObj=$("input[name=columnIdBox][checked]");
+					
+					selectObj.parent("td").parent("tr").append("<tr>"+selectObj.parent("td").parent("tr").html()+"</tr");
+				
+				}
+			
+			});
+			$("#updateBtn").click(function(){
+				
+			
+
+				window.location.reload();
+			});
+			
+			$("#deleteBtn").click(function(){
+				
+				var id=$("input[name=columnIdBox][checked]").val();
+				var deleteIds=$("#deleteIds").val();
+				
+				$("input[name=columnIdBox][checked]").each(function(){
+					if(id!="undefined"){
+						deleteIds+=$(this).val()+",";
+					}
+				});
+				$("#deleteIds").val(deleteIds);
+				
+				if(id!="undefined"){
+					var selectObj=$("input[name=columnIdBox][checked]");
+					selectObj.parent("td").parent("tr").remove();
+				}
+				
+				
+				
+			});
+			
+			 $("#currentDb").change(function(){
+			 
+			 	var dbid=$("select[name=currentDb]").find("option:selected").val();
+			 	window.location.href="<%=path%>/core/core_tablecolumn_list?curDbId="+dbid;
+			 
+			 });
+			 $("#currentTable").change(function(){
+			 	
+			 	var dbid=$("select[name=currentDb]").find("option:selected").val();
+			 	var tableid=$("select[name=currentTable]").find("option:selected").val();
+			 	window.location.href="<%=path%>/core/core_tablecolumn_list?curDbId="+dbid+"&curTableId="+tableid;
+			 });
+			 
+			 $("input[type=checkbox]").click(function(){
+			 	if($(this).next("input").val()==1){
+			 		$(this).next("input").val(0);
+			 	}else if($(this).next("input").val()==0){
+			 		$(this).next("input").val(1);
+			 	}
+			 });
+			 
+		});	
+	
+	
+
+	
+	</script>
+
+	</head>
+
+	<body background="<%=path%>/design/images/bg_13.jpg" bgcolor="white"
+		style="margin: 5px;">
+		<div id="left" style="float: left; width: 240px; height: 400px;">
+			<ul class="left_menu">
+			<li><a href="<%=path %>/core/core_db_list">数据库管理</a></li>
+			<li><a href="<%=path %>/core/core_table_list" >数据表管理</a></li>
+			<li><a href="<%=path %>/core/core_tablecolumn_list" >数据列管理</a></li>
+			<li><a href="<%=path %>/core/core_tablefk_list" >外键管理</a></li>
+
+
+			</ul>
+		</div>
+		<div id="right" style="width: 700px; height: 400px;">
+			
+			<div style="text-align: left;">
+				当前数据库：<select id="currentDb" name="currentDb" >
+					<c:forEach var="db" items="${dbList}">
+						<c:if test="${defaultDb.id eq db.id }">
+							<option value="${db.id }" selected="selected">${db.showName }</option>	
+						</c:if>
+						<c:if test="${defaultDb.id ne db.id }">
+							<option value="${db.id }">${db.showName }</option>	
+						</c:if>
+					</c:forEach>
+				</select>
+				当前数据表：<select id="currentTable" name="currentTable" >
+					<c:forEach var="table" items="${tableList}">
+						<c:if test="${defaultTable.tableId eq table.tableId }">
+							<option value="${table.tableId }" selected="selected">${table.tableName }</option>	
+						</c:if>
+						<c:if test="${defaultTable.tableId ne table.tableId }">
+							<option value="${table.tableId }">${table.tableName }</option>	
+						</c:if>
+					</c:forEach>
+				</select>
+			</div>
+			<div id="dbcontent">
+				<h1>
+					数据列列表
+				</h1>
+				<form action="<%=path %>/core/_core_tablecolumn_update_tablecolumn_list" method="post">
+				
+				<input name="curDbId" value="${defaultDb.id }" type="hidden">
+				<input name="curTableId" value="${defaultTable.tableId }" type="hidden">
+				<input id="deleteIds" name="deleteIds" value="" type="hidden">
+				
+				<table border="1" bordercolor="#bbb" cellpadding="5px;">
+
+					<thead>
+						<tr>
+							<th>
+								全选
+							</th>
+							<th>
+								列名称
+							</th>
+							<th>
+								列类型
+							</th>
+							<th>
+								列大小
+							</th>
+							<th>
+								主键
+							</th>
+							<th>
+								为空
+							</th>
+							<th>
+								可展示
+							</th>
+							<th>
+								展示名
+							</th>
+							<th>
+								描述
+							</th>
+							<th width="40">
+								展现方式（show
+								_type）
+							</th>
+							<th width="40">
+								数据源（data
+								_source);
+							</th>
+							
+							
+						</tr>
+					</thead>
+					<c:forEach var="vo" items="${columnList }">
+
+						<tr>
+							<td>
+								<input type="checkbox" name="columnIdBox" value="${vo.id }" />
+								<input type="hidden" name="columnId" value="${vo.id }" />
+								
+							</td>
+							<td>
+								<input name="columnName" value="${vo.columnName }" size="3">
+							</td>
+							<td>
+								<select name="columnType" size="1">
+									<c:if test="${vo.columnType eq 'varchar'}"><option value="varchar" selected="selected">varchar</option></c:if>
+									<c:if test="${vo.columnType ne 'varchar'}"><option value="varchar" >varchar</option></c:if>
+								
+									<c:if test="${vo.columnType eq 'int'}"><option value="int" selected="selected">int</option></c:if>
+									<c:if test="${vo.columnType ne 'int'}"><option value="int" >int</option></c:if>
+								
+									<c:if test="${vo.columnType eq 'datetime'}"><option value="datetime" selected="selected">datetime</option></c:if>
+									<c:if test="${vo.columnType ne 'datetime'}"><option value="datetime" >datetime</option></c:if>
+								
+									<c:if test="${vo.columnType eq 'date'}"><option value="date" selected="selected">date</option></c:if>
+									<c:if test="${vo.columnType ne 'date'}"><option value="date" >date</option></c:if>
+								
+								
+								</select>
+							
+								
+							</td>
+							<td>
+							<input name="columnSize" value="${vo.columnSize }" size="3">
+							</td>
+							<td>
+							
+							<input type="checkbox" name="ispkBox" value="1"  <c:if test="${vo.ispk eq 1}">checked="checked"</c:if> />
+							<c:if test="${vo.ispk eq 1}"><input type="hidden" name="ispk" value="1"></c:if>
+							<c:if test="${vo.ispk ne 1}"><input type="hidden" name="ispk" value="0"></c:if>
+							
+							
+							</td>
+							<td>
+								<input type="checkbox" name="nullableBox" value="1"  <c:if test="${vo.nullable eq 1}">checked="checked"</c:if> />
+								<c:if test="${vo.nullable eq 1}"><input type="hidden" name="nullable" value="1"></c:if>
+								<c:if test="${vo.nullable ne 1}"><input type="hidden" name="nullable" value="0"></c:if>
+							</td>
+							<td>
+								<input type="checkbox" name="showableBox" value="1"  <c:if test="${vo.showable eq 1}">checked="checked"</c:if> />
+								<c:if test="${vo.showable eq 1}"><input type="hidden" name="showable" value="1"></c:if>
+								<c:if test="${vo.showable ne 1}"><input type="hidden" name="showable" value="0"></c:if>
+							</td>
+							<td>
+							<input name="showName" value="${vo.showName }" size="3">
+							</td>
+							<td>
+							<input name="description" value="${vo.description }" size="7">
+							</td>
+							<td>
+								here
+							</td>
+							<td>
+								here
+							</td>
+							<td>
+								<a href="javascript:void(0);" onclick="rowUp_Sys(this)">up</a>
+								<a href="javascript:void(0);" onclick="rowDown_Sys(this)">down</a>
+							</td>
+						</tr>
+
+					</c:forEach>
+					<tfoot>
+						<tr>
+							<th colspan="100%" align="center">
+								<button id="createBtn">
+									添加
+								</button>
+								&nbsp;&nbsp;&nbsp;
+								<button id="btn" type="submit">
+									保存
+								</button>
+								&nbsp;&nbsp;&nbsp;
+								<button id="copyBtn">
+									复制
+								</button>
+								&nbsp;&nbsp;&nbsp;
+								<button id="deleteBtn">
+									删除
+								</button>
+
+
+							</th>
+						</tr>
+					</tfoot>
+
+				</table>
+				
+				</form>
+			</div>
+			
+  		<zqh:mygrid gridId="1231232" defaultBtn="save" editable="true" condition="table_id='183454398475491'"  view="core_table_column"  title="数据列列表"></zqh:mygrid>
+				
+			
+		</div>
+	</body>
+</html>

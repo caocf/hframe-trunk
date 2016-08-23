@@ -43,4 +43,23 @@ public class ContextController {
         }
     }
 
+    /**
+     * 重新加载（全量）
+     * @return
+     */
+    @RequestMapping(value = "/model_diff.json")
+    @ResponseBody
+    public ResultData getModelDiff(HttpServletRequest request){
+        logger.debug("request : {}");
+        try{
+            dataSetLoaderService.load(request.getSession().getServletContext());
+            WebContext.reload();
+            return ResultData.success();
+        }catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+    }
+
+
 }

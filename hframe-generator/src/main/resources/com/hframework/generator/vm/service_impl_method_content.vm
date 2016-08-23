@@ -31,7 +31,7 @@
                 if(${varName}.get${className}Id() == null) {
                     result += ${varName}Mapper.insertSelective(${varName});
                 }else {
-                    result += ${varName}Mapper.updateByPrimaryKey(${varName});
+                    result += ${varName}Mapper.updateByPrimaryKeySelective(${varName});
                 }
             }
         }
@@ -108,7 +108,8 @@
 
         Map<Long, List<${className}>> result = new HashMap<Long, List<${className}>>();
 
-        fill${className}TreeCascade(result, Lists.newArrayList(${varName}.get${parentIdPropertyClassName}()), example);
+        fill${className}TreeCascade(result, Lists.newArrayList(
+                ${varName}.get${parentIdPropertyClassName}() == null ? -1 : ${varName}.get${parentIdPropertyClassName}() ), example);
         return result;
     }
 

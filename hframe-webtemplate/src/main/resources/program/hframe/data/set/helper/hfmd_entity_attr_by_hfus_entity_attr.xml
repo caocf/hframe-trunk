@@ -5,8 +5,8 @@
   <effect-dataset>hfmd_entity_attr</effect-dataset>
   <mappings>
     <mapping help-dataset-field="hfus_entity_attr_id" effect-dataset-field="hfmd_entity_attr_id"/>
-    <mapping help-dataset-field="hfus_entity_attr_name" effect-dataset-field="hfmd_entity_attr_name"/>
-    <mapping help-dataset-field="hfus_entity_attr_code" effect-dataset-field="hfmd_entity_attr_code"/>
+    <mapping help-dataset-field="hfus_entity_attr_name" effect-dataset-field="hfmd_entity_attr_name"  is-compare-name="true" />
+    <mapping help-dataset-field="hfus_entity_attr_code" effect-dataset-field="hfmd_entity_attr_code" is-compare-key="true"/>
     <mapping help-dataset-field="hfus_entity_attr_desc" effect-dataset-field="hfmd_entity_attr_desc"/>
     <mapping help-dataset-field="attr_type" effect-dataset-field="attr_type"/>
     <mapping help-dataset-field="size" effect-dataset-field="size"/>

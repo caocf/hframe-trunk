@@ -34,6 +34,7 @@ import com.hframework.web.config.bean.module.Component;
 import org.apache.commons.beanutils.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.http.MediaType;
@@ -48,8 +49,12 @@ import org.springframework.web.bind.support.ConfigurableWebBindingInitializer;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.context.request.ServletWebRequest;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.method.support.ModelAndViewContainer;
+import org.springframework.web.servlet.HandlerExecutionChain;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import org.springframework.web.servlet.mvc.method.annotation.ServletModelAttributeMethodProcessor;
 import org.springframework.web.servlet.mvc.method.annotation.ServletRequestDataBinderFactory;
 
@@ -58,6 +63,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.beans.PropertyDescriptor;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
@@ -73,6 +79,7 @@ import java.util.*;
 public class DefaultController {
     private static final Logger logger = LoggerFactory.getLogger(DefaultController.class);
 
+    private static Map<String, HandlerMethod> urlMapping = new HashMap<String, HandlerMethod>();
     @Resource
     private CommonDataService commonDataService;
 
@@ -202,12 +209,15 @@ public class DefaultController {
                 }));
                 if(treeData.isEmpty()) {
                     JSONArray jsonArray = new JSONArray();
-                    for (KVBean kvBean : kvBeans) {
-                        JSONObject recode = new JSONObject();
-                        recode.put("code",kvBean.getValue());
-                        recode.put("address",kvBean.getText());
-                        jsonArray.add(recode);
+                    if(kvBeans != null) {
+                        for (KVBean kvBean : kvBeans) {
+                            JSONObject recode = new JSONObject();
+                            recode.put("code",kvBean.getValue());
+                            recode.put("address",kvBean.getText());
+                            jsonArray.add(recode);
+                        }
                     }
+
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("", jsonArray);
                     treeData.put("86", jsonObject);
@@ -219,6 +229,9 @@ public class DefaultController {
                     });
                     for (Map.Entry<String, List<KVBean>> entry : group.entrySet()) {
                         Map<String, String> recode = new HashMap<String, String>();
+                        if(StringUtils.isBlank(entry.getKey())) {//存在垃圾数据时
+                            continue;
+                        }
                         for (KVBean kvBean : entry.getValue()) {
                             if(kvBean.getValue().equals(dataValue)) {
                                 dataDisplayValue = kvBean.getText();
@@ -347,29 +360,68 @@ public class DefaultController {
                 Class defControllerClass = CreatorUtil.getDefControllerClass("",
                         WebContext.get().getProgram().getCode(), moduleCode, dataSetCode);
                 Object controller= ServiceFactory.getService(defControllerClass.getClassName().substring(0, 1).toLowerCase() + defControllerClass.getClassName().substring(1));
-                Object objects ;
+                Object objects = null;
                 componentJsonData = jsonObject.getString(componentId);
                 logger.debug("class: {}; json: {}", defPoClass.getClassName(), componentJsonData);
-                objects = readObjectsFromJson(componentJsonData, java.lang.Class.forName(defPoClass.getClassPath()));
-                if(parentObject != null) {
+                if("treeChart".equals(componentId)) {
+                    Map<String, String> result = new LinkedHashMap<String, String>();
+                    JSONObject jsonObject1 = JSONObject.parseObject(componentJsonData);
+                    parseRelatMap(jsonObject1, result);
+                    String[] relPropertyNames = componentDescriptor.getDataSetDescriptor().getRelPropertyNames();
+                    if(relPropertyNames != null && relPropertyNames.length == 2) {
+                        List tempList = new ArrayList();
+                        for (Map.Entry<String, String> newRel : result.entrySet()) {
+                            String keyValue = newRel.getKey();
+                            String parentKeyValue = newRel.getValue();
+                            Object po = java.lang.Class.forName(defPoClass.getClassPath()).newInstance();
+                            ReflectUtils.setFieldValue(po,relPropertyNames[0],keyValue);
+                            ReflectUtils.setFieldValue(po, relPropertyNames[1], parentKeyValue);
+                            tempList.add(po);
+                        }
+                        objects = tempList.toArray((Object[]) Array.newInstance(java.lang.Class.forName(defPoClass.getClassPath()), 0));
+                    }
+                }else {
+                    objects = readObjectsFromJson(componentJsonData, java.lang.Class.forName(defPoClass.getClassPath()));
+                    if(parentObject != null) {
 
+                    }
                 }
+
                 ResultData resultData = (ResultData) ReflectUtils.invokeMethod(controller,"batchCreate",new java.lang.Class[]{
                         java.lang.reflect.Array.newInstance(java.lang.Class.forName(defPoClass.getClassPath()), 1).getClass()}, new Object[]{objects});
                 logger.debug("result: {}", JSON.toJSONString(resultData));
                 if(type.endsWith("Form")) {
                     parentObject = ((Object[])objects)[0];
                     WebContext.add(parentObject);
+//                    WebContext.put(type, componentDescriptor);
 //                    Object object = readObjectFromJson(componentJsonData, java.lang.Class.forName(defPoClass.getClassPath()));
                 }
             }
+
+            return ResultData.success(parentObject);
 
         }catch (Exception e) {
             logger.error("error : ", e);
             return ResultData.error(ResultCode.ERROR);
         }
 
-        return ResultData.error(ResultCode.UNKNOW);
+//        return ResultData.error(ResultCode.UNKNOW);
+    }
+
+    private void parseRelatMap(JSONObject jsonObject1, Map<String, String> result) {
+
+        String id = jsonObject1.getString("id");
+        JSONArray children = jsonObject1.getJSONArray("children");
+        if(children == null) {
+            return ;
+        }
+        Iterator<Object> iterator = children.iterator();
+        while (iterator.hasNext()) {
+            JSONObject next = (JSONObject) iterator.next();
+            String subId = next.getString("id");
+            result.put(subId,id);
+            parseRelatMap(next, result);
+        }
     }
 
     private Object readObjectFromJson(String jsonString, java.lang.Class<?> poClass) {
@@ -511,6 +563,8 @@ public class DefaultController {
 
         PageDescriptor pageInfo = WebContext.get().getPageInfo(module, pageCode);
 
+        Map<String, Object> extendData = getExtendData("/extend/" + pageCode + ".json", request);
+
         Map<String, ElementDescriptor> elements = pageInfo.getElements();
         for (String key : elements.keySet()) {
             ElementDescriptor elementDescriptor = elements.get(key);
@@ -558,76 +612,81 @@ public class DefaultController {
                     jsonObject = componentDescriptor.getJson();
                     jsonObject.put("data", pageContextParams);
                 }else if(StringUtils.isNotBlank(action)) {
-                    Class defPoClass = CreatorUtil.getDefPoClass("",
-                            WebContext.get().getProgram().getCode(), moduleCode, dataSetCode);
-                    Class defPoExampleClass = CreatorUtil.getDefPoExampleClass("",
-                            WebContext.get().getProgram().getCode(), moduleCode, dataSetCode);
-                    Class defControllerClass = CreatorUtil.getDefControllerClass("",
-                            WebContext.get().getProgram().getCode(), moduleCode, dataSetCode);
-
-
-                    Object poExample= java.lang.Class.forName(defPoExampleClass.getClassPath()).newInstance();
-                    PropertyDescriptor priPropertyDescriptor = org.springframework.beans.BeanUtils.getPropertyDescriptor(java.lang.Class.forName(defPoClass.getClassPath()), "pri");
-
-                    if(priPropertyDescriptor != null) {
-                        ReflectUtils.invokeMethod(poExample, "setOrderByClause", new java.lang.Class[]{String.class}, new Object[]{" pri asc"});
-
-                    }
-                    Object controller= ServiceFactory.getService(defControllerClass.getClassName().substring(0, 1).toLowerCase() + defControllerClass.getClassName().substring(1));
-                    Object po =  null;
-
-
 
                     ResultData resultData = null;
-                    if("session".equals(componentDescriptor.getMapper().getDataAuth())) {
-                        Object data = request.getSession().getAttribute(java.lang.Class.forName(defPoClass.getClassPath()).getName());
-                        System.out.println("session data " + data);
-                        if(data == null) {
-                            mav.addObject("staticResourcePath", "/static");
-                            mav.setViewName("/login");
-                            return mav;
-                        }
-                        resultData = ResultData.success(data);
-                    }else if("detail".equals(action)) {
-                        po = getPoInstance(request, controller, action, new java.lang.Class[]{java.lang.Class.forName(defPoClass.getClassPath())});
-                        resultData = invokeMethod(controller, action,
-                                new java.lang.Class[]{java.lang.Class.forName(defPoClass.getClassPath())},
-                                new Object[]{po});
-                        //这里将查询的单个对象存入线程中，别的组件在需要时可以获取想要的值，如数据集数据列智能提醒需要依赖数据集的主实体ID
-                        WebContext.add(resultData.getData());
-                    }else if("tree".equals(action)) {
-                        po = getPoInstance(request, controller, action, new java.lang.Class[]{java.lang.Class.forName(defPoClass.getClassPath()),
-                                java.lang.Class.forName(defPoExampleClass.getClassPath())});
-                        resultData = invokeMethod(controller,action,
-                                new java.lang.Class[]{java.lang.Class.forName(defPoClass.getClassPath()),
-                                        java.lang.Class.forName(defPoExampleClass.getClassPath())},
-                                new Object[]{po,poExample});
+
+                    if (extendData != null && extendData.containsKey(componentDescriptor.getDataId())) {
+                        resultData = ResultData.success(extendData.get(componentDescriptor.getDataId()));
                     }else {
-                        if(pagination.getPageNo() == 0) pagination.setPageNo(1);
-                        if(pagination.getPageSize() == 0) pagination.setPageSize(5);
-                        if("eList".equals(type))  pagination.setPageSize(50);
-                        po = getPoInstance(request, controller, action, new java.lang.Class[]{java.lang.Class.forName(defPoClass.getClassPath()),
-                                java.lang.Class.forName(defPoExampleClass.getClassPath()), Pagination.class});
-                        Map<String, String> pageFlowParams = WebContext.get(HashMap.class.getName());
-                        ReflectUtils.setFieldValue(po, pageFlowParams);
 
-                        Map<String, String> params = BeanUtils.convertMap(po, false);
-                        componentQueryString = UrlHelper.getUrlQueryString(params);
-                        System.out.println("=======> " + componentQueryString);
-                        resultData = invokeMethod(controller, action,
-                                new java.lang.Class[]{java.lang.Class.forName(defPoClass.getClassPath()),
-                                        java.lang.Class.forName(defPoExampleClass.getClassPath()), Pagination.class},
-                                new Object[]{po, poExample, pagination});
-//                        resultData = (ResultData) ReflectUtils.invokeMethod(controller,action,
-//                                new java.lang.Class[]{java.lang.Class.forName(defPoClass.getClassPath()),
-//                                        java.lang.Class.forName(defPoExampleClass.getClassPath()), Pagination.class},
-//                                new Object[]{po,poExample, pagination});
+                        Class defPoClass = CreatorUtil.getDefPoClass("",
+                                WebContext.get().getProgram().getCode(), moduleCode, dataSetCode);
+                        Class defPoExampleClass = CreatorUtil.getDefPoExampleClass("",
+                                WebContext.get().getProgram().getCode(), moduleCode, dataSetCode);
+                        Class defControllerClass = CreatorUtil.getDefControllerClass("",
+                                WebContext.get().getProgram().getCode(), moduleCode, dataSetCode);
 
-                        if(resultData.getData() instanceof Map) {
-                            List helperData = getHelperData(componentDescriptor.getDataSetDescriptor(), action, defPoClass,request);
-                            ((Map) resultData.getData()).put("helperData", helperData);
+
+                        System.out.println("dataId = " + componentDescriptor.getDataId());
+                        Object poExample = java.lang.Class.forName(defPoExampleClass.getClassPath()).newInstance();
+                        PropertyDescriptor priPropertyDescriptor = org.springframework.beans.BeanUtils.getPropertyDescriptor(java.lang.Class.forName(defPoClass.getClassPath()), "pri");
+
+                        if (priPropertyDescriptor != null) {
+                            ReflectUtils.invokeMethod(poExample, "setOrderByClause", new java.lang.Class[]{String.class}, new Object[]{" pri asc"});
+
                         }
+                        Object controller = ServiceFactory.getService(defControllerClass.getClassName().substring(0, 1).toLowerCase() + defControllerClass.getClassName().substring(1));
+                        Object po = null;
 
+                        if ("session".equals(componentDescriptor.getMapper().getDataAuth())) {
+                            Object data = request.getSession().getAttribute(java.lang.Class.forName(defPoClass.getClassPath()).getName());
+                            System.out.println("session data " + data);
+                            if (data == null) {
+                                mav.addObject("staticResourcePath", "/static");
+                                mav.setViewName("/login");
+                                return mav;
+                            }
+                            resultData = ResultData.success(data);
+                        } else if ("detail".equals(action)) {
+                            po = getPoInstance(request, controller, action, new java.lang.Class[]{java.lang.Class.forName(defPoClass.getClassPath())});
+                            resultData = invokeMethod(controller, action,
+                                    new java.lang.Class[]{java.lang.Class.forName(defPoClass.getClassPath())},
+                                    new Object[]{po});
+                            //这里将查询的单个对象存入线程中，别的组件在需要时可以获取想要的值，如数据集数据列智能提醒需要依赖数据集的主实体ID
+                            WebContext.add(resultData.getData());
+                        } else if ("tree".equals(action)) {
+                            po = getPoInstance(request, controller, action, new java.lang.Class[]{java.lang.Class.forName(defPoClass.getClassPath()),
+                                    java.lang.Class.forName(defPoExampleClass.getClassPath())});
+                            resultData = invokeMethod(controller, action,
+                                    new java.lang.Class[]{java.lang.Class.forName(defPoClass.getClassPath()),
+                                            java.lang.Class.forName(defPoExampleClass.getClassPath())},
+                                    new Object[]{po, poExample});
+                        } else {
+                            if (pagination.getPageNo() == 0) pagination.setPageNo(1);
+                            if (pagination.getPageSize() == 0) pagination.setPageSize(5);
+                            if ("eList".equals(type)) pagination.setPageSize(50);
+                            po = getPoInstance(request, controller, action, new java.lang.Class[]{java.lang.Class.forName(defPoClass.getClassPath()),
+                                    java.lang.Class.forName(defPoExampleClass.getClassPath()), Pagination.class});
+                            Map<String, String> pageFlowParams = WebContext.get(HashMap.class.getName());
+                            ReflectUtils.setFieldValue(po, pageFlowParams);
+
+                            Map<String, String> params = BeanUtils.convertMap(po, false);
+                            componentQueryString = UrlHelper.getUrlQueryString(params);
+                            System.out.println("=======> " + componentQueryString);
+                            resultData = invokeMethod(controller, action,
+                                    new java.lang.Class[]{java.lang.Class.forName(defPoClass.getClassPath()),
+                                            java.lang.Class.forName(defPoExampleClass.getClassPath()), Pagination.class},
+                                    new Object[]{po, poExample, pagination});
+    //                        resultData = (ResultData) ReflectUtils.invokeMethod(controller,action,
+    //                                new java.lang.Class[]{java.lang.Class.forName(defPoClass.getClassPath()),
+    //                                        java.lang.Class.forName(defPoExampleClass.getClassPath()), Pagination.class},
+    //                                new Object[]{po,poExample, pagination});
+
+                            if (resultData.getData() instanceof Map) {
+                                List helperData = getHelperData(componentDescriptor.getDataSetDescriptor(), action, defPoClass, request);
+                                ((Map) resultData.getData()).put("helperData", helperData);
+                            }
+                        }
                     }
 
                     resetResultMessage(resultData, WebContext.get().getProgram().getCode(), moduleCode, dataSetCode, action);
@@ -672,18 +731,35 @@ public class DefaultController {
                     }
 
                 }
+
+                if(StringUtils.isNotBlank(componentDescriptor.getTitle())) {
+                    jsonObject.put("title",componentDescriptor.getTitle());
+                }
+
+                jsonObject.put("icon","icon-edit");
                 jsonObject.put("ruler",componentDescriptor.getDataSetDescriptor().getDataSetRulerJsonObject().toJSONString());
                 jsonObject.put("helper",componentDescriptor.getDataSetDescriptor().getDynamicHelper());
 
                 jsonObject.put("module",module);
                 jsonObject.put("page",pageCode);
-                jsonObject.put("param",componentQueryString);
+                jsonObject.put("param", componentQueryString);
                 jsonObject.put("component", componentDescriptor.getId());
-                System.out.println("=====>" + componentDescriptor.getId() + " : " + jsonObject.toJSONString());
-                result.put(componentDescriptor.getId(), jsonObject);
+
+                if("treeChart".equals(componentDescriptor.getId())) {
+                    jsonObject.put("id", "-1");
+                    jsonObject.put("name","根节点");
+                }
+
+                String key = componentDescriptor.getId();
+                if(result.containsKey(key)) {
+                    key = componentDescriptor.getId() + "|" + componentDescriptor.getDataSetDescriptor().getDataSet().getCode() + "|" + componentDescriptor.getDataId();
+                }
+                System.out.println("=====>" + key + " : " + jsonObject.toJSONString());
+                result.put(key, jsonObject);
             }
         }
 
+        mav.addObject("ExtMap",extendData);
         mav.addObject("elements", result);
         mav.addAllObjects(result);
         mav.addObject("isPop","true".equals(isPop)? true : false);
@@ -879,5 +955,76 @@ public class DefaultController {
             }
             return null;
         }
+    }
+
+    @Autowired
+    private RequestMappingHandlerMapping requestMappingHandlerMapping;
+
+    @RequestMapping(value = "/all_urls.json")
+    @ResponseBody
+    public void list(HttpServletRequest request, HttpServletResponse response) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("URL").append("--").append("Class").append("--").append("Function").append('\n');
+
+        Map<RequestMappingInfo, HandlerMethod> map = requestMappingHandlerMapping.getHandlerMethods();
+
+        for (Map.Entry<RequestMappingInfo, HandlerMethod> m : map.entrySet()) {
+            RequestMappingInfo info = m.getKey();
+            HandlerMethod method = m.getValue();
+            sb.append(info.getPatternsCondition()).append("--");
+            sb.append(method.getMethod().getDeclaringClass()).append("--");
+            sb.append(method.getMethod().getName()).append('\n');
+        }
+
+        PrintWriter writer = null;
+        try {
+            writer = response.getWriter();
+            writer.print(sb.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            writer.close();
+        }
+
+    }
+
+    private Map<String, Object> getExtendData(String url , HttpServletRequest request) {
+        HandlerExecutionChain handler = null;
+        if(urlMapping.size() == 0) {
+            synchronized (DefaultController.class){
+                Map<RequestMappingInfo, HandlerMethod> map = requestMappingHandlerMapping.getHandlerMethods();
+                for (Map.Entry<RequestMappingInfo, HandlerMethod> m : map.entrySet()) {
+                    RequestMappingInfo info = m.getKey();
+                    HandlerMethod method = m.getValue();
+                    urlMapping.put(info.getPatternsCondition().getPatterns().iterator().next(), method);
+                }
+            }
+        }
+
+        HandlerMethod handlerMethod = urlMapping.get(url);
+        if(handlerMethod == null) {
+            return null;
+        }
+
+        try {
+            Object bean = ServiceFactory.getService(String.valueOf(handlerMethod.getBean()));
+            Method method = handlerMethod.getMethod();
+            Object result = method.invoke(bean, request);
+            return (Map<String, Object>)((ResultData)result).getData();
+//            String lookupPath = requestMappingHandlerMapping.getUrlPathHelper().getLookupPathForRequest(request);
+//            HandlerMethod handlerMethod = requestMappingHandlerMapping.lookupHandlerMethod(lookupPath, request);
+//            handler = requestMappingHandlerMapping.getHandler(request);
+//            if(handler.getHandler() != null && handler.getHandler() instanceof HandlerMethod) {
+//                HandlerMethod handlerMethod = (HandlerMethod) handler.getHandler();
+//                Object bean = handlerMethod.getBean();
+//                Method method = handlerMethod.getMethod();
+//                Object result = method.invoke(bean, request);
+//                return result;
+//            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }

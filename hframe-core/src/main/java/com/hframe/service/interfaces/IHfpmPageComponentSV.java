@@ -9,7 +9,7 @@ public interface IHfpmPageComponentSV   {
 
   
     /**
-    * 创建页面组件
+    * 创建椤甸潰缁勪欢
     * @param hfpmPageComponent
     * @return
     * @throws Exception
@@ -17,14 +17,14 @@ public interface IHfpmPageComponentSV   {
     public int create(HfpmPageComponent hfpmPageComponent) throws  Exception;
 
     /**
-    * 批量维护页面组件
+    * 批量维护椤甸潰缁勪欢
     * @param hfpmPageComponents
     * @return
     * @throws Exception
     */
     public int batchOperate(HfpmPageComponent[] hfpmPageComponents) throws  Exception;
     /**
-    * 更新页面组件
+    * 更新椤甸潰缁勪欢
     * @param hfpmPageComponent
     * @return
     * @throws Exception
@@ -32,7 +32,7 @@ public interface IHfpmPageComponentSV   {
     public int update(HfpmPageComponent hfpmPageComponent) throws  Exception;
 
     /**
-    * 通过查询对象更新页面组件
+    * 通过查询对象更新椤甸潰缁勪欢
     * @param hfpmPageComponent
     * @param example
     * @return
@@ -41,7 +41,7 @@ public interface IHfpmPageComponentSV   {
     public int updateByExample(HfpmPageComponent hfpmPageComponent, HfpmPageComponent_Example example) throws  Exception;
 
     /**
-    * 删除页面组件
+    * 删除椤甸潰缁勪欢
     * @param hfpmPageComponent
     * @return
     * @throws Exception
@@ -50,7 +50,7 @@ public interface IHfpmPageComponentSV   {
 
 
     /**
-    * 删除页面组件
+    * 删除椤甸潰缁勪欢
     * @param hfpmPageComponentId
     * @return
     * @throws Exception
@@ -59,13 +59,13 @@ public interface IHfpmPageComponentSV   {
 
 
     /**
-    * 查找所有页面组件
+    * 查找所有椤甸潰缁勪欢
     * @return
     */
     public List<HfpmPageComponent> getHfpmPageComponentAll()  throws  Exception;
 
     /**
-    * 通过页面组件ID查询页面组件
+    * 通过椤甸潰缁勪欢ID查询椤甸潰缁勪欢
     * @param hfpmPageComponentId
     * @return
     * @throws Exception
@@ -73,7 +73,7 @@ public interface IHfpmPageComponentSV   {
     public HfpmPageComponent getHfpmPageComponentByPK(long hfpmPageComponentId)  throws  Exception;
 
     /**
-    * 通过MAP参数查询页面组件
+    * 通过MAP参数查询椤甸潰缁勪欢
     * @param params
     * @return
     * @throws Exception
@@ -82,15 +82,16 @@ public interface IHfpmPageComponentSV   {
 
 
     /**
-    * 通过查询对象查询页面组件
+    * 通过查询对象查询椤甸潰缁勪欢
     * @param example
     * @return
     * @throws Exception
     */
     public List<HfpmPageComponent> getHfpmPageComponentListByExample(HfpmPageComponent_Example example) throws  Exception;
 
+
     /**
-    * 通过MAP参数查询页面组件数量
+    * 通过MAP参数查询椤甸潰缁勪欢数量
     * @param params
     * @return
     * @throws Exception
@@ -99,7 +100,7 @@ public interface IHfpmPageComponentSV   {
 
 
     /**
-    * 通过查询对象查询页面组件数量
+    * 通过查询对象查询椤甸潰缁勪欢数量
     * @param example
     * @return
     * @throws Exception

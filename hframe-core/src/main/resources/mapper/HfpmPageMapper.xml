@@ -17,6 +17,8 @@
       <arg column="modify_op_id" jdbcType="BIGINT" javaType="java.lang.Long" />
       <arg column="modify_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
       <arg column="del_flag" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="hfpm_data_set_id" jdbcType="BIGINT" javaType="java.lang.Long" />
+      <arg column="hfcfg_page_template_id" jdbcType="BIGINT" javaType="java.lang.Long" />
     </constructor>
   </resultMap>
   <sql id="Example_Where_Clause" >
@@ -80,7 +82,7 @@
   <sql id="Base_Column_List" >
     hfpm_page_id, hfpm_page_code, hfpm_page_name, hfpm_page_type, hfpm_page_desc, parent_hfpm_page_id, 
     hfpm_program_id, hfpm_module_id, pri, op_id, create_time, modify_op_id, modify_time, 
-    del_flag
+    del_flag, hfpm_data_set_id, hfcfg_page_template_id
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.hframe.domain.model.HfpmPage_Example" >
     select
@@ -123,12 +125,14 @@
       hfpm_page_desc, parent_hfpm_page_id, hfpm_program_id, 
       hfpm_module_id, pri, op_id, 
       create_time, modify_op_id, modify_time, 
-      del_flag)
+      del_flag, hfpm_data_set_id, hfcfg_page_template_id
+      )
     values (#{hfpmPageCode,jdbcType=VARCHAR}, #{hfpmPageName,jdbcType=VARCHAR}, #{hfpmPageType,jdbcType=INTEGER}, 
       #{hfpmPageDesc,jdbcType=VARCHAR}, #{parentHfpmPageId,jdbcType=BIGINT}, #{hfpmProgramId,jdbcType=BIGINT}, 
       #{hfpmModuleId,jdbcType=BIGINT}, #{pri,jdbcType=DECIMAL}, #{opId,jdbcType=BIGINT}, 
       #{createTime,jdbcType=TIMESTAMP}, #{modifyOpId,jdbcType=BIGINT}, #{modifyTime,jdbcType=TIMESTAMP}, 
-      #{delFlag,jdbcType=INTEGER})
+      #{delFlag,jdbcType=INTEGER}, #{hfpmDataSetId,jdbcType=BIGINT}, #{hfcfgPageTemplateId,jdbcType=BIGINT}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.hframe.domain.model.HfpmPage" >
     <selectKey resultType="java.lang.Long" keyProperty="hfpmPageId" order="AFTER" >
@@ -175,6 +179,12 @@
       <if test="delFlag != null" >
         del_flag,
       </if>
+      <if test="hfpmDataSetId != null" >
+        hfpm_data_set_id,
+      </if>
+      <if test="hfcfgPageTemplateId != null" >
+        hfcfg_page_template_id,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="hfpmPageCode != null" >
@@ -215,6 +225,12 @@
       </if>
       <if test="delFlag != null" >
         #{delFlag,jdbcType=INTEGER},
+      </if>
+      <if test="hfpmDataSetId != null" >
+        #{hfpmDataSetId,jdbcType=BIGINT},
+      </if>
+      <if test="hfcfgPageTemplateId != null" >
+        #{hfcfgPageTemplateId,jdbcType=BIGINT},
       </if>
     </trim>
   </insert>
@@ -269,6 +285,12 @@
       <if test="record.delFlag != null" >
         del_flag = #{record.delFlag,jdbcType=INTEGER},
       </if>
+      <if test="record.hfpmDataSetId != null" >
+        hfpm_data_set_id = #{record.hfpmDataSetId,jdbcType=BIGINT},
+      </if>
+      <if test="record.hfcfgPageTemplateId != null" >
+        hfcfg_page_template_id = #{record.hfcfgPageTemplateId,jdbcType=BIGINT},
+      </if>
     </set>
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
@@ -289,7 +311,9 @@
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       modify_op_id = #{record.modifyOpId,jdbcType=BIGINT},
       modify_time = #{record.modifyTime,jdbcType=TIMESTAMP},
-      del_flag = #{record.delFlag,jdbcType=INTEGER}
+      del_flag = #{record.delFlag,jdbcType=INTEGER},
+      hfpm_data_set_id = #{record.hfpmDataSetId,jdbcType=BIGINT},
+      hfcfg_page_template_id = #{record.hfcfgPageTemplateId,jdbcType=BIGINT}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -336,6 +360,12 @@
       <if test="delFlag != null" >
         del_flag = #{delFlag,jdbcType=INTEGER},
       </if>
+      <if test="hfpmDataSetId != null" >
+        hfpm_data_set_id = #{hfpmDataSetId,jdbcType=BIGINT},
+      </if>
+      <if test="hfcfgPageTemplateId != null" >
+        hfcfg_page_template_id = #{hfcfgPageTemplateId,jdbcType=BIGINT},
+      </if>
     </set>
     where hfpm_page_id = #{hfpmPageId,jdbcType=BIGINT}
   </update>
@@ -353,7 +383,9 @@
       create_time = #{createTime,jdbcType=TIMESTAMP},
       modify_op_id = #{modifyOpId,jdbcType=BIGINT},
       modify_time = #{modifyTime,jdbcType=TIMESTAMP},
-      del_flag = #{delFlag,jdbcType=INTEGER}
+      del_flag = #{delFlag,jdbcType=INTEGER},
+      hfpm_data_set_id = #{hfpmDataSetId,jdbcType=BIGINT},
+      hfcfg_page_template_id = #{hfcfgPageTemplateId,jdbcType=BIGINT}
     where hfpm_page_id = #{hfpmPageId,jdbcType=BIGINT}
   </update>
 </mapper>

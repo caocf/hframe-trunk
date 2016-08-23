@@ -37,7 +37,7 @@ public class HfpmModuleSVImpl  implements IHfpmModuleSV {
                 if(hfpmModule.getHfpmModuleId() == null) {
                     result += hfpmModuleMapper.insertSelective(hfpmModule);
                 }else {
-                    result += hfpmModuleMapper.updateByPrimaryKey(hfpmModule);
+                    result += hfpmModuleMapper.updateByPrimaryKeySelective(hfpmModule);
                 }
             }
         }

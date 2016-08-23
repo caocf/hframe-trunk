@@ -37,7 +37,7 @@ public class HfcfgProgramTemplateSVImpl  implements IHfcfgProgramTemplateSV {
                 if(hfcfgProgramTemplate.getHfcfgProgramTemplateId() == null) {
                     result += hfcfgProgramTemplateMapper.insertSelective(hfcfgProgramTemplate);
                 }else {
-                    result += hfcfgProgramTemplateMapper.updateByPrimaryKey(hfcfgProgramTemplate);
+                    result += hfcfgProgramTemplateMapper.updateByPrimaryKeySelective(hfcfgProgramTemplate);
                 }
             }
         }

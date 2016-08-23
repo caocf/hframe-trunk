@@ -49,10 +49,19 @@
 <script type="text/javascript" src="/static/plugins/require/require.js"></script>
 <script type="text/javascript" src="/js/hframework/utils/require.config.js"></script>
 <script src="/js/hframework/fn.js"></script>
-<script src="/js/hframework/list.js"></script>
 <script src="/js/hframework/datainit.js"></script>
+<script src="/js/hframework/list.js"></script>
 <script src="/js/hframework/href.js"></script>
 
+<script src="$staticResourcePath/plugins/shapeshift/core/vendor/jquery.touch-punch.min.js"></script>
+<script src="$staticResourcePath/plugins/shapeshift/core/jquery.shapeshift.js"></script>
+<script src="/js/hframework/dragbox.js"></script>
+
+##<script type="text/javascript" src="$staticResourcePath/plugins/OrgChart/js/jquery.min.js"></script>
+<script type="text/javascript" src="$staticResourcePath/plugins/OrgChart/js/jquery.mockjax.min.js"></script>
+<script type="text/javascript" src="$staticResourcePath/plugins/OrgChart/js/html2canvas.min.js"></script>
+##<script type="text/javascript" src="$staticResourcePath/plugins/OrgChart/js/ol.min.js"></script>
+<script type="text/javascript" src="$staticResourcePath/plugins/OrgChart/js/jquery.orgchart.js"></script>
+<script src="/js/hframework/orgchart.js"></script>
 
 
-<!-- end: JavaScript-->

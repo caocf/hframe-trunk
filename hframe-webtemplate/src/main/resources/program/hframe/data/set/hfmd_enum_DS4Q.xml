@@ -15,15 +15,13 @@
       <rel entity-code="hfmd_enum_class/hfmd_enum_class_id/hfmd_enum_class_name"/>
     </field>
     <field code="hfmd_enum_class_code" name="" edit-type="input"/>
-    <field code="hfpm_program_id" name="项目ID" edit-type="select">
-      <rel entity-code="hfpm_program/hfpm_program_id/hfpm_program_name"/>
-    </field>
+    <field code="hfpm_program_id" name="项目ID" edit-type="select"/>
     <field code="op_id" name="创建人" edit-type="input"/>
     <field code="create_time_GEQ" name="创建开始时间" edit-type="datetime"/>
     <field code="create_time_LEQ" name="创建结束时间" edit-type="datetime"/>
     <field code="modify_op_id" name="修改人" edit-type="input"/>
     <field code="modify_time_LEQ" name="修改结束时间" edit-type="datetime"/>
     <field code="modify_time_GEQ" name="修改开始时间" edit-type="datetime"/>
-    <field code="del_flag" name="删除标识" edit-type="input"/>
+    <field code="del_flag" name="删除标识" edit-type="hidden"/>
   </fields>
 </dataset>

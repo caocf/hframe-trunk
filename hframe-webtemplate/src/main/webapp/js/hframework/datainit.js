@@ -4,7 +4,7 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
     var ajax = require('ajax');
     var errormsg = require('js/hframework/errormsg');
 
-    $.selectLoad = function ($this) {
+    $.selectLoad = function ($this, _func) {
         var $tagName = $this[0].tagName;
         var  dataCode = $this.attr("data-code");
         var  dataCondition = $this.attr("data-condition");
@@ -34,6 +34,10 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
                     }
                     $this.prop("outerHTML",$this.prop("outerHTML").replace("#value", "").replace("#text", "请选择"));
                 }
+                if(_func) {
+                    _func();
+                }
+
             }
         });
     }

@@ -37,7 +37,7 @@ public class HfpmPageEventSVImpl  implements IHfpmPageEventSV {
                 if(hfpmPageEvent.getHfpmPageEventId() == null) {
                     result += hfpmPageEventMapper.insertSelective(hfpmPageEvent);
                 }else {
-                    result += hfpmPageEventMapper.updateByPrimaryKey(hfpmPageEvent);
+                    result += hfpmPageEventMapper.updateByPrimaryKeySelective(hfpmPageEvent);
                 }
             }
         }

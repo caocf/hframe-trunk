@@ -37,7 +37,7 @@ public class HfmdEntityRelSVImpl  implements IHfmdEntityRelSV {
                 if(hfmdEntityRel.getHfmdEntityRelId() == null) {
                     result += hfmdEntityRelMapper.insertSelective(hfmdEntityRel);
                 }else {
-                    result += hfmdEntityRelMapper.updateByPrimaryKey(hfmdEntityRel);
+                    result += hfmdEntityRelMapper.updateByPrimaryKeySelective(hfmdEntityRel);
                 }
             }
         }

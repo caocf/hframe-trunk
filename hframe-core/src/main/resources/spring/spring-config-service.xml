@@ -15,4 +15,6 @@
     </bean>
     -->
     <bean id="dataSetLoaderService" class="com.hframework.base.service.DataSetLoaderService"></bean>
+    <bean id="modelLoaderService" class="com.hframework.base.service.ModelLoaderService"></bean>
+
 </beans>

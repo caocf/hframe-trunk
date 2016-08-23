@@ -60,12 +60,35 @@ public class CreatorUtil {
 			throw new Exception("表名称为不能为空！");
 		}
 
-		companyName = StringUtils.isBlank(companyName)?"":"."+(companyName);
-		projectName = StringUtils.isBlank(projectName)?"":"."+(projectName);
+		companyName = StringUtils.isBlank(companyName)?"":""+(companyName);
+		projectName = StringUtils.isBlank(projectName)?"":""+(projectName);
 
 		return PropertyConfigurerUtils.getProperty(CreatorConst.SQL_FILE_PATH,
 				companyName.toLowerCase(),projectName.toLowerCase(),tableName.toLowerCase());
 	}
+
+	/**
+	 * @param companyName
+	 * @param projectName
+	 * @param tableName
+	 * @return 获取SQL文件在项目中存放的路径即名称
+	 * @throws Exception
+	 */
+	public static String getGeneratorConfigFilePath(String companyName,
+										String projectName,String tableName) throws Exception {
+
+		if(StringUtils.isBlank(tableName)) {
+			throw new Exception("表名称为不能为空！");
+		}
+
+		companyName = StringUtils.isBlank(companyName)?"":""+(companyName);
+		projectName = StringUtils.isBlank(projectName)?"":""+(projectName);
+
+		return PropertyConfigurerUtils.getProperty(CreatorConst.GENERATOR_CONFIG_PATH,
+				companyName.toLowerCase(),projectName.toLowerCase(),tableName.toLowerCase());
+	}
+
+
 
 
 	/**

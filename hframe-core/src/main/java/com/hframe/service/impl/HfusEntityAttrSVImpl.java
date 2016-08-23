@@ -37,7 +37,7 @@ public class HfusEntityAttrSVImpl  implements IHfusEntityAttrSV {
                 if(hfusEntityAttr.getHfusEntityAttrId() == null) {
                     result += hfusEntityAttrMapper.insertSelective(hfusEntityAttr);
                 }else {
-                    result += hfusEntityAttrMapper.updateByPrimaryKey(hfusEntityAttr);
+                    result += hfusEntityAttrMapper.updateByPrimaryKeySelective(hfusEntityAttr);
                 }
             }
         }

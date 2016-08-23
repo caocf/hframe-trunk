@@ -21,22 +21,7 @@
 ##    #end
     <div    class="box-content">
 
-        <table class="table table-bordered table-striped table-condensed">
-            <thead>
-            <tr>
-                #if($list.BOFR)
-                    <th width="20px">$list.BOFR.get(0).component</th>
-                #end
-                #foreach($column in $list.columns)
-                    #if($column.editType != "hidden")
-                        <th width="$column.width">$column.name</th>
-                    #end
-                #end
-                #if($list.EOFR)
-                    <th width="20%;">操作</th>
-                #end
-            </tr>
-            </thead>
+        <table class="">
             <tbody class='hflist-fast-data' style="display:none ;">
                 #foreach($row in $list.helperData)
                 <tr>
@@ -70,7 +55,24 @@
                 </tr>
                 #end
             </tbody>
-            <form class="form-horizontal" >
+        </table>
+        <form class="form-horizontal" >
+        <table class="table table-bordered table-striped table-condensed">
+            <thead>
+            <tr>
+                #if($list.BOFR)
+                    <th width="20px">$list.BOFR.get(0).component</th>
+                #end
+                #foreach($column in $list.columns)
+                    #if($column.editType != "hidden")
+                        <th width="$column.width">$column.name</th>
+                    #end
+                #end
+                #if($list.EOFR)
+                    <th width="20%;">操作</th>
+                #end
+            </tr>
+            </thead>
             <tbody class='hflist-data'>
                 #foreach($row in $list.data)
                 <tr>
@@ -84,7 +86,7 @@
                         #if($column.editType != "hidden")
                             <td>
                                 #set($elementSize = "mini span12")
-                                #parse("component/element/field.vm")
+                            #parse("component/element/field.vm")
                             </td>
                         #else
                             #parse("component/element/field.vm")
@@ -104,8 +106,8 @@
                 </tr>
                 #end
             </tbody>
-            </form>
         </table>
+        </form>
         <div class="pagination pagination-centered">
             <ul class='hflist-pager'>
                 #foreach($pageObj in $list.pager)

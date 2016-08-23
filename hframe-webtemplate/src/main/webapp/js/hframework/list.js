@@ -99,7 +99,8 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
                         //console.info(data.data);
                         $target.val(data.data[$targetValue]);
                         if($editable == "false") {
-                            $target.attr("disabled",true);
+                            //$target.attr("disabled",true);
+                            $target.attr("readonly","readonly");
                         }
                     }
                 }
@@ -117,7 +118,8 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
                     $target.val($targetValue);
                 }
                 if($editable == "false") {
-                    $target.attr("disabled",true);
+                    //$target.attr("disabled",true);
+                    $target.attr("readonly","readonly");
                 }
             }
         }
@@ -146,11 +148,19 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
             $(this).css("opacity","0.3");
             $(this).find("i").attr("class","icon-minus-sign");
 
-            var tagId = $(this).attr("tag-id");
-            var id = $(".hflist-fast-data input[id$='Id']").eq(0).attr("id");
+            var compareKey = $(".hflist-fast-data [compare-key]").eq(0).attr("id");
+            var compareValue = $(this).attr("tag-id");
 
-            $curRow =$(".hflist-fast-data input[id='" + id + "'][value='" + tagId + "']").parents("tr")[0];
-            $newRow = $($curRow).clone();
+            var $curRow;
+
+            $(".hflist-fast-data [id='" + compareKey + "']").each(function(){
+                if($(this).val() == compareValue){
+                    $curRow =$(this).parents("tr")[0];
+                }
+            });
+            //$curRow =$(".hflist-fast-data [id='" + compareKey + "'][value='" + compareValue + "']").parents("tr")[0];
+
+            var $newRow = $($curRow).clone();
             $($newRow).find("input[type=hidden]").val("");
             $newRow.find("input[value*='{'][value*='}']").each(function(){
                 $(this).val(replaceVarChars($(this).val()));
@@ -159,8 +169,9 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
                 $($newRow).find("select").eq(i).val($(this).val());
             });
 
-            if($(".hflist-data").children(":last").find("input[value !='']").size() == 0 ||
-                $(".hflist-data").children(":last").find("input[value !='']").val().length == 0 ) {
+            if(($(".hflist-data").children(":last").find("input[value !='']").size() == 0 ||
+                    $(".hflist-data").children(":last").find("input[value !='']").val().length == 0 )
+                && $(".hflist-data").children(":last").find("select option:checked[value!='']").size() == 0) {
                 $(".hflist-data").children(":last").remove()
             }
 
@@ -174,40 +185,113 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
         }
     });
 
+    function getVal($this) {
+        if($this.val()) {
+            return $this.val();
+        }
+
+        //select框初始值
+        return $this.attr("data-value");
+    }
+
+    function getText($this) {
+        var $tagName = $this[0].tagName;
+        if($tagName == 'SELECT') {
+            return $this.find("option:checked").text();
+        }
+        return null;
+    }
+
     function fastDataTagInit(){
         $(".hflist-fast-data").each(function(i){
-            var id = $(this).find("input[id$='Id']").eq(0).attr("id");
-            var name =$(this).find("input[id$='Name']").eq(0).attr("id");
-            var code =$(this).find("input[id$='Code']").eq(0).attr("id");
-            $this = $(this);
-            $(".hflist-tools").html("");
-            $this.find("input[id="+ id + "]").each(function(i){
-                //alert($(this).val() + $this.find("input[id="+ name + "]").eq(i).val());
-                var tagId = $(this).val();
-                var tagName = $this.find("input[id="+ name + "]").eq(i).val();
-                var tagValue = replaceVarChars($this.find("input[id="+ code + "]").eq(i).val());
-                tagName = replaceVarChars(tagName);
-                var isContain = false;
+            var $helper = $(this).parents(".hflist").find(".helper");
+            if($helper) {
+                var $allRules = JSON.parse($helper.text());
+                for(var key in $allRules) {
+                    var compareKey = $allRules[key]["compareKey"];
+                    var compareName = $allRules[key]["compareName"];
+                    var $this = $(this);
+                    $(".hflist-tools").html("");
 
-                $(".hflist-data").find("input[id='"+ code + "']").each(function(){
-                    if($(this).val().toUpperCase() == tagValue.toUpperCase()) {
+                    if($this.find("[id="+ compareKey + "]").size() == 0){
+                        continue;
+                    }
+                    var $tagName = $this.find("[id="+ compareKey + "]")[0].tagName;
+                    if($tagName == 'SELECT') {
+                        $this.find("[id="+ compareKey + "]").each(function(){
+                            $.selectLoad($(this),function(){
+                                fastDataTagInitExe($this, compareKey, compareName);
+                            });
+                        });
+                    }else {
+                        fastDataTagInitExe($this, compareKey, compareName);
+                    }
+                }
+            }
+        });
+
+        function fastDataTagInitExe($this, compareKey, compareName){
+            $this.find("[id="+ compareKey + "]").each(function(i){
+                var tagValue =getVal($(this));
+                $(this).attr("compare-key",true);
+
+                var tagName = replaceVarChars(getVal($this.find("[id="+ compareName + "]").eq(i)));
+                if(getText($this.find("[id="+ compareName + "]").eq(i))) {
+                    tagName = getText($this.find("[id="+ compareName + "]").eq(i));
+                }
+                var isContain = false;
+                $(".hflist-data").find("[id='"+ compareKey + "']").each(function(){
+                    if(getVal($(this)) && (getVal($(this)).toUpperCase() == tagValue.toUpperCase() ||
+                        getVal($(this)).toUpperCase() == replaceVarChars(tagValue).toUpperCase())) {
                         isContain = true;
                     }
                 });
-                //console.info(tagId,tagName,tagValue, isContain);
                 var _html = [];
-                _html.push('<div class="hflist-tools-button badge badge-info " tag-id="' + tagId + '" style="position: relative;cursor:pointer;margin-left: 3px;"><i class="icon-plus-sign"></i>' +  tagName + '</div>');
+                _html.push('<div class="hflist-tools-button badge badge-info " tag-id="' + tagValue + '" style="position: relative;cursor:pointer;margin-left: 3px;"><i class="icon-plus-sign"></i>' +  tagName + '</div>');
                 var $child = $(_html.join(''));
                 $child.appendTo($(".hflist-tools"));
                 $(".hflist-tools").css("display","");
 
                 if(isContain) {
-                    $(".hflist-tools-button[tag-id='" + tagId + "']").toggleClass("badge-info");
-                    $(".hflist-tools-button[tag-id='" + tagId + "']").css("opacity","0.3");
-                    $(".hflist-tools-button[tag-id='" + tagId + "']").find("i").attr("class","icon-minus-sign");
+                    $(".hflist-tools-button[tag-id='" + tagValue + "']").toggleClass("badge-info");
+                    $(".hflist-tools-button[tag-id='" + tagValue + "']").css("opacity","0.3");
+                    $(".hflist-tools-button[tag-id='" + tagValue + "']").find("i").attr("class","icon-minus-sign");
                 }
             });
-        });
+        }
+        //$(".hflist-fast-data").each(function(i){
+        //    var id = $(this).find("input[id$='Id']").eq(0).attr("id");
+        //    var name =$(this).find("input[id$='Name']").eq(0).attr("id");
+        //    var code =$(this).find("input[id$='Code']").eq(0).attr("id");
+        //    $this = $(this);
+        //    $(".hflist-tools").html("");
+        //    $this.find("input[id="+ id + "]").each(function(i){
+        //        //alert($(this).val() + $this.find("input[id="+ name + "]").eq(i).val());
+        //        var tagId = $(this).val();
+        //        var tagName = $this.find("input[id="+ name + "]").eq(i).val();
+        //        var tagValue = replaceVarChars($this.find("input[id="+ code + "]").eq(i).val());
+        //        tagName = replaceVarChars(tagName);
+        //        var isContain = false;
+        //
+        //        $(".hflist-data").find("input[id='"+ code + "']").each(function(){
+        //            if($(this).val().toUpperCase() == tagValue.toUpperCase()) {
+        //                isContain = true;
+        //            }
+        //        });
+        //        //console.info(tagId,tagName,tagValue, isContain);
+        //        var _html = [];
+        //        _html.push('<div class="hflist-tools-button badge badge-info " tag-id="' + tagId + '" style="position: relative;cursor:pointer;margin-left: 3px;"><i class="icon-plus-sign"></i>' +  tagName + '</div>');
+        //        var $child = $(_html.join(''));
+        //        $child.appendTo($(".hflist-tools"));
+        //        $(".hflist-tools").css("display","");
+        //
+        //        if(isContain) {
+        //            $(".hflist-tools-button[tag-id='" + tagId + "']").toggleClass("badge-info");
+        //            $(".hflist-tools-button[tag-id='" + tagId + "']").css("opacity","0.3");
+        //            $(".hflist-tools-button[tag-id='" + tagId + "']").find("i").attr("class","icon-minus-sign");
+        //        }
+        //    });
+        //});
     }
     fastDataTagInit();
 
@@ -278,11 +362,12 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
             var $newHfList = $(data);
             //console.log(data);
             $(compoContainer).find(".hflist-fast-data").html($newHfList.find(".hflist-fast-data").html());
-            fastDataTagInit();
+
             $(compoContainer).find(".hflist-fast-data").find("[data-code][data-condition]").each(function(){
                 var $this = $(this);
                 $.selectLoad($this);
             });
+            fastDataTagInit();
         },'html');
     }
 

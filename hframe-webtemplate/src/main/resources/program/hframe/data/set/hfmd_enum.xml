@@ -22,9 +22,7 @@
       <rel entity-code="hfmd_enum_class/hfmd_enum_class_id/hfmd_enum_class_name"/>
     </field>
     <field code="hfmd_enum_class_code" name="" edit-type="input"/>
-    <field code="hfpm_program_id" name="项目ID" edit-type="select">
-      <rel entity-code="hfpm_program/hfpm_program_id/hfpm_program_name"/>
-    </field>
+    <field code="hfpm_program_id" name="项目ID" edit-type="select"/>
     <field code="op_id" name="创建人" edit-type="input">
       <create-edit-type>hidden</create-edit-type>
       <update-edit-type>text</update-edit-type>
@@ -41,7 +39,7 @@
       <create-edit-type>hidden</create-edit-type>
       <update-edit-type>hidden</update-edit-type>
     </field>
-    <field code="del_flag" name="删除标识" edit-type="input">
+    <field code="del_flag" name="删除标识" edit-type="hidden">
       <create-edit-type>hidden</create-edit-type>
     </field>
   </fields>

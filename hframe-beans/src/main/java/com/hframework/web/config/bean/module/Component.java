@@ -10,9 +10,10 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
  */@XStreamAlias("component")
 public class Component   {
 
+    //配置与组件为一个Event对象，否则处理上需要转换
 	@XStreamImplicit
     @XStreamAlias("event")
-	private List<Event> eventList;
+	private List<com.hframework.web.config.bean.component.Event> eventList;
 	@XStreamAsAttribute
     @XStreamAlias("id")
 	private String id;
@@ -22,16 +23,20 @@ public class Component   {
 	@XStreamAsAttribute
     @XStreamAlias("dataid")
 	private String dataid;
+    @XStreamAsAttribute
+    @XStreamAlias("title")
+    private String title;
+
 
     public Component() {
     }
    
  	 	 
-     public List<Event> getEventList(){
+     public List<com.hframework.web.config.bean.component.Event> getEventList(){
      	return eventList;
      }
 
-     public void setEventList(List<Event> eventList){
+     public void setEventList(List<com.hframework.web.config.bean.component.Event> eventList){
      	this.eventList = eventList;
      }
 	 	 	 
@@ -58,5 +63,12 @@ public class Component   {
      public void setDataid(String dataid){
      	this.dataid = dataid;
      }
-	 
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
 }

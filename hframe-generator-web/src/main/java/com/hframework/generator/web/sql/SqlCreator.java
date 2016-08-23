@@ -1,5 +1,10 @@
 package com.hframework.generator.web.sql;
 
+import java.io.File;
+import java.lang.reflect.Field;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.List;
 
 import com.hframework.common.util.FileUtils;

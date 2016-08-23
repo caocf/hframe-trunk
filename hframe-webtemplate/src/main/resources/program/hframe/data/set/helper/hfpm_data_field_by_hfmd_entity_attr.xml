@@ -9,8 +9,8 @@
     <mapping help-dataset-field="hfmd_entity_attr_id" effect-dataset-field="hfpm_data_field_id"/>
     <mapping help-dataset-field="hfmd_entity_id" effect-dataset-field="hfmd_entity_id"/>
     <mapping help-dataset-field="hfmd_entity_attr_id" effect-dataset-field="hfmd_entity_attr_id"/>
-    <mapping help-dataset-field="hfmd_entity_attr_code" effect-dataset-field="hfpm_data_field_code"/>
-    <mapping help-dataset-field="hfmd_entity_attr_name" effect-dataset-field="hfpm_data_field_name"/>
+    <mapping help-dataset-field="hfmd_entity_attr_code" effect-dataset-field="hfpm_data_field_code"  is-compare-key="true"/>
+    <mapping help-dataset-field="hfmd_entity_attr_name" effect-dataset-field="hfpm_data_field_name"  is-compare-name="true"/>
     <!--<mapping help-dataset-field="size" effect-dataset-field="hfpm_field_show_type_id"/>-->
     <!--<mapping help-dataset-field="ispk" effect-dataset-field="field_show_code"/>-->
     <!--<mapping help-dataset-field="nullable" effect-dataset-field="data_get_method"/>-->

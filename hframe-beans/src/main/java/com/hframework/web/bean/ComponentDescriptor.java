@@ -9,6 +9,7 @@ import com.hframework.web.config.bean.DataSetRuler;
 import com.hframework.web.config.bean.Mapper;
 import com.hframework.web.config.bean.datasetruler.Rule;
 import com.hframework.web.config.bean.mapper.Mapping;
+import com.hframework.web.config.bean.component.Event;
 import com.hframework.web.config.bean.pagetemplates.Element;
 
 import java.util.List;
@@ -19,6 +20,8 @@ import java.util.Map;
  */
 public class ComponentDescriptor extends ElementDescriptor{
 
+    private PageDescriptor pageDescriptor;
+
     private Component component;
 
     private DataSetDescriptor dataSetDescriptor;
@@ -26,17 +29,20 @@ public class ComponentDescriptor extends ElementDescriptor{
     private Mapper mapper;
 
     private ComponentDataContainer dataContainer;
+    private String dataId;//页面配置的信息
+    private String title;//页面配置的信息
+    private List<Event> eventList;//页面配置的信息
 
     public void initComponentDataContainer() {
-        dataContainer = new ComponentDataContainer(component,getElement());
+        dataContainer = new ComponentDataContainer(component,getElement(), eventList);
         List<Mapping> mappingList = mapper.getBaseMapper().getMappingList();
         for (Mapping mapping : mappingList) {
-            dataContainer.addMappingAndDataSetDescriptor(mapping, dataSetDescriptor, true);
+            dataContainer.addMappingAndDataSetDescriptor(mapping, this,dataSetDescriptor, true);
         }
 
         List<Mapping> mappingList1 = mapper.getEventMapper().getMappingList();
         for (Mapping mapping : mappingList1) {
-            dataContainer.addMappingAndDataSetDescriptor(mapping, dataSetDescriptor, false);
+            dataContainer.addMappingAndDataSetDescriptor(mapping, this, dataSetDescriptor, false);
         }
 
         dataSetDescriptor.setDataSetRulers();
@@ -86,5 +92,35 @@ public class ComponentDescriptor extends ElementDescriptor{
         this.mapper = mapper;
     }
 
+    public PageDescriptor getPageDescriptor() {
+        return pageDescriptor;
+    }
 
+    public void setPageDescriptor(PageDescriptor pageDescriptor) {
+        this.pageDescriptor = pageDescriptor;
+    }
+
+    public void setDataId(String dataId) {
+        this.dataId = dataId;
+    }
+
+    public String getDataId() {
+        return dataId;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public List<Event> getEventList() {
+        return eventList;
+    }
+
+    public void setEventList(List<Event> eventList) {
+        this.eventList = eventList;
+    }
 }

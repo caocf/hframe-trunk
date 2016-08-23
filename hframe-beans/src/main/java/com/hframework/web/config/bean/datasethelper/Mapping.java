@@ -17,7 +17,12 @@ public class Mapping   {
     @XStreamAsAttribute
     @XStreamAlias("express")
     private String express;
-
+    @XStreamAsAttribute
+    @XStreamAlias("is-compare-key")
+    private String isCompareKey;
+    @XStreamAsAttribute
+    @XStreamAlias("is-compare-name")
+    private String isCompareName;
 
     public Mapping() {
     }
@@ -45,5 +50,21 @@ public class Mapping   {
 
     public void setExpress(String express) {
         this.express = express;
+    }
+
+    public String getIsCompareName() {
+        return isCompareName;
+    }
+
+    public void setIsCompareName(String isCompareName) {
+        this.isCompareName = isCompareName;
+    }
+
+    public String getIsCompareKey() {
+        return isCompareKey;
+    }
+
+    public void setIsCompareKey(String isCompareKey) {
+        this.isCompareKey = isCompareKey;
     }
 }

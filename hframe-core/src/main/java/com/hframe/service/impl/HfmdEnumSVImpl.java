@@ -37,7 +37,7 @@ public class HfmdEnumSVImpl  implements IHfmdEnumSV {
                 if(hfmdEnum.getHfmdEnumId() == null) {
                     result += hfmdEnumMapper.insertSelective(hfmdEnum);
                 }else {
-                    result += hfmdEnumMapper.updateByPrimaryKey(hfmdEnum);
+                    result += hfmdEnumMapper.updateByPrimaryKeySelective(hfmdEnum);
                 }
             }
         }

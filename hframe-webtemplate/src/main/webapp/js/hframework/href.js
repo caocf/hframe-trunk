@@ -59,7 +59,13 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
                 var targetIds = targetId.split(",");
                for(var tarId in targetIds) {
                    $component = $("[component= " + targetIds[tarId] +"]");
-                   json[targetIds[tarId]] = JSON.parse($($component.find("form")[0]).serializeJson());
+                   if($component.find("form").length > 0) {
+                       json[targetIds[tarId]] = JSON.parse($($component.find("form")[0]).serializeJson());
+                   }else {
+                       var hierarchy = $component.orgchart('getHierarchy');
+                       json[targetIds[tarId]]  = JSON.stringify(hierarchy, null, 2);
+                   }
+
                }
                 //console.log(JSON.stringify(json));
                 _data = JSON.stringify(json);
@@ -90,12 +96,34 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
             });
 
         }else if($type == "ajaxSubmit") {
-            var _data;
+            var _data = {};
             if($param == "thisForm") {
                 $thisForm = $this.parents("form")[0];
                 _data = parseUrlParamToObject($($thisForm).serialize());
             }else {
-                _data = parseUrlParamToObject($param);
+                if($($this).attr("params") == "checkIds") {
+                    var checkIds = new Array();
+                    var $thisList = $this.parents(".hflist")[0];
+                    var $allChecked = $($thisList).find("input[type=checkbox][name=checkIds]:checked");
+                    $allChecked.each(function(){
+                        var columnName = $(this).attr("value-key");
+                        var columnValue  = formatContent("{" + columnName + "}", $(this));
+                        checkIds.push(columnValue);
+                    });
+
+                    _data["checkIds"] = checkIds;
+
+                }else {
+                    $thisForm = $this.parents("form")[0];
+                    _data = parseUrlParamToObject($param);
+                    tmpArray = parseUrlParamToObject($($thisForm).serialize());
+                    for(var $index in tmpArray) {
+                        _data[$index] = decodeURIComponent(tmpArray[$index]);
+                    }
+                }
+
+
+
             }
             console.log(_data);
             //_data = {"hfmdEntityAttrId":"","hfmdEntityAttrName":"1231232132","hfmdEntityAttrCode":"","hfmdEntityAttrDesc":"","attrType":"","size":"","ispk":"","nullable":"","isBusiAttr":"","isRedundantAttr":"","relHfmdEntityAttrId":"","hfmdEnumClassId":"","pri":"","hfpmProgramId":"","hfpmModuleId":"","hfmdEntityId":"","opId":"","createTime":"2015-02-13 12:12:12","modifyOpId":"","modifyTime":"2015-02-13 12:12:12","delFlag":""};
@@ -115,15 +143,33 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
             if(targetId) {
                 $targetComponent = $("[component=" + targetId + "]");
             }
-            $thisForm = $this.parents("form")[0];
-            $($targetComponent).attr("param",$($thisForm).serialize());
+
+            if($this.parents("form").size() > 0) {
+                $thisForm = $this.parents("form")[0];
+                $($targetComponent).attr("param",$($thisForm).serialize());
+            }
+
+            //$thisForm = $this.parents("form")[0];
+            //$($targetComponent).attr("param",$($thisForm).serialize());
             //alert($($thisForm).serialize());
             delete $action[$type];
             refreshList(1,$targetComponent);
+        }else if($type == "page.reload") {
+            delete $action[$type];
+            location.reload();
         }else if($type == "component.row.add") {
             $curRow = $this.parents("tr")[0];
             $newRow = $($curRow).clone();
             $($newRow).find("input").val("");
+            $($curRow).find(".hfselect").each(function(i){
+                var $target = $($newRow).find(".hfselect").eq(i);
+                $target.removeClass("city-picker-input");
+                $target.next().remove();
+                $target.next().remove();
+                //$target.citypicker.Constructor
+
+                $.selectPanelLoad($target);;
+            });
             $($curRow).after($newRow);
 
         }else if($type == "component.row.copy") {

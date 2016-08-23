@@ -1,0 +1,189 @@
+<!DOCTYPE taglib PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.1//EN" "http://java.sun.com/j2ee/dtds/web-jsptaglibrary_1_1.dtd">
+<taglib>
+
+
+
+  <tlibversion>1.0</tlibversion>
+
+  <jspversion>1.1</jspversion>
+
+  <shortname>Application Tag Library</shortname>
+  <uri>http://jakarta.apache.org/taglibs/struts-example-1.0</uri>
+
+  <info>
+  </info>
+
+
+<tag>
+   <name>myform</name>
+   <tagclass>com.hframe.tag.AutoFormTag</tagclass>
+   <attribute><name>formid</name><required>true</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>width</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>height</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>title</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>view</name><required>true</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>colNum</name><required>true</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>editable</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>initial</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>object</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>objectId</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>condition</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>url</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>isAjax</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>defaultBtn</name><required>true</required><rtexprvalue>true</rtexprvalue></attribute>
+
+</tag>
+
+<tag>
+   <name>mygrid</name>
+   <tagclass>com.hframe.tag.AutoGridTag</tagclass>
+   <attribute><name>gridId</name><required>true</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>width</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>height</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>title</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>view</name><required>true</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>editable</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>initial</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>objects</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>condition</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>url</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>isAjax</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>defaultBtn</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>param</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+
+</tag>
+<tag>
+   <name>mylist</name>
+   <tagclass>com.hframe.tag.AutoListTag</tagclass>
+   <attribute><name>listId</name><required>true</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>width</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>height</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>title</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>view</name><required>true</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>editable</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>initial</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+      <attribute><name>defaultBtn</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>objects</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>condition</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+
+</tag>
+
+<tag>
+   <name>dtree</name>
+   <tagclass>com.hframe.tag.DTreeTag</tagclass>
+   <attribute><name>treeId</name><required>true</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>width</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>height</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>title</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>checkbox</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   
+   
+   <attribute><name>view</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>editable</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>initial</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>objects</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>rootId</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>condition</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>defaultBtn</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>onClick</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+
+</tag>
+
+<tag>
+   <name>frame</name>
+   <tagclass>com.hframe.tag.FrameTag</tagclass>
+   <attribute><name>frameId</name><required>true</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>width</name><required>true</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>height</name><required>true</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>title</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   
+   <attribute><name>src</name><required>true</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>style</name><required>true</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>isframe</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>isTab</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+
+</tag>
+<tag>
+   <name>button</name>
+   <tagclass>com.hframe.tag.ButtonTag</tagclass>
+   <attribute><name>buttonId</name><required>true</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>buttonName</name><required>true</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>src</name><required>true</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>model</name><required>true</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>title</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>icon</name><required>true</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>param</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>srcObj</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>targetObj</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>targetType</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>isAjax</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>width</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>height</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>priv</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+
+</tag>
+<tag>
+   <name>menu</name>
+   <tagclass>com.hframe.tag.MenuTag</tagclass>
+   <attribute><name>menuId</name><required>true</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>width</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>height</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>title</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>view</name><required>true</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>canClick</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>checkbox</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   
+   <attribute><name>objects</name><required>true</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>condition</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>direction</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>onClick</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+
+
+
+</tag>
+<tag>
+   <name>tab</name>
+   <tagclass>com.hframe.tag.TabTag</tagclass>
+   <attribute><name>tabId</name><required>true</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>width</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>height</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>title</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>view</name><required>true</required><rtexprvalue>true</rtexprvalue></attribute>
+   
+   <attribute><name>objects</name><required>true</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>condition</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>tabGroup</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+
+
+
+</tag>
+
+<tag>
+   <name>select</name>
+   <tagclass>com.hframe.tag.SelectTag</tagclass>
+   <attribute><name>selectId</name><required>true</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>width</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>title</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>view</name><required>true</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>editable</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>visible</name><required>true</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>objects</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>condition</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>initial</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>onChange</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+</tag>
+
+
+<tag>
+   <name>model</name>
+   <tagclass>com.hframe.tag.ModelTag</tagclass>
+   <attribute><name>id</name><required>true</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>size</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>title</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>style</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>src</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+   <attribute><name>defaultBtn</name><required>false</required><rtexprvalue>true</rtexprvalue></attribute>
+
+</tag>
+
+</taglib>

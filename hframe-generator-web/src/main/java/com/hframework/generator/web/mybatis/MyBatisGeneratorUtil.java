@@ -1,5 +1,8 @@
 package com.hframework.generator.web.mybatis;
 
+import com.hframework.common.util.FileUtils;
+import com.hframework.common.util.message.VelocityUtil;
+import com.hframework.generator.util.CreatorUtil;
 import org.mybatis.generator.api.MyBatisGenerator;
 import org.mybatis.generator.config.Configuration;
 import org.mybatis.generator.config.TableConfiguration;
@@ -11,8 +14,7 @@ import org.mybatis.generator.internal.DefaultShellCallback;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by zhangqh6 on 2015/9/4.
@@ -20,11 +22,11 @@ import java.util.List;
 public class MyBatisGeneratorUtil {
 
     public static void main(String[] args) throws IOException, XMLParserException, InvalidConfigurationException, InterruptedException, SQLException {
-        generate();
+        generate(new File("D://my_workspace/hframe-trunk/hframe-core/src/main/resources/hframe/generator/mybatis-generator-config-hframe.xml"));
     }
 
     public static  void generate() throws IOException, XMLParserException, InvalidConfigurationException, SQLException, InterruptedException {
-       generate("mybatis-generator-config.xml");
+       generate("mybatis-generator-config-hframe.xml");
     }
 
     public static  List<TableConfiguration> getTableCfg() throws IOException, XMLParserException, InvalidConfigurationException, SQLException, InterruptedException {
@@ -32,31 +34,40 @@ public class MyBatisGeneratorUtil {
     }
 
     public static  List<TableConfiguration> getTableCfg(String cfgFileName) throws IOException, XMLParserException, InvalidConfigurationException, SQLException, InterruptedException {
-        List<String> warnings = new ArrayList<String>();
         boolean overwrite = true;
         String rootClassPath = Thread.currentThread().getContextClassLoader ().getResource("").getPath();
         System.out.println(rootClassPath);
         File configFile = new File(rootClassPath + cfgFileName);
+        return getTableCfg(configFile);
+    }
+
+    public static  List<TableConfiguration> getTableCfg(File mybatisConfigFile) throws IOException, XMLParserException, InvalidConfigurationException, SQLException, InterruptedException {
+        List<String> warnings = new ArrayList<String>();
         ConfigurationParser cp = new ConfigurationParser(warnings);
-        Configuration config = cp.parseConfiguration(configFile);
+        Configuration config = cp.parseConfiguration(mybatisConfigFile);
         List<TableConfiguration> tableConfigurations = config.getContexts().get(0).getTableConfigurations();
 //        for (TableConfiguration tableConfiguration : tableConfigurations) {
 //            System.out.println(tableConfiguration.getTableName() + "：" + tableConfiguration.getProperty("chineseName"));
 //        }
-       return tableConfigurations;
+        return tableConfigurations;
     }
 
-    public static  void generate(String cfgFileName) throws IOException, XMLParserException, InvalidConfigurationException, SQLException, InterruptedException {
+    public static  void generate(File configFile) throws IOException, XMLParserException, InvalidConfigurationException, SQLException, InterruptedException {
         List<String> warnings = new ArrayList<String>();
         boolean overwrite = true;
-        String rootClassPath = Thread.currentThread().getContextClassLoader ().getResource("").getPath();
-        System.out.println(rootClassPath);
-        File configFile = new File(rootClassPath + cfgFileName);
         ConfigurationParser cp = new ConfigurationParser(warnings);
         Configuration config = cp.parseConfiguration(configFile);
         DefaultShellCallback callback = new DefaultShellCallback(overwrite);
         MyBatisGenerator myBatisGenerator = new MyBatisGenerator(config, callback, warnings);
         myBatisGenerator.generate(null);
+        System.out.println(Arrays.toString(warnings.toArray(new String[0])));
+    }
+
+    public static  void generate(String cfgFileName) throws IOException, XMLParserException, InvalidConfigurationException, SQLException, InterruptedException {
+        String rootClassPath = Thread.currentThread().getContextClassLoader ().getResource("").getPath();
+        System.out.println(rootClassPath);
+        File configFile = new File(rootClassPath + cfgFileName);
+        generate(configFile);
     }
 
 }

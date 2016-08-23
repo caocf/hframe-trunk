@@ -32,7 +32,11 @@ public class HfpmPage {
 
     private Integer delFlag;
 
-    public HfpmPage(Long hfpmPageId, String hfpmPageCode, String hfpmPageName, Integer hfpmPageType, String hfpmPageDesc, Long parentHfpmPageId, Long hfpmProgramId, Long hfpmModuleId, BigDecimal pri, Long opId, Date createTime, Long modifyOpId, Date modifyTime, Integer delFlag) {
+    private Long hfpmDataSetId;
+
+    private Long hfcfgPageTemplateId;
+
+    public HfpmPage(Long hfpmPageId, String hfpmPageCode, String hfpmPageName, Integer hfpmPageType, String hfpmPageDesc, Long parentHfpmPageId, Long hfpmProgramId, Long hfpmModuleId, BigDecimal pri, Long opId, Date createTime, Long modifyOpId, Date modifyTime, Integer delFlag, Long hfpmDataSetId, Long hfcfgPageTemplateId) {
         this.hfpmPageId = hfpmPageId;
         this.hfpmPageCode = hfpmPageCode;
         this.hfpmPageName = hfpmPageName;
@@ -47,6 +51,8 @@ public class HfpmPage {
         this.modifyOpId = modifyOpId;
         this.modifyTime = modifyTime;
         this.delFlag = delFlag;
+        this.hfpmDataSetId = hfpmDataSetId;
+        this.hfcfgPageTemplateId = hfcfgPageTemplateId;
     }
 
     public Long getHfpmPageId() {
@@ -105,6 +111,14 @@ public class HfpmPage {
         return delFlag;
     }
 
+    public Long getHfpmDataSetId() {
+        return hfpmDataSetId;
+    }
+
+    public Long getHfcfgPageTemplateId() {
+        return hfcfgPageTemplateId;
+    }
+
     public void setHfpmPageId(Long hfpmPageId) {
         this.hfpmPageId=hfpmPageId;
     }
@@ -159,6 +173,14 @@ public class HfpmPage {
 
     public void setDelFlag(Integer delFlag) {
         this.delFlag=delFlag;
+    }
+
+    public void setHfpmDataSetId(Long hfpmDataSetId) {
+        this.hfpmDataSetId=hfpmDataSetId;
+    }
+
+    public void setHfcfgPageTemplateId(Long hfcfgPageTemplateId) {
+        this.hfcfgPageTemplateId=hfcfgPageTemplateId;
     }
 
     public HfpmPage() {

@@ -9,21 +9,20 @@ import com.hframework.web.CreatorUtil;
 import com.hframework.web.config.bean.*;
 import com.hframework.web.config.bean.Component;
 import com.hframework.web.config.bean.Module;
+import com.hframework.web.config.bean.dataset.Entity;
 import com.hframework.web.config.bean.dataset.Field;
 import com.hframework.web.config.bean.mapper.Mapping;
 import com.hframework.web.config.bean.module.*;
 import com.hframework.web.config.bean.pagetemplates.Element;
 import com.hframework.web.config.bean.pagetemplates.Pagetemplate;
 import com.hframework.web.enums.ElementType;
+import org.jsoup.helper.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.lang.Class;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
+import java.util.*;
 
 /**
  * User: zhangqh6
@@ -195,6 +194,7 @@ public class WebContext {
         pageDescriptor.setName(page.getName());
         pageDescriptor.setPageTemplate(pageTemplates.get(page.getPageTemplate()));
 
+
         Stack<Pagetemplate> pageTemplateStack =  getPageTemplateStack(page.getPageTemplate(), new Stack<Pagetemplate>());
         for (Pagetemplate pageTemplate : pageTemplateStack) {
             List<Element> elementList = pageTemplate.getElementList();
@@ -209,6 +209,18 @@ public class WebContext {
             }
         }
 
+        //获取组件级初始化信息。
+        List<com.hframework.web.config.bean.module.Component> componentList = page.getComponentList();
+        for (com.hframework.web.config.bean.module.Component component : componentList) {
+            ComponentDescriptor componentDescriptor = pageDescriptor.getComponentDescriptor(component.getId());
+            if(componentDescriptor == null) {//针对于dynamic动态模板进行处理
+                Element element = new Element();
+                element.setId(component.getId());
+                element.setType(ElementType.component.getName());
+                element.setEventExtend("false");
+                pageDescriptor.addComponentDescriptor(component.getId() + "|" + component.getDataSet()+ "|" + component.getDataid(), parseComponentDescriptor(element));
+            }
+        }
         //获取页面级初始化信息。
         for (ComponentDescriptor componentDescriptor : pageDescriptor.getComponents().values()) {
             Mapper mapper = null;
@@ -225,12 +237,15 @@ public class WebContext {
                 continue;
             }
             componentDescriptor.setMapper(mapper);
+            if(dataSets.get(page.getDataSet()) == null) {
+                logger.warn("no dataset {} exists !", page.getDataSet() + "_" + componentDescriptor.getId());
+                continue;
+            }
             componentDescriptor.setDataSetDescriptor(dataSets.get(page.getDataSet()));
             componentDescriptor.initComponentDataContainer();
         }
 
-        //获取组件级初始化信息。
-        List<com.hframework.web.config.bean.module.Component> componentList = page.getComponentList();
+
         //将默认的组件配置添加到每一个page，如果page中没有该组件，需要兼容处理
         componentList.addAll(defaultComponentMap.values());
         for (com.hframework.web.config.bean.module.Component component : componentList) {
@@ -251,7 +266,14 @@ public class WebContext {
                 continue;
             }
             ComponentDescriptor componentDescriptor = pageDescriptor.getComponentDescriptor(component.getId());
+
+            if(componentDescriptor == null) {
+                componentDescriptor = pageDescriptor.getComponentDescriptor(component.getId()  + "|" + component.getDataSet() + "|" + component.getDataid());
+            }
             if(componentDescriptor != null) {
+                componentDescriptor.setEventList(component.getEventList());
+                componentDescriptor.setDataId(component.getDataid());
+                componentDescriptor.setTitle(component.getTitle());
                 componentDescriptor.setMapper(mapper);
                 componentDescriptor.setDataSetDescriptor(dataSets.get(component.getDataSet()));
                 componentDescriptor.initComponentDataContainer();
@@ -327,7 +349,12 @@ public class WebContext {
         //加载模块信息
         List<Module> moduleList = XmlUtils.readValuesFromDirectory(MODULE_DIR, Module.class, ".xml");
         for (Module module : moduleList) {
-            this.modules.put(module.getCode(),module);
+            if(this.modules.containsKey(module.getCode())) {
+                this.modules.get(module.getCode()).getPageList().addAll(module.getPageList());
+            }else {
+                this.modules.put(module.getCode(),module);
+            }
+
         }
         //加载数据映射信息
         List<Mapper> mapperList = XmlUtils.readValuesFromDirectory(MAPPER_DIR, Mapper.class);
@@ -486,4 +513,73 @@ public class WebContext {
         }
     }
 
+
+    public Map<Module,List<List<Entity>>> getEntityRelats() {
+        Map<String, Module> modules = this.modules;
+        Map<Module,List<List<Entity>>> result = new HashMap<Module, List<List<Entity>>>();
+        for (String moduleCode : modules.keySet()) {
+            if(StringUtils.isBlank(moduleCode)) {
+                continue;
+            }
+            Module module = modules.get(moduleCode);
+            result.put(module, new ArrayList<List<Entity>>());
+            List<List<Entity>> moduleEntityList = result.get(module);
+            List<Page> pageList = module.getPageList();
+            for (Page page : pageList) {
+                Set<Entity> allEntitys = new LinkedHashSet<Entity>();
+                DataSetDescriptor dataSetDescriptor = null;
+                if(StringUtils.isNotBlank(page.getDataSet())) {
+                    dataSetDescriptor = dataSets.get(page.getDataSet());
+                    allEntitys.addAll(dataSetDescriptor.getDataSet().getEntityList());
+                }
+
+                List<com.hframework.web.config.bean.module.Component> componentList = page.getComponentList();
+                for (com.hframework.web.config.bean.module.Component component : componentList) {
+                    if(defaultComponentMap.values().contains(component)) {
+                        continue;
+                    }
+                    String dataSet = component.getDataSet();
+                    if(StringUtils.isBlank(dataSet)) {
+                        continue;
+                    }
+
+                    dataSetDescriptor = dataSets.get(dataSet);
+                    allEntitys.addAll(dataSetDescriptor.getDataSet().getEntityList());
+                }
+
+                Entity rootEntity = null;
+                for (final Entity entity : allEntitys) {
+                    if(rootEntity == null) rootEntity = entity;
+                    List<Entity> relEntityList = getListFromModuleEntityList(moduleEntityList, rootEntity);
+                    if(relEntityList == null) {
+                        moduleEntityList.add(new LinkedList<Entity>(){{add(entity);}});
+                    }else {
+                        boolean flag = false;
+                        for (Entity entity1 : relEntityList) {
+                            if(entity1.getText().equals(entity.getText())) {
+                                flag = true;
+                                break;
+                            }
+                        }
+                        if(!flag) {
+                            relEntityList.add(entity);
+                        }
+                    }
+                }
+            }
+        }
+
+        return result;
+    }
+
+    private List<Entity> getListFromModuleEntityList(List<List<Entity>> moduleEntityList, Entity entity) {
+
+        for (List<Entity> entities : moduleEntityList) {
+            if(entities.contains(entity)) {
+                return entities;
+            }
+        }
+
+        return null;
+    }
 }

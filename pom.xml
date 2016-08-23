@@ -22,6 +22,9 @@
         <module>hframe-generator-web</module>
         <module>hframe-reconciliation</module>
         <module>hframe-webtemplate</module>
+        <module>hframe-webbase</module>
+        <module>hframe-rpc</module>
+        <module>hframe-rpc</module>
     </modules>
 
     <dependencies>

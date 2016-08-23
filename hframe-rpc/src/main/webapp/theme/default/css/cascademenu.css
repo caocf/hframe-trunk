@@ -1,0 +1,27 @@
+@CHARSET "GB18030";
+	
+*{ margin:0; padding:0; border:0;}
+	/*body{font:12px/130% verdana,geneva,arial,helvetica,sans-serif,ËÎÌו;}li{list-style:none;}*/
+	.clearfix:after{content:" ";display:block;height:0;clear:both;visibility:hidden;}.clearfix{display:inline-block;}
+	/*
+	a:link{ color:#000; text-decoration:none; }
+	a:visited{ color:#000; text-decoration:none; }
+	a:hover{ color:#000; text-decoration:none; }
+	*/
+	.menu{ height:26px; background:#eee; margin:0 auto;text-align:center;}
+	.menusel{ float:left;width:100px; position:relative; height:25px; background:#ddd; line-height: 25px; margin-left: 1px; *margin-left: 0px;_margin-left: -1px;}
+	.menusel h2{ font-size:16px; }
+	.menusel a{ display: block;text-align:center; width:100px;border:1px solid #a4a4a4; height:25px; border-bottom:1px solid #a4a4a4; position:relative; z-index:2;}
+	.menusel a:hover{ border:1px solid #a4a4a4; border-bottom:1px dashed #eeeeee; position:relative; z-index:2; height:25px;}
+	.ahover a{border-bottom:1px dashed #eeeeee; background:#eeeeee; }
+	.position{ position:absolute; z-index:1;}
+	.menusel ul{width:125px; background:#eee; border:1px solid #a4a4a4; margin-top: -1px; position:relative; z-index:1; display:none;}
+	.menusel .block{ display:block;}
+	.typeul li{border-bottom:1px dashed #a4a4a4;width:125px; position:relative; float:left; }
+	.typeul li a{ border:none;width:125px; }
+	.typeul li a:hover{ border:none; background:#ddd;}
+	.typeul{  margin-left:0;  }
+	.typeul ul{left:125px; top:0; position:absolute;}
+	.fli{ margin-left: -1px; border-left:#eeeeee solid 1px;}
+	.menusel .lli{ border:none; }
+-->

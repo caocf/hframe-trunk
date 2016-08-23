@@ -37,7 +37,7 @@ public class HfpmPageCfgSVImpl  implements IHfpmPageCfgSV {
                 if(hfpmPageCfg.getHfpmPageCfgId() == null) {
                     result += hfpmPageCfgMapper.insertSelective(hfpmPageCfg);
                 }else {
-                    result += hfpmPageCfgMapper.updateByPrimaryKey(hfpmPageCfg);
+                    result += hfpmPageCfgMapper.updateByPrimaryKeySelective(hfpmPageCfg);
                 }
             }
         }

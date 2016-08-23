@@ -13,6 +13,7 @@
       <arg column="modify_op_id" jdbcType="BIGINT" javaType="java.lang.Long" />
       <arg column="modify_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
       <arg column="del_flag" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="hfcfg_component_template_id" jdbcType="BIGINT" javaType="java.lang.Long" />
     </constructor>
   </resultMap>
   <sql id="Example_Where_Clause" >
@@ -75,7 +76,7 @@
   </sql>
   <sql id="Base_Column_List" >
     hfpm_page_component_id, hfpm_page_component_name, hfpm_page_component_type, hfpm_page_id, 
-    hfpm_data_set_id, op_id, create_time, modify_op_id, modify_time, del_flag
+    hfpm_data_set_id, op_id, create_time, modify_op_id, modify_time, del_flag, hfcfg_component_template_id
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.hframe.domain.model.HfpmPageComponent_Example" >
     select
@@ -117,11 +118,11 @@
     insert into hfpm_page_component (hfpm_page_component_name, hfpm_page_component_type, 
       hfpm_page_id, hfpm_data_set_id, op_id, 
       create_time, modify_op_id, modify_time, 
-      del_flag)
+      del_flag, hfcfg_component_template_id)
     values (#{hfpmPageComponentName,jdbcType=VARCHAR}, #{hfpmPageComponentType,jdbcType=INTEGER}, 
       #{hfpmPageId,jdbcType=BIGINT}, #{hfpmDataSetId,jdbcType=BIGINT}, #{opId,jdbcType=BIGINT}, 
       #{createTime,jdbcType=TIMESTAMP}, #{modifyOpId,jdbcType=BIGINT}, #{modifyTime,jdbcType=TIMESTAMP}, 
-      #{delFlag,jdbcType=INTEGER})
+      #{delFlag,jdbcType=INTEGER}, #{hfcfgComponentTemplateId,jdbcType=BIGINT})
   </insert>
   <insert id="insertSelective" parameterType="com.hframe.domain.model.HfpmPageComponent" >
     <selectKey resultType="java.lang.Long" keyProperty="hfpmPageComponentId" order="AFTER" >
@@ -156,6 +157,9 @@
       <if test="delFlag != null" >
         del_flag,
       </if>
+      <if test="hfcfgComponentTemplateId != null" >
+        hfcfg_component_template_id,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="hfpmPageComponentName != null" >
@@ -184,6 +188,9 @@
       </if>
       <if test="delFlag != null" >
         #{delFlag,jdbcType=INTEGER},
+      </if>
+      <if test="hfcfgComponentTemplateId != null" >
+        #{hfcfgComponentTemplateId,jdbcType=BIGINT},
       </if>
     </trim>
   </insert>
@@ -226,6 +233,9 @@
       <if test="record.delFlag != null" >
         del_flag = #{record.delFlag,jdbcType=INTEGER},
       </if>
+      <if test="record.hfcfgComponentTemplateId != null" >
+        hfcfg_component_template_id = #{record.hfcfgComponentTemplateId,jdbcType=BIGINT},
+      </if>
     </set>
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
@@ -242,7 +252,8 @@
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       modify_op_id = #{record.modifyOpId,jdbcType=BIGINT},
       modify_time = #{record.modifyTime,jdbcType=TIMESTAMP},
-      del_flag = #{record.delFlag,jdbcType=INTEGER}
+      del_flag = #{record.delFlag,jdbcType=INTEGER},
+      hfcfg_component_template_id = #{record.hfcfgComponentTemplateId,jdbcType=BIGINT}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -277,6 +288,9 @@
       <if test="delFlag != null" >
         del_flag = #{delFlag,jdbcType=INTEGER},
       </if>
+      <if test="hfcfgComponentTemplateId != null" >
+        hfcfg_component_template_id = #{hfcfgComponentTemplateId,jdbcType=BIGINT},
+      </if>
     </set>
     where hfpm_page_component_id = #{hfpmPageComponentId,jdbcType=BIGINT}
   </update>
@@ -290,7 +304,8 @@
       create_time = #{createTime,jdbcType=TIMESTAMP},
       modify_op_id = #{modifyOpId,jdbcType=BIGINT},
       modify_time = #{modifyTime,jdbcType=TIMESTAMP},
-      del_flag = #{delFlag,jdbcType=INTEGER}
+      del_flag = #{delFlag,jdbcType=INTEGER},
+      hfcfg_component_template_id = #{hfcfgComponentTemplateId,jdbcType=BIGINT}
     where hfpm_page_component_id = #{hfpmPageComponentId,jdbcType=BIGINT}
   </update>
 </mapper>

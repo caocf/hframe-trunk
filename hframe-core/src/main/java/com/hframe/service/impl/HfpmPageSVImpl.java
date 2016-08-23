@@ -3,6 +3,7 @@ package com.hframe.service.impl;
 import java.util.*;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
+import com.google.common.collect.Lists;
 import com.hframe.domain.model.HfpmPage;
 import com.hframe.domain.model.HfpmPage_Example;
 import com.hframe.dao.HfpmPageMapper;
@@ -14,8 +15,10 @@ public class HfpmPageSVImpl  implements IHfpmPageSV {
 	@Resource
 	private HfpmPageMapper hfpmPageMapper;
   
+
+
     /**
-    * 创建页面
+    * 创建椤甸潰
     * @param hfpmPage
     * @return
     * @throws Exception
@@ -25,7 +28,7 @@ public class HfpmPageSVImpl  implements IHfpmPageSV {
     }
 
     /**
-    * 批量维护页面
+    * 批量维护椤甸潰
     * @param hfpmPages
     * @return
     * @throws Exception
@@ -37,7 +40,7 @@ public class HfpmPageSVImpl  implements IHfpmPageSV {
                 if(hfpmPage.getHfpmPageId() == null) {
                     result += hfpmPageMapper.insertSelective(hfpmPage);
                 }else {
-                    result += hfpmPageMapper.updateByPrimaryKey(hfpmPage);
+                    result += hfpmPageMapper.updateByPrimaryKeySelective(hfpmPage);
                 }
             }
         }
@@ -45,7 +48,7 @@ public class HfpmPageSVImpl  implements IHfpmPageSV {
     }
 
     /**
-    * 更新页面
+    * 更新椤甸潰
     * @param hfpmPage
     * @return
     * @throws Exception
@@ -55,7 +58,7 @@ public class HfpmPageSVImpl  implements IHfpmPageSV {
     }
 
     /**
-    * 通过查询对象更新页面
+    * 通过查询对象更新椤甸潰
     * @param hfpmPage
     * @param example
     * @return
@@ -66,7 +69,7 @@ public class HfpmPageSVImpl  implements IHfpmPageSV {
     }
 
     /**
-    * 删除页面
+    * 删除椤甸潰
     * @param hfpmPage
     * @return
     * @throws Exception
@@ -76,7 +79,7 @@ public class HfpmPageSVImpl  implements IHfpmPageSV {
     }
 
     /**
-    * 删除页面
+    * 删除椤甸潰
     * @param hfpmPageId
     * @return
     * @throws Exception
@@ -86,7 +89,7 @@ public class HfpmPageSVImpl  implements IHfpmPageSV {
     }
 
     /**
-    * 查找所有页面
+    * 查找所有椤甸潰
     * @return
     */
     public List<HfpmPage> getHfpmPageAll()  throws  Exception {
@@ -94,7 +97,7 @@ public class HfpmPageSVImpl  implements IHfpmPageSV {
     }
 
     /**
-    * 通过页面ID查询页面
+    * 通过椤甸潰ID查询椤甸潰
     * @param hfpmPageId
     * @return
     * @throws Exception
@@ -103,8 +106,9 @@ public class HfpmPageSVImpl  implements IHfpmPageSV {
         return hfpmPageMapper.selectByPrimaryKey(hfpmPageId);
     }
 
+
     /**
-    * 通过MAP参数查询页面
+    * 通过MAP参数查询椤甸潰
     * @param params
     * @return
     * @throws Exception
@@ -116,7 +120,7 @@ public class HfpmPageSVImpl  implements IHfpmPageSV {
 
 
     /**
-    * 通过查询对象查询页面
+    * 通过查询对象查询椤甸潰
     * @param example
     * @return
     * @throws Exception
@@ -126,7 +130,7 @@ public class HfpmPageSVImpl  implements IHfpmPageSV {
     }
 
     /**
-    * 通过MAP参数查询页面数量
+    * 通过MAP参数查询椤甸潰数量
     * @param params
     * @return
     * @throws Exception
@@ -136,7 +140,7 @@ public class HfpmPageSVImpl  implements IHfpmPageSV {
     }
 
     /**
-    * 通过查询对象查询页面数量
+    * 通过查询对象查询椤甸潰数量
     * @param example
     * @return
     * @throws Exception

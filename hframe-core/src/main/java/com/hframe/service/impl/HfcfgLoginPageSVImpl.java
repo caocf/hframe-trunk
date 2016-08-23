@@ -37,7 +37,7 @@ public class HfcfgLoginPageSVImpl  implements IHfcfgLoginPageSV {
                 if(hfcfgLoginPage.getHfcfgLoginPageId() == null) {
                     result += hfcfgLoginPageMapper.insertSelective(hfcfgLoginPage);
                 }else {
-                    result += hfcfgLoginPageMapper.updateByPrimaryKey(hfcfgLoginPage);
+                    result += hfcfgLoginPageMapper.updateByPrimaryKeySelective(hfcfgLoginPage);
                 }
             }
         }

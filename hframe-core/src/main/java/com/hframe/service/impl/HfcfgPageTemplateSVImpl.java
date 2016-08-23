@@ -37,7 +37,7 @@ public class HfcfgPageTemplateSVImpl  implements IHfcfgPageTemplateSV {
                 if(hfcfgPageTemplate.getHfcfgPageTemplateId() == null) {
                     result += hfcfgPageTemplateMapper.insertSelective(hfcfgPageTemplate);
                 }else {
-                    result += hfcfgPageTemplateMapper.updateByPrimaryKey(hfcfgPageTemplate);
+                    result += hfcfgPageTemplateMapper.updateByPrimaryKeySelective(hfcfgPageTemplate);
                 }
             }
         }

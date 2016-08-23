@@ -37,7 +37,7 @@ public class HfpmEntityBindRuleSVImpl  implements IHfpmEntityBindRuleSV {
                 if(hfpmEntityBindRule.getHfpmEntityBindRuleId() == null) {
                     result += hfpmEntityBindRuleMapper.insertSelective(hfpmEntityBindRule);
                 }else {
-                    result += hfpmEntityBindRuleMapper.updateByPrimaryKey(hfpmEntityBindRule);
+                    result += hfpmEntityBindRuleMapper.updateByPrimaryKeySelective(hfpmEntityBindRule);
                 }
             }
         }

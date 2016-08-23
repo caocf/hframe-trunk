@@ -10,6 +10,7 @@ import com.hframework.web.CreatorUtil;
 import com.hframework.web.config.bean.DataSet;
 import com.hframework.web.config.bean.DataSetHelper;
 import com.hframework.web.config.bean.DataSetRuler;
+import com.hframework.web.config.bean.datasethelper.Mapping;
 import com.hframework.web.config.bean.datasetruler.Rule;
 
 import java.util.ArrayList;
@@ -112,8 +113,29 @@ public class DataSetDescriptor {
                         object.put("sourceCode",referDataFiledPropertyName);
                         object.put("targetCode",propertyValue);
                         object.put("ruleType",3);
+                        List<Mapping> mappingList = dataSetHelper.getMappings().getMappingList();
+                        for (Mapping mapping : mappingList) {
+                            if("true".equals(mapping.getIsCompareKey())) {
+                                object.put("compareKey",CreatorUtil.getJavaVarName(mapping.getEffectDatasetField()));
+                            }
+                            if("true".equals(mapping.getIsCompareName())) {
+                                object.put("compareName",CreatorUtil.getJavaVarName(mapping.getEffectDatasetField()));
+                            }
+                        }
                         result.put(referDataFiledPropertyName,object);
                     }
+                }else {
+                    JSONObject object = new JSONObject();
+                    List<Mapping> mappingList = dataSetHelper.getMappings().getMappingList();
+                    for (Mapping mapping : mappingList) {
+                        if("true".equals(mapping.getIsCompareKey())) {
+                            object.put("compareKey",CreatorUtil.getJavaVarName(mapping.getEffectDatasetField()));
+                        }
+                        if("true".equals(mapping.getIsCompareName())) {
+                            object.put("compareName",CreatorUtil.getJavaVarName(mapping.getEffectDatasetField()));
+                        }
+                    }
+                    result.put("NE",object);
                 }
             }
         }
@@ -166,5 +188,18 @@ public class DataSetDescriptor {
 
     public JSONObject getDataSetRulerJsonObject() {
         return dataSetRulerJsonObject;
+    }
+
+    public String[] getRelPropertyNames() {
+        for (Map.Entry<String, String> entry : relFieldKeyMap.entrySet()) {
+            String key = entry.getKey();
+            String value = entry.getValue();
+            if(value.startsWith(dataSet.getCode() + "/")){
+                return new String[]{
+                        ResourceWrapper.JavaUtil.getJavaVarName(value.replace(dataSet.getCode() + "/", "")),
+                        ResourceWrapper.JavaUtil.getJavaVarName(key)};
+            }
+        }
+        return null;
     }
 }

@@ -3,6 +3,7 @@ package com.hframe.service.impl;
 import java.util.*;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
+import com.google.common.collect.Lists;
 import com.hframe.domain.model.HfpmPageComponent;
 import com.hframe.domain.model.HfpmPageComponent_Example;
 import com.hframe.dao.HfpmPageComponentMapper;
@@ -14,8 +15,10 @@ public class HfpmPageComponentSVImpl  implements IHfpmPageComponentSV {
 	@Resource
 	private HfpmPageComponentMapper hfpmPageComponentMapper;
   
+
+
     /**
-    * 创建页面组件
+    * 创建椤甸潰缁勪欢
     * @param hfpmPageComponent
     * @return
     * @throws Exception
@@ -25,7 +28,7 @@ public class HfpmPageComponentSVImpl  implements IHfpmPageComponentSV {
     }
 
     /**
-    * 批量维护页面组件
+    * 批量维护椤甸潰缁勪欢
     * @param hfpmPageComponents
     * @return
     * @throws Exception
@@ -37,7 +40,7 @@ public class HfpmPageComponentSVImpl  implements IHfpmPageComponentSV {
                 if(hfpmPageComponent.getHfpmPageComponentId() == null) {
                     result += hfpmPageComponentMapper.insertSelective(hfpmPageComponent);
                 }else {
-                    result += hfpmPageComponentMapper.updateByPrimaryKey(hfpmPageComponent);
+                    result += hfpmPageComponentMapper.updateByPrimaryKeySelective(hfpmPageComponent);
                 }
             }
         }
@@ -45,7 +48,7 @@ public class HfpmPageComponentSVImpl  implements IHfpmPageComponentSV {
     }
 
     /**
-    * 更新页面组件
+    * 更新椤甸潰缁勪欢
     * @param hfpmPageComponent
     * @return
     * @throws Exception
@@ -55,7 +58,7 @@ public class HfpmPageComponentSVImpl  implements IHfpmPageComponentSV {
     }
 
     /**
-    * 通过查询对象更新页面组件
+    * 通过查询对象更新椤甸潰缁勪欢
     * @param hfpmPageComponent
     * @param example
     * @return
@@ -66,7 +69,7 @@ public class HfpmPageComponentSVImpl  implements IHfpmPageComponentSV {
     }
 
     /**
-    * 删除页面组件
+    * 删除椤甸潰缁勪欢
     * @param hfpmPageComponent
     * @return
     * @throws Exception
@@ -76,7 +79,7 @@ public class HfpmPageComponentSVImpl  implements IHfpmPageComponentSV {
     }
 
     /**
-    * 删除页面组件
+    * 删除椤甸潰缁勪欢
     * @param hfpmPageComponentId
     * @return
     * @throws Exception
@@ -86,7 +89,7 @@ public class HfpmPageComponentSVImpl  implements IHfpmPageComponentSV {
     }
 
     /**
-    * 查找所有页面组件
+    * 查找所有椤甸潰缁勪欢
     * @return
     */
     public List<HfpmPageComponent> getHfpmPageComponentAll()  throws  Exception {
@@ -94,7 +97,7 @@ public class HfpmPageComponentSVImpl  implements IHfpmPageComponentSV {
     }
 
     /**
-    * 通过页面组件ID查询页面组件
+    * 通过椤甸潰缁勪欢ID查询椤甸潰缁勪欢
     * @param hfpmPageComponentId
     * @return
     * @throws Exception
@@ -103,8 +106,9 @@ public class HfpmPageComponentSVImpl  implements IHfpmPageComponentSV {
         return hfpmPageComponentMapper.selectByPrimaryKey(hfpmPageComponentId);
     }
 
+
     /**
-    * 通过MAP参数查询页面组件
+    * 通过MAP参数查询椤甸潰缁勪欢
     * @param params
     * @return
     * @throws Exception
@@ -116,7 +120,7 @@ public class HfpmPageComponentSVImpl  implements IHfpmPageComponentSV {
 
 
     /**
-    * 通过查询对象查询页面组件
+    * 通过查询对象查询椤甸潰缁勪欢
     * @param example
     * @return
     * @throws Exception
@@ -126,7 +130,7 @@ public class HfpmPageComponentSVImpl  implements IHfpmPageComponentSV {
     }
 
     /**
-    * 通过MAP参数查询页面组件数量
+    * 通过MAP参数查询椤甸潰缁勪欢数量
     * @param params
     * @return
     * @throws Exception
@@ -136,7 +140,7 @@ public class HfpmPageComponentSVImpl  implements IHfpmPageComponentSV {
     }
 
     /**
-    * 通过查询对象查询页面组件数量
+    * 通过查询对象查询椤甸潰缁勪欢数量
     * @param example
     * @return
     * @throws Exception

@@ -163,10 +163,12 @@ public class ControllerHelper {
     public static <T> void setDefaultValue(T object,  String propertyName, Object propertyValue) {
         if(object != null) {
             Class<?> clazz = BeanUtils.findPropertyType(propertyName, object.getClass());
-            if(clazz == Date.class) {
-                ReflectUtils.setFieldValue(object,propertyName, propertyValue);
-            }else {
-                ReflectUtils.setFieldValue(object,propertyName, propertyValue);
+            if(clazz != Object.class) {
+                if(clazz == Date.class) {
+                    ReflectUtils.setFieldValue(object,propertyName, propertyValue);
+                }else {
+                    ReflectUtils.setFieldValue(object,propertyName, propertyValue);
+                }
             }
         }
     }

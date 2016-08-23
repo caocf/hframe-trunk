@@ -28,12 +28,22 @@
         </dependency>
         <dependency>
             <groupId>com.hframe</groupId>
-            <artifactId>hframe-manager</artifactId>
+            <artifactId>hframe-tag</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.hframe</groupId>
             <artifactId>hframe-beans</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.hframe</groupId>
+            <artifactId>hframe-webbase</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.hframe</groupId>
+            <artifactId>hframe-generator-web</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <!-- Velocity dependencies -->

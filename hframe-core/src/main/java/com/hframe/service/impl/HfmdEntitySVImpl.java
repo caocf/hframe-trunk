@@ -37,7 +37,7 @@ public class HfmdEntitySVImpl  implements IHfmdEntitySV {
                 if(hfmdEntity.getHfmdEntityId() == null) {
                     result += hfmdEntityMapper.insertSelective(hfmdEntity);
                 }else {
-                    result += hfmdEntityMapper.updateByPrimaryKey(hfmdEntity);
+                    result += hfmdEntityMapper.updateByPrimaryKeySelective(hfmdEntity);
                 }
             }
         }
