@@ -18,14 +18,8 @@
       <enum-class code="hfsec_menu.icon"/>
     </field>
     <field code="url" name="地址" edit-type="input"/>
-    <field code="parent_hfsec_menu_id" name="父级菜单ID" edit-type="input">
+    <field code="parent_hfsec_menu_id" name="上级菜单ID" edit-type="select">
       <rel entity-code="hfsec_menu/hfsec_menu_id/hfsec_menu_name"/>
-    </field>
-    <field code="hfpm_program_id" name="项目ID" edit-type="select">
-      <rel entity-code="hfpm_program/hfpm_program_id/hfpm_program_name"/>
-    </field>
-    <field code="hfpm_module_id" name="模块ID" edit-type="select">
-      <rel entity-code="hfpm_module/hfpm_module_id/hfpm_module_name"/>
     </field>
     <field code="pri" name="优先级" edit-type="hidden">
       <create-edit-type>hidden</create-edit-type>

@@ -52,6 +52,16 @@ public class ModelLoaderService {
                 ServiceFactory.initContext(webappcontext);
             }
 
+            load("hframe", programCode, programeName, moduleCode, moduleName);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public String load(String companyCode, String programCode, String programeName,String  moduleCode,String  moduleName) {
+        try {
             HfModelContainer dbModelContainer = HfModelService.get().getModelContainerFromDB(
                     programCode, programeName, moduleCode, moduleName);
 
@@ -59,7 +69,7 @@ public class ModelLoaderService {
                     HfModelContainerUtil.mergerModelContainer(HfModelContainerUtil.getInstance(), dbModelContainer);
             System.out.println("==>" + JSONObject.toJSONString(resultModelContainers));
             List<String> sql = HfModelContainerUtil.getSql(resultModelContainers[0], resultModelContainers[1]);
-            String sqlFilePath = SqlGeneratorUtil.createSqlFile("hframe", "hframe", Joiner.on("\n\n\n").join(sql));
+            String sqlFilePath = SqlGeneratorUtil.createSqlFile(companyCode, programCode, Joiner.on("\n\n\n").join(sql));
             System.out.println(" => fileName" +sqlFilePath);
             return sqlFilePath;
         } catch (Exception e) {

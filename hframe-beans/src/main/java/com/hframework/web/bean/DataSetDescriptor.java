@@ -37,6 +37,8 @@ public class DataSetDescriptor {
 
     private JSONObject dataSetRulerJsonObject = new JSONObject();
 
+    private IDataSet dateSetStruct;
+
     public void addRelDataSet(String fieldName, String key, DataSetDescriptor descriptor) {
         relDataSetMap.put(key,descriptor);
         relFieldKeyMap.put(fieldName,key);
@@ -194,12 +196,20 @@ public class DataSetDescriptor {
         for (Map.Entry<String, String> entry : relFieldKeyMap.entrySet()) {
             String key = entry.getKey();
             String value = entry.getValue();
-            if(value.startsWith(dataSet.getCode() + "/")){
+            if(value.startsWith(dataSet.getEventObjectCode() + "/")){
                 return new String[]{
-                        ResourceWrapper.JavaUtil.getJavaVarName(value.replace(dataSet.getCode() + "/", "")),
+                        ResourceWrapper.JavaUtil.getJavaVarName(value.replace(dataSet.getEventObjectCode() + "/", "")),
                         ResourceWrapper.JavaUtil.getJavaVarName(key)};
             }
         }
         return null;
+    }
+
+    public IDataSet getDateSetStruct() {
+        return dateSetStruct;
+    }
+
+    public void setDateSetStruct(IDataSet dateSetStruct) {
+        this.dateSetStruct = dateSetStruct;
     }
 }

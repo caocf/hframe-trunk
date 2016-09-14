@@ -1,11 +1,14 @@
 <program>
+    <company>hframework</company>
     <code>hframe</code>
-    <name></name>
-    <description>改系统对学习的各项进行进行统一的管理</description>
+    <name>功夫平台</name>
+    <description>Hframe管理平台</description>
+
     <modules>
         <module code="hframe" name="框架"></module>
     </modules>
     <template>
+        <code>default</code>
         <path>hframework.template.default</path>
     </template>
     <welcome>uc/login.html</welcome>

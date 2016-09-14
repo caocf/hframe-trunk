@@ -30,6 +30,15 @@
         <property name="acquireRetryAttempts" value="${jdbc.acquireRetryAttempts}"/>
     </bean>
 
+    <!-- dataSource -->
+    <bean id="dynamicDataSource" class="com.hframework.ext.datasoucce.DynamicDataSource">
+        <property name="targetDataSources">
+            <map></map>
+        </property>
+        <property name="defaultTargetDataSource" ref="dataSource"></property>
+    </bean>
+
+
     <bean id="jdbcTempalte" class="org.springframework.jdbc.core.JdbcTemplate">
         <property name="dataSource" ref="dataSource"></property>
     </bean>

@@ -185,7 +185,7 @@ public class SQLParseUtil {
 					columnInfo.indexOf("(")+1,columnInfo.indexOf(")")).trim();
 
             for (String tempColumnName : columnName.split(",")) {
-                HfmdEntityAttr entityAttr = modelContainer.getEntityAttr(entity.getHfmdEntityCode(),columnName);
+                HfmdEntityAttr entityAttr = modelContainer.getEntityAttr(entity.getHfmdEntityCode(),tempColumnName.replaceAll("`",""));
                 entityAttr.setIspk(isPK?1:0);
             }
 			return;
@@ -271,18 +271,20 @@ public class SQLParseUtil {
 	}
 
 	private static void createHfpmModule(String moduleCode, String moduleName) {
-		HfpmModule hfpmModule = new HfpmModule();
-		hfpmModule.setHfpmModuleId(moduleId);
-		hfpmModule.setHfpmModuleName(moduleName);
-		hfpmModule.setHfpmModuleCode(moduleCode);
-		hfpmModule.setHfpmModuleDesc(moduleName);
-		hfpmModule.setHfpmProgramId(programId);
-		hfpmModule.setOpId(opId);
-		hfpmModule.setCreateTime(curDate);
-		hfpmModule.setModifyOpId(opId);
-		hfpmModule.setModifyTime(curDate);
-		hfpmModule.setDelFlag(delFlag);
-		modelContainer.getModuleMap().put(moduleId, hfpmModule);
+		if(StringUtils.isNotBlank(moduleCode)) {
+			HfpmModule hfpmModule = new HfpmModule();
+			hfpmModule.setHfpmModuleId(moduleId);
+			hfpmModule.setHfpmModuleName(moduleName);
+			hfpmModule.setHfpmModuleCode(moduleCode);
+			hfpmModule.setHfpmModuleDesc(moduleName);
+			hfpmModule.setHfpmProgramId(programId);
+			hfpmModule.setOpId(opId);
+			hfpmModule.setCreateTime(curDate);
+			hfpmModule.setModifyOpId(opId);
+			hfpmModule.setModifyTime(curDate);
+			hfpmModule.setDelFlag(delFlag);
+			modelContainer.getModuleMap().put(moduleId, hfpmModule);
+		}
 	}
 
 	private static void createHfpmProgram(String programCode, String programName) {
@@ -306,33 +308,39 @@ public class SQLParseUtil {
 	private static void autoFullEntityContainer() {
 		if(modelContainer != null) {
 			//实体信息<entityName,HfmdEntity>
-			Map<String,HfmdEntity> entityMap = modelContainer.getEntityMap();
-			for (HfmdEntity hfmdEntity : entityMap.values()) {
-				hfmdEntity.setHfmdEntityType(0);//默认都为实体类
-				hfmdEntity.setHfpmProgramId(programId);
-				hfmdEntity.setHfpmModuleId(moduleId);
-				hfmdEntity.setCreateTime(curDate);
-				hfmdEntity.setOpId(opId);
-				hfmdEntity.setModifyOpId(opId);
-				hfmdEntity.setModifyTime(curDate);
-				hfmdEntity.setDelFlag(delFlag);
+			if(modelContainer.getEntityMap() != null) {
+				Map<String,HfmdEntity> entityMap = modelContainer.getEntityMap();
+				for (HfmdEntity hfmdEntity : entityMap.values()) {
+					hfmdEntity.setHfmdEntityType(0);//默认都为实体类
+					hfmdEntity.setHfpmProgramId(programId);
+					hfmdEntity.setHfpmModuleId(moduleId);
+					hfmdEntity.setCreateTime(curDate);
+					hfmdEntity.setOpId(opId);
+					hfmdEntity.setModifyOpId(opId);
+					hfmdEntity.setModifyTime(curDate);
+					hfmdEntity.setDelFlag(delFlag);
+				}
 			}
 
+
 			//实体属性信息<entityName.entityAttrName,HfmdEntityAttr>
-			Map<String,HfmdEntityAttr> entityAttrMap = modelContainer.getEntityAttrMap();
-			for (String attrId : entityAttrMap.keySet()) {
-				HfmdEntityAttr hfmdEntityAttr = entityAttrMap.get(attrId);
-				hfmdEntityAttr.setHfpmProgramId(programId);
-				hfmdEntityAttr.setHfpmModuleId(moduleId);
-				hfmdEntityAttr.setIsBusiAttr(1);
-				hfmdEntityAttr.setOpId(opId);
-				hfmdEntityAttr.setCreateTime(curDate);
-				hfmdEntityAttr.setModifyOpId(opId);
-				hfmdEntityAttr.setModifyTime(curDate);
-				hfmdEntityAttr.setDelFlag(delFlag);
-				hfmdEntityAttr.setHfmdEntityId(
-						modelContainer.getEntityMap().get(attrId.split("\\.")[0]).getHfmdEntityId());
+			if(modelContainer.getEntityAttrMap() != null) {
+				Map<String,HfmdEntityAttr> entityAttrMap = modelContainer.getEntityAttrMap();
+				for (String attrId : entityAttrMap.keySet()) {
+					HfmdEntityAttr hfmdEntityAttr = entityAttrMap.get(attrId);
+					hfmdEntityAttr.setHfpmProgramId(programId);
+					hfmdEntityAttr.setHfpmModuleId(moduleId);
+					hfmdEntityAttr.setIsBusiAttr(1);
+					hfmdEntityAttr.setOpId(opId);
+					hfmdEntityAttr.setCreateTime(curDate);
+					hfmdEntityAttr.setModifyOpId(opId);
+					hfmdEntityAttr.setModifyTime(curDate);
+					hfmdEntityAttr.setDelFlag(delFlag);
+					hfmdEntityAttr.setHfmdEntityId(
+					modelContainer.getEntityMap().get(attrId.split("\\.")[0]).getHfmdEntityId());
+				}
 			}
+
 		}
 	}
 

@@ -26,6 +26,44 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
         doEvent($action, $param, $(this));
     });
 
+    $(".hfselect").live("change", function(){
+        if($(this).hasClass("hfselect-init")) {
+            $(this).removeClass("hfselect-init");
+            return;
+        }
+        var $action =JSON.parse($(this).attr("action"));
+        var $param  = formatContent($(this).attr("params"), $(this));
+        var $contextValues = getPageContextInfo();
+        if($contextValues) {
+            $param = $contextValues + "&" + $param;
+        }
+        doEvent($action, $param, $(this));
+    });
+
+    $('.tree').bind('selected',function(event,data){
+        var selectItem = data.info[0];
+        var id = selectItem.additionalParameters.id;
+
+        var $param = $($(".dyn-tree-ele span")[0]).attr("params");
+        var $action = JSON.parse($($(".dyn-tree-ele span")[0]).attr("action"));
+        if($param.indexOf("{") > 0 && $param.indexOf("}") > 0) {
+            $param = $param.replace($param.substring($param.indexOf("{") , $param.indexOf("}") + 1), id);
+        }
+
+        //给被刷新容器直接赋值
+        if($("div[path][component]").size() > 0) {
+            $("div[path][component]").attr("path",id);
+        }
+
+        var $contextValues = getPageContextInfo();
+        if($contextValues) {
+            $param = $contextValues + "&" + $param;
+        }
+        //alert($param);
+        doEvent($action, $param, $(this))
+
+    });
+
 
     function doEvent($action, $param, $this){
         $type = null;
@@ -65,13 +103,23 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
                        var hierarchy = $component.orgchart('getHierarchy');
                        json[targetIds[tarId]]  = JSON.stringify(hierarchy, null, 2);
                    }
-
                }
                 //console.log(JSON.stringify(json));
                 _data = JSON.stringify(json);
-            }else if($param == "thisForm") {
-                $thisForm = $this.parents("form")[0];
-                _data = $($thisForm).serializeJson();
+            }else if($param.endsWith("thisForm")) {
+                if($this.parents("form").length == 0) {
+                   var $rootNodes = $this.parents("div .hfspan").children(".hfcontainer").children("div").children("div .box");
+                    var filePath = $this.parents("div .hfspan").find("div[path]").attr("path");
+                    $param = $param + "&path=" + filePath;
+                    //alert(filePath);
+                    var json = getNodesJson($rootNodes);
+                    _data = JSON.stringify(json);
+                    //console.log(JSON.stringify(json));
+                }else {
+                    var $thisForm = $this.parents("form")[0];
+                    _data = $($thisForm).serializeJson();
+                }
+
             }else {
                 _data = parseUrlParamToObject($param);
             }
@@ -79,7 +127,7 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
             //console.log(_data);
 
             $.ajax({
-                url: "/" + url,
+                url: "/" + url  + "?" + $param,
                 data: _data,
                 type: 'post',
                 contentType : 'application/json;charset=utf-8',
@@ -97,7 +145,9 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
 
         }else if($type == "ajaxSubmit") {
             var _data = {};
-            if($param == "thisForm") {
+            var $componentParam  = formatContent($($this).attr("params"), $($this));
+
+            if($componentParam == "thisForm") {
                 $thisForm = $this.parents("form")[0];
                 _data = parseUrlParamToObject($($thisForm).serialize());
             }else {
@@ -127,7 +177,7 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
             }
             console.log(_data);
             //_data = {"hfmdEntityAttrId":"","hfmdEntityAttrName":"1231232132","hfmdEntityAttrCode":"","hfmdEntityAttrDesc":"","attrType":"","size":"","ispk":"","nullable":"","isBusiAttr":"","isRedundantAttr":"","relHfmdEntityAttrId":"","hfmdEnumClassId":"","pri":"","hfpmProgramId":"","hfpmModuleId":"","hfmdEntityId":"","opId":"","createTime":"2015-02-13 12:12:12","modifyOpId":"","modifyTime":"2015-02-13 12:12:12","delFlag":""};
-            ajax.Post(url,_data,function(data){
+            ajax.Post(url  + "?" + $param,_data,function(data){
                 if(data.resultCode != '0') {
                     alert(data.resultMessage);
                     return;
@@ -138,25 +188,43 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
             });
         }else if($type == "component.reload") {
 
+            var $curComponent = $this.parents("[component]")[0];
+
             var targetId = $action[$type].targetId;
-            $targetComponent = $this.parents("[component]")[0]
+            $targetComponent = $this.parents("[component]")[0];
             if(targetId) {
                 $targetComponent = $("[component=" + targetId + "]");
             }
 
-            if($this.parents("form").size() > 0) {
-                $thisForm = $this.parents("form")[0];
-                $($targetComponent).attr("param",$($thisForm).serialize());
+            if($($curComponent).hasClass("hftree")) {
+                $($targetComponent).attr("param",$param);
+            }else {
+                if($this.parents("form").size() > 0) {
+                    $thisForm = $this.parents("form")[0];
+                    $($targetComponent).attr("param",$($thisForm).serialize());
+                }
+            }
+            delete $action[$type];
+
+            if($($targetComponent).hasClass("hflist")) {
+                refreshList(1,$targetComponent);
+            }else {
+                refreshComponent($targetComponent);
             }
 
-            //$thisForm = $this.parents("form")[0];
-            //$($targetComponent).attr("param",$($thisForm).serialize());
-            //alert($($thisForm).serialize());
-            delete $action[$type];
-            refreshList(1,$targetComponent);
+
         }else if($type == "page.reload") {
+            var paramObj = parseUrlParamToObject($param, true);
+            var url = location.href;
+            //alert($param + " | " + url);
+            for(var key in paramObj) {
+                if(key != "") {
+                    url = changeURLParameterValue(url,key, paramObj[key]);
+                }
+            }
+
             delete $action[$type];
-            location.reload();
+            location.href = url;
         }else if($type == "component.row.add") {
             $curRow = $this.parents("tr")[0];
             $newRow = $($curRow).clone();
@@ -217,6 +285,55 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
         //delete $action[$type];
     }
 
+    function getNodesJson($rootNodes){
+        var json = {};
+        $($rootNodes).each(function(){
+            var componentId = $(this).attr("component");
+            var id = $(this).parent("div[dc]").attr("dc");
+            if(componentId != null) {
+                if(componentId =="mutexContainer") {
+                    var data = [];
+                    var $subInst = $(this).children(".box-content").children(".tab-content").children(".tab-pane").children("div .hfcontainer");
+                    $($subInst).each(function(){
+                        var $subNodes = $(this).children("div").children("div .box");
+                        var subJson = getNodesJson($subNodes);
+                        data.push(subJson);
+                    });
+                    json[id] =data;
+                }else {
+                    json[id] = $(this).find("form").serializeJson();
+                    //console.info($(this).find("form").serializeJson());
+                }
+            }
+        });
+
+        return json;
+    }
+
+    function changeURLParameterValue(destiny, par, par_value)
+    {
+        var pattern = par+'=([^&]*)';
+        var replaceText = par+'='+par_value;
+        if (destiny.match(pattern))
+        {
+            var tmp = '/\\'+par+'=[^&]*/';
+            tmp = destiny.replace(eval(tmp), replaceText);
+            return (tmp);
+        }
+        else
+        {
+            if (destiny.match('[\?]'))
+            {
+                return destiny+'&'+ replaceText;
+            }
+            else
+            {
+                return destiny+'?'+replaceText;
+            }
+        }
+        return destiny+'\n'+par+'\n'+par_value;
+    }
+
     var refreshList = function(pageNo, compoContainer){
         var module = $(compoContainer).attr("module");
         var page =$(compoContainer).attr("page");
@@ -241,11 +358,46 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
         },'html');
     }
 
+    var refreshComponent = function(compoContainer){
+        var module = $(compoContainer).attr("module");
+        var page =$(compoContainer).attr("page");
+        var component  =$(compoContainer).attr("component");
+        var param  =$(compoContainer).attr("param");
+        var _url =  "/" + module + "/" + page + ".html";
+        var _data = {"component" : component};
+        if(param) {
+            console.log("{\"" + (param + "&1=1").replace(new RegExp("=","gm"),"\":").replace(new RegExp("&","gm"),",\"").replace(new RegExp(":,","gm"),":null,")  + "}");
+            var params =JSON.parse("{\"" + (param + "&1=1").replace(new RegExp("=","gm"),"\":\"").replace(new RegExp("&","gm"),"\",\"").replace(new RegExp(":,","gm"),"\":null,")  + "\"}")
+            //var params =JSON.parse("{\"" + (param + "&1=1").replace(new RegExp("=","gm"),"\":").replace(new RegExp("&","gm"),",\"").replace(new RegExp(":,","gm"),":null,")  + "}");
+            for (var key in params) {
+                _data[key]=decodeURI(params[key]).trim();
+            }
+        }
+        console.log(_data);
+        //alert(_data);
+        ajax.Post(_url,_data,function(data){
+            var $newComponent = $(data);
+
+            var $targetCoponent = $newComponent.find(".hfcontainer[component=container]");
+            if($targetCoponent != null) {//表明为容器
+                $(compoContainer).html($targetCoponent.html());
+                componentinit();
+                $.reloadDisplay(compoContainer);
+            }else {//表明为普通组件
+                $(compoContainer).find(".box-content").html($newComponent.find(".box-content").html());
+                $.reloadDisplay(compoContainer.find(".box-content"));
+            }
+
+        },'html');
+    }
+
+
+
     function parseUrlParamToJson($paramStr){
         return JSON.stringify(parseUrlParamToObject($paramStr));
     }
 
-    function parseUrlParamToObject($paramStr){
+    function parseUrlParamToObject($paramStr, $containBlank){
         var result = {};
         if(!$paramStr) {
             return result;
@@ -254,7 +406,7 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
         for($index in $params) {
             var key = $params[$index].substring(0, $params[$index].indexOf("="));
             var value = $params[$index].substring($params[$index].indexOf("=") + 1);
-            if(value != '') {
+            if(value != '' || $containBlank) {
                 //if(result[key] != null) {
                 //    if(result[key] instanceof Array) {
                 //        result[key].push(value);
@@ -274,8 +426,13 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
 
     function formatContent($param, $this){
         if($param) {
+            var $value;
             $position = $param.substring($param.indexOf("{") + 1, $param.indexOf("}"));
-            $value = $this.parents("tr").find("span[code="+ $position +"]").text();
+            if($this.parents("tr").find("span[code="+ $position +"]").size() > 0 ) {
+                $value = $this.parents("tr").find("span[code="+ $position +"]").text();
+            }else {
+                $value = $this.parents("form").find("[name="+ $position +"]").val();
+            }
             return $param.replace("{" + $position +"}",$value);
         }
        return null;

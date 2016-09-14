@@ -2,7 +2,7 @@
   <module>hframe</module>
   <code>hfpm_program_cfg</code>
   <entity>hfpm_program_cfg</entity>
-  <name>项目设置【默认】</name>
+  <name>项目设置</name>
   <fields>
     <field code="hfpm_program_cfg_id" name="项目配置ID" edit-type="input">
       <create-edit-type>hidden</create-edit-type>
@@ -19,6 +19,12 @@
       <rel entity-code="hfcfg_login_page/hfcfg_login_page_id/hfcfg_login_page_name"/>
     </field>
     <field code="bg_img_url" name="背景图片URL" edit-type="input"/>
+    <field code="hfcfg_db_connect_id" name="数据库连接信息id" edit-type="select">
+      <rel entity-code="hfcfg_db_connect/hfcfg_db_connect_id/hfcfg_db_connect_name"/>
+    </field>
+    <field code="hfcfg_db_connect_id" name="数据库连接信息id" edit-type="select">
+      <rel entity-code="hfcfg_db_connect/hfcfg_db_connect_id/hfcfg_db_connect_name"/>
+    </field>
     <field code="op_id" name="创建人" edit-type="input">
       <create-edit-type>hidden</create-edit-type>
       <update-edit-type>text</update-edit-type>

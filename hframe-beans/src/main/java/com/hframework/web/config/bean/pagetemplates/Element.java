@@ -16,6 +16,9 @@ public class Element   {
     @XStreamAlias("type")
 	private String type;
     @XStreamAsAttribute
+    @XStreamAlias("container")
+    private String container;
+    @XStreamAsAttribute
     @XStreamAlias("event-extend")
     private String eventExtend;
 
@@ -58,5 +61,13 @@ public class Element   {
 
     public void setEventExtend(String eventExtend) {
         this.eventExtend = eventExtend;
+    }
+
+    public String getContainer() {
+        return container;
+    }
+
+    public void setContainer(String container) {
+        this.container = container;
     }
 }

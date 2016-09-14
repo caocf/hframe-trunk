@@ -341,6 +341,10 @@ public class FileUtils {
             }
         }
 
+        for (MyFile myFile : resultFiles) {
+            myFile.setShortname(myFile.getFullname().replace(directory.getAbsolutePath().replace("\\", "\\\\"), "").substring(2));
+        }
+
         return resultFiles;
     }
 
@@ -564,6 +568,13 @@ public class FileUtils {
         copyFolder(oldPath, newPath);
         delFolder(oldPath);
 
+    }
+
+    public static void main(String[] args) {
+        List<MyFile> allFilesFromParDirectory = getAllFilesFromParDirectory(
+                new File("D:/my_workspace/hframe-trunk/hframe-reconciliation/src/main/resources"),
+                new String[]{"META-INF", "WEB-INF", "image", "js", "theme", "third", "design"}, new String[]{".xml"});
+        System.out.println(allFilesFromParDirectory);
     }
 
 }

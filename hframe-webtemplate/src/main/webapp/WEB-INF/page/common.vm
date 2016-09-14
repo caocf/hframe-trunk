@@ -3,16 +3,16 @@
 #else
     #parse("default_startpart.vm")
 #end
-
+1232321
 #foreach($element in $elements.entrySet())
     <div class="row-fluid">
-        #if($element.key == "cForm")
+        #if($element.value.component == "cForm")
             #set($form = $element.value)
             #parse("component/createForm.vm")
-        #elseif($element.key == "eForm")
+        #elseif($element.value.component == "eForm")
             #set($form = $element.value)
             #parse("component/createForm.vm")
-        #elseif($element.key == "qForm")
+        #elseif($element.value.component == "qForm")
             #set($form = $element.value)
             #parse("component/queryForm.vm")
         #elseif($element.value.component == "cList")
@@ -24,6 +24,12 @@
         #elseif($element.value.component == "qList")
             #set($list = $element.value)
             #parse("component/queryList.vm")
+        #elseif($element.value.component == "mutexContainer")
+            1233123213
+            <div class="#if("$!element.value.container" !="") $element.value.container #end">
+                #set($container = $element.value)
+                #parse("component/mutexContainer.vm")
+            </div>
         #end
     </div>
 #end

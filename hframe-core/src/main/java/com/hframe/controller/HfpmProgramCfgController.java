@@ -1,26 +1,29 @@
 package com.hframe.controller;
 
-import com.hframe.domain.model.HfpmProgramCfg;
-import com.hframe.domain.model.HfpmProgramCfg_Example;
-import com.hframe.service.interfaces.IHfpmProgramCfgSV;
 import com.hframework.beans.controller.Pagination;
 import com.hframework.beans.controller.ResultCode;
 import com.hframework.beans.controller.ResultData;
 import com.hframework.common.util.ExampleUtils;
-import com.hframework.web.ControllerHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.ServletRequestDataBinder;
-import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
+import java.util.*;
 import javax.servlet.http.HttpServletRequest;
+import org.springframework.web.bind.ServletRequestDataBinder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
+import com.hframework.web.ControllerHelper;
+import com.hframe.domain.model.HfpmProgramCfg;
+import com.hframe.domain.model.HfpmProgramCfg_Example;
+import com.hframe.service.interfaces.IHfpmProgramCfgSV;
 
 @Controller
 @RequestMapping(value = "/hframe/hfpmProgramCfg")
@@ -34,6 +37,7 @@ public class HfpmProgramCfgController   {
 
 
 
+
     @InitBinder
     protected void initBinder(HttpServletRequest request,
         ServletRequestDataBinder binder) throws Exception {
@@ -43,7 +47,7 @@ public class HfpmProgramCfgController   {
     }
 
     /**
-     * 查询展示项目配置列表
+     * 查询展示椤圭洰璁剧疆列表
      * @param hfpmProgramCfg
      * @return
      * @throws Throwable
@@ -69,8 +73,10 @@ public class HfpmProgramCfgController   {
         }
     }
 
+
+
     /**
-     * 查询展示项目配置明细
+     * 查询展示椤圭洰璁剧疆明细
      * @param hfpmProgramCfg
      * @return
      * @throws Throwable
@@ -80,7 +86,17 @@ public class HfpmProgramCfgController   {
     public ResultData detail(@ModelAttribute("hfpmProgramCfg") HfpmProgramCfg hfpmProgramCfg){
         logger.debug("request : {},{}", hfpmProgramCfg.getHfpmProgramCfgId(), hfpmProgramCfg);
         try{
-            HfpmProgramCfg result = iHfpmProgramCfgSV.getHfpmProgramCfgByPK(hfpmProgramCfg.getHfpmProgramCfgId());
+            HfpmProgramCfg result = null;
+            if(hfpmProgramCfg.getHfpmProgramCfgId() != null) {
+                 result = iHfpmProgramCfgSV.getHfpmProgramCfgByPK(hfpmProgramCfg.getHfpmProgramCfgId());
+            }else {
+                HfpmProgramCfg_Example example = ExampleUtils.parseExample( hfpmProgramCfg, HfpmProgramCfg_Example.class);
+                List<HfpmProgramCfg> list = iHfpmProgramCfgSV.getHfpmProgramCfgListByExample(example);
+                if(list != null && list.size() == 1) {
+                    result = list.get(0);
+                }
+            }
+
             if(result != null) {
                 return ResultData.success(result);
             }else {
@@ -93,7 +109,44 @@ public class HfpmProgramCfgController   {
     }
 
     /**
-    * 创建项目配置
+    * 搜索一个椤圭洰璁剧疆
+    * @param  hfpmProgramCfg
+    * @return
+    * @throws Throwable
+    */
+    @RequestMapping(value = "/searchOneByAjax.json")
+    @ResponseBody
+    public ResultData search(@ModelAttribute(" hfpmProgramCfg") HfpmProgramCfg  hfpmProgramCfg){
+        logger.debug("request : {}",  hfpmProgramCfg);
+        try{
+            HfpmProgramCfg result = null;
+            if(hfpmProgramCfg.getHfpmProgramCfgId() != null) {
+                result =  iHfpmProgramCfgSV.getHfpmProgramCfgByPK(hfpmProgramCfg.getHfpmProgramCfgId());
+            }else {
+                HfpmProgramCfg_Example example = ExampleUtils.parseExample( hfpmProgramCfg, HfpmProgramCfg_Example.class);
+
+                example.setLimitStart(0);
+                example.setLimitEnd(1);
+
+                List<HfpmProgramCfg> list =  iHfpmProgramCfgSV.getHfpmProgramCfgListByExample(example);
+                if(list != null && list.size() > 0) {
+                    result = list.get(0);
+                }
+            }
+
+            if(result != null) {
+                return ResultData.success(result);
+            }else {
+                return ResultData.error(ResultCode.RECODE_IS_NOT_EXISTS);
+            }
+        }catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+    }
+
+    /**
+    * 创建椤圭洰璁剧疆
     * @param hfpmProgramCfg
     * @return
     * @throws Throwable
@@ -116,7 +169,7 @@ public class HfpmProgramCfgController   {
     }
 
     /**
-    * 批量维护项目配置
+    * 批量维护椤圭洰璁剧疆
     * @param hfpmProgramCfgs
     * @return
     * @throws Throwable
@@ -142,7 +195,7 @@ public class HfpmProgramCfgController   {
     }
 
     /**
-    * 更新项目配置
+    * 更新椤圭洰璁剧疆
     * @param hfpmProgramCfg
     * @return
     * @throws Throwable
@@ -165,7 +218,32 @@ public class HfpmProgramCfgController   {
     }
 
     /**
-    * 删除项目配置
+     * 更新椤圭洰璁剧疆
+     * @param hfpmProgramCfg
+     * @return
+     * @throws Throwable
+     */
+    @RequestMapping(value = "/saveOrUpdateByAjax.json")
+    @ResponseBody
+    public ResultData saveOrUpdate(@ModelAttribute("hfpmProgramCfg") HfpmProgramCfg hfpmProgramCfg) {
+        logger.debug("request : {}", hfpmProgramCfg);
+        try {
+            ControllerHelper.setDefaultValue(hfpmProgramCfg, "hfpmProgramCfgId");
+            int result = iHfpmProgramCfgSV.batchOperate(new HfpmProgramCfg[]{hfpmProgramCfg});
+            if(result > 0) {
+                return ResultData.success(hfpmProgramCfg);
+            }
+        } catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+        return ResultData.error(ResultCode.UNKNOW);
+    }
+
+
+
+    /**
+    * 删除椤圭洰璁剧疆
     * @param hfpmProgramCfg
     * @return
     * @throws Throwable

@@ -3,6 +3,7 @@ package com.hframework.generator.web;
 import com.hframework.beans.class0.Table;
 import com.hframework.common.util.FileUtils;
 import com.hframework.common.util.message.VelocityUtil;
+import com.hframework.ext.datasoucce.DataSourceContextHolder;
 import com.hframework.generator.util.CreatorUtil;
 import com.hframework.generator.web.mybatis.MyBatisGeneratorUtil;
 import org.mybatis.generator.config.TableConfiguration;
@@ -18,15 +19,62 @@ import java.util.Map;
  */
 public class BaseGeneratorUtil {
 
-    public static  String generateMybatisConfig(List<Map<String, String>> tables, String rootPath) throws Exception {
+    public static  String generateMybatisConfig(List<Map<String, String>> tables, String rootPath, String programCode, DataSourceContextHolder.DataSourceDescriptor dataSourceInfo) throws Exception {
 
         Map map = new HashMap();
         map.put("Tables", tables);
         map.put("RootPath", rootPath);
+        map.put("Jdbc", new Jdbc(dataSourceInfo.url.replaceAll("&","&amp;"), dataSourceInfo.user, dataSourceInfo.password));
+
         String content = VelocityUtil.produceTemplateContent("com/hframework/generator/vm/mybatis-generator-config.vm", map);
         System.out.println(content);
-        FileUtils.writeFile(CreatorUtil.getGeneratorConfigFilePath("hframe", "hframe", "hframe"), content);
-        return CreatorUtil.getGeneratorConfigFilePath("hframe", "hframe", "hframe");
+        FileUtils.writeFile(CreatorUtil.getGeneratorConfigFilePath("hframe", programCode, null), content);
+        return CreatorUtil.getGeneratorConfigFilePath("hframe", programCode, null);
+    }
+
+    public static class Jdbc{
+        private String url;
+        private String user;
+        private String password;
+        private String driverClass = "com.mysql.jdbc.Driver";
+
+        public Jdbc(String url, String user, String password) {
+            this.url = url;
+            this.user = user;
+            this.password = password;
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
+        }
+
+        public String getUser() {
+            return user;
+        }
+
+        public void setUser(String user) {
+            this.user = user;
+        }
+
+        public String getPassword() {
+            return password;
+        }
+
+        public void setPassword(String password) {
+            this.password = password;
+        }
+
+        public String getDriverClass() {
+            return driverClass;
+        }
+
+        public void setDriverClass(String driverClass) {
+            this.driverClass = driverClass;
+        }
     }
 
     /**
@@ -87,15 +135,15 @@ public class BaseGeneratorUtil {
         }
     }
 
-    public static void generator(String mybatisConfigFile) throws Exception {
+    public static void generator(String mybatisConfigFile, String companyCode, String programCode, String moduleCode) throws Exception {
         List<TableConfiguration> tableConfigurations = MyBatisGeneratorUtil.getTableCfg(new File(mybatisConfigFile));
         for (TableConfiguration tableConfiguration : tableConfigurations) {
             Table table = new Table();
             table.setTableName(tableConfiguration.getTableName());
             table.setTableDesc(tableConfiguration.getProperty("chineseName"));
             table.setParentId(tableConfiguration.getProperty("parentId"));
-            serviceGenerate("", "hframe", "hframe", table);
-            controllerGenerate("", "hframe", "hframe", table);
+            serviceGenerate(companyCode, programCode, moduleCode, table);
+            controllerGenerate(companyCode,programCode, moduleCode, table);
         }
     }
 

@@ -87,7 +87,17 @@
     public ResultData detail(@ModelAttribute("${varName}") ${className} ${varName}){
         logger.debug("request : {},{}", ${varName}.get${className}Id(), ${varName});
         try{
-            ${className} result = ${seviceVarName}.get${className}ByPK(${varName}.get${className}Id());
+            ${className} result = null;
+            if(${varName}.get${className}Id() != null) {
+                result = ${seviceVarName}.get${className}ByPK(${varName}.get${className}Id());
+            }else {
+                ${poExampleClassName} example = ExampleUtils.parseExample(${varName}, ${poExampleClassName}.class);
+                List<${className}> list = ${seviceVarName}.get${className}ListByExample(example);
+                if(list != null && list.size() == 1) {
+                    result = list.get(0);
+                }
+            }
+
             if(result != null) {
                 return ResultData.success(result);
             }else {
@@ -198,6 +208,29 @@
         try {
             ControllerHelper.setDefaultValue(${varName}, "${varName}Id");
             int result = ${seviceVarName}.update(${varName});
+            if(result > 0) {
+                return ResultData.success(${varName});
+            }
+        } catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+        return ResultData.error(ResultCode.UNKNOW);
+    }
+
+    /**
+    * 创建或更新${entityName}
+    * @param ${varName}
+    * @return
+    * @throws Throwable
+    */
+    @RequestMapping(value = "/saveOrUpdateByAjax.json")
+    @ResponseBody
+    public ResultData saveOrUpdate(@ModelAttribute("${varName}") ${className} ${varName}) {
+        logger.debug("request : {}", ${varName});
+        try {
+            ControllerHelper.setDefaultValue(${varName}, "${varName}Id");
+            int result = ${seviceVarName}.batchOperate(new ${className}[]{${varName}});
             if(result > 0) {
                 return ResultData.success(${varName});
             }

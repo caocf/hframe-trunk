@@ -79,6 +79,11 @@ public class HfModelService {
                     if(entity == null) {//垃圾数据过滤
                         continue;
                     }
+
+                    if("hfpm_page.hfpm_page_id".equals(entity.getHfmdEntityCode() + "." + hfmdEntityAttr.getHfmdEntityAttrCode())) {
+                        System.out.println("1");
+                    }
+
                     entityAttrMap.put(entity.getHfmdEntityCode() + "." + hfmdEntityAttr.getHfmdEntityAttrCode(),hfmdEntityAttr);
                 }
                 hfModelContainer.setEntityAttrMap(entityAttrMap);

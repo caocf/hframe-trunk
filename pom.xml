@@ -24,7 +24,6 @@
         <module>hframe-webtemplate</module>
         <module>hframe-webbase</module>
         <module>hframe-rpc</module>
-        <module>hframe-rpc</module>
     </modules>
 
     <dependencies>

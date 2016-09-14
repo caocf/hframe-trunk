@@ -29,6 +29,7 @@ public class HfClassContainerUtil {
 				new URL[] { new URL("file:" + classRootPath) },Thread.currentThread().getContextClassLoader());
 
 		File[] fileList = FileUtils.getFileList(new File(classRootPath + classPackage.replace(".", "\\")));
+		if(fileList == null) return hfClassContainer;
 		for (File file : fileList) {
 			if(!file.getName().contains("_Example")) {
 				String className = file.getName().substring(0,file.getName().length()-6);
@@ -181,18 +182,21 @@ public class HfClassContainerUtil {
 
 		Set<String> originClassNameSet = originContainer.getClasss().keySet();
 		Set<String> targetClassNameSet = targetContainer.getClasss().keySet();
-		Iterator<String> originIterator = originClassNameSet.iterator();
-		while (originIterator.hasNext()) {
-			if(!originIterator.next().startsWith("Hf")){
-				originIterator.remove();
+		if("hframe".equals(targetContainer.getProgramCode())) {
+			Iterator<String> originIterator = originClassNameSet.iterator();
+			while (originIterator.hasNext()) {
+				if(!originIterator.next().startsWith("Hf")){
+					originIterator.remove();
+				}
+			}
+			Iterator<String> targetIterator = targetClassNameSet.iterator();
+			while (targetIterator.hasNext()) {
+				if(!targetIterator.next().startsWith("Hf")){
+					targetIterator.remove();
+				}
 			}
 		}
-		Iterator<String> targetIterator = targetClassNameSet.iterator();
-		while (targetIterator.hasNext()) {
-			if(!targetIterator.next().startsWith("Hf")){
-				targetIterator.remove();
-			}
-		}
+
 
 		Set<String> addClassNameSet = new HashSet<String>();
 		addClassNameSet.addAll(targetClassNameSet);

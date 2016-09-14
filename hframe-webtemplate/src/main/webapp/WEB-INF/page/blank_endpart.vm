@@ -64,4 +64,9 @@
 <script type="text/javascript" src="$staticResourcePath/plugins/OrgChart/js/jquery.orgchart.js"></script>
 <script src="/js/hframework/orgchart.js"></script>
 
-
+<script type="text/javascript" src="$staticResourcePath/plugins/ice/js/ace-extra.min.js"></script>
+<script type="text/javascript" src="$staticResourcePath/plugins/ice/js/ace-elements.min.js"></script>
+<script type="text/javascript" src="$staticResourcePath/plugins/ice/js/ace.min.js"></script>
+<script type="text/javascript" src="$staticResourcePath/plugins/fuelux/fuelux.tree.min.js"></script>
+<script src="/js/hframework/dynTree.js"></script>
+<script src="/js/hframework/componentinit.js"></script>

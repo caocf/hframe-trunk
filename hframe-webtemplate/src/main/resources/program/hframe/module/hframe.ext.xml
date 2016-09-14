@@ -1,5 +1,13 @@
-<module code="hframe">
+<module code="hframe" is-extend="true">
     <page id="model_diff" name="模型差异分析" page-template="dynamic" >
+        <component id="eForm" data-set="hframe/hfpm_program_cfg_dbinfo_DS4Save"   title="选择数据库">
+            <event name="detail">
+                <attach anchor="hfcfg_db_connect_id"></attach>
+                <source scope="EOC" param="thisForm"></source>
+                <effect type="ajaxSubmit" action="${saveOrUpdateByAjax}"></effect>
+                <effect type="page.reload"></effect>
+            </event>
+        </component>
         <component id="qList" data-set="hframe/hfmd_entity" dataid="NewEntityId" title="新增实体信息"></component>
         <component id="qList" data-set="hframe/hfmd_entity_attr" dataid="NewEntityAttrId"  title="新增实体属性信息"></component>
         <component id="qList" data-set="hframe/hfmd_entity" dataid="ModEntityId"  title="修改实体属性信息"></component>
@@ -54,7 +62,51 @@
     </page>
 
     <page id="menu_chart" name="菜单配置" page-template="orgchart"  data-set="hframe/hfsec_menu" >
-        <component id="treeChart" data-set="hframe/hfsec_menu"/>
+        <component id="treeChart"  dataid="AllMenuTree" data-set="hframe/hfsec_menu"/>
+    </page>
+
+    <page id="dynTree_test" name="动态树测试" page-template="editByCategory" data-set="hframe/hfsec_menu">
+        <component id="dynTree" data-set="hframe/hfsec_menu"/>
+        <component id="eForm" data-set="hframe/hfsec_menu"/>
+    </page>
+    <!--<page id="canal_manager" name="canal实例管理" page-template="fileEditor" data-set="hframe/hfsec_menu">-->
+        <!--<component id="dynTree"  data-set="hffile/folder.tree.feditor" dataid="D:/my_workspace/hframe-trunk/hframe-reconciliation/src/main/resources"/>-->
+        <!--&lt;!&ndash;<component id="dynTree" data-set="hframe/hfsec_menu"/>&ndash;&gt;-->
+        <!--<component id="container" data-set="hffile/compare.feditor"  dataid="D:/my_workspace/hframe-trunk/hframe-reconciliation/src/main/resources" />-->
+    <!--</page>-->
+
+    <!--<page id="canal_manager2container"  page-template="dynamic">-->
+        <!--<component id="eList" data-set="hffile/compare.feditor#config.global.host"/>-->
+        <!--<component id="eForm" data-set="hffile/compare.feditor#config.services.service"/>-->
+        <!--<component id="eList" data-set="hffile/compare.feditor#config.services.service.importer"/>-->
+        <!--<component id="eList" data-set="hffile/compare.feditor#config.services.service.rule"/>-->
+        <!--<component id="eList" data-set="hffile/compare.feditor#config.services.service.exporter"/>-->
+    <!--</page>-->
+
+    <page id="canal_manager" name="canal实例管理" page-template="fileEditor" data-set="hframe/hfsec_menu">
+        <component id="dynTree"  data-set="hffile/folder.tree.feditor" dataid="D:/my_workspace/hframe-trunk/hframe-reconciliation/src/main/resources"/>
+        <!--<component id="dynTree" data-set="hframe/hfsec_menu"/>-->
+        <component id="container" data-set="hffile/compare.feditor"  dataid="D:/my_workspace/hframe-trunk/hframe-reconciliation/src/main/resources" />
+    </page>
+
+    <page id="compare.feditor#"  page-template="dynamic">
+        <component id="eList" data-set="hffile/compare.feditor#config.global.host"/>
+        <component id="eForm" data-set="hffile/compare.feditor#config.services.service"/>
+        <!-- 容器默认为list，否则容器单元素已被智能计算在外面了，所以，容器在展现时，按照手风琴或者tab的形式展现 -->
+        <component id="mutexContainer" data-set="hffile/compare.feditor#config.services.service.importers.importer" title="数据导入"/>
+        <component id="mutexContainer" data-set="hffile/compare.feditor#config.services.service.ruleCenter.rule" title="比对规则"/>
+        <component id="eList" data-set="hffile/compare.feditor#config.services.service.exporters.exporter" title="数据导出"/>
+    </page>
+
+    <page id="compare.feditor#config.services.service.importers.importer#"  page-template="dynamic">
+        <component id="eForm" data-set="hffile/compare.feditor#config.services.service.importers.importer" title="基本信息"/>
+        <component id="eList" data-set="hffile/compare.feditor#config.services.service.importers.importer.file.row" title="数据行"/>
+        <component id="eList" data-set="hffile/compare.feditor#config.services.service.importers.importer.dataset.sql" title="SQL"/>
+    </page>
+
+    <page id="compare.feditor#config.services.service.ruleCenter.rule#"  page-template="dynamic">
+        <component id="eForm" data-set="hffile/compare.feditor#config.services.service.ruleCenter.rule" title="数据集"/>
+        <component id="eList" data-set="hffile/compare.feditor#config.services.service.ruleCenter.rule.datanode" title="节点"/>
     </page>
 
 </module>

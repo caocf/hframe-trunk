@@ -22,7 +22,7 @@ public class EnumUtils {
 
 
     public static <T extends Enum<T>> boolean compare(T enum1, String value, boolean ifNullTrue) {
-        logger.debug("request : {}",enum1,value,ifNullTrue);
+//        logger.debug("request : {}",enum1,value,ifNullTrue);
         if(StringUtils.isBlank(value) && ifNullTrue) {
             return true;
         }

@@ -17,6 +17,10 @@ public class Module   {
 	@XStreamAsAttribute
     @XStreamAlias("code")
 	private String code;
+    @XStreamAsAttribute
+    @XStreamAlias("is-extend")
+    private String isExtend;
+
 
     public Module() {
     }
@@ -37,5 +41,12 @@ public class Module   {
      public void setCode(String code){
      	this.code = code;
      }
-	 
+
+    public String getIsExtend() {
+        return isExtend;
+    }
+
+    public void setIsExtend(String isExtend) {
+        this.isExtend = isExtend;
+    }
 }

@@ -20,10 +20,6 @@ public class HfsecMenu {
 
     private Long parentHfsecMenuId;
 
-    private Long hfpmProgramId;
-
-    private Long hfpmModuleId;
-
     private BigDecimal pri;
 
     private Long creatorId;
@@ -36,7 +32,7 @@ public class HfsecMenu {
 
     private Integer delFlag;
 
-    public HfsecMenu(Long hfsecMenuId, String hfsecMenuCode, String hfsecMenuName, String hfsecMenuDesc, Integer menuLevel, String icon, String url, Long parentHfsecMenuId, Long hfpmProgramId, Long hfpmModuleId, BigDecimal pri, Long creatorId, Date createTime, Long modifierId, Date modifyTime, Integer delFlag) {
+    public HfsecMenu(Long hfsecMenuId, String hfsecMenuCode, String hfsecMenuName, String hfsecMenuDesc, Integer menuLevel, String icon, String url, Long parentHfsecMenuId, BigDecimal pri, Long creatorId, Date createTime, Long modifierId, Date modifyTime, Integer delFlag) {
         this.hfsecMenuId = hfsecMenuId;
         this.hfsecMenuCode = hfsecMenuCode;
         this.hfsecMenuName = hfsecMenuName;
@@ -45,8 +41,6 @@ public class HfsecMenu {
         this.icon = icon;
         this.url = url;
         this.parentHfsecMenuId = parentHfsecMenuId;
-        this.hfpmProgramId = hfpmProgramId;
-        this.hfpmModuleId = hfpmModuleId;
         this.pri = pri;
         this.creatorId = creatorId;
         this.createTime = createTime;
@@ -85,14 +79,6 @@ public class HfsecMenu {
 
     public Long getParentHfsecMenuId() {
         return parentHfsecMenuId;
-    }
-
-    public Long getHfpmProgramId() {
-        return hfpmProgramId;
-    }
-
-    public Long getHfpmModuleId() {
-        return hfpmModuleId;
     }
 
     public BigDecimal getPri() {
@@ -149,14 +135,6 @@ public class HfsecMenu {
 
     public void setParentHfsecMenuId(Long parentHfsecMenuId) {
         this.parentHfsecMenuId=parentHfsecMenuId;
-    }
-
-    public void setHfpmProgramId(Long hfpmProgramId) {
-        this.hfpmProgramId=hfpmProgramId;
-    }
-
-    public void setHfpmModuleId(Long hfpmModuleId) {
-        this.hfpmModuleId=hfpmModuleId;
     }
 
     public void setPri(BigDecimal pri) {

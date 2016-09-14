@@ -1,6 +1,7 @@
 package com.hframework.web.bean;
 
 import com.alibaba.fastjson.JSONObject;
+import com.hframework.beans.class0.XmlNode;
 import com.hframework.common.util.EnumUtils;
 import com.hframework.common.util.ReflectUtils;
 import com.hframework.common.util.StringUtils;
@@ -11,12 +12,12 @@ import com.hframework.web.config.bean.Component;
 import com.hframework.web.config.bean.Module;
 import com.hframework.web.config.bean.dataset.Entity;
 import com.hframework.web.config.bean.dataset.Field;
-import com.hframework.web.config.bean.mapper.Mapping;
+import com.hframework.web.config.bean.dataset.Fields;
+import com.hframework.web.config.bean.dataset.Node;
 import com.hframework.web.config.bean.module.*;
 import com.hframework.web.config.bean.pagetemplates.Element;
 import com.hframework.web.config.bean.pagetemplates.Pagetemplate;
 import com.hframework.web.enums.ElementType;
-import org.jsoup.helper.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,24 +32,7 @@ import java.util.*;
 public class WebContext {
     private static Logger logger = LoggerFactory.getLogger(WebContext.class);
 
-//    private static final String DATA_SET_DIR = "/data/set";
-//    private static final String MODULE_DIR = "/module";
-//    private static final String MAPPER_DIR = "/mapper";
-//    private static final String PROGRAM_FILE = "/program.xml";
-//    private static final String COMPONENT_DIR = "/template/component";
-//    private static final String PAGE_DESCRIPTER_FILE = "template/page/pagedescripter.xml";
-
-    private static final String PROGRAM_ROOT_DIR = "program/hframe";
-    private static final String DATA_SET_DIR = PROGRAM_ROOT_DIR + "/data/set";
-    private static final String DATA_SET_HELPER_DIR = PROGRAM_ROOT_DIR + "/data/set/helper";
-    private static final String DATA_SET_RULER_DIR = PROGRAM_ROOT_DIR + "/data/set/ruler";
-    private static final String MODULE_DIR = PROGRAM_ROOT_DIR + "/module";
-    private static final String MAPPER_DIR = PROGRAM_ROOT_DIR + "/mapper";
-    private static final String PROGRAM_FILE = PROGRAM_ROOT_DIR + "/program.xml";
-
-    private static final String COMPONENT_DIR = "hframework/template/default/component";
-    private static final String COMPONENT_DEFAULT_MAPPER_DIR = "hframework/template/default/compMapper";
-    private static final String PAGE_DESCRIPTER_FILE = "hframework/template/default/page/pagedescripter.xml";
+    private static WebContext context = new WebContext();
 
 
     private Map<String, com.hframework.web.config.bean.module.Component> defaultComponentMap
@@ -56,18 +40,7 @@ public class WebContext {
     private Map<String, com.hframework.web.config.bean.module.Element> defaultElementMap
             = new HashMap<String, com.hframework.web.config.bean.module.Element>();
 
-
-    private static WebContext context = new WebContext();
-
-    public WebContext() {
-        try {
-            logger.info("web context init ..");
-            init();
-            logger.info("web context init ok !", JSONObject.toJSONString(context));
-        } catch (Exception e) {
-            logger.error("web context init error : ", e);
-        }
-    }
+    private WebContextHelper contextHelper;
 
     //项目信息
     private Program program;
@@ -88,7 +61,28 @@ public class WebContext {
 
     private Map<Class, DataSetDescriptor> dataSetCache = new HashMap<Class, DataSetDescriptor>();
 
-    public void init() throws Exception {
+    public WebContext() {
+        this(null, null, null);
+    }
+
+    public WebContext(String companyCode, String programCode, String templateCode) {
+        try {
+            logger.info("web context init{} ..", companyCode, programCode, templateCode);
+            init(companyCode, programCode, templateCode);
+            logger.info("web context init ok !", JSONObject.toJSONString(context));
+        } catch (Exception e) {
+            logger.error("web context init error : ", e);
+        }
+    }
+
+
+
+    public void init(String companyCode, String programCode, String templateCode) throws Exception {
+        if(StringUtils.isNotBlank(companyCode) && StringUtils.isNotBlank(programCode)) {
+            contextHelper = new WebContextHelper(companyCode,programCode,null,templateCode);
+        }else {
+            contextHelper = new WebContextHelper();
+        }
 
         //加载项目配置
         loadComponentConfig();
@@ -108,16 +102,46 @@ public class WebContext {
     private void loadDataSet() throws Exception {
 
         //加载数据源信息
-        List<DataSet> dataSetList = XmlUtils.readValuesFromDirectory(DATA_SET_DIR, DataSet.class, ".xml");
+        List<DataSet> dataSetList = XmlUtils.readValuesFromDirectory(contextHelper.programConfigRootDir,contextHelper.programConfigDataSetDir, DataSet.class, ".xml");
         for (DataSet dataSet : dataSetList) {
             DataSetDescriptor dataSetDescriptor = new DataSetDescriptor(dataSet);
+
+            if(dataSet.getDescriptor() != null) {
+                Map<String, DataSetDescriptor> dataSetCodeMap = new HashMap<String, DataSetDescriptor>();
+                if(dataSet.getDescriptor().getFieldsList() != null) {
+                    for (Fields fields :  dataSet.getDescriptor().getFieldsList()) {
+                        DataSet tmpDataSet = new DataSet();
+                        tmpDataSet.setCode(dataSet.getCode() + "#" + fields.getCode());
+                        tmpDataSet.setName(fields.getName());
+                        tmpDataSet.setModule(dataSet.getModule());
+                        tmpDataSet.setSource(dataSet.getSource());
+                        tmpDataSet.setFields(fields);
+                        DataSetDescriptor tempDataSetDescriptor = new DataSetDescriptor(tmpDataSet);
+                        dataSets.put(dataSet.getModule() + "/" + dataSet.getCode() + "#" + fields.getCode(), tempDataSetDescriptor);
+                        dataSetCodeMap.put(fields.getCode(), tempDataSetDescriptor);
+                    }
+                }
+               if(dataSet.getDescriptor().getNode() != null) {
+                   Node rootNode = dataSet.getDescriptor().getNode();
+                   rootNode.calcPath();
+                   IDataSet iDataSet = calculateNodeGrid(rootNode, dataSetCodeMap);
+                   dataSetDescriptor.setDateSetStruct(iDataSet);
+//                   System.out.println(iDataSet);
+               }
+            }
+
             dataSets.put(dataSet.getModule() + "/" + dataSet.getCode(), dataSetDescriptor);
             com.hframework.beans.class0.Class defPoClass = CreatorUtil.getDefPoClass("",
                     program.getCode(), dataSet.getModule(), dataSet.getCode());
-            try {
-                Class<?> aClass = Class.forName(defPoClass.getClassPath());
-                dataSetCache.put(aClass, dataSetDescriptor);
-            }catch (Exception e) {
+            if(dataSet.getCode().equals(dataSet.getEventObjectCode())) {
+                try{
+                    Class<?> aClass = Class.forName(defPoClass.getClassPath());
+                    dataSetCache.put(aClass, dataSetDescriptor);
+                }catch (Exception e) {
+//                    e.printStackTrace();
+                }
+
+            }else {
                 //针对于查询类的dateset无需缓存
             }
         }
@@ -139,9 +163,146 @@ public class WebContext {
         }
     }
 
+    public static boolean isList(Node node) {
+        if(node.getName().endsWith("[]")) {
+            return true;
+        }
+        return false;
+    }
+
+    public static String getNodeName(Node node) {
+        if(node.getName().endsWith("[]")) {
+            return node.getName().substring(0,node.getName().length()-2);
+        }
+        return node.getName();
+    }
+
+    private IDataSet calculateNodeGrid(Node node, Map<String, DataSetDescriptor> dataSetCodes) {
+
+        DataSetInstance curDataSetInstance = null;
+        List<DataSetInstance> subDataSetInstances = new ArrayList<DataSetInstance>();
+        List<DataSetInstance> dataSetInstances = new ArrayList<DataSetInstance>();
+        List<DataSetContainer> dataSetContainers = new ArrayList<DataSetContainer>();
+
+        List<IDataSet> sortedDataSetObjects = new ArrayList<IDataSet>();
+
+        if(dataSetCodes.containsKey(node.getPath())) {
+            curDataSetInstance = DataSetInstance.valueOf(node);
+            dataSetInstances.add(curDataSetInstance);
+            sortedDataSetObjects.add(curDataSetInstance);
+        }
+
+        List<Node> nodeList = node.getNodeList();
+
+        if(nodeList != null && nodeList.size() > 0) {
+            for (Node subNode : nodeList) {
+                IDataSet result = calculateNodeGrid(subNode, dataSetCodes);
+                sortedDataSetObjects.add(result);
+                if (result instanceof DataSetInstance) {
+                    subDataSetInstances.add((DataSetInstance) result);
+                    dataSetInstances.add((DataSetInstance) result);
+                }else {
+                    dataSetContainers.add((DataSetContainer) result);
+                }
+            }
+        }
+
+
+        if(dataSetContainers.size() == 0) {
+            if(dataSetInstances.size() == 0) {//该场景原则上不会出现
+                return null;
+            }else if(dataSetInstances.size() == 1) {//该场景原则上出现为叶子节点
+                return dataSetInstances.get(0);
+            }else {//该场景为：① 1个父节点+>= 1的子节点；② >= 2的子节点;涉及多个数据集，原则上是需要合并，所以先合并
+                DataSetContainer dataSetContainer = DataSetContainer.valueOf(node, dataSetInstances);
+                dataSetContainer.setElementList(sortedDataSetObjects);
+                return dataSetContainer;
+//                boolean islist = false;
+//                for (DataSetInstance subDataSetInstance : subDataSetInstances) {
+//                    islist  = isList(subDataSetInstance.getNode()) || islist;
+//                }
+//
+//                if(curDataSetInstance != null) {//当前节点有数据，叶子节点也有数据 ==> 合
+//                    return DataSetContainer.valueOf(dataSetInstances);
+//                }else {//同级别多个叶子节点 ==> 合
+//                    return DataSetContainer.valueOf(dataSetInstances);
+//                }
+
+            }
+        }else {
+            boolean isMany = false;
+            for (DataSetContainer subDataSetContainer : dataSetContainers) {//判断是否存在多个元素子容器
+                isMany = isMany || subDataSetContainer.isMany();
+            }
+
+            if(isMany && dataSetContainers.size() + dataSetInstances.size() > 1) {//如果存在子容器多元素且存在两个及以上元素，需要成立新的容器
+                DataSetContainer dataSetContainer = DataSetContainer.valueOf(node, dataSetInstances, dataSetContainers);
+                dataSetContainer.setElementList(sortedDataSetObjects);
+                return dataSetContainer;
+            }else if(dataSetContainers.size() + dataSetInstances.size() == 1) {//如果只存在一个子容器且只有一个元素，重新赋值子容器元素
+                if(!isMany) {
+                    dataSetContainers.get(0).setNode(node);
+                }
+                return dataSetContainers.get(0);
+            }else {//存在两个容器以上且不是都是单元素容器，合并容器为一个容器
+
+                DataSetContainer dataSetContainer = DataSetContainer.valueOf(node, dataSetInstances);
+
+                for (DataSetContainer subDataSetContainer : dataSetContainers) {
+                    dataSetContainer.addDataAll(subDataSetContainer.getDatas());
+                    dataSetContainer.addContainerAll(subDataSetContainer.getSubDataSetContainers());
+                }
+
+                for (IDataSet result : sortedDataSetObjects) {
+                    if (result instanceof DataSetInstance) {
+                        dataSetContainer.getElementList().add(result);
+                    }else {
+                        dataSetContainer.getElementList().addAll(((DataSetContainer) result).getElementList());
+                    }
+                }
+                return dataSetContainer;
+            }
+
+        }
+
+//        if(dataSetContainers.size() == 1) {
+//            dataSetContainers.get(0).addDataAll(subDataSetInstances);
+//            return dataSetContainers.get(0);
+//        }
+//
+//        DataSetContainer dataSetContainer = new DataSetContainer();
+//        dataSetContainer.setSubDataSetContainers(dataSetContainers);
+//        dataSetContainer.setDatas(subDataSetInstances);
+//        return dataSetContainer;
+
+    }
+
+    private DataSetInstance mergeDataSet(List result1) {
+        List<Map<String, String>> data = new ArrayList<Map<String, String>>();
+        Iterator iterator = result1.iterator();
+        while (iterator.hasNext()) {
+            Object o = iterator.next();
+            if (o instanceof DataSetInstance) {
+                DataSetInstance dataSetInst = (DataSetInstance) o;
+                if(dataSetInst.isOne()) {
+                    data.add(dataSetInst.getOne());
+                    iterator.remove();
+                }
+            }
+        }
+
+        return data.size() > 0 ? DataSetInstance.valueOf(data) : null;
+    }
+
+
+
+
+
+
+
     private void loadDataSetHelper() throws Exception {
 
-        List<DataSetHelper> dataSetHelperList = XmlUtils.readValuesFromDirectory(DATA_SET_HELPER_DIR, DataSetHelper.class, ".xml");
+        List<DataSetHelper> dataSetHelperList = XmlUtils.readValuesFromDirectory(contextHelper.programConfigRootDir,contextHelper.programConfigDataSetHelperDir, DataSetHelper.class, ".xml");
         for (DataSetHelper dataSetHelper : dataSetHelperList) {
             String effectModuleCode = dataSetHelper.getEffectModule();
             String effectDatasetCode = dataSetHelper.getEffectDataset();
@@ -152,7 +313,7 @@ public class WebContext {
 
     private void loadDataSetRuler() throws Exception {
 
-        List<DataSetRuler> dataSetRulers = XmlUtils.readValuesFromDirectory(DATA_SET_RULER_DIR, DataSetRuler.class, ".xml");
+        List<DataSetRuler> dataSetRulers = XmlUtils.readValuesFromDirectory(contextHelper.programConfigRootDir,contextHelper.programConfigDataSetRulerDir, DataSetRuler.class, ".xml");
         for (DataSetRuler dataSetRuler : dataSetRulers) {
             String module = dataSetRuler.getModule();
             String entity = dataSetRuler.getEntity();
@@ -222,28 +383,34 @@ public class WebContext {
             }
         }
         //获取页面级初始化信息。
-        for (ComponentDescriptor componentDescriptor : pageDescriptor.getComponents().values()) {
-            Mapper mapper = null;
-            if(mappers.get(page.getDataSet() + "_" + componentDescriptor.getId()) != null) {
-                mapper = mappers.get(page.getDataSet() + "_" + componentDescriptor.getId());
-            }
+        if(StringUtils.isBlank(page.getDataSet())) {
+            logger.warn("no mapper exists for page level !");
+        }else {
+            for (ComponentDescriptor componentDescriptor : pageDescriptor.getComponents().values()) {
 
-            if(mappers.get(componentDescriptor.getId()) != null) {
-                mapper = mappers.get(componentDescriptor.getId());
-            }
+                Mapper mapper = null;
+                if(mappers.get(page.getDataSet() + "_" + componentDescriptor.getId()) != null) {
+                    mapper = mappers.get(page.getDataSet() + "_" + componentDescriptor.getId());
+                }
 
-            if(mapper == null) {
-                logger.warn("no mapper {} exists !", page.getDataSet() + "_" + componentDescriptor.getId());
-                continue;
+                if(mappers.get(componentDescriptor.getId()) != null) {
+                    mapper = mappers.get(componentDescriptor.getId());
+                }
+
+                if(mapper == null) {
+                    logger.warn("no mapper {} exists !", page.getDataSet() + "_" + componentDescriptor.getId());
+                    continue;
+                }
+                componentDescriptor.setMapper(mapper);
+                if(dataSets.get(page.getDataSet()) == null) {
+                    logger.warn("no dataset {} exists !", page.getDataSet() + "_" + componentDescriptor.getId());
+                    continue;
+                }
+                componentDescriptor.setDataSetDescriptor(dataSets.get(page.getDataSet()));
+                componentDescriptor.initComponentDataContainer();
             }
-            componentDescriptor.setMapper(mapper);
-            if(dataSets.get(page.getDataSet()) == null) {
-                logger.warn("no dataset {} exists !", page.getDataSet() + "_" + componentDescriptor.getId());
-                continue;
-            }
-            componentDescriptor.setDataSetDescriptor(dataSets.get(page.getDataSet()));
-            componentDescriptor.initComponentDataContainer();
         }
+
 
 
         //将默认的组件配置添加到每一个page，如果page中没有该组件，需要兼容处理
@@ -266,7 +433,9 @@ public class WebContext {
                 continue;
             }
             ComponentDescriptor componentDescriptor = pageDescriptor.getComponentDescriptor(component.getId());
-
+            if("container".equals(component.getId())) {
+                System.out.println(1);
+            }
             if(componentDescriptor == null) {
                 componentDescriptor = pageDescriptor.getComponentDescriptor(component.getId()  + "|" + component.getDataSet() + "|" + component.getDataid());
             }
@@ -276,6 +445,9 @@ public class WebContext {
                 componentDescriptor.setTitle(component.getTitle());
                 componentDescriptor.setMapper(mapper);
                 componentDescriptor.setDataSetDescriptor(dataSets.get(component.getDataSet()));
+                if(dataSets.get(component.getDataSet()) == null) {
+                    System.out.println("==>error : data set [" +  component.getDataSet() +"] is not exists !");
+                }
                 componentDescriptor.initComponentDataContainer();
             }
 //            Map<String, ElementDescriptor> elements = pageDescriptor.getElements();
@@ -345,10 +517,21 @@ public class WebContext {
 
     private void loadComponentConfig() throws IOException {
         //加载项目信息
-        program = XmlUtils.readValueFromFile(PROGRAM_FILE, Program.class);
+        try{
+            program = XmlUtils.readValueFromFile(contextHelper.programConfigRootDir,contextHelper.programConfigProgramFile, Program.class);
+        }catch (Exception e) {
+            program = XmlUtils.readValueFromFile(contextHelper.programConfigRootDir.replace("hframe-webtemplate","hframe-web"),contextHelper.programConfigProgramFile, Program.class);
+        }
         //加载模块信息
-        List<Module> moduleList = XmlUtils.readValuesFromDirectory(MODULE_DIR, Module.class, ".xml");
+        List<Module> moduleList = XmlUtils.readValuesFromDirectory(contextHelper.programConfigRootDir,contextHelper.programConfigModuleDir, Module.class, ".xml");
         for (Module module : moduleList) {
+            List<Page> pageList = module.getPageList();
+            if(pageList != null) {
+                for (Page page : pageList) {
+                    page.setModule(module);
+                }
+            }
+
             if(this.modules.containsKey(module.getCode())) {
                 this.modules.get(module.getCode()).getPageList().addAll(module.getPageList());
             }else {
@@ -356,20 +539,32 @@ public class WebContext {
             }
 
         }
+
+        List<com.hframework.web.config.bean.program.Module> moduleList1 = program.getModules().getModuleList();
+        for (com.hframework.web.config.bean.program.Module module : moduleList1) {
+            if(!this.modules.containsKey(module.getCode())) {
+                Module module1 = new Module();
+                module1.setCode(module.getCode());
+                module1.setPageList(new ArrayList<Page>());
+                this.modules.put(module.getCode(),module1);
+            }
+        }
+
+
         //加载数据映射信息
-        List<Mapper> mapperList = XmlUtils.readValuesFromDirectory(MAPPER_DIR, Mapper.class);
+        List<Mapper> mapperList = XmlUtils.readValuesFromDirectory(contextHelper.programConfigRootDir,contextHelper.programConfigMapperDir, Mapper.class,".mapper");
         for (Mapper mapper : mapperList) {
             mappers.put(mapper.getDataSet() + "_" + mapper.getComponentId(), mapper);
         }
 
         //加载页面模板信息
-        PageTemplates pageTemplates = XmlUtils.readValueFromFile(PAGE_DESCRIPTER_FILE, PageTemplates.class);
+        PageTemplates pageTemplates = XmlUtils.readValueFromFile(contextHelper.programConfigRootDir,contextHelper.templateResourcePageDescriptorFile, PageTemplates.class);
         for (Pagetemplate pagetemplate : pageTemplates.getPagetemplateList()) {
             this.pageTemplates.put(pagetemplate.getId(),pagetemplate);
         }
 
         //加载组件模板信息
-        List<Component> componentList = XmlUtils.readValuesFromDirectory(COMPONENT_DIR, Component.class,".xml");
+        List<Component> componentList = XmlUtils.readValuesFromDirectory(contextHelper.programConfigRootDir,contextHelper.templateResourceComponentDir, Component.class,".xml");
         for (Component component : componentList) {
             if(StringUtils.isBlank(component.getId())) {
                 continue;
@@ -378,7 +573,7 @@ public class WebContext {
         }
 
         //加载默认数据映射信息
-        List<Mapper> defaultMappers = XmlUtils.readValuesFromDirectory(COMPONENT_DEFAULT_MAPPER_DIR, Mapper.class);
+        List<Mapper> defaultMappers = XmlUtils.readValuesFromDirectory(contextHelper.programConfigRootDir,contextHelper.templateResourceComponentMapperDir, Mapper.class,".mapper");
         for (Mapper mapper : defaultMappers) {
             mappers.put(mapper.getComponentId(), mapper);
         }
@@ -387,6 +582,11 @@ public class WebContext {
 
     public static WebContext get(){
         return context;
+    }
+
+    public static WebContext get(String companyCode, String programCode, String templateCode){
+        WebContext newContext = new WebContext(companyCode, programCode, templateCode);
+        return newContext;
     }
 
     public synchronized static WebContext reload(){
@@ -436,6 +636,9 @@ public class WebContext {
     }
 
     public static <T> void add(T data) {
+        if(data == null) {
+            return;
+        }
         Class<?> aClass = data.getClass();
         String simpleName = aClass.getName();
         Context.put(simpleName, data);
@@ -451,6 +654,26 @@ public class WebContext {
 
     public static <T> T get(String key) {
         return Context.get(key);
+    }
+
+    public static Map<String, String> putContext(String key, String value) {
+        Map<String, String> map = get(HashMap.class.getName());
+        if(map == null) {
+            put(HashMap.class.getName(), new HashMap<String, String>());
+        }
+        map = get(HashMap.class.getName());
+        map.put(key, value);
+        return map;
+    }
+
+    public static Map<String, String> putContext(Map<String, String> objectMap) {
+        Map<String, String> map = get(HashMap.class.getName());
+        if(map == null) {
+            put(HashMap.class.getName(), new HashMap<String, String>());
+        }
+        map = get(HashMap.class.getName());
+        map.putAll(objectMap);
+        return map;
     }
 
     public static <T> boolean fillProperty(String key, T t, String propertyName, String relPropertyName) {
@@ -526,16 +749,19 @@ public class WebContext {
             List<List<Entity>> moduleEntityList = result.get(module);
             List<Page> pageList = module.getPageList();
             for (Page page : pageList) {
+                if("true".equals(page.getModule().getIsExtend())) {
+                    continue;
+                }
                 Set<Entity> allEntitys = new LinkedHashSet<Entity>();
                 DataSetDescriptor dataSetDescriptor = null;
                 if(StringUtils.isNotBlank(page.getDataSet())) {
-                    dataSetDescriptor = dataSets.get(page.getDataSet());
+                    dataSetDescriptor = this.dataSets.get(page.getDataSet());
                     allEntitys.addAll(dataSetDescriptor.getDataSet().getEntityList());
                 }
 
                 List<com.hframework.web.config.bean.module.Component> componentList = page.getComponentList();
                 for (com.hframework.web.config.bean.module.Component component : componentList) {
-                    if(defaultComponentMap.values().contains(component)) {
+                    if(this.defaultComponentMap.values().contains(component)) {
                         continue;
                     }
                     String dataSet = component.getDataSet();
@@ -543,7 +769,7 @@ public class WebContext {
                         continue;
                     }
 
-                    dataSetDescriptor = dataSets.get(dataSet);
+                    dataSetDescriptor = this.dataSets.get(dataSet);
                     allEntitys.addAll(dataSetDescriptor.getDataSet().getEntityList());
                 }
 
@@ -581,5 +807,13 @@ public class WebContext {
         }
 
         return null;
+    }
+
+    public WebContextHelper getContextHelper() {
+        return contextHelper;
+    }
+
+    public void setContextHelper(WebContextHelper contextHelper) {
+        this.contextHelper = contextHelper;
     }
 }
