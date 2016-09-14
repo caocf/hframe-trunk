@@ -355,7 +355,7 @@ public class BeanGeneratorUtil {
 //        Integer integer = nameRepeatCache.get(rootClassName);
 //        beanClass.setClassName(rootClassName + (integer==null ? "" : integer));
 //        nameRepeatCache.put(rootClassName, (integer == null ? 1 : ++integer));
-        beanClass.setClassName(rootClassName );
+        beanClass.setClassName(rootClassName);
         beanClass.addConstructor();
         beanClass.addImportClass("com.fasterxml.jackson.annotation.JsonProperty");
         beanClass.addExtendAttr(Class.ExtendAttrCode.MESSAGE_ANNOTATION_TYPE,"json");
@@ -588,6 +588,30 @@ public class BeanGeneratorUtil {
         for (Object o : element.elements()) {
             XmlNode subXmlNode = parseXmlNodeNew((Element) o);
             xmlNode.addOrMergeChildNode(subXmlNode);
+            subXmlNode.setParentXmlNode(xmlNode);
+        }
+
+        if(element.elements().size() == 0) {
+            xmlNode.setNodeText(element.getTextTrim());
+        }
+        return xmlNode;
+    }
+
+    /**
+     * 解析XML节点信息
+     * @param element
+     * @return
+     */
+    public static XmlNode parseXmlNodeData(Element element) {
+
+        XmlNode xmlNode = new XmlNode();
+        xmlNode.setNodeName(element.getName());
+        xmlNode.setAttrMap(getAttrMap(element));
+
+        //添加子节点信息
+        for (Object o : element.elements()) {
+            XmlNode subXmlNode = parseXmlNodeData((Element) o);
+            xmlNode.addNode(subXmlNode);
             subXmlNode.setParentXmlNode(xmlNode);
         }
 

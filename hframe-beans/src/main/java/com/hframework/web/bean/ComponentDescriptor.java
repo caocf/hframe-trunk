@@ -37,14 +37,14 @@ public class ComponentDescriptor extends ElementDescriptor{
         dataContainer = new ComponentDataContainer(component,getElement(), eventList);
         List<Mapping> mappingList = mapper.getBaseMapper().getMappingList();
         for (Mapping mapping : mappingList) {
-            dataContainer.addMappingAndDataSetDescriptor(mapping, this,dataSetDescriptor, true);
+            dataContainer.addMappingAndDataSetDescriptor(mapping, this, dataSetDescriptor, true);
         }
 
         List<Mapping> mappingList1 = mapper.getEventMapper().getMappingList();
         for (Mapping mapping : mappingList1) {
             dataContainer.addMappingAndDataSetDescriptor(mapping, this, dataSetDescriptor, false);
         }
-
+        dataContainer.setElementOfRowMap();
         dataSetDescriptor.setDataSetRulers();
     }
 
@@ -54,7 +54,7 @@ public class ComponentDescriptor extends ElementDescriptor{
             dataInstance = this.dataContainer.getDataInstance(resultData.getData());
             return dataInstance.getJson();
         }else {
-
+//            return dataContainer.getJson();
         }
         return null;
     }

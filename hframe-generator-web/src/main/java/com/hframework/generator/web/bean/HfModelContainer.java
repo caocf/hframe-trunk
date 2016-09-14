@@ -67,8 +67,12 @@ public class HfModelContainer {
 	public HfmdEntityAttr getEntityAttr(String entityName, String entityAttrName) {
 		if(entityAttrMap == null) {
 			entityAttrMap = new HashMap<String, HfmdEntityAttr>();
+		}
+
+		if(entityAttrCountMap == null) {
 			entityAttrCountMap = new HashMap<String, BigDecimal>();
 		}
+
 
 		if(!entityAttrCountMap.containsKey(entityName)) {
 			entityAttrCountMap.put(entityName,new BigDecimal("0.0"));

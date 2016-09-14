@@ -46,7 +46,9 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
         }
         doRulerEvent($this, $curRules, $value);
 
-        $allRules = JSON.parse($(" .helper").text());
+        var helperJson = $(" .helper").text();
+        if(!helperJson) helperJson="{}";
+        $allRules = JSON.parse(helperJson);
         $curRules = $allRules[$code];
 
         var $targetComponent = $(" .helper").parents("[component]")[0];

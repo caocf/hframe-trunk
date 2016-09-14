@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * User: zhangqh6
@@ -26,20 +27,37 @@ public class XmlUtils {
     }
 
     public static <T> T readValueFromFile(String filePath, Class<T> valueType) throws IOException {
-        logger.debug("入参：{}|{}",filePath,valueType);
         String rootClassPath = Thread.currentThread().getContextClassLoader ().getResource("").getPath();
-        String xmlString = FileUtils.readFile(rootClassPath + "/"+ filePath);
+        return readValueFromFile(rootClassPath, filePath,valueType);
+    }
+
+    public static <T> List<T> readValuesFromDirectory(String directory, Class<T> valueType, String format) throws IOException {
+        String rootClassPath = Thread.currentThread().getContextClassLoader ().getResource("").getPath();
+        return readValuesFromDirectory(rootClassPath, directory, valueType, format);
+    }
+
+    public static <T> List<T> readValuesFromDirectory(String directory, Class<T> valueType) throws IOException {
+        String rootClassPath = Thread.currentThread().getContextClassLoader ().getResource("").getPath();
+        return readValuesFromDirectory(rootClassPath,directory,valueType,null);
+    }
+
+    public static <T> T readValueFromFile(String rootPath, String filePath, Class<T> valueType) throws IOException {
+        logger.debug("入参：{}|{}|{}",filePath,rootPath,valueType);
+        String xmlString = FileUtils.readFile(rootPath + "/"+ filePath);
         logger.debug("报文：{}", xmlString);
         T t = readValue(xmlString, valueType);
         logger.debug("对象：{}", t);
         return t;
     }
 
-    public static <T> List<T> readValuesFromDirectory(String directory, Class<T> valueType, String format) throws IOException {
+    public static <T> List<T> readValuesFromDirectory(String rootPath, String directory, Class<T> valueType, String format) throws IOException {
         List<T> result = new ArrayList<T>();
-        logger.debug("入参：{}|{}",directory,valueType);
-        String rootClassPath = Thread.currentThread().getContextClassLoader ().getResource("").getPath();
-        File[] fileList = FileUtils.getFileList(new File(rootClassPath + "/" + directory));
+        logger.debug("入参：{}|{}|{}",directory,rootPath,valueType);
+        File[] fileList = FileUtils.getFileList(new File(rootPath + "/" + directory));
+        if(fileList == null) {
+            logger.warn("file not exists !");
+            return result;
+        }
         for (File file : fileList) {
             if(StringUtils.isBlank(format) || file.getName().endsWith(format)) {
                 String xmlString = FileUtils.readFile(file.getAbsolutePath());
@@ -52,23 +70,6 @@ public class XmlUtils {
 
         return result;
     }
-
-    public static <T> List<T> readValuesFromDirectory(String directory, Class<T> valueType) throws IOException {
-        List<T> result = new ArrayList<T>();
-        logger.debug("入参：{}|{}",directory,valueType);
-        String rootClassPath = Thread.currentThread().getContextClassLoader ().getResource("").getPath();
-        File[] fileList = FileUtils.getFileList(new File(rootClassPath + "/" + directory));
-        for (File file : fileList) {
-            String xmlString = FileUtils.readFile(file.getAbsolutePath());
-            logger.debug("报文：{}", xmlString);
-            T t = readValue(xmlString, valueType);
-            result.add(t);
-            logger.debug("对象：{}", t);
-        }
-
-        return result;
-    }
-
 
 
     public static  <T> String writeValueAsString(T t) throws IOException {
@@ -91,7 +92,12 @@ public class XmlUtils {
         String xmlString = readFile(rootClassPath + "test.xml");
         System.out.println(xmlString);
 //        Menu menu = readValue(jsonString, Menu.class);
-//        System.out.println(writeValueAsString(menu));
+//        Map map = readValue(xmlString, Map.class);
+//        System.out.println(map);
+
+
+
+
     }
 
     private static String readFile(String fileName) throws IOException {

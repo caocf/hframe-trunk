@@ -11,8 +11,6 @@
       <arg column="icon" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="url" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="parent_hfsec_menu_id" jdbcType="BIGINT" javaType="java.lang.Long" />
-      <arg column="hfpm_program_id" jdbcType="BIGINT" javaType="java.lang.Long" />
-      <arg column="hfpm_module_id" jdbcType="BIGINT" javaType="java.lang.Long" />
       <arg column="pri" jdbcType="DECIMAL" javaType="java.math.BigDecimal" />
       <arg column="creator_id" jdbcType="BIGINT" javaType="java.lang.Long" />
       <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
@@ -80,9 +78,9 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    hfsec_menu_id, hfsec_menu_code, hfsec_menu_name, hfsec_menu_desc, menu_level, icon, 
-    url, parent_hfsec_menu_id, hfpm_program_id, hfpm_module_id, pri, creator_id, create_time, 
-    modifier_id, modify_time, del_flag
+    hfsec_menu_id, hfsec_menu_code, hfsec_menu_name, hfsec_menu_desc, menu_level, icon,
+    url, parent_hfsec_menu_id, pri, creator_id, create_time, modifier_id, modify_time,
+    del_flag
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.hframe.domain.model.HfsecMenu_Example" >
     select
@@ -102,7 +100,7 @@
     </if>
   </select>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
-    select 
+    select
     <include refid="Base_Column_List" />
     from hfsec_menu
     where hfsec_menu_id = #{hfsecMenuId,jdbcType=BIGINT}
@@ -121,18 +119,16 @@
     <selectKey resultType="java.lang.Long" keyProperty="hfsecMenuId" order="AFTER" >
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into hfsec_menu (hfsec_menu_code, hfsec_menu_name, hfsec_menu_desc, 
-      menu_level, icon, url, 
-      parent_hfsec_menu_id, hfpm_program_id, hfpm_module_id, 
-      pri, creator_id, create_time, 
-      modifier_id, modify_time, del_flag
-      )
-    values (#{hfsecMenuCode,jdbcType=VARCHAR}, #{hfsecMenuName,jdbcType=VARCHAR}, #{hfsecMenuDesc,jdbcType=VARCHAR}, 
-      #{menuLevel,jdbcType=INTEGER}, #{icon,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, 
-      #{parentHfsecMenuId,jdbcType=BIGINT}, #{hfpmProgramId,jdbcType=BIGINT}, #{hfpmModuleId,jdbcType=BIGINT}, 
-      #{pri,jdbcType=DECIMAL}, #{creatorId,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{modifierId,jdbcType=BIGINT}, #{modifyTime,jdbcType=TIMESTAMP}, #{delFlag,jdbcType=INTEGER}
-      )
+    insert into hfsec_menu (hfsec_menu_code, hfsec_menu_name, hfsec_menu_desc,
+    menu_level, icon, url,
+    parent_hfsec_menu_id, pri, creator_id,
+    create_time, modifier_id, modify_time,
+    del_flag)
+    values (#{hfsecMenuCode,jdbcType=VARCHAR}, #{hfsecMenuName,jdbcType=VARCHAR}, #{hfsecMenuDesc,jdbcType=VARCHAR},
+    #{menuLevel,jdbcType=INTEGER}, #{icon,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR},
+    #{parentHfsecMenuId,jdbcType=BIGINT}, #{pri,jdbcType=DECIMAL}, #{creatorId,jdbcType=BIGINT},
+    #{createTime,jdbcType=TIMESTAMP}, #{modifierId,jdbcType=BIGINT}, #{modifyTime,jdbcType=TIMESTAMP},
+    #{delFlag,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.hframe.domain.model.HfsecMenu" >
     <selectKey resultType="java.lang.Long" keyProperty="hfsecMenuId" order="AFTER" >
@@ -160,12 +156,6 @@
       </if>
       <if test="parentHfsecMenuId != null" >
         parent_hfsec_menu_id,
-      </if>
-      <if test="hfpmProgramId != null" >
-        hfpm_program_id,
-      </if>
-      <if test="hfpmModuleId != null" >
-        hfpm_module_id,
       </if>
       <if test="pri != null" >
         pri,
@@ -207,12 +197,6 @@
       </if>
       <if test="parentHfsecMenuId != null" >
         #{parentHfsecMenuId,jdbcType=BIGINT},
-      </if>
-      <if test="hfpmProgramId != null" >
-        #{hfpmProgramId,jdbcType=BIGINT},
-      </if>
-      <if test="hfpmModuleId != null" >
-        #{hfpmModuleId,jdbcType=BIGINT},
       </if>
       <if test="pri != null" >
         #{pri,jdbcType=DECIMAL},
@@ -267,12 +251,6 @@
       <if test="record.parentHfsecMenuId != null" >
         parent_hfsec_menu_id = #{record.parentHfsecMenuId,jdbcType=BIGINT},
       </if>
-      <if test="record.hfpmProgramId != null" >
-        hfpm_program_id = #{record.hfpmProgramId,jdbcType=BIGINT},
-      </if>
-      <if test="record.hfpmModuleId != null" >
-        hfpm_module_id = #{record.hfpmModuleId,jdbcType=BIGINT},
-      </if>
       <if test="record.pri != null" >
         pri = #{record.pri,jdbcType=DECIMAL},
       </if>
@@ -299,21 +277,19 @@
   <update id="updateByExample" parameterType="map" >
     update hfsec_menu
     set hfsec_menu_id = #{record.hfsecMenuId,jdbcType=BIGINT},
-      hfsec_menu_code = #{record.hfsecMenuCode,jdbcType=VARCHAR},
-      hfsec_menu_name = #{record.hfsecMenuName,jdbcType=VARCHAR},
-      hfsec_menu_desc = #{record.hfsecMenuDesc,jdbcType=VARCHAR},
-      menu_level = #{record.menuLevel,jdbcType=INTEGER},
-      icon = #{record.icon,jdbcType=VARCHAR},
-      url = #{record.url,jdbcType=VARCHAR},
-      parent_hfsec_menu_id = #{record.parentHfsecMenuId,jdbcType=BIGINT},
-      hfpm_program_id = #{record.hfpmProgramId,jdbcType=BIGINT},
-      hfpm_module_id = #{record.hfpmModuleId,jdbcType=BIGINT},
-      pri = #{record.pri,jdbcType=DECIMAL},
-      creator_id = #{record.creatorId,jdbcType=BIGINT},
-      create_time = #{record.createTime,jdbcType=TIMESTAMP},
-      modifier_id = #{record.modifierId,jdbcType=BIGINT},
-      modify_time = #{record.modifyTime,jdbcType=TIMESTAMP},
-      del_flag = #{record.delFlag,jdbcType=INTEGER}
+    hfsec_menu_code = #{record.hfsecMenuCode,jdbcType=VARCHAR},
+    hfsec_menu_name = #{record.hfsecMenuName,jdbcType=VARCHAR},
+    hfsec_menu_desc = #{record.hfsecMenuDesc,jdbcType=VARCHAR},
+    menu_level = #{record.menuLevel,jdbcType=INTEGER},
+    icon = #{record.icon,jdbcType=VARCHAR},
+    url = #{record.url,jdbcType=VARCHAR},
+    parent_hfsec_menu_id = #{record.parentHfsecMenuId,jdbcType=BIGINT},
+    pri = #{record.pri,jdbcType=DECIMAL},
+    creator_id = #{record.creatorId,jdbcType=BIGINT},
+    create_time = #{record.createTime,jdbcType=TIMESTAMP},
+    modifier_id = #{record.modifierId,jdbcType=BIGINT},
+    modify_time = #{record.modifyTime,jdbcType=TIMESTAMP},
+    del_flag = #{record.delFlag,jdbcType=INTEGER}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -341,12 +317,6 @@
       </if>
       <if test="parentHfsecMenuId != null" >
         parent_hfsec_menu_id = #{parentHfsecMenuId,jdbcType=BIGINT},
-      </if>
-      <if test="hfpmProgramId != null" >
-        hfpm_program_id = #{hfpmProgramId,jdbcType=BIGINT},
-      </if>
-      <if test="hfpmModuleId != null" >
-        hfpm_module_id = #{hfpmModuleId,jdbcType=BIGINT},
       </if>
       <if test="pri != null" >
         pri = #{pri,jdbcType=DECIMAL},
@@ -378,8 +348,6 @@
       icon = #{icon,jdbcType=VARCHAR},
       url = #{url,jdbcType=VARCHAR},
       parent_hfsec_menu_id = #{parentHfsecMenuId,jdbcType=BIGINT},
-      hfpm_program_id = #{hfpmProgramId,jdbcType=BIGINT},
-      hfpm_module_id = #{hfpmModuleId,jdbcType=BIGINT},
       pri = #{pri,jdbcType=DECIMAL},
       creator_id = #{creatorId,jdbcType=BIGINT},
       create_time = #{createTime,jdbcType=TIMESTAMP},

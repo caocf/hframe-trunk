@@ -13,7 +13,9 @@
     <!-- start: Mobile Specific -->
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <!-- end: Mobile Specific -->
-
+    <link rel="stylesheet" href="$staticResourcePath/plugins/ice/css/ace.min.css" />
+    <link rel="stylesheet" href="$staticResourcePath/plugins/ice/css/ace-rtl.min.css" />
+    <link rel="stylesheet" href="$staticResourcePath/plugins/ice/css/ace-skins.min.css" />
     <!-- start: CSS -->
     <link href="$staticResourcePath/css/bootstrap.min.css" rel="stylesheet" />
     <link href="$staticResourcePath/css/bootstrap-responsive.min.css" rel="stylesheet" />
@@ -25,6 +27,9 @@
 
 ##    <link href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.css" rel="stylesheet">
     <link href="/static/plugins/cityPicker/css/city-picker.css" rel="stylesheet">
+
+
+
 ##    <link href="/static/plugins/cityPicker/css/main.css" rel="stylesheet">
     <!-- end: CSS -->
 

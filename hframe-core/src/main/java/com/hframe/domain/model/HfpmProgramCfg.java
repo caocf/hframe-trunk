@@ -25,7 +25,11 @@ public class HfpmProgramCfg {
 
     private Integer delFlag;
 
-    public HfpmProgramCfg(Long hfpmProgramCfgId, String showName, Long hfcfgProgramTemplateId, Long hfcfgProgramSkinId, Long hfcfgLoginPageId, String bgImgUrl, Long opId, Date createTime, Long modifyOpId, Date modifyTime, Integer delFlag) {
+    private Long hfcfgDbConnectId;
+
+    private Long hfpmProgramId;
+
+    public HfpmProgramCfg(Long hfpmProgramCfgId, String showName, Long hfcfgProgramTemplateId, Long hfcfgProgramSkinId, Long hfcfgLoginPageId, String bgImgUrl, Long opId, Date createTime, Long modifyOpId, Date modifyTime, Integer delFlag, Long hfcfgDbConnectId, Long hfpmProgramId) {
         this.hfpmProgramCfgId = hfpmProgramCfgId;
         this.showName = showName;
         this.hfcfgProgramTemplateId = hfcfgProgramTemplateId;
@@ -37,6 +41,8 @@ public class HfpmProgramCfg {
         this.modifyOpId = modifyOpId;
         this.modifyTime = modifyTime;
         this.delFlag = delFlag;
+        this.hfcfgDbConnectId = hfcfgDbConnectId;
+        this.hfpmProgramId = hfpmProgramId;
     }
 
     public Long getHfpmProgramCfgId() {
@@ -83,6 +89,14 @@ public class HfpmProgramCfg {
         return delFlag;
     }
 
+    public Long getHfcfgDbConnectId() {
+        return hfcfgDbConnectId;
+    }
+
+    public Long getHfpmProgramId() {
+        return hfpmProgramId;
+    }
+
     public void setHfpmProgramCfgId(Long hfpmProgramCfgId) {
         this.hfpmProgramCfgId=hfpmProgramCfgId;
     }
@@ -125,6 +139,14 @@ public class HfpmProgramCfg {
 
     public void setDelFlag(Integer delFlag) {
         this.delFlag=delFlag;
+    }
+
+    public void setHfcfgDbConnectId(Long hfcfgDbConnectId) {
+        this.hfcfgDbConnectId=hfcfgDbConnectId;
+    }
+
+    public void setHfpmProgramId(Long hfpmProgramId) {
+        this.hfpmProgramId=hfpmProgramId;
     }
 
     public HfpmProgramCfg() {

@@ -73,6 +73,43 @@
         <element id="qList" type="component" event-extend="false"></element>
     </pagetemplate>
     <pagetemplate id="dynamic" path="common.vm" parent-id = "default" name="动态页面" type="forward" />
+
+    <pagetemplate id="editByCategory" path="container.vm" parent-id = "default" name="动态页面" type="forward">
+        <element id="dynTree" type="component" event-extend="false" container="span3">
+            <events>
+                <event name="onclick">
+                    <attach anchor="${name}"></attach>
+                    <source scope="CROW" param="${id}"></source>
+                    <effect type="component.reload" target-id="eForm"></effect>
+                </event>
+            </events>
+        </element>
+        <element id="eForm" type="component" event-extend="false"  container="span9"></element>
+    </pagetemplate>
+    <pagetemplate id="fileEditor" path="container.vm" parent-id = "default" name="动态页面" type="forward">
+        <element id="dynTree" type="component" event-extend="false" container="span3">
+            <events>
+                <event name="onclick">
+                    <attach anchor="${name}"></attach>
+                    <source scope="CROW" param="${id}"></source>
+                    <effect type="component.reload" target-id="container"></effect>
+                </event>
+            </events>
+        </element>
+        <element id="container" type="component" container="span9">
+            <!--<events>-->
+                <!--<event name="save">-->
+                    <!--<attach anchor="EOFC">-->
+                        <!--<appendElement type="button" param='{btnclass:"btn-primary",btnText:"保存"}'></appendElement>-->
+                    <!--</attach>-->
+                    <!--&lt;!&ndash;<effect type="ajaxSubmit" action='${batchDelete}' param="ids" isStack="true"></effect>&ndash;&gt;-->
+                    <!--<effect type="ajaxSubmit" action='/extend/model_execute.json' isStack="true"></effect>-->
+                    <!--<effect type="page.reload"></effect>-->
+                <!--</event>-->
+            <!--</events>-->
+        </element>
+    </pagetemplate>
+
     <pagetemplate id="shapeshift" path="shapeshift.vm" parent-id = "default" name="分组页" type="forward" />
     <pagetemplate id="orgchart" path="orgchart.vm" parent-id = "default" name="可视化编辑页" type="forward" >
         <element id="treeChart" type="component">
@@ -82,7 +119,7 @@
                         <appendElement type="button" param='{btnclass:"btn-primary",btnText:" 提 交 "}'></appendElement>
                     </attach>
                     <source scope="EOC" param="thisForm"></source>
-                    <effect type="ajaxSubmitByJson" action="ajaxSubmits.json" target-id="treeChart"></effect>
+                    <effect type="ajaxSubmitByJson" action="extend/save_menu.json" target-id="treeChart"></effect>
                     <effect type="page.reload"></effect>
                 </event>
             </events>

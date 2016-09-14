@@ -71,10 +71,10 @@ public class CreatorUtil {
 	 * @param companyName
 	 * @param projectName
 	 * @param tableName
-	 * @return 获取SQL文件在项目中存放的路径即名称
+	 * @return 目标项目的目录
 	 * @throws Exception
 	 */
-	public static String getGeneratorConfigFilePath(String companyName,
+	public static String getTargetProjectBasePath(String companyName,
 										String projectName,String tableName) throws Exception {
 
 		if(StringUtils.isBlank(tableName)) {
@@ -83,6 +83,24 @@ public class CreatorUtil {
 
 		companyName = StringUtils.isBlank(companyName)?"":""+(companyName);
 		projectName = StringUtils.isBlank(projectName)?"":""+(projectName);
+
+		return PropertyConfigurerUtils.getProperty(CreatorConst.TARGET_PROJECT_BASE_PATH,
+				companyName.toLowerCase(),projectName.toLowerCase(),tableName.toLowerCase());
+	}
+
+	/**
+	 * @param companyName
+	 * @param projectName
+	 * @param tableName
+	 * @return 获取SQL文件在项目中存放的路径即名称
+	 * @throws Exception
+	 */
+	public static String getGeneratorConfigFilePath(String companyName,
+										String projectName,String tableName) throws Exception {
+
+		companyName = StringUtils.isBlank(companyName)?"":""+(companyName);
+		projectName = StringUtils.isBlank(projectName)?"":""+(projectName);
+		tableName = StringUtils.isBlank(tableName)?"":""+(tableName);
 
 		return PropertyConfigurerUtils.getProperty(CreatorConst.GENERATOR_CONFIG_PATH,
 				companyName.toLowerCase(),projectName.toLowerCase(),tableName.toLowerCase());
@@ -107,6 +125,10 @@ public class CreatorUtil {
 			companyName="zqh";
 		}
 
+		if("hframe".equals(projectName)) {
+			projectName = "trunk";
+		}
+
 
 		if(StringUtils.isBlank(projectName)) {
 			throw new Exception("项目名称为不能为空！");
@@ -119,7 +141,7 @@ public class CreatorUtil {
 
 //		PropertyConfigurerUtils.getProperty(CreatorConst.PROJECT_SRC_FILE_PATH+"." + projectName);
 
-		return PropertyConfigurerUtils.getProperty(CreatorConst.PROJECT_SRC_FILE_PATH);
+		return PropertyConfigurerUtils.getProperty(CreatorConst.PROJECT_SRC_FILE_PATH, companyName, projectName);
 	}
 
 	/**
@@ -265,13 +287,13 @@ public class CreatorUtil {
 			throw new Exception("表名称为不能为空！");
 		}
 
+		Class class1 = new Class();
+		class1.setSrcFilePath(CreatorUtil.getSrcFilePath(companyName, projectName));
+
 		companyName = StringUtils.isBlank(companyName)?"":"."+(companyName);
 		projectName = StringUtils.isBlank(projectName)?"":"."+(projectName);
 		moduleName = StringUtils.isBlank(moduleName)?"":"."+(moduleName);
 
-
-		Class class1 = new Class();
-		class1.setSrcFilePath(CreatorUtil.getSrcFilePath(companyName, projectName));
 		class1.setClassPackage(CreatorUtil.getPoClassPackage(
 				companyName, projectName, moduleName, tableName));
 		class1.setClassName(CreatorUtil.getJavaClassName(tableName) + "");
@@ -285,13 +307,13 @@ public class CreatorUtil {
 			throw new Exception("表名称为不能为空！");
 		}
 
+		Class class1 = new Class();
+		class1.setSrcFilePath(CreatorUtil.getSrcFilePath(companyName, projectName));
+
 		companyName = StringUtils.isBlank(companyName)?"":"."+(companyName);
 		projectName = StringUtils.isBlank(projectName)?"":"."+(projectName);
 		moduleName = StringUtils.isBlank(moduleName)?"":"."+(moduleName);
 
-
-		Class class1 = new Class();
-		class1.setSrcFilePath(CreatorUtil.getSrcFilePath(companyName, projectName));
 		class1.setClassPackage(CreatorUtil.getPoClassPackage(
 				companyName, projectName, moduleName, tableName));
 		class1.setClassName(CreatorUtil.getJavaClassName(tableName) + "_Example");
@@ -304,12 +326,13 @@ public class CreatorUtil {
 			throw new Exception("表名称为不能为空！");
 		}
 
+		Class class1 = new Class();
+		class1.setSrcFilePath(CreatorUtil.getSrcFilePath(companyName, projectName));
+
 		companyName = StringUtils.isBlank(companyName)?"":"."+(companyName);
 		projectName = StringUtils.isBlank(projectName)?"":"."+(projectName);
 		moduleName = StringUtils.isBlank(moduleName)?"":"."+(moduleName);
 
-		Class class1 = new Class();
-		class1.setSrcFilePath(CreatorUtil.getSrcFilePath(companyName, projectName));
 		class1.setClassPackage(CreatorUtil.getDAOClassPackage(
 				companyName, projectName, moduleName,tableName));
 		class1.setClassName(CreatorUtil.getJavaClassName(tableName) + "DAO");
@@ -322,12 +345,16 @@ public class CreatorUtil {
 			throw new Exception("表名称为不能为空！");
 		}
 
+
+
+		Class class1 = new Class();
+		class1.setSrcFilePath(CreatorUtil.getSrcFilePath(companyName, projectName));
+
 		companyName = StringUtils.isBlank(companyName)?"":"."+(companyName);
 		projectName = StringUtils.isBlank(projectName)?"":"."+(projectName);
 		moduleName = StringUtils.isBlank(moduleName)?"":"."+(moduleName);
 
-		Class class1 = new Class();
-		class1.setSrcFilePath(CreatorUtil.getSrcFilePath(companyName, projectName));
+
 		class1.setClassPackage(CreatorUtil.getDAOClassPackage(
 				companyName, projectName, moduleName, tableName));
 		class1.setClassName(CreatorUtil.getJavaClassName(tableName) + "Mapper");
@@ -340,12 +367,13 @@ public class CreatorUtil {
 			throw new Exception("表名称为不能为空！");
 		}
 
+		Class class1 = new Class();
+		class1.setSrcFilePath(CreatorUtil.getSrcFilePath(companyName, projectName));
+
 		companyName = StringUtils.isBlank(companyName)?"":"."+(companyName);
 		projectName = StringUtils.isBlank(projectName)?"":"."+(projectName);
 		moduleName = StringUtils.isBlank(moduleName)?"":"."+(moduleName);
 
-		Class class1 = new Class();
-		class1.setSrcFilePath(CreatorUtil.getSrcFilePath(companyName, projectName));
 		class1.setClassPackage(CreatorUtil.getDAOImplClassPackage(
 				companyName, projectName, moduleName, tableName));
 		class1.setClassName(CreatorUtil.getJavaClassName(tableName) + "DAOImpl");
@@ -358,12 +386,14 @@ public class CreatorUtil {
 			throw new Exception("表名称为不能为空！");
 		}
 
-		companyName = StringUtils.isBlank(companyName)?"":"."+(companyName);
-		projectName = StringUtils.isBlank(projectName)?"":"."+(projectName);
-		moduleName = StringUtils.isBlank(moduleName)?"":"."+(moduleName);
+
 
 		Class class1 = new Class();
 		class1.setSrcFilePath(CreatorUtil.getSrcFilePath(companyName, projectName));
+
+		companyName = StringUtils.isBlank(companyName)?"":"."+(companyName);
+		projectName = StringUtils.isBlank(projectName)?"":"."+(projectName);
+		moduleName = StringUtils.isBlank(moduleName)?"":"."+(moduleName);
 		class1.setClassPackage(CreatorUtil.getServiceClassPackage(
 				companyName, projectName, moduleName, tableName));
 		class1.setClassName("I" + CreatorUtil.getJavaClassName(tableName) + "SV");
@@ -376,12 +406,13 @@ public class CreatorUtil {
 			throw new Exception("表名称为不能为空！");
 		}
 
+		Class class1 = new Class();
+		class1.setSrcFilePath(CreatorUtil.getSrcFilePath(companyName, projectName));
+
 		companyName = StringUtils.isBlank(companyName)?"":"."+(companyName);
 		projectName = StringUtils.isBlank(projectName)?"":"."+(projectName);
 		moduleName = StringUtils.isBlank(moduleName)?"":"."+(moduleName);
 
-		Class class1 = new Class();
-		class1.setSrcFilePath(CreatorUtil.getSrcFilePath(companyName, projectName));
 		class1.setClassPackage(CreatorUtil.getServiceImplClassPackage(
 				companyName, projectName, moduleName, tableName));
 		class1.setClassName(CreatorUtil.getJavaClassName(tableName) + "SVImpl");
@@ -394,12 +425,15 @@ public class CreatorUtil {
 			throw new Exception("表名称为不能为空！");
 		}
 
+
+
+		Class class1 = new Class();
+		class1.setSrcFilePath(CreatorUtil.getSrcFilePath(companyName, projectName));
+
 		companyName = StringUtils.isBlank(companyName)?"":"."+(companyName);
 		projectName = StringUtils.isBlank(projectName)?"":"."+(projectName);
 		moduleName = StringUtils.isBlank(moduleName)?"":"."+(moduleName);
 
-		Class class1 = new Class();
-		class1.setSrcFilePath(CreatorUtil.getSrcFilePath(companyName, projectName));
 		class1.setClassPackage(CreatorUtil.getActionClassPackage(
 				companyName, projectName, moduleName,tableName));
 		class1.setClassName(CreatorUtil.getJavaClassName(tableName) + "Action");
@@ -413,12 +447,16 @@ public class CreatorUtil {
 			throw new Exception("表名称为不能为空！");
 		}
 
+
+
+		Class class1 = new Class();
+		class1.setSrcFilePath(CreatorUtil.getSrcFilePath(companyName, projectName));
+
 		companyName = StringUtils.isBlank(companyName)?"":"."+(companyName);
 		projectName = StringUtils.isBlank(projectName)?"":"."+(projectName);
 		moduleName = StringUtils.isBlank(moduleName)?"":"."+(moduleName);
 
-		Class class1 = new Class();
-		class1.setSrcFilePath(CreatorUtil.getSrcFilePath(companyName, projectName));
+
 		class1.setClassPackage(CreatorUtil.getActionClassPackage(
 				companyName, projectName, moduleName,tableName));
 		class1.setClassName(CreatorUtil.getJavaClassName(tableName) + "Controller");

@@ -1,6 +1,7 @@
 package com.hframework.web.config.bean.dataset;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import java.util.List;
 
@@ -13,6 +14,14 @@ public class Fields   {
     @XStreamAlias("field")
 	private List<Field> fieldList;
 
+    @XStreamAsAttribute
+    @XStreamAlias("code")
+    private String code;
+
+    @XStreamAsAttribute
+    @XStreamAlias("name")
+    private String name;
+
     public Fields() {
     }
    
@@ -24,5 +33,20 @@ public class Fields   {
      public void setFieldList(List<Field> fieldList){
      	this.fieldList = fieldList;
      }
-	 
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

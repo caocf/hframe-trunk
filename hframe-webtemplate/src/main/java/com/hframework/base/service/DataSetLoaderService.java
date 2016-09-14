@@ -7,12 +7,15 @@ import com.hframe.tag.bean.Option;
 import com.hframe.tag.bean.ShowType;
 import com.hframe.tag.util.ClassDeclaredUtils;
 import com.hframework.beans.class0.Class;
+import com.hframework.common.ext.CollectionUtils;
+import com.hframework.common.ext.Fetcher;
 import com.hframework.common.frame.cache.CacheFactory;
 import com.hframework.common.frame.cache.CacheKeyEnum;
 import com.hframework.common.frame.cache.PropertyConfigurerUtils;
 import com.hframework.common.util.FileUtils;
 import com.hframework.common.util.StringUtils;
 import com.hframework.common.util.message.XmlUtils;
+import com.hframework.web.bean.WebContextHelper;
 import com.hframework.web.config.bean.DataSet;
 import com.hframework.web.config.bean.dataset.Entity;
 import com.hframework.web.config.bean.dataset.EnumClass;
@@ -31,7 +34,6 @@ import java.util.*;
  */
 @Service()
 public class DataSetLoaderService {
-    private static String DATA_SET_ROOT_PATH = null;
 
     private static final String TITLE = "Title";
     private static final String VIEW_OBJECT = "ViewObject";
@@ -56,12 +58,14 @@ public class DataSetLoaderService {
     private Map<Long, HfmdEnumClass> hfmdEnumClassMap = null;
     private Map<Long, List<HfmdEnum>> hfmdEnumMap = null;
 
-
     public void load(ServletContext servletContext) {
+        load(servletContext,"hframe","hframe","hframe");
+    }
+
+    public void load(ServletContext servletContext,String companyCode, String programCode, String moduleCode) {
 // 1、获取spring对应的service层bean对象
         WebApplicationContext webappcontext = WebApplicationContextUtils
                 .getRequiredWebApplicationContext(servletContext);
-        DATA_SET_ROOT_PATH = servletContext.getRealPath("\\");
 
         IHfpmProgramSV iHfpmProgramSV = (IHfpmProgramSV) webappcontext.getBean("iHfpmProgramSV");
         IHfpmModuleSV iHfpmModuleSV = (IHfpmModuleSV) webappcontext.getBean("iHfpmModuleSV");
@@ -78,28 +82,52 @@ public class DataSetLoaderService {
         IHfmdEnumSV iHfmdEnumSV = (IHfmdEnumSV) webappcontext.getBean("iHfmdEnumSV");
 
         try {
+
+            Long programId = null;
+
             //获取项目信息
-            List<HfpmProgram> hfpmProgramAll = iHfpmProgramSV.getHfpmProgramAll();
+            HfpmProgram_Example programExample = new HfpmProgram_Example();
+            programExample.createCriteria().andHfpmProgramCodeEqualTo(programCode);
+            List<HfpmProgram> hfpmProgramAll = iHfpmProgramSV.getHfpmProgramListByExample(programExample);
+
+            if(hfpmProgramAll != null && hfpmProgramAll.size() > 0) {
+                programId = hfpmProgramAll.get(0).getHfpmProgramId();
+            }
             hfpmProgramMap = getHfpmProgramMap(hfpmProgramAll);
 
             //获取项目模块信息
-            List<HfpmModule> hfpmModuleAll = iHfpmModuleSV.getHfpmModuleAll();
+            HfpmModule_Example hfpmModuleExample = new HfpmModule_Example();
+            hfpmModuleExample.createCriteria().andHfpmProgramIdEqualTo(programId);
+            List<HfpmModule> hfpmModuleAll = iHfpmModuleSV.getHfpmModuleListByExample(hfpmModuleExample);
             hfpmModuleMap = getHfpmModuleMap(hfpmModuleAll);
 
             //获取实体信息
-            List<HfmdEntity> hfmdEntityAll = iHfmdEntitySV.getHfmdEntityAll();
+            HfmdEntity_Example hfmdEntityExample = new HfmdEntity_Example();
+            hfmdEntityExample.createCriteria().andHfpmProgramIdEqualTo(programId);
+            List<HfmdEntity> hfmdEntityAll = iHfmdEntitySV.getHfmdEntityListByExample(hfmdEntityExample);
             hfmdEntityIdEntityMap = getHfmdEntityIdEntityMap(hfmdEntityAll);
 
             //获取实体属性信息
-            List<HfmdEntityAttr> hfmdEntityAttrAll = iHfmdEntityAttrSV.getHfmdEntityAttrAll();
+            HfmdEntityAttr_Example hfmdEntityAttrExample = new HfmdEntityAttr_Example();
+            hfmdEntityAttrExample.createCriteria().andHfpmProgramIdEqualTo(programId);
+            List<HfmdEntityAttr> hfmdEntityAttrAll = iHfmdEntityAttrSV.getHfmdEntityAttrListByExample(hfmdEntityAttrExample);
             hfmdEntityAttrMap = getHfmdEntityAttrMap(hfmdEntityAttrAll);
             hfmdEntityAttrIdEntityAttrMap = getHfmdEntityAttrIdEntityAttrMap(hfmdEntityAttrAll);
 
             //获取数据集信息
-            List<HfpmDataSet> hfpmDataSetAll = iHfpmDataSetSV.getHfpmDataSetAll();
+            HfpmDataSet_Example hfpmDataSetExample = new HfpmDataSet_Example();
+            hfpmDataSetExample.createCriteria().andHfpmProgramIdEqualTo(programId);
+            List<HfpmDataSet> hfpmDataSetAll = iHfpmDataSetSV.getHfpmDataSetListByExample(hfpmDataSetExample);
 
             //获取数据字段信息<HfpmDataFieldId, List<HfpmDataField>>
-            List<HfpmDataField> hfpmDataFieldAll = iHfpmDataFieldSV.getHfpmDataFieldAll();
+            HfpmDataField_Example hfpmDataFieldExample = new HfpmDataField_Example();
+            hfpmDataFieldExample.createCriteria().andHfpmDataSetIdIn(
+                    CollectionUtils.fetch(hfpmDataSetAll, new Fetcher<HfpmDataSet, Long>() {
+                        public Long fetch(HfpmDataSet hfpmDataSet) {
+                            return hfpmDataSet.getHfpmDataSetId();
+                        }
+            }));
+            List<HfpmDataField> hfpmDataFieldAll = iHfpmDataFieldSV.getHfpmDataFieldListByExample(hfpmDataFieldExample);
             Map<Long, List<HfpmDataField>> hfpmDataFieldMap = getHfpmDataFieldMap(hfpmDataFieldAll);
 
             //获取展示方式信息
@@ -119,7 +147,7 @@ public class DataSetLoaderService {
             loadDataSet(hfpmDataSetAll, hfpmDataFieldMap);
 
 
-            createDataSetDescriptorXml(hfpmDataSetAll, hfpmDataFieldMap);
+            createDataSetDescriptorXml(hfpmDataSetAll, hfpmDataFieldMap, companyCode, programCode, moduleCode);
 
 
         } catch (Exception e) {
@@ -127,12 +155,20 @@ public class DataSetLoaderService {
         }
     }
 
-    private void createDataSetDescriptorXml(List<HfpmDataSet> hfpmDataSetAll, Map<Long, List<HfpmDataField>> hfpmDataFieldMap) throws IOException {
+    private void createDataSetDescriptorXml(List<HfpmDataSet> hfpmDataSetAll, Map<Long, List<HfpmDataField>> hfpmDataFieldMap, String companyCode, String programCode, String moduleCode) throws IOException {
         if (hfpmDataSetAll != null) {
             for (HfpmDataSet hfpmDataSet : hfpmDataSetAll) {
 
                 DataSet dataSet = new DataSet();
                 dataSet.setModule("hframe");
+                HfmdEntity hfmdEntity = hfmdEntityIdEntityMap.get(hfpmDataSet.getMainHfmdEntityId());
+                if(hfmdEntity != null) {
+                    HfpmModule module = hfpmModuleMap.get(hfmdEntity.getHfpmModuleId());
+                    if(module != null) {
+                        dataSet.setModule(module.getHfpmModuleCode());
+                    }
+                }
+
                 dataSet.setCode(hfpmDataSet.getHfpmDataSetCode());
                 dataSet.setName(hfpmDataSet.getHfpmDataSetName());
                 Fields fields = new Fields();
@@ -178,7 +214,13 @@ public class DataSetLoaderService {
                                 relEntityAttr = hfmdEntityAttrIdEntityAttrMap.get(151031185115L);
                                 field.getRel().setRelList(Lists.newArrayList(getRel(relEntityAttr)));;
                             }
+                        }else {
+                            if(hfmdEntityAttr.getIspk() == 1 && "select".equals(editType)) {
+                                Rel rel = getRel(hfmdEntityAttr);
+                                field.setRel(rel);
+                            }
                         }
+
                     }
 
                 }
@@ -194,9 +236,13 @@ public class DataSetLoaderService {
 
                 String dataSetXml = XmlUtils.writeValueAsString(dataSet);
 //                dataSetXml = dataSetXml.replaceAll("/name", "//name");
+
+
                 //获取属性文件路径
-                String dataSetFilePath =  PropertyConfigurerUtils.getProperty(CreatorConst.PROJECT_BASE_FILE_PATH) +
-                        "/hframe-webtemplate/src/main/resources/program/hframe/data/set/" + dataSet.getCode() + ".xml";
+                WebContextHelper contextHelper = new WebContextHelper(companyCode, programCode, null, null);
+                String dataSetFilePath = contextHelper.programConfigRootDir + "/" + contextHelper.programConfigDataSetDir + "/" + dataSet.getCode() + ".xml";
+//                String dataSetFilePath =  PropertyConfigurerUtils.getProperty(CreatorConst.PROJECT_BASE_FILE_PATH) +
+//                        "/hframe-webtemplate/src/main/resources/program/hframe/data/set/" + dataSet.getCode() + ".xml";
                 System.out.println(dataSetFilePath);
                 System.out.println(dataSetXml);
                 FileUtils.writeFile(dataSetFilePath, dataSetXml);
@@ -221,9 +267,6 @@ public class DataSetLoaderService {
 //
 //                map = getDataSetMap(hfpmDataSet,entityCodes,hfpmDataFieldList,2);
 //                CacheFactory.put(CacheKeyEnum.DS_SHOW_CACHE.name(),hfpmDataSet.getHfpmDataSetCode(),map);
-
-
-
 
             }
         }

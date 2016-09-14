@@ -12,8 +12,8 @@ import com.hframework.web.config.bean.component.AppendElement;
 import com.hframework.web.config.bean.component.Effect;
 import com.hframework.web.config.bean.component.Element;
 import com.hframework.web.config.bean.component.Event;
-import com.hframework.web.config.bean.dataset.Field;
-import com.hframework.web.config.bean.dataset.Rel;
+import com.hframework.web.config.bean.dataset.*;
+import com.hframework.web.config.bean.dataset.Enum;
 import com.hframework.web.config.bean.mapper.Mapping;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -120,26 +120,42 @@ public class ComponentDataContainer {
             peddingEventElement(endOfRowList, mapping, dataSetDescriptor,componentDescriptor);
             peddingEventElement(endOfCompList, mapping, dataSetDescriptor,componentDescriptor);
             peddingEventElement(elementOfCompList, mapping, dataSetDescriptor, componentDescriptor);
-            for (EventElement eventElement : elementOfCompList) {
-                elementOfRowMap.put(eventElement.getAnchorName(),eventElement);
+        }
+    }
+
+    public void setElementOfRowMap(){
+        for (EventElement eventElement : elementOfCompList) {
+            if(eventElement.getAnchorName().contains("_")) {
+                eventElement.setAnchorName(ResourceWrapper.JavaUtil.getJavaVarName(eventElement.getAnchorName()));
             }
+            if(eventElement.getParams().contains("_")) {
+                String value = ResourceWrapper.JavaUtil.getJavaVarName(eventElement.getParams());
+                eventElement.setParams(value + "={" + value + "}");
+            }
+
+
+            elementOfRowMap.put(eventElement.getAnchorName(), eventElement);
         }
     }
 
     private void peddingEventElement(List<EventElement> eventElementList, Mapping mapping, DataSetDescriptor dataSetDescriptor,ComponentDescriptor componentDescriptor) {
+
+//        if(componentDescriptor.getComponent().getId().equals("dynTree")) {
+//            System.out.println("1");
+//        }
 
         String value = mapping.getValue();
         List<String> varList = RegexUtils.findVarList(value);
         for (String var : varList) {
             DataSet dataSet = dataSetDescriptor.getDataSet();
             if("id".equals(var)) {
-                value = ResourceWrapper.JavaUtil.getJavaVarName(value.replace("${" + var + "}",dataSet.getCode() + "_" + var));
+                value = ResourceWrapper.JavaUtil.getJavaVarName(value.replace("${" + var + "}",dataSet.getEventObjectCode() + "_" + var));
             }else if("name".equals(var)) {
-                value = ResourceWrapper.JavaUtil.getJavaVarName(value.replace("${" + var + "}", dataSet.getCode() + "_" + var));
+                value = ResourceWrapper.JavaUtil.getJavaVarName(value.replace("${" + var + "}", dataSet.getEventObjectCode() + "_" + var));
             }else if(var != null && var.endsWith("ByAjax")) {//"createByAjax".equals(var) || "updateByAjax".equals(var)|| "deleteByAjax".equals(var)
                 value = value.replace("${" + var + "}", /*ResourceWrapper.JavaUtil.getJavaVarName(dataSet.getModule())
-                        + "/" + */ResourceWrapper.JavaUtil.getJavaVarName(dataSet.getCode()) + "/" + var);
-            }else if(var != null && var.contains(":")) {//"createByAjax".equals(var) || "updateByAjax".equals(var)|| "deleteByAjax".equals(var)
+                        + "/" + */ResourceWrapper.JavaUtil.getJavaVarName(dataSet.getEventObjectCode()) + "/" + var);
+            }else if(var != null && var.contains(":")) {
 
                 String type = var.substring(0,var.indexOf(":"));
                 String endChars = var.substring(var.indexOf(":") + 1);
@@ -148,14 +164,14 @@ public class ComponentDataContainer {
                         getComponentDescriptor(type) != null) {
                     DataSet relDataSet = componentDescriptor.getPageDescriptor().
                             getComponentDescriptor(type).getDataSetDescriptor().getDataSet();
-                    value = value.replace("${" + var + "}", relDataSet.getCode() + "_" + endChars);
+                    value = value.replace("${" + var + "}", relDataSet.getEventObjectCode() + "_" + endChars);
                 }else {
-                    value = value.replace("${" + var + "}", dataSet.getCode() + "_" + var);
+                    value = value.replace("${" + var + "}", dataSet.getEventObjectCode() + "_" + var);
                 }
 
 
             }else {//create, edit , detail, batchDelete
-                value = value.replace("${" + var + "}", dataSet.getCode() + "_" + var);
+                value = value.replace("${" + var + "}", dataSet.getEventObjectCode() + "_" + var);
             }
 
 
@@ -163,6 +179,9 @@ public class ComponentDataContainer {
 
 
         for (EventElement eventElement : eventElementList) {
+            if(value.contains("_")) {
+                value = ResourceWrapper.JavaUtil.getJavaVarName(value);
+            }
             eventElement.setParams(eventElement.getParams() == null ? null :
                     eventElement.getParams().replace("${" + mapping.getId() + "}", value + "={" + value + "}"));
             eventElement.setAction(eventElement.getAction() == null ? null :
@@ -668,6 +687,9 @@ public class ComponentDataContainer {
             for (String var : varList) {
                 DataSet dataSet = dataSetDescriptor.getDataSet();
                 if("columns".equals(var)) {
+                    if(dataSet.getFields() == null) {
+                        System.out.println(1);
+                    }
                     List<Field> fields = dataSet.getFields().getFieldList();
                     for (Field field : fields) {
                         Map<String, String> tempMap= new LinkedHashMap<String, String>();
@@ -744,6 +766,15 @@ public class ComponentDataContainer {
 //                    String entityKey = entityCode.substring(entityCode.indexOf("/") + 1, entityCode.lastIndexOf("/"));
 //                    String entityShowName = entityCode.substring(entityCode.lastIndexOf("/"));
                     return sb.toString();
+                }
+
+                if(field.getEnumList() != null && field.getEnumList().size() > 0) {
+                    JSONObject enums = new JSONObject();
+                    for (Enum anEnum : field.getEnumList()) {
+                        enums.put(anEnum.getValue(),anEnum.getName());
+                    }
+
+                    return "JSON:" + enums.toJSONString().replaceAll("\"","'");
                 }
             }
             return null;
@@ -940,6 +971,9 @@ public class ComponentDataContainer {
             express = mapping.getValue();
             List<String> varList = RegexUtils.findVarList(express);
             for (String var : varList) {
+                if(dataSetDescriptor == null) {
+                    System.out.println(dataSetDescriptor);
+                }
                 DataSet dataSet = dataSetDescriptor.getDataSet();
                 if("code".equals(var)) {
                     express = express.replace("${code}",dataSet.getCode());

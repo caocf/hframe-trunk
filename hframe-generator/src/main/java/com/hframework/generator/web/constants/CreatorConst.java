@@ -14,6 +14,7 @@ public class CreatorConst {
 
 
 	public static String SQL_FILE_PATH = "sql_file_path";
+	public static String TARGET_PROJECT_BASE_PATH = "target_project_base_path";
 	public static String GENERATOR_CONFIG_PATH = "generator_config_path";
 
 

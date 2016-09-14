@@ -29,7 +29,7 @@
             <property name="forceBigDecimals" value="false" />
         </javaTypeResolver>
         <!-- BO 对象实体 -->
-        <javaModelGenerator targetPackage="com.hframe.domain.model" targetProject="D:/my_workspace/hframe-trunk//hframe-core/src/main/java">
+        <javaModelGenerator targetPackage="com.hframe.domain.model" targetProject="D:/my_workspace/hframe-oa/\hframe-core/src/main/java">
             <property name="constructorBased" value="true"/>
             <property name="enableSubPackages" value="false"/>
             <property name="immutable" value="true"/>
@@ -38,12 +38,12 @@
         </javaModelGenerator>
 
         <!-- mapper配置文件 -->
-        <sqlMapGenerator targetPackage="mapper" targetProject="D:/my_workspace/hframe-trunk//hframe-core/src/main/resources">
+        <sqlMapGenerator targetPackage="mapper" targetProject="D:/my_workspace/hframe-oa/\hframe-core/src/main/resources">
             <property name="enableSubPackages" value="false"/>
         </sqlMapGenerator>
         <!-- DAO 对象实体 -->
         <!-- ANNOTATEDMAPPER  MIXEDMAPPER   XMLMAPPER-->
-        <javaClientGenerator targetPackage="com.hframe.dao" targetProject="D:/my_workspace/hframe-trunk//hframe-core/src/main/java" type="XMLMAPPER">
+        <javaClientGenerator targetPackage="com.hframe.dao" targetProject="D:/my_workspace/hframe-oa/\hframe-core/src/main/java" type="XMLMAPPER">
             <property name="enableInsert" value="true"/>
             <property name="enableSubPackages" value=""/>
             <property name="exampleMethodVisibility" value="false"/>
@@ -51,9 +51,9 @@
             <property name="rootInterface" value=""/>
         </javaClientGenerator>
 
-         <table schema="" tableName="hfpm_page_component">
-            <property name="chineseName" value="页面组件"></property>
-            <generatedKey column="hfpm_page_component_id" sqlStatement="MySql" identity="true" />
+         <table schema="" tableName="sec_org">
+            <property name="chineseName" value=""></property>
+            <generatedKey column="sec_org_id" sqlStatement="MySql" identity="true" />
         </table>
 
 

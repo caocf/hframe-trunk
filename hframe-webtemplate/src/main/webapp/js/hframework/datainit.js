@@ -9,6 +9,24 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
         var  dataCode = $this.attr("data-code");
         var  dataCondition = $this.attr("data-condition");
         var dataValue = $this.attr("data-value");
+
+        if(dataCode.startsWith("JSON:")) {
+            var enums  =JSON.parse(dataCode.substr(5).replace(new RegExp(/(')/g),'"'));
+            var _html = [];
+            _html.push('<option value=""> - 请选择 - </option>');
+            for(var key in enums) {
+                _html.push('<option value="' + key + '">' + enums[key] + '</option>');
+            }
+            $this.html(_html.join(''));
+            $this.val(dataValue);
+            try{
+                $this.change();
+            }catch(e){
+            }
+
+            return ;
+        }
+
         var _url =  "/dictionary.json";
         var _data = {"dataCode":dataCode,"dataCondition" : dataCondition};
         ajax.Post(_url,_data,function(data){
@@ -79,6 +97,17 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
         }
 
 
+    }
+
+    $.reloadDisplay = function (_$this) {
+        $(_$this).find("[data-code][data-condition]").each(function(){
+            var $this = $(this);
+            if($this.is('select')) {
+                $.selectLoad($this);
+            }else {
+                $.selectPanelLoad($this);
+            }
+        });
     }
 
     $("[data-code][data-condition]").each(function(){

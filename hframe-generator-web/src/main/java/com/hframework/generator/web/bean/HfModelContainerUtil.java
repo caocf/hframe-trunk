@@ -72,8 +72,9 @@ public class HfModelContainerUtil {
         for (String entityCode : targetEntityMap.keySet()) {
             HfmdEntity targetEntity = targetEntityMap.get(entityCode);
             if(dbEntityMap == null) {
-                addModelContainer.getEntityMap().put(entityCode, targetEntity);
-                continue;
+                dbEntityMap = new HashMap<String, HfmdEntity>();
+//                addModelContainer.getEntityMap().put(entityCode, targetEntity);
+//                continue;
             }
             HfmdEntity dbEntity = dbEntityMap.get(entityCode);
             if(dbEntity == null) {
@@ -104,8 +105,9 @@ public class HfModelContainerUtil {
         for (String emtityAttrCode : targetEntityAttrMap.keySet()) {
             HfmdEntityAttr targetEntityAttr = targetEntityAttrMap.get(emtityAttrCode);
             if(dbEntityAttrMap == null) {
-                addModelContainer.getEntityAttrMap().put(emtityAttrCode, targetEntityAttr);
-                continue;
+                dbEntityAttrMap = new HashMap<String, HfmdEntityAttr>();
+//                addModelContainer.getEntityAttrMap().put(emtityAttrCode, targetEntityAttr);
+//                continue;
             }
             HfmdEntityAttr dbEntityAttr = dbEntityAttrMap.get(emtityAttrCode);
             if(dbEntityAttr == null) {
@@ -117,6 +119,17 @@ public class HfModelContainerUtil {
                         targetEntityAttr.getHfmdEntityAttrCode().toLowerCase()));
 
             }
+
+
+            if(targetEntityAttr != null && StringUtils.isBlank(targetEntityAttr.getSize())) {
+                Integer defaultSize = HfmdEntityAttr1AttrTypeEnum.getDefaultSize(targetEntityAttr.getAttrType());
+                if(defaultSize != null && defaultSize > 0) {
+                    targetEntityAttr.setSize(String.valueOf(defaultSize));
+                }
+            }
+
+
+
             if(dbEntityAttr == null) {
                 addModelContainer.getEntityAttrMap().put(emtityAttrCode,targetEntityAttr);
             }else if(dbEntityAttr.getAttrType() == null ) {
@@ -183,10 +196,6 @@ public class HfModelContainerUtil {
                 dbEntityAttr.setNullable(targetEntityAttr.getNullable());
                 modModelContainer.getEntityAttrMap().put(emtityAttrCode,dbEntityAttr);
             }else if ((dbEntityAttr.getSize() != null && !dbEntityAttr.getSize().equals(targetEntityAttr.getSize()))) {
-                if(targetEntityAttr.getAttrType() == HfmdEntityAttr1AttrTypeEnum.BIGINT.getIndex()
-                        && StringUtils.isBlank(targetEntityAttr.getSize()) && "20".equals(dbEntityAttr.getSize())) {
-                    continue;
-                }
                 System.out.println("=> diff:curSize : " + dbEntityAttr.getSize() +
                         "; targetSize : " + targetEntityAttr.getSize());
                 dbEntityAttr.setHfmdEntityAttrName(targetEntityAttr.getHfmdEntityAttrName());
@@ -237,13 +246,69 @@ public class HfModelContainerUtil {
         }
 
         HfModelContainer addModelContainer = resultModelContainers[0];
+        resetReallyDBEntity(addModelContainer, dbModelContainer);
         mergerModelContainerSelf(addModelContainer, dbModelContainer);
 
         HfModelContainer modModelContainer = resultModelContainers[1];
+        resetReallyDBEntity(modModelContainer,dbModelContainer);
         mergerModelContainerSelf(modModelContainer, dbModelContainer);
 
 
         return resultModelContainers;
+    }
+
+    private static void resetReallyDBEntity(HfModelContainer addModelContainer, HfModelContainer dbModelContainer) {
+        Map<String, HfmdEntity> entityMap = addModelContainer.getEntityMap();
+        for (String entityCode : entityMap.keySet()) {
+            if(dbModelContainer.getEntity(entityCode) != null) {
+                entityMap.put(entityCode, dbModelContainer.getEntity(entityCode) );
+            }
+        }
+
+        Map<String, HfmdEntityAttr> entityAttrMap = addModelContainer.getEntityAttrMap();
+        for (String entityAttrCode : entityAttrMap.keySet()) {
+            if(dbModelContainer.getEntityAttrMap().get(entityAttrCode) != null) {
+                entityAttrMap.put(entityAttrCode, dbModelContainer.getEntityAttrMap().get(entityAttrCode));
+            }
+        }
+    }
+
+    public static HfModelContainer[] mergerEntityToDataSetReturnOnly(HfModelContainer[] resultModelContainers, HfModelContainer dbModelContainer) {
+
+        if(resultModelContainers == null) {
+            return null;
+        }
+
+        HfModelContainer addModelContainer = resultModelContainers[0];
+        resetReallyDBEntity(addModelContainer, dbModelContainer);
+
+        mergerModelContainerSelf(addModelContainer, dbModelContainer);
+        //避免重复执行
+        Map<String, HfpmDataSet> dataSetMap = addModelContainer.getDataSetMap();
+        Iterator<Map.Entry<String, HfpmDataSet>> iterator = dataSetMap.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<String, HfpmDataSet> next = iterator.next();
+            String dataSetCode = next.getKey();
+            if(dbModelContainer.getDataSetMap().containsKey(dataSetCode)) {
+                iterator.remove();
+                addModelContainer.getDataFieldListMap().remove(dataSetCode);
+            }
+        }
+
+
+        HfModelContainer modModelContainer = resultModelContainers[1];
+        resetReallyDBEntity(modModelContainer, dbModelContainer);
+        mergerModelContainerSelf(modModelContainer, dbModelContainer);
+
+
+        return new HfModelContainer[]{getDataSetOnly(addModelContainer), getDataSetOnly(modModelContainer)};
+    }
+
+    private static HfModelContainer getDataSetOnly(HfModelContainer originContainer) {
+        HfModelContainer result = new HfModelContainer();
+        result.setDataSetMap(originContainer.getDataSetMap());
+        result.setDataFieldListMap(originContainer.getDataFieldListMap());
+        return result;
     }
 
     private static void mergerModelContainerSelf(HfModelContainer modelContainer, HfModelContainer dbModelContainer) {
@@ -260,7 +325,8 @@ public class HfModelContainerUtil {
             for (String entityCode : entityMap.keySet()) {
                 HfmdEntity hfmdEntity = entityMap.get(entityCode);
                 dataSetMap.put(entityCode,getDataSetFromEntity(hfmdEntity));
-                dataSetMap.put(entityCode+"_DS4Q",getQryDataSetFromEntity(hfmdEntity));
+                dataSetMap.put(entityCode + "_DS4Q", getQryDataSetFromEntity(hfmdEntity));
+
 
             }
         }
@@ -269,7 +335,7 @@ public class HfModelContainerUtil {
         modelContainer.setDataFieldListMap(dataFieldListMap);
         if (entityAttrMap != null) {
             for (String entityAttrEntityCode : entityAttrMap.keySet()) {
-                String entityCode = entityAttrEntityCode.substring(0,entityAttrEntityCode.indexOf("."));
+                String entityCode = entityAttrEntityCode.substring(0, entityAttrEntityCode.indexOf("."));
                 HfmdEntityAttr hfmdEntityAttr = entityAttrMap.get(entityAttrEntityCode);
                 if(!dataFieldListMap.containsKey(entityCode)) {
                     dataFieldListMap.put(entityCode,new ArrayList<HfpmDataField>());
@@ -282,9 +348,14 @@ public class HfModelContainerUtil {
                     dataSet =  dbModelContainer.getDataSetMap().get(entityCode);
                 }
 
+                //脏数据
+                if(dataSet == null) {
+                    continue;
+                }
+
                 dataFieldListMap.get(entityCode).add(getDataFieldFromEntityAttr(hfmdEntityAttr,dataSet));
 
-                if(!dataFieldListMap.containsKey(entityCode+"_DS4Q")) {
+                if(!dataFieldListMap.containsKey(entityCode + "_DS4Q")) {
                     dataFieldListMap.put(entityCode+"_DS4Q",new ArrayList<HfpmDataField>());
                 }
 
@@ -402,7 +473,7 @@ public class HfModelContainerUtil {
 
     private static String getFieldShowCodeByEntityAttr(HfmdEntityAttr hfmdEntityAttr) {
 
-        if(hfmdEntityAttr.getHfmdEntityAttrCode().toLowerCase().endsWith("_id") && hfmdEntityAttr.getIspk() == 1) {
+        if(hfmdEntityAttr.getHfmdEntityAttrCode().toLowerCase().endsWith("_id") && hfmdEntityAttr.getIspk() != null && hfmdEntityAttr.getIspk() == 1) {
             return "011";
         }else if("create_time".equals(hfmdEntityAttr.getHfmdEntityAttrCode().toLowerCase())
                 || "op_id".equals(hfmdEntityAttr.getHfmdEntityAttrCode().toLowerCase())) {
@@ -447,7 +518,13 @@ public class HfModelContainerUtil {
         for (HfmdEntity hfmdEntity : newTableMap.keySet()) {
             StringBuffer sql = new StringBuffer();
             sql.append("create table " + hfmdEntity.getHfmdEntityCode() + "(").append("\n");
-            for (HfmdEntityAttr hfmdEntityAttr : newTableMap.get(hfmdEntity)) {
+            List<HfmdEntityAttr> hfmdEntityAttrs = newTableMap.get(hfmdEntity);
+            Collections.sort(hfmdEntityAttrs, new Comparator<HfmdEntityAttr>() {
+                public int compare(HfmdEntityAttr o1, HfmdEntityAttr o2) {
+                    return o1.getPri().compareTo(o2.getPri());
+                }
+            });
+            for (HfmdEntityAttr hfmdEntityAttr : hfmdEntityAttrs) {
                 System.out.println("->" + hfmdEntity.getHfmdEntityCode());
                 sql.append("   " + getColumnInfo(hfmdEntityAttr)).append(",").append("\n");
             }

@@ -22,6 +22,8 @@ public class Program   {
 	private String welcome;
 	@XStreamAlias("superManager")
 	private SuperManager superManager;
+    @XStreamAlias("company")
+    private String company;
 
     public Program() {
     }
@@ -82,5 +84,12 @@ public class Program   {
      public void setSuperManager(SuperManager superManager){
      	this.superManager = superManager;
      }
-	 
+
+     public String getCompany() {
+      return company;
+     }
+
+     public void setCompany(String company) {
+      this.company = company;
+     }
 }

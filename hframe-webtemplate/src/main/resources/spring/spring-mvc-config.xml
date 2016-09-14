@@ -22,7 +22,7 @@
 
     <!-- 组件自动扫描 （注解） -->
     <context:component-scan base-package="com">
-        <context:include-filter type="regex" expression="com.hframework.controller.*;com.hframe.controller.*"/>
+        <context:include-filter type="regex" expression="com.hframework.controller.*;com.hframework.interceptor.*;com.hframe.controller.*"/>
     </context:component-scan>
     <!-- Configures support for @Controllers -->
     <mvc:annotation-driven  conversion-service="conversionService">
@@ -42,6 +42,10 @@
     <!--<mvc:annotation-driven conversion-service=""/>-->
     <!--&lt;!&ndash; 对静态资源文件的访问 &ndash;&gt;-->
     <mvc:default-servlet-handler/>
+
+    <aop:aspectj-autoproxy></aop:aspectj-autoproxy>
+    <!--<bean class="com.hframework.interceptor.DataSetJoinInvokeInterceptor"></bean>-->
+    <bean class="org.springframework.aop.aspectj.annotation.AnnotationAwareAspectJAutoProxyCreator" />
 
 
     <!--说明：设置Jackson日期格式化后对于String，Date的互换按照指定格式要求，否则需求使用DateJsonDeserializer，DateJsonSerializer注解标识每个DTO中date对象-->

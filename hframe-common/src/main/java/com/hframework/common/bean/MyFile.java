@@ -12,6 +12,8 @@ public class MyFile {
 	
 	private String filename;
 	private String fullname;
+
+	private String shortname;
 	
 	private long pri;
 	
@@ -84,9 +86,12 @@ public class MyFile {
 		this.pri = pri;
 	}
 
-	
-	
-	
-	
-	
+
+	public String getShortname() {
+		return shortname;
+	}
+
+	public void setShortname(String shortname) {
+		this.shortname = shortname;
+	}
 }

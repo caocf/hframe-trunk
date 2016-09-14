@@ -1,6 +1,9 @@
 package com.hframework.common.ext;
 
 
+import org.apache.commons.beanutils.BeanUtils;
+
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -192,6 +195,30 @@ public class CollectionUtils {
         return srcList;
     }
 
+    public static <E> List<E> copy(List<E> originList) {
+        if(originList == null) {
+            return null;
+        }
+
+        List<E> targetList = new ArrayList<E>();
+
+        for (E e : originList) {
+            try {
+                targetList.add((E) BeanUtils.cloneBean(e));
+            } catch (IllegalAccessException e1) {
+                e1.printStackTrace();
+            } catch (InstantiationException e1) {
+                e1.printStackTrace();
+            } catch (InvocationTargetException e1) {
+                e1.printStackTrace();
+            } catch (NoSuchMethodException e1) {
+                e1.printStackTrace();
+            }
+        }
+
+        return targetList;
+    }
+
     /**
      * Map删除
      * @param srcMap
@@ -220,6 +247,18 @@ public class CollectionUtils {
             srcMap.put(key,srcList);
         }
         return srcMap;
+    }
+
+
+    public static <F, T> List<T> fetch(List<F> originList, Fetcher<F, T> fetcher) {
+        if(originList == null) {
+            return null;
+        }
+        List<T> targetList = new ArrayList<T>();
+        for (F f : originList) {
+            targetList.add(fetcher.fetch(f));
+        }
+        return targetList;
     }
 
     public static <F,T> List<T> from(List<F> originList, Mapping<F, T> mapping) {

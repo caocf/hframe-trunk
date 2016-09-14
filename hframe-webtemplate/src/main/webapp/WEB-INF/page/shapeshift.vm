@@ -35,6 +35,7 @@
 
 <div class="row-fluid">
     <div class="span3">
+        待处理实体
         <div class="dragbox">
             #foreach($item in $ExtMap.TodoList)
                 <div class="row-fluid" data-id="$!item.hfmdEntityCode">$item.hfmdEntityName【$item.hfmdEntityCode】</div>
@@ -44,6 +45,17 @@
     <div class="span9">
         #foreach($module in $ExtMap.DownList.keySet())
             <div class="dragbox-area" module-code="$module.code">
+                $module.code
+##                #if(${ExtMap.DownList.get($module).size()} == 0)
+##                    <div class="dragbox">
+##                    </div>
+##                    <script>
+##                        $($newGrid).shapeshift({
+##                            colWidth: 100
+##                        });
+##                    </script>
+##                #end
+
                 #foreach($rows in $ExtMap.DownList.get($module))
                 <div class="dragbox">
                     #foreach($item in $rows)

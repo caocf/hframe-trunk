@@ -1,5 +1,6 @@
 package com.hframework.web.config.bean;
 
+import com.hframework.common.util.StringUtils;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import java.util.List;
@@ -16,6 +17,8 @@ public class DataSet   {
     private String code;
     @XStreamAlias("icon")
     private String icon;
+    @XStreamAlias("source")
+    private String source;
 	@XStreamImplicit
     @XStreamAlias("entity")
 	private List<Entity> entityList;
@@ -23,6 +26,10 @@ public class DataSet   {
 	private String name;
 	@XStreamAlias("fields")
 	private Fields fields;
+
+    //文件编辑器用到
+    @XStreamAlias("descriptor")
+    private Descriptor descriptor;
 
     public DataSet() {
     }
@@ -39,6 +46,22 @@ public class DataSet   {
      public String getCode(){
      	return code;
      }
+
+    /**
+     * 获取数据库对应的实体编码
+     * @return
+     */
+    public String getEventObjectCode(){
+        if(this.getEntityList()  == null || this.getEntityList().size() == 0) {
+            return code;
+        }
+        if(this.getEntityList().size() == 1) {
+            return StringUtils.isNotBlank(getEntityList().get(0).getText()) ? getEntityList().get(0).getText() : code;
+        }else {
+            return code;
+        }
+    }
+
 
      public void setCode(String code){
      	this.code = code;
@@ -75,4 +98,20 @@ public class DataSet   {
      public void setIcon(String icon) {
       this.icon = icon;
      }
+
+    public Descriptor getDescriptor() {
+        return descriptor;
+    }
+
+    public void setDescriptor(Descriptor descriptor) {
+        this.descriptor = descriptor;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
 }

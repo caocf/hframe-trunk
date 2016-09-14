@@ -143,7 +143,17 @@ public class HfsecMenuController   {
     public ResultData detail(@ModelAttribute("hfsecMenu") HfsecMenu hfsecMenu){
         logger.debug("request : {},{}", hfsecMenu.getHfsecMenuId(), hfsecMenu);
         try{
-            HfsecMenu result = iHfsecMenuSV.getHfsecMenuByPK(hfsecMenu.getHfsecMenuId());
+            HfsecMenu result = null;
+            if(hfsecMenu.getHfsecMenuId() != null) {
+                result = iHfsecMenuSV.getHfsecMenuByPK(hfsecMenu.getHfsecMenuId());
+            }else {
+                HfsecMenu_Example example = ExampleUtils.parseExample(hfsecMenu, HfsecMenu_Example.class);
+                List<HfsecMenu> list = iHfsecMenuSV.getHfsecMenuListByExample(example);
+                if(list != null && list.size() == 1) {
+                    result = list.get(0);
+                }
+            }
+
             if(result != null) {
                 return ResultData.success(result);
             }else {

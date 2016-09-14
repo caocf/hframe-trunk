@@ -804,6 +804,126 @@ public class HfpmProgramCfg_Example {
             addCriterion("del_flag not between", value1, value2, "delFlag");
             return (Criteria) this;
         }
+
+        public Criteria andHfcfgDbConnectIdIsNull() {
+            addCriterion("hfcfg_db_connect_id is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfcfgDbConnectIdIsNotNull() {
+            addCriterion("hfcfg_db_connect_id is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfcfgDbConnectIdEqualTo(Long value) {
+            addCriterion("hfcfg_db_connect_id =", value, "hfcfgDbConnectId");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfcfgDbConnectIdNotEqualTo(Long value) {
+            addCriterion("hfcfg_db_connect_id <>", value, "hfcfgDbConnectId");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfcfgDbConnectIdGreaterThan(Long value) {
+            addCriterion("hfcfg_db_connect_id >", value, "hfcfgDbConnectId");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfcfgDbConnectIdGreaterThanOrEqualTo(Long value) {
+            addCriterion("hfcfg_db_connect_id >=", value, "hfcfgDbConnectId");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfcfgDbConnectIdLessThan(Long value) {
+            addCriterion("hfcfg_db_connect_id <", value, "hfcfgDbConnectId");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfcfgDbConnectIdLessThanOrEqualTo(Long value) {
+            addCriterion("hfcfg_db_connect_id <=", value, "hfcfgDbConnectId");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfcfgDbConnectIdIn(List<Long> values) {
+            addCriterion("hfcfg_db_connect_id in", values, "hfcfgDbConnectId");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfcfgDbConnectIdNotIn(List<Long> values) {
+            addCriterion("hfcfg_db_connect_id not in", values, "hfcfgDbConnectId");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfcfgDbConnectIdBetween(Long value1, Long value2) {
+            addCriterion("hfcfg_db_connect_id between", value1, value2, "hfcfgDbConnectId");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfcfgDbConnectIdNotBetween(Long value1, Long value2) {
+            addCriterion("hfcfg_db_connect_id not between", value1, value2, "hfcfgDbConnectId");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmProgramIdIsNull() {
+            addCriterion("hfpm_program_id is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmProgramIdIsNotNull() {
+            addCriterion("hfpm_program_id is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmProgramIdEqualTo(Long value) {
+            addCriterion("hfpm_program_id =", value, "hfpmProgramId");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmProgramIdNotEqualTo(Long value) {
+            addCriterion("hfpm_program_id <>", value, "hfpmProgramId");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmProgramIdGreaterThan(Long value) {
+            addCriterion("hfpm_program_id >", value, "hfpmProgramId");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmProgramIdGreaterThanOrEqualTo(Long value) {
+            addCriterion("hfpm_program_id >=", value, "hfpmProgramId");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmProgramIdLessThan(Long value) {
+            addCriterion("hfpm_program_id <", value, "hfpmProgramId");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmProgramIdLessThanOrEqualTo(Long value) {
+            addCriterion("hfpm_program_id <=", value, "hfpmProgramId");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmProgramIdIn(List<Long> values) {
+            addCriterion("hfpm_program_id in", values, "hfpmProgramId");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmProgramIdNotIn(List<Long> values) {
+            addCriterion("hfpm_program_id not in", values, "hfpmProgramId");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmProgramIdBetween(Long value1, Long value2) {
+            addCriterion("hfpm_program_id between", value1, value2, "hfpmProgramId");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmProgramIdNotBetween(Long value1, Long value2) {
+            addCriterion("hfpm_program_id not between", value1, value2, "hfpmProgramId");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {

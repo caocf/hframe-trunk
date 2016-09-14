@@ -5,13 +5,12 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
     $(".dragbox").shapeshift({
     });
 
-
     $(".addGrid").bind("click",function(){
         var $newGrid = $('<div class="dragbox"></div>');
         $(this).parent(".dragbox-oper").before($newGrid);
 
         $($newGrid).shapeshift({
-            colWidth: 100
+            colWidth: 200
         });
     });
 
@@ -20,12 +19,13 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
         $(this).parent().parent().find(".dragbox").each(function(){
             var dataIds = "";
             $(this).find("div[data-id]").each(function(){
-                dataIds = dataIds  + $(this).attr("data-id") + ",";
+                dataIds = dataIds  + $(this).attr("data-id") + "|";
             });
             array.push(dataIds);
         });
 
-        var _url = "/extend/page_generate.json";
+        var $pageContextValues = $($("#breadcrumb").find("form")[0]).serialize();
+        var _url = "/extend/page_generate.json" + "?" + $pageContextValues;
         var _data = {};
         _data["dataIds"] = array;
         _data["moduleCode"] = $(this).parents(".dragbox-area[module-code]").attr("module-code");
@@ -39,6 +39,18 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
         });
         console.info(_data);
     });
+
+    function initDragBox() {
+        $(".dragbox-area").each(function(){
+            if($(this).find("div[class=dragbox]").size() == 0){
+                $(this).find("button[class=addGrid]").click();
+            };
+        });
+    }
+
+    initDragBox();
+
+
 
 });
 

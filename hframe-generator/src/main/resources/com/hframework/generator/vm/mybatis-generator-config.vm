@@ -1,12 +1,13 @@
 #set($map=$MAP)
 #set($tables = $map.get("Tables"))
 #set($rootPath = $map.get("RootPath"))
+#set($jdbc = $map.get("Jdbc"))
 <?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE generatorConfiguration
         PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
         "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
 <generatorConfiguration>
-    <properties resource="properties/dataSource.properties"></properties>
+    <properties url="file:///D:/my_workspace/hframe-trunk/hframe-core/src/main/resources/properties/dataSource.properties"></properties>
     <!-- <classPathEntry location="E:\\Users\\zhangqh6\\.m2\\repository\\mysql\\mysql-connector-java\\5.1.21\\mysql-connector-java-5.1.21.jar"/> -->
     <context id="default" targetRuntime="MyBatis3">
 
@@ -26,7 +27,7 @@
             <property name="suppressAllComments" value="true" />
             <property name="suppressDate" value="false" />
         </commentGenerator>
-        <jdbcConnection driverClass="${jdbc.driverClass}" connectionURL="${jdbc.url}" userId="${jdbc.user}" password="${jdbc.password}">
+        <jdbcConnection driverClass="$!{jdbc.driverClass}" connectionURL="${jdbc.url}" userId="${jdbc.user}" password="${jdbc.password}">
         </jdbcConnection>
         <javaTypeResolver >
             <property name="forceBigDecimals" value="false" />
@@ -57,7 +58,10 @@
  #foreach($table in $tables)
         <table schema="" tableName="$!table.get("tableName")">
             <property name="chineseName" value="$!table.get("tableDesc")"></property>
+            <property name="parentId" value="$!table.get("parentId")"></property>
             <generatedKey column="$!table.get("generatedKey")" sqlStatement="MySql" identity="true" />
+
+
         </table>
 #end
 

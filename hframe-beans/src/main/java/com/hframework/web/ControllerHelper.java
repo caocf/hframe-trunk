@@ -43,10 +43,10 @@ public class ControllerHelper {
         Object key = ReflectUtils.getFieldValue(object, keyPropertyName);
         if(key == null) {
             setDefaultValue(object,OperateType.CREATE);
-            setRelationFieldValue(object, OperateType.CREATE);
+            setRelationFieldValue(object);
         }else {
             setDefaultValue(object,OperateType.UPDATE);
-            setRelationFieldValue(object, OperateType.UPDATE);
+            setRelationFieldValue(object);
         }
 
 
@@ -69,7 +69,7 @@ public class ControllerHelper {
         }
     }
 
-    private static <T> void setRelationFieldValue(T object, OperateType operateType) throws Exception {
+    public static <T> T setRelationFieldValue(T object) throws Exception {
         DataSetDescriptor dataSet = WebContext.get().getDataSet(object.getClass());
         Map<String, String> relFieldKeyMap = dataSet.getRelFieldKeyMap();
         Map<String, DataSetDescriptor> relDataSetMap = dataSet.getRelDataSetMap();
@@ -87,7 +87,7 @@ public class ControllerHelper {
 
             com.hframework.beans.class0.Class relPoClass =
                     CreatorUtil.getDefPoClass("",
-                            WebContext.get().getProgram().getCode(), "hframe", relDataSetDescriptor.getDataSet().getCode());
+                            WebContext.get().getProgram().getCode(), "hframe", relDataSetDescriptor.getDataSet().getEventObjectCode());
 
             Object relPo = WebContext.get(Class.forName(relPoClass.getClassPath()).getName());
             if(relPo != null) {
@@ -149,6 +149,8 @@ public class ControllerHelper {
 //
 //            }
 //        }
+
+        return object;
     }
 
     public static <T> void setDefaultValue(T[] objects, String keyPropertyName) throws Exception {

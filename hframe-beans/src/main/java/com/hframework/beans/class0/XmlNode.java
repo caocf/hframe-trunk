@@ -108,6 +108,13 @@ public class XmlNode {
         childrenXmlNode.add(childNode);
     }
 
+    public void addNode(XmlNode childNode) {
+        if(childrenXmlNode == null) {
+            childrenXmlNode = new ArrayList<XmlNode>();
+        }
+        childrenXmlNode.add(childNode);
+    }
+
     public void merge(XmlNode targetNode) {
         mergeInternal(targetNode, false);
     }
