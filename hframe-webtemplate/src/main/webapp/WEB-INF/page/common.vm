@@ -3,7 +3,7 @@
 #else
     #parse("default_startpart.vm")
 #end
-1232321
+
 #foreach($element in $elements.entrySet())
     <div class="row-fluid">
         #if($element.value.component == "cForm")

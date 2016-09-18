@@ -179,17 +179,18 @@ public class ComponentDataContainer {
 
 
         for (EventElement eventElement : eventElementList) {
-            if(value.contains("_")) {
-                value = ResourceWrapper.JavaUtil.getJavaVarName(value);
-            }
-            eventElement.setParams(eventElement.getParams() == null ? null :
-                    eventElement.getParams().replace("${" + mapping.getId() + "}", value + "={" + value + "}"));
             eventElement.setAction(eventElement.getAction() == null ? null :
                     eventElement.getAction().replace("${" + mapping.getId() + "}", value));
+            String tmpValue = value;
+            if (tmpValue.contains("_")) {
+                tmpValue = ResourceWrapper.JavaUtil.getJavaVarName(value);
+            }
+            eventElement.setParams(eventElement.getParams() == null ? null :
+                    eventElement.getParams().replace("${" + mapping.getId() + "}", tmpValue + "={" + tmpValue + "}"));
             eventElement.setAnchorName(eventElement.getAnchorName() == null ? null :
-                    eventElement.getAnchorName().replace("${" + mapping.getId() + "}", value));
+                    eventElement.getAnchorName().replace("${" + mapping.getId() + "}", tmpValue));
             eventElement.setComponent(eventElement.getComponent() == null ? null :
-                    eventElement.getComponent().replace("${" + mapping.getId() + "}", value));
+                    eventElement.getComponent().replace("${" + mapping.getId() + "}", tmpValue));
         }
     }
 

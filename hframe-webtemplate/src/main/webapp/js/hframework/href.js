@@ -149,7 +149,7 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
 
             if($componentParam == "thisForm") {
                 $thisForm = $this.parents("form")[0];
-                _data = parseUrlParamToObject($($thisForm).serialize());
+                _data = parseUrlParamToObject(decodeURIComponent($($thisForm).serialize()));
             }else {
                 if($($this).attr("params") == "checkIds") {
                     var checkIds = new Array();
@@ -398,6 +398,7 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
     }
 
     function parseUrlParamToObject($paramStr, $containBlank){
+        console.info($paramStr);
         var result = {};
         if(!$paramStr) {
             return result;
