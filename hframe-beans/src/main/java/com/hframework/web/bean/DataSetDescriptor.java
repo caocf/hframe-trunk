@@ -10,6 +10,7 @@ import com.hframework.web.CreatorUtil;
 import com.hframework.web.config.bean.DataSet;
 import com.hframework.web.config.bean.DataSetHelper;
 import com.hframework.web.config.bean.DataSetRuler;
+import com.hframework.web.config.bean.dataset.Field;
 import com.hframework.web.config.bean.datasethelper.Mapping;
 import com.hframework.web.config.bean.datasetruler.Rule;
 
@@ -24,6 +25,8 @@ import java.util.Map;
 public class DataSetDescriptor {
 
     private DataSet dataSet;
+
+    private Field keyField;
 
     private Map<String, String> relFieldKeyMap = new HashMap<String, String>();
 
@@ -46,6 +49,13 @@ public class DataSetDescriptor {
 
     public DataSetDescriptor(DataSet dataSet) {
         this.dataSet = dataSet;
+        if(dataSet.getFields() != null) {
+            for (Field field : dataSet.getFields().getFieldList()) {
+                if("true".equals(field.getIsKey())) {
+                    keyField = field;
+                }
+            }
+        }
     }
 
     public DataSet getDataSet() {
@@ -211,5 +221,13 @@ public class DataSetDescriptor {
 
     public void setDateSetStruct(IDataSet dateSetStruct) {
         this.dateSetStruct = dateSetStruct;
+    }
+
+    public Field getKeyField() {
+        return keyField;
+    }
+
+    public void setKeyField(Field keyField) {
+        this.keyField = keyField;
     }
 }

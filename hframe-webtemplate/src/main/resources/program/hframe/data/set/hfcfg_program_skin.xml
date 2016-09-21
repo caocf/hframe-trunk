@@ -4,7 +4,7 @@
   <entity>hfcfg_program_skin</entity>
   <name>项目皮肤【默认】</name>
   <fields>
-    <field code="hfcfg_program_skin_id" name="项目皮肤ID" edit-type="input">
+    <field code="hfcfg_program_skin_id" name="项目皮肤ID" edit-type="input" is-key="true">
       <create-edit-type>hidden</create-edit-type>
       <update-edit-type>text</update-edit-type>
     </field>
@@ -15,6 +15,7 @@
       <rel entity-code="hfcfg_program_template/hfcfg_program_template_id/program_template_name"/>
     </field>
     <field code="op_id" name="创建人" edit-type="input">
+      <rel entity-code="hfsec_user/hfsec_user_id/hfsec_user_name"/>
       <create-edit-type>hidden</create-edit-type>
       <update-edit-type>text</update-edit-type>
     </field>
@@ -23,6 +24,7 @@
       <update-edit-type>text</update-edit-type>
     </field>
     <field code="modify_op_id" name="修改人" edit-type="input">
+      <rel entity-code="hfsec_user/hfsec_user_id/hfsec_user_name"/>
       <create-edit-type>hidden</create-edit-type>
       <update-edit-type>hidden</update-edit-type>
     </field>

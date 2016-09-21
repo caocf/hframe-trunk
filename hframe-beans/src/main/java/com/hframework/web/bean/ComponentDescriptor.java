@@ -31,10 +31,11 @@ public class ComponentDescriptor extends ElementDescriptor{
     private ComponentDataContainer dataContainer;
     private String dataId;//页面配置的信息
     private String title;//页面配置的信息
+    private String eventExtend;
     private List<Event> eventList;//页面配置的信息
 
-    public void initComponentDataContainer() {
-        dataContainer = new ComponentDataContainer(component,getElement(), eventList);
+    public void initComponentDataContainer(Map<String, Event> eventStore) {
+        dataContainer = new ComponentDataContainer(component,getElement(), eventList,eventStore, eventExtend);
         List<Mapping> mappingList = mapper.getBaseMapper().getMappingList();
         for (Mapping mapping : mappingList) {
             dataContainer.addMappingAndDataSetDescriptor(mapping, this, dataSetDescriptor, true);
@@ -122,5 +123,13 @@ public class ComponentDescriptor extends ElementDescriptor{
 
     public void setEventList(List<Event> eventList) {
         this.eventList = eventList;
+    }
+
+    public String getEventExtend() {
+        return eventExtend;
+    }
+
+    public void setEventExtend(String eventExtend) {
+        this.eventExtend = eventExtend;
     }
 }

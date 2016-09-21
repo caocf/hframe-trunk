@@ -1,7 +1,6 @@
 package com.hframework.web.bean;
 
 import com.alibaba.fastjson.JSONObject;
-import com.hframework.beans.class0.XmlNode;
 import com.hframework.common.util.EnumUtils;
 import com.hframework.common.util.ReflectUtils;
 import com.hframework.common.util.StringUtils;
@@ -10,6 +9,7 @@ import com.hframework.web.CreatorUtil;
 import com.hframework.web.config.bean.*;
 import com.hframework.web.config.bean.Component;
 import com.hframework.web.config.bean.Module;
+import com.hframework.web.config.bean.component.Event;
 import com.hframework.web.config.bean.dataset.Entity;
 import com.hframework.web.config.bean.dataset.Field;
 import com.hframework.web.config.bean.dataset.Fields;
@@ -54,6 +54,7 @@ public class WebContext {
     //组件信息
     private Map<String, Component> components = new HashMap<String, Component>();
 
+    private Map<String, com.hframework.web.config.bean.component.Event> events = new HashMap<String, Event>();
 
     private Map<String, Map<String, PageDescriptor>> pageSetting = new HashMap<String, Map<String, PageDescriptor>>();
 
@@ -407,7 +408,7 @@ public class WebContext {
                     continue;
                 }
                 componentDescriptor.setDataSetDescriptor(dataSets.get(page.getDataSet()));
-                componentDescriptor.initComponentDataContainer();
+                componentDescriptor.initComponentDataContainer(events);
             }
         }
 
@@ -443,12 +444,13 @@ public class WebContext {
                 componentDescriptor.setEventList(component.getEventList());
                 componentDescriptor.setDataId(component.getDataid());
                 componentDescriptor.setTitle(component.getTitle());
+                componentDescriptor.setEventExtend(component.getEventExtend());
                 componentDescriptor.setMapper(mapper);
                 componentDescriptor.setDataSetDescriptor(dataSets.get(component.getDataSet()));
                 if(dataSets.get(component.getDataSet()) == null) {
                     System.out.println("==>error : data set [" +  component.getDataSet() +"] is not exists !");
                 }
-                componentDescriptor.initComponentDataContainer();
+                componentDescriptor.initComponentDataContainer(events);
             }
 //            Map<String, ElementDescriptor> elements = pageDescriptor.getElements();
 //            for (String key : elements.keySet()) {
@@ -523,7 +525,7 @@ public class WebContext {
             program = XmlUtils.readValueFromFile(contextHelper.programConfigRootDir.replace("hframe-webtemplate","hframe-web"),contextHelper.programConfigProgramFile, Program.class);
         }
         //加载模块信息
-        List<Module> moduleList = XmlUtils.readValuesFromDirectory(contextHelper.programConfigRootDir,contextHelper.programConfigModuleDir, Module.class, ".xml");
+        List<Module> moduleList = XmlUtils.readValuesFromDirectory(contextHelper.programConfigRootDir, contextHelper.programConfigModuleDir, Module.class, ".xml");
         for (Module module : moduleList) {
             List<Page> pageList = module.getPageList();
             if(pageList != null) {
@@ -552,15 +554,25 @@ public class WebContext {
 
 
         //加载数据映射信息
-        List<Mapper> mapperList = XmlUtils.readValuesFromDirectory(contextHelper.programConfigRootDir,contextHelper.programConfigMapperDir, Mapper.class,".mapper");
+        List<Mapper> mapperList = XmlUtils.readValuesFromDirectory(contextHelper.programConfigRootDir, contextHelper.programConfigMapperDir, Mapper.class, ".mapper");
         for (Mapper mapper : mapperList) {
             mappers.put(mapper.getDataSet() + "_" + mapper.getComponentId(), mapper);
         }
 
         //加载页面模板信息
-        PageTemplates pageTemplates = XmlUtils.readValueFromFile(contextHelper.programConfigRootDir,contextHelper.templateResourcePageDescriptorFile, PageTemplates.class);
+        PageTemplates pageTemplates = XmlUtils.readValueFromFile(contextHelper.programConfigRootDir, contextHelper.templateResourcePageDescriptorFile, PageTemplates.class);
         for (Pagetemplate pagetemplate : pageTemplates.getPagetemplateList()) {
             this.pageTemplates.put(pagetemplate.getId(),pagetemplate);
+        }
+
+        //加载事件信息
+        List<EventStore> eventStores = XmlUtils.readValuesFromDirectory(contextHelper.programConfigRootDir,contextHelper.templateResourceEventStoreDir, EventStore.class,".xml");
+        for (EventStore eventStore : eventStores) {
+            String group = eventStore.getGroup();
+            List<Event> eventList = eventStore.getEventList();
+            for (Event event : eventList) {
+                events.put("#" + group + "." + event.getName(),event);
+            }
         }
 
         //加载组件模板信息
@@ -650,6 +662,14 @@ public class WebContext {
 
     public static <T> void put(String key, T data) {
         Context.put(key, data);
+    }
+
+    public static <T> void putSession(String key, T data) {
+        Context.put("SESSION:" + key, data);
+    }
+
+    public static <T> T getSession(String key) {
+        return Context.get("SESSION:" + key);
     }
 
     public static <T> T get(String key) {
@@ -815,5 +835,13 @@ public class WebContext {
 
     public void setContextHelper(WebContextHelper contextHelper) {
         this.contextHelper = contextHelper;
+    }
+
+    public Map<String, Event> getEvents() {
+        return events;
+    }
+
+    public void setEvents(Map<String, Event> events) {
+        this.events = events;
     }
 }

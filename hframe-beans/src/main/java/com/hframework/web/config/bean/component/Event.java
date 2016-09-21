@@ -17,6 +17,9 @@ public class Event   {
     @XStreamImplicit
     @XStreamAlias("effect")
 	private List<Effect> effectList;
+    @XStreamImplicit
+    @XStreamAlias("pre-handle")
+    private List<PreHandle> preHandleList;
 	@XStreamAsAttribute
     @XStreamAlias("id")
 	private String id;
@@ -26,7 +29,9 @@ public class Event   {
 	@XStreamAsAttribute
     @XStreamAlias("name")
 	private String name;
-
+    @XStreamAsAttribute
+    @XStreamAlias("rel")
+    private String rel;
     public Event() {
     }
 
@@ -41,6 +46,10 @@ public class Event   {
 
     public Source getSource() {
         return source == null ? new Source() : source;
+    }
+
+    public Source getSourceOrigin() {
+        return source;
     }
 
     public void setSource(Source source) {
@@ -78,5 +87,20 @@ public class Event   {
      public void setName(String name){
      	this.name = name;
      }
-	 
+
+    public List<PreHandle> getPreHandleList() {
+        return preHandleList;
+    }
+
+    public void setPreHandleList(List<PreHandle> preHandleList) {
+        this.preHandleList = preHandleList;
+    }
+
+    public String getRel() {
+        return rel;
+    }
+
+    public void setRel(String rel) {
+        this.rel = rel;
+    }
 }

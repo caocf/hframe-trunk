@@ -8,14 +8,18 @@ import com.hframework.beans.controller.Pagination;
 import com.hframework.common.util.*;
 import com.hframework.web.config.bean.Component;
 import com.hframework.web.config.bean.DataSet;
-import com.hframework.web.config.bean.component.AppendElement;
-import com.hframework.web.config.bean.component.Effect;
+import com.hframework.web.config.bean.component.*;
 import com.hframework.web.config.bean.component.Element;
-import com.hframework.web.config.bean.component.Event;
 import com.hframework.web.config.bean.dataset.*;
 import com.hframework.web.config.bean.dataset.Enum;
 import com.hframework.web.config.bean.mapper.Mapping;
+import com.hframework.web.config.bean.pagetemplates.*;
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 
 import java.lang.reflect.InvocationTargetException;
@@ -26,6 +30,8 @@ import java.util.*;
  * Date: 2016/5/26 23:40:40
  */
 public class ComponentDataContainer {
+
+    private static final Logger logger = LoggerFactory.getLogger(ComponentDataContainer.class);
 
     private Map<String ,JsonSegmentParser> elements = new HashMap<String, JsonSegmentParser>();
 
@@ -44,7 +50,7 @@ public class ComponentDataContainer {
     private String json;
     private JSONObject jsonObject;
 
-    public ComponentDataContainer(Component component, com.hframework.web.config.bean.pagetemplates.Element pageElementDesc, List<com.hframework.web.config.bean.component.Event> eventList) {
+    public ComponentDataContainer(Component component, com.hframework.web.config.bean.pagetemplates.Element pageElementDesc, List<Event> eventList, Map<String, Event> eventStore, String pageComponentEventExtend) {
         if(component == null) {
             return;
         }
@@ -70,12 +76,12 @@ public class ComponentDataContainer {
         allEvent.addAll(component.getBaseEvents().getEventList());
 
         //组件自身事件
-        if(!"false".equals(pageElementDesc.getEventExtend())) {
+        if(!"false".equals(pageElementDesc.getEventExtend()) &&!"false".equals(pageComponentEventExtend)) {
             allEvent.addAll(component.getEvents().getEventList());
         }
 
         //页面模板中组件的事件
-        if(pageElementDesc.getEvents() != null) {
+        if(!"false".equals(pageComponentEventExtend) && pageElementDesc.getEvents() != null) {
             allEvent.addAll(pageElementDesc.getEvents().getEventList());
         }
 
@@ -85,6 +91,15 @@ public class ComponentDataContainer {
         }
 
         for (Event event : allEvent) {
+            if(StringUtils.isNotBlank(event.getRel())) {
+                String rel = event.getRel();
+                Event event1 = eventStore.get(rel);
+                if(event1 == null) {
+                    logger.warn("event rel error : [rel = " + rel + " ]");
+                    continue;
+                }
+                setEventDefaultDefinition(event , event1);
+            }
             if(EnumUtils.compare(ComponentEventAnchor.BOFR, event.getAttach().getAnchor())) {
                 beforeOfRowList.add(new EventElement(event));
             }else if(EnumUtils.compare(ComponentEventAnchor.EOFR, event.getAttach().getAnchor())) {
@@ -110,6 +125,40 @@ public class ComponentDataContainer {
         }
     }
 
+    private void setEventDefaultDefinition(Event targetEvent, Event storeEvent) {
+        if(targetEvent == null || storeEvent == null) {
+            return ;
+        }
+
+
+        if(targetEvent.getAttach() == null && storeEvent.getAttach() != null) {
+            targetEvent.setAttach(storeEvent.getAttach());
+        }
+
+        if(targetEvent.getSourceOrigin() == null && storeEvent.getSourceOrigin() != null) {
+            targetEvent.setSource(storeEvent.getSourceOrigin());
+        }
+
+        if(targetEvent.getEffectList() == null && storeEvent.getEffectList() != null) {
+            targetEvent.setEffectList(storeEvent.getEffectList());
+        }
+
+        if(targetEvent.getPreHandleList() == null && storeEvent.getPreHandleList() != null) {
+            targetEvent.setPreHandleList(storeEvent.getPreHandleList());
+        }
+
+        if(targetEvent.getId() == null && storeEvent.getId() != null) {
+            targetEvent.setId(storeEvent.getId());
+        }
+
+        if(targetEvent.getType() == null && storeEvent.getType() != null) {
+            targetEvent.setType(storeEvent.getType());
+        }
+        if(targetEvent.getName() == null && storeEvent.getName() != null) {
+            targetEvent.setName(storeEvent.getName());
+        }
+    }
+
     public void addMappingAndDataSetDescriptor(Mapping mapping, ComponentDescriptor componentDescriptor, DataSetDescriptor dataSetDescriptor, boolean isBaseElement) {
         if(isBaseElement) {
             if(elements.containsKey(mapping.getId())) {
@@ -128,7 +177,10 @@ public class ComponentDataContainer {
             if(eventElement.getAnchorName().contains("_")) {
                 eventElement.setAnchorName(ResourceWrapper.JavaUtil.getJavaVarName(eventElement.getAnchorName()));
             }
-            if(eventElement.getParams().contains("_")) {
+            if(eventElement.getParams() == null) {
+                System.out.println(1);
+            }
+            if(eventElement.getParams() != null && eventElement.getParams().contains("_")) {
                 String value = ResourceWrapper.JavaUtil.getJavaVarName(eventElement.getParams());
                 eventElement.setParams(value + "={" + value + "}");
             }
@@ -181,6 +233,8 @@ public class ComponentDataContainer {
         for (EventElement eventElement : eventElementList) {
             eventElement.setAction(eventElement.getAction() == null ? null :
                     eventElement.getAction().replace("${" + mapping.getId() + "}", value));
+            eventElement.setComponent(eventElement.getComponent() == null ? null :
+                    eventElement.getComponent().replace("${" + mapping.getId() + "}", value));
             String tmpValue = value;
             if (tmpValue.contains("_")) {
                 tmpValue = ResourceWrapper.JavaUtil.getJavaVarName(value);
@@ -189,8 +243,7 @@ public class ComponentDataContainer {
                     eventElement.getParams().replace("${" + mapping.getId() + "}", tmpValue + "={" + tmpValue + "}"));
             eventElement.setAnchorName(eventElement.getAnchorName() == null ? null :
                     eventElement.getAnchorName().replace("${" + mapping.getId() + "}", tmpValue));
-            eventElement.setComponent(eventElement.getComponent() == null ? null :
-                    eventElement.getComponent().replace("${" + mapping.getId() + "}", tmpValue));
+
         }
     }
 
@@ -500,14 +553,15 @@ public class ComponentDataContainer {
                                         value.add("");
                                     }
                                 }else {
-                                    String stringVal = org.apache.commons.beanutils.BeanUtils.getProperty(object,propertyName);
-                                    value.add(stringVal == null ? "" : stringVal);
+                                    try{
+                                        String stringVal = org.apache.commons.beanutils.BeanUtils.getProperty(object,propertyName);
+                                        value.add(stringVal == null ? "" : stringVal);
+                                    }catch (Exception e) {
+                                        e.printStackTrace();
+                                        value.add("");
+                                    }
                                 }
-                            } catch (IllegalAccessException e) {
-                                e.printStackTrace();
-                            } catch (InvocationTargetException e) {
-                                e.printStackTrace();
-                            } catch (NoSuchMethodException e) {
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
                         }
@@ -1022,7 +1076,9 @@ public class ComponentDataContainer {
         private String component;
         private String params;
         private String action;
+        private String when;
         private String fillclass;
+        private JSONObject conditionObject = new JSONObject(true);
         private JSONObject actionJsonObject = new JSONObject(true);
 
         private String anchorName;
@@ -1050,6 +1106,18 @@ public class ComponentDataContainer {
                     fillclass = (String) JSONObject.parseObject(appendElement.getParam()).get("fillclass");
                 }
             }
+
+            if(event.getPreHandleList() != null) {
+                for (PreHandle preHandle : event.getPreHandleList()) {
+                    conditionObject.put(preHandle.getCase1(), preHandle.getWhen());
+                    if(StringUtils.isNotBlank(preHandle.getThen())) {
+                        if(params == null) params= "";
+                        if(!"".equals(params)) params +="&";
+                        params +=(preHandle.getCase1() + "=" + preHandle.getThen());
+                    }
+                }
+            }
+            when = conditionObject.toJSONString();
         }
 
         public String getAnchorName() {
@@ -1066,6 +1134,14 @@ public class ComponentDataContainer {
 
         public void setFillclass(String fillclass) {
             this.fillclass = fillclass;
+        }
+
+        public String getWhen() {
+            return when;
+        }
+
+        public void setWhen(String when) {
+            this.when = when;
         }
 
         public EventElement(AppendElement appendElement) {

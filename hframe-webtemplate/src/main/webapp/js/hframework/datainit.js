@@ -3,8 +3,13 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
     var layer = require('layer');
     var ajax = require('ajax');
     var errormsg = require('js/hframework/errormsg');
+    var loadingDictionaryKeys = {};
 
-    $.selectLoad = function ($this, _func) {
+    $.textLoad =function($this){
+
+    }
+
+    $.selectLoad = function ($this, _func, batchLoad) {
         var $tagName = $this[0].tagName;
         var  dataCode = $this.attr("data-code");
         var  dataCondition = $this.attr("data-condition");
@@ -27,6 +32,16 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
             return ;
         }
 
+        if(batchLoad) {
+            if(loadingDictionaryKeys[dataCode + "|" + dataCondition] == null) {//首次加载
+                loadingDictionaryKeys[dataCode + "|" + dataCondition] = -1;
+            }else if(loadingDictionaryKeys[dataCode + "|" + dataCondition] == -1) {//正在加载过程中，服务端还未返回
+                return;
+            }else {//已有加载完成
+                loadingDictionaryKeys[dataCode + "|" + dataCondition] = -1;;
+            }
+        }
+
         var _url =  "/dictionary.json";
         var _data = {"dataCode":dataCode,"dataCondition" : dataCondition};
         ajax.Post(_url,_data,function(data){
@@ -37,9 +52,20 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
                     for (var i = 0; i < data.data.length; i++) {
                         _html.push('<option value="' + data.data[i].value + '" data-hide=' + data.data[i].extInfo + '>' + data.data[i].text + '</option>');
                     }
-                    $this.html(_html.join(''));
-                    $this.val(dataValue);
-                    $this.change();
+                    var htmlStr = _html.join('');
+                    loadingDictionaryKeys[dataCode + "|" + dataCondition] = 1;
+                    if(batchLoad) {
+                        $("select[data-code='" + dataCode + "'][data-condition='" + dataCondition + "']").each(function(){
+                            $(this).html(htmlStr);
+                            $(this).val($(this).attr("data-value"));
+                            $(this).change();
+                        });
+                    }else {
+                        $this.html(_html.join(''));
+                        $this.val(dataValue);
+                        $this.change();
+                    }
+
                 }else {
 
                     for (var i = 0; i < data.data.length; i++) {
@@ -110,13 +136,40 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
         });
     }
 
+    $("th[code][dataCode][dataCode!='']").each(function(){
+        var $this =$(this);
+        var code = $(this).attr("code");
+        var dataCode = $(this).attr("dataCode");
+        var dataValues=[];
+        $("span[code='" + code + "']").each(function(){
+            if($(this).text()) {
+                dataValues.push($(this).text());
+            }
+        });
+        var _url =  "/getTexts.json";
+        var _data = {"dataCode":dataCode, "dataValues" : dataValues};
+        ajax.Post(_url,_data,function(data){
+            if(data.resultCode == 0) {
+               if($this.html().endsWith("ID")) {
+                   $this.html($this.html().substring(0,$this.html().length-2));
+               }
+                $("span[code='" + code + "']").each(function(){
+                    if(data.data[$(this).text()] && data.data[$(this).text()].text) {
+                        $(this).attr("value",$(this).text());
+                        $(this).text(data.data[$(this).text()].text);
+                    }
+                });
+
+            }
+        });
+    });
+
     $("[data-code][data-condition]").each(function(){
         var $this = $(this);
         if($this.is('select')) {
-            $.selectLoad($this);
+            $.selectLoad($this,null,true);
         }else {
             $.selectPanelLoad($this);
-            //console.info($this.tagName);
         }
     });
 

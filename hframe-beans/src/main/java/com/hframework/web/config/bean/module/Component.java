@@ -26,7 +26,9 @@ public class Component   {
     @XStreamAsAttribute
     @XStreamAlias("title")
     private String title;
-
+    @XStreamAsAttribute
+    @XStreamAlias("event-extend")
+    private String eventExtend;
 
     public Component() {
     }
@@ -70,5 +72,13 @@ public class Component   {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getEventExtend() {
+        return eventExtend;
+    }
+
+    public void setEventExtend(String eventExtend) {
+        this.eventExtend = eventExtend;
     }
 }

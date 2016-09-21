@@ -129,7 +129,18 @@
   <page id="hfcfg_component_template_edit" name="组件模板修改" page-template="edit" data-set="hframe/hfcfg_component_template"/>
   <page id="hfcfg_component_template_detail" name="组件模板明细" page-template="edit" data-set="hframe/hfcfg_component_template"/>
   <page id="hfsec_user_mgr" name="用户管理" page-template="qlist" data-set="hframe/hfsec_user">
-    <component id="qForm" data-set="hframe/hfsec_user_DS4Q"/>
+    <component id="qForm" data-set="hframe/hfsec_user_DS4Q" />
+    <component id="qList" data-set="hframe/hfsec_user" event-extend="false">
+      <event rel="#EOFR.goto.create"/>
+      <event rel="#EOFR.goto.edit"/>
+      <event rel="#EOFR.confirm.on">
+        <pre-handle case="status" when="0" then="1"></pre-handle>
+      </event>
+      <event rel="#EOFR.confirm.off">
+        <pre-handle case="status" when="1" then="0"></pre-handle>
+      </event>
+      <event rel="#ELE.goto.detail"></event>
+    </component>
   </page>
   <page id="hfsec_user_create" name="用户创建" page-template="create" data-set="hframe/hfsec_user"/>
   <page id="hfsec_user_edit" name="用户修改" page-template="edit" data-set="hframe/hfsec_user"/>

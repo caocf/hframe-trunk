@@ -4,7 +4,7 @@
   <entity>hfsec_menu</entity>
   <name>菜单</name>
   <fields>
-    <field code="hfsec_menu_id" name="菜单ID" edit-type="input">
+    <field code="hfsec_menu_id" name="菜单ID" edit-type="input" is-key="true">
       <create-edit-type>hidden</create-edit-type>
       <update-edit-type>text</update-edit-type>
     </field>

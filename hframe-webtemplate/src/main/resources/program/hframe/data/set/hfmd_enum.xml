@@ -4,7 +4,7 @@
   <entity>hfmd_enum</entity>
   <name>枚举【默认】</name>
   <fields>
-    <field code="hfmd_enum_id" name="枚举ID" edit-type="input">
+    <field code="hfmd_enum_id" name="枚举ID" edit-type="input" is-key="true">
       <create-edit-type>hidden</create-edit-type>
       <update-edit-type>text</update-edit-type>
     </field>
@@ -22,8 +22,11 @@
       <rel entity-code="hfmd_enum_class/hfmd_enum_class_id/hfmd_enum_class_name"/>
     </field>
     <field code="hfmd_enum_class_code" name="" edit-type="input"/>
-    <field code="hfpm_program_id" name="项目ID" edit-type="select"/>
+    <field code="hfpm_program_id" name="项目ID" edit-type="select">
+      <rel entity-code="hfpm_program/hfpm_program_id/hfpm_program_name"/>
+    </field>
     <field code="op_id" name="创建人" edit-type="input">
+      <rel entity-code="hfsec_user/hfsec_user_id/hfsec_user_name"/>
       <create-edit-type>hidden</create-edit-type>
       <update-edit-type>text</update-edit-type>
     </field>
@@ -32,6 +35,7 @@
       <update-edit-type>text</update-edit-type>
     </field>
     <field code="modify_op_id" name="修改人" edit-type="input">
+      <rel entity-code="hfsec_user/hfsec_user_id/hfsec_user_name"/>
       <create-edit-type>hidden</create-edit-type>
       <update-edit-type>hidden</update-edit-type>
     </field>

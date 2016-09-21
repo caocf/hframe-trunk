@@ -4,7 +4,7 @@
   <entity>hfsec_menu</entity>
   <name>菜单【查询】</name>
   <fields>
-    <field code="hfsec_menu_id" name="菜单ID" edit-type="input"/>
+    <field code="hfsec_menu_id" name="菜单ID" edit-type="input" is-key="true"/>
     <field code="hfsec_menu_code" name="菜单编码" edit-type="input"/>
     <field code="hfsec_menu_name" name="菜单名称" edit-type="input"/>
     <field code="hfsec_menu_desc" name="菜单描述" edit-type="input"/>

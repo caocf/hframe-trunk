@@ -10,13 +10,14 @@
     <field code="main_hfmd_entity_id" name="主实体ID" edit-type="select">
       <rel entity-code="hfmd_entity/hfmd_entity_id/hfmd_entity_name"/>
     </field>
-    <field code="hfpm_data_set_id" name="数据集ID" edit-type="input">
+    <field code="hfpm_data_set_id" name="数据集ID" edit-type="input" is-key="true">
       <create-edit-type>hidden</create-edit-type>
       <update-edit-type>text</update-edit-type>
     </field>
     <field code="hfpm_data_set_name" name="数据集名称" edit-type="input"/>
     <field code="hfpm_data_set_code" name="数据集编码" edit-type="input"/>
     <field code="op_id" name="创建人" edit-type="input">
+      <rel entity-code="hfsec_user/hfsec_user_id/hfsec_user_name"/>
       <create-edit-type>hidden</create-edit-type>
       <update-edit-type>text</update-edit-type>
     </field>
@@ -25,6 +26,7 @@
       <update-edit-type>text</update-edit-type>
     </field>
     <field code="modify_op_id" name="修改人" edit-type="input">
+      <rel entity-code="hfsec_user/hfsec_user_id/hfsec_user_name"/>
       <create-edit-type>hidden</create-edit-type>
       <update-edit-type>hidden</update-edit-type>
     </field>

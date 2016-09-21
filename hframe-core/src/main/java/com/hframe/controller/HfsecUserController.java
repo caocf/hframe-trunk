@@ -37,14 +37,14 @@ public class HfsecUserController   {
 
 
 
-
-    @InitBinder
-    protected void initBinder(HttpServletRequest request,
-        ServletRequestDataBinder binder) throws Exception {
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        CustomDateEditor editor = new CustomDateEditor(df, false);
-        binder.registerCustomEditor(Date.class, editor);
-    }
+//
+//    @InitBinder
+//    protected void initBinder(HttpServletRequest request,
+//        ServletRequestDataBinder binder) throws Exception {
+//        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//        CustomDateEditor editor = new CustomDateEditor(df, true);
+//        binder.registerCustomEditor(Date.class, editor);
+//    }
 
     /**
      * 查询展示鐢ㄦ埛列表

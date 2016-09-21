@@ -34,60 +34,14 @@
             <source scope="pager" param="pageIndex=${this.value}"></source>
             <effect type="component.reload" ></effect>
         </event>
-        <event name="insert">
-            <attach anchor="EOFR">
-                <appendElement type="icon" param='{fillclass:"btn-success",iconclass:" icon-file-alt"}'></appendElement>
-            </attach>
-            <effect type="component.row.add"></effect>
-        </event>
-        <event name="copy">
-            <attach anchor="EOFR">
-                <appendElement type="icon" param='{fillclass:"btn-success",iconclass:" icon-copy"}'></appendElement>
-            </attach>
-            <effect type="component.row.copy"></effect>
-        </event>
-        <event name="down">
-            <attach anchor="EOFR">
-                <appendElement type="icon" param='{fillclass:"btn-info",iconclass:"icon-circle-arrow-down"}'></appendElement>
-            </attach>
-            <effect type="component.row.down"></effect>
-        </event>
-        <event name="up">
-            <attach anchor="EOFR">
-                <appendElement type="icon" param='{fillclass:"btn-info",iconclass:" icon-circle-arrow-up"}'></appendElement>
-            </attach>
-            <effect type="component.row.up"></effect>
-        </event>
-
-        <event name="delete">
-            <attach anchor="EOFR">
-                <appendElement type="icon" param='{fillclass:"btn-danger",iconclass:"icon-trash"}'></appendElement>
-            </attach>
-            <source scope="CROW" param='${id}'></source>
-            <effect type="confirm" content='你是否删除【{${name}}】该数据!'></effect>
-            <effect type="ajaxSubmit" action="${delete}"></effect>
-            <effect type="component.reload"></effect>
-        </event>
+        <event rel="#EOFR.row.insert" />
+        <event rel="#EOFR.row.copy" />
+        <event rel="#EOFR.row.down" />
+        <event rel="#EOFR.row.up" />
+        <event rel="#EOFR.row.delete" />
     </baseEvents>
     <events>
-        <event name="submit">
-            <attach anchor="EOFC">
-                <appendElement type="button" param='{btnclass:"btn-primary",btnText:" 提 交 "}'></appendElement>
-            </attach>
-            <source scope="EOC" param="thisForm"></source>
-            <effect type="ajaxSubmitByJson" action="${batchCreate}"></effect>
-            <effect type="pageFwd" action='${mgr}' isStack="true"></effect>
-        </event>
-        <event name="reset">
-            <attach anchor="EOFC">
-                <appendElement type="button" param='{btnclass:"btn-info",btnText:" 重 置 "}'></appendElement>
-            </attach>
-            <source scope="BOFR">
-                <appendElement type="checkbox" param='${id}|${name}'></appendElement>
-            </source>
-            <effect type="ajaxSubmit" action='${batchDelete}' param="ids" isStack="true"></effect>
-            <effect type="component.reload"></effect>
-        </event>
+        <event rel="#EOFC.batch.save" />
     </events>
 
     <example>

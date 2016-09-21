@@ -141,6 +141,7 @@ public class ExtendController {
 
             String companyCode = "hframe";
             String programCode = "hframe";
+            Long programId = -1L;
             String programeName = "框架";
             String moduleCode = "hframe";
             String moduleName = "框架";
@@ -148,6 +149,7 @@ public class ExtendController {
                 if(pageFlowParams.containsKey("hfpmProgramId") && StringUtils.isNotBlank(pageFlowParams.get("hfpmProgramId"))) {
                     HfpmProgram program = hfpmProgramSV.getHfpmProgramByPK(Long.parseLong(pageFlowParams.get("hfpmProgramId")));
                     programCode = program.getHfpmProgramCode();
+                    programId = program.getHfpmProgramId();
                     programeName = program.getHfpmProgramName();
                 }
                 if(pageFlowParams.containsKey("hfpmModuleId") && StringUtils.isNotBlank(pageFlowParams.get("hfpmModuleId"))) {
@@ -176,6 +178,7 @@ public class ExtendController {
             HfModelContainer curDbModelContainer = SQLParseUtil.parseModelContainerFromSQLFile(
                     dbSqlPath, programCode, programeName, moduleCode, moduleName);
 
+
             final HfModelContainer[] resultModelContainers =
                     HfModelContainerUtil.mergerModelContainer(curDbModelContainer, targetModelContainer);
             final List<String> result = HfModelContainerUtil.getSql(resultModelContainers[0], resultModelContainers[1]);
@@ -185,6 +188,30 @@ public class ExtendController {
                         put("sql",sql.replaceAll("\n", ""));
                 }});
             }
+
+            final Long finalProgramId = programId;
+            List list = commonDataService.selectDynamicTableDataSome(new HashMap<String, String>() {{
+                put("sql", "SELECT hfmd_enum_class_id,hfmd_enum_class_name,hfmd_enum_class_code,hfmd_enum_class_desc,ext1,ext2,op_id,create_time,del_flag FROM hfmd_enum_class t WHERE t.hfpm_program_id IN (" + finalProgramId + ") OR hfpm_program_id IS NULL");
+            }});
+
+            List<String> hfmd_enum_class = HfModelContainerUtil.getSql(list, "hfmd_enum_class");
+            for (final String sql : hfmd_enum_class) {
+                sqls.add(new HashMap<String, String>() {{
+                    put("sql", sql + ";");
+                }});
+            }
+
+            list = commonDataService.selectDynamicTableDataSome(new HashMap<String, String>() {{
+                put("sql", "SELECT hfmd_enum_id,hfmd_enum_value,hfmd_enum_text,hfmd_enum_desc,is_default,pri,ext1,ext2,hfmd_enum_class_id,hfmd_enum_class_code,op_id,create_time,del_flag FROM hfmd_enum t WHERE t.hfpm_program_id IN (" + finalProgramId +") OR hfpm_program_id IS NULL AND EXISTS (SELECT 1 FROM hfmd_enum_class c WHERE c.hfmd_enum_class_id = t.hfmd_enum_class_id)");
+            }});
+
+            List<String> hfmd_enum = HfModelContainerUtil.getSql(list, "hfmd_enum");
+            for (final String sql : hfmd_enum) {
+                sqls.add(new HashMap<String, String>() {{
+                    put("sql", sql + ";");
+                }});
+            }
+
 
             generateDefaultDataSetIfNotExists(resultModelContainers, programCode, programeName, moduleCode, moduleName);
 

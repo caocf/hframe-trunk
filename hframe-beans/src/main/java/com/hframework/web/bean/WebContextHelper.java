@@ -26,6 +26,7 @@ public class WebContextHelper {
     public String programConfigMapperDir = null;//组件数据集特殊关系配置目录
     public String programConfigProgramFile = null;//项目配置文件
 
+    public String templateResourceEventStoreDir = null;//事件模板目录
     public String templateResourceComponentDir = null;//组件模板目录
     public String templateResourceComponentMapperDir = null;//组件模板映射目录
     public String templateResourcePageDescriptorFile = null;//页面模板文件
@@ -64,6 +65,7 @@ public class WebContextHelper {
         programConfigMapperDir = PropertyConfigurerUtils.getProperty(ProgramResourceConst.PROGRAM_CONFIG_MAPPER_DIR,companyCode,programCode,moduleCode,templateCode);
         programConfigProgramFile = PropertyConfigurerUtils.getProperty(ProgramResourceConst.PROGRAM_CONFIG_PROGRAM_File,companyCode,programCode,moduleCode,templateCode);
 
+        templateResourceEventStoreDir = PropertyConfigurerUtils.getProperty(ProgramResourceConst.TEMPLATE_RESOURCE_EVENT_STORE_DIR,companyCode,programCode,moduleCode,templateCode);
         templateResourceComponentDir = PropertyConfigurerUtils.getProperty(ProgramResourceConst.TEMPLATE_RESOURCE_COMPONENT_DIR,companyCode,programCode,moduleCode,templateCode);
         templateResourceComponentMapperDir = PropertyConfigurerUtils.getProperty(ProgramResourceConst.TEMPLATE_RESOURCE_COMPONENT_MAPPER_DIR,companyCode,programCode,moduleCode,templateCode);
         templateResourcePageDescriptorFile = PropertyConfigurerUtils.getProperty(ProgramResourceConst.TEMPLATE_RESOURCE_PAGE_DESCRIPTOR_FILE,companyCode,programCode,moduleCode,templateCode);
@@ -81,6 +83,7 @@ public class WebContextHelper {
         public static final String PROGRAM_CONFIG_MAPPER_DIR = "program_config_mapper_dir";
         public static final String PROGRAM_CONFIG_PROGRAM_File = "program_config_program_file";
 
+        public static final String TEMPLATE_RESOURCE_EVENT_STORE_DIR = "template_resource_event_store_dir";
         public static final String TEMPLATE_RESOURCE_COMPONENT_DIR = "template_resource_component_dir";
         public static final String TEMPLATE_RESOURCE_COMPONENT_MAPPER_DIR = "template_resource_component_mapper_dir";
         public static final String TEMPLATE_RESOURCE_PAGE_DESCRIPTOR_FILE = "template_resource_page_descriptor_file";

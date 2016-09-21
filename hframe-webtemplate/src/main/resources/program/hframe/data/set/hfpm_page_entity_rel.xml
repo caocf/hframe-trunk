@@ -4,7 +4,7 @@
   <entity>hfpm_page_entity_rel</entity>
   <name>页面关联实体【默认】</name>
   <fields>
-    <field code="hfpm_page_entity_rel_id" name="页面关联实体ID" edit-type="input">
+    <field code="hfpm_page_entity_rel_id" name="页面关联实体ID" edit-type="input" is-key="true">
       <create-edit-type>hidden</create-edit-type>
       <update-edit-type>text</update-edit-type>
     </field>
@@ -16,6 +16,7 @@
     </field>
     <field code="is_main_entity" name="是否为主实体" edit-type="input"/>
     <field code="op_id" name="创建人" edit-type="input">
+      <rel entity-code="hfsec_user/hfsec_user_id/hfsec_user_name"/>
       <create-edit-type>hidden</create-edit-type>
       <update-edit-type>text</update-edit-type>
     </field>
@@ -24,6 +25,7 @@
       <update-edit-type>text</update-edit-type>
     </field>
     <field code="modify_op_id" name="修改人" edit-type="input">
+      <rel entity-code="hfsec_user/hfsec_user_id/hfsec_user_name"/>
       <create-edit-type>hidden</create-edit-type>
       <update-edit-type>hidden</update-edit-type>
     </field>

@@ -1,6 +1,7 @@
 package com.hframework.web;
 
 import com.hframework.common.util.ReflectUtils;
+import com.hframework.common.util.ResourceWrapper;
 import com.hframework.web.bean.DataSetDescriptor;
 import com.hframework.web.bean.WebContext;
 import com.hframework.web.config.bean.dataset.Field;
@@ -53,18 +54,24 @@ public class ControllerHelper {
     }
 
     public static <T> void setDefaultValue(T object, OperateType operateType) throws Exception {
+        Object sessionUser = WebContext.getSession(SessionKey.USER);
+
+        DataSetDescriptor dataSet = WebContext.get().getDataSet(sessionUser.getClass());
+        Field keyField = dataSet.getKeyField();
+        long sessionUserId = 999L;
+        sessionUserId = Long.parseLong(org.apache.commons.beanutils.BeanUtils.getProperty(sessionUser, ResourceWrapper.JavaUtil.getJavaVarName(keyField.getCode())));
         if(object == null) {
             return;
         }
         switch (operateType) {
             case CREATE:
                 setDefaultValue(object, CustomProperty.createTime.name(), new Date());
-                setDefaultValue(object, CustomProperty.opId.name(), 999L);
+                setDefaultValue(object, CustomProperty.opId.name(), sessionUserId);
                 setDefaultValue(object, CustomProperty.delFlag.name(), 0);
                 break;
             default:
                 setDefaultValue(object, CustomProperty.modifyTime.name(), new Date());
-                setDefaultValue(object, CustomProperty.modifyOpId.name(), 999L);
+                setDefaultValue(object, CustomProperty.modifyOpId.name(), sessionUserId);
                 break;
         }
     }

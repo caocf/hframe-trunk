@@ -33,8 +33,14 @@ public class Field   {
 	@XStreamAsAttribute
     @XStreamAlias("action")
 	private String action;
+    @XStreamAsAttribute
+    @XStreamAlias("is-key")
+    private String isKey;
+    @XStreamAsAttribute
+    @XStreamAlias("is-name")
+    private String isName;
 
-    public Field() {
+ public Field() {
     }
    
  	 	 
@@ -109,5 +115,20 @@ public class Field   {
      public void setAction(String action){
      	this.action = action;
      }
-	 
+
+     public String getIsKey() {
+      return isKey;
+     }
+
+     public void setIsKey(String isKey) {
+      this.isKey = isKey;
+     }
+
+     public String getIsName() {
+      return isName;
+     }
+
+     public void setIsName(String isName) {
+      this.isName = isName;
+     }
 }

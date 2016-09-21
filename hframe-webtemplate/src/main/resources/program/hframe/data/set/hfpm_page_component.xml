@@ -4,7 +4,7 @@
   <entity>hfpm_page_component</entity>
   <name>页面组件</name>
   <fields>
-    <field code="hfpm_page_component_id" name="页面组件ID" edit-type="input">
+    <field code="hfpm_page_component_id" name="页面组件ID" edit-type="input" is-key="true">
       <create-edit-type>hidden</create-edit-type>
       <update-edit-type>text</update-edit-type>
     </field>
@@ -25,6 +25,7 @@
       <rel entity-code="hfpm_data_set/hfpm_data_set_id/hfpm_data_set_name"/>
     </field>
     <field code="op_id" name="创建人" edit-type="input">
+      <rel entity-code="hfsec_user/hfsec_user_id/hfsec_user_name"/>
       <create-edit-type>hidden</create-edit-type>
       <update-edit-type>text</update-edit-type>
     </field>
@@ -33,6 +34,7 @@
       <update-edit-type>text</update-edit-type>
     </field>
     <field code="modify_op_id" name="修改人" edit-type="input">
+      <rel entity-code="hfsec_user/hfsec_user_id/hfsec_user_name"/>
       <create-edit-type>hidden</create-edit-type>
       <update-edit-type>hidden</update-edit-type>
     </field>

@@ -4,7 +4,7 @@
   <entity>hfmd_entity_join_rule</entity>
   <name>实体连带关系【查询】</name>
   <fields>
-    <field code="hfmd_entity_join_rule_id" name="实体连带id" edit-type="input"/>
+    <field code="hfmd_entity_join_rule_id" name="实体连带id" edit-type="input" is-key="true"/>
     <field code="source_hfmd_entity_id" name="源实体id" edit-type="input"/>
     <field code="source_hfmd_entity_attr_id" name="源实体属性id" edit-type="input"/>
     <field code="source_hfmd_entity_attr_value" name="源实体属性值" edit-type="input"/>

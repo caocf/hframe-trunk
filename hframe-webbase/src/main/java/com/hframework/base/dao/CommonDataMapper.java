@@ -27,6 +27,14 @@ public interface CommonDataMapper {
     public Map<String, Object> selectDynamicTableDataOne(Map entity) throws Exception;
 
     /**
+     * 动态查询表数据
+     * @param entity
+     * @return
+     * @throws Exception
+     */
+    public List selectDynamicTableDataSome(Map entity) throws Exception;
+
+    /**
      * 数据库结构变更
      * @param sqlInfo
      * @return

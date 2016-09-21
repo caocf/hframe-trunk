@@ -4,7 +4,7 @@
   <entity>hfcfg_page_template_elements</entity>
   <name>页面模板元素</name>
   <fields>
-    <field code="hfcfg_page_template_elements_id" name="页面模板元素id" edit-type="input">
+    <field code="hfcfg_page_template_elements_id" name="页面模板元素id" edit-type="input" is-key="true">
       <create-edit-type>hidden</create-edit-type>
       <update-edit-type>text</update-edit-type>
     </field>
@@ -23,6 +23,7 @@
       <rel entity-code="hfcfg_component_template/hfcfg_component_template_id/hfcfg_component_template_name"/>
     </field>
     <field code="creator_id" name="创建人" edit-type="hidden">
+      <rel entity-code="hfsec_user/hfsec_user_id/hfsec_user_name"/>
       <create-edit-type>hidden</create-edit-type>
       <update-edit-type>text</update-edit-type>
     </field>
@@ -31,6 +32,7 @@
       <update-edit-type>text</update-edit-type>
     </field>
     <field code="modifier_id" name="修改人" edit-type="hidden">
+      <rel entity-code="hfsec_user/hfsec_user_id/hfsec_user_name"/>
       <create-edit-type>hidden</create-edit-type>
       <update-edit-type>hidden</update-edit-type>
     </field>

@@ -15,5 +15,17 @@ function componentinit(){
         b.preventDefault();
         $(this).tab("show");
     });
+
+    $(".hflist  .box-content .hflist-data a[when][when!='{}']").each(function(){
+        $(this).hide();
+       var conditions = JSON.parse( $(this).attr("when"));
+        for(var key in conditions) {
+            var $span = $(this).parent("td").parent("tr").find("span[code='"+ key +"']");
+            var value = conditions[key];
+            if($span.attr("value") == value || $span.text() == value) {
+                $(this).show();
+            }
+        }
+    });
 }
 componentinit();

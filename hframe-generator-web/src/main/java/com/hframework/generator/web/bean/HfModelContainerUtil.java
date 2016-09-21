@@ -5,7 +5,9 @@ import com.hframework.common.util.ResourceWrapper;
 import com.hframework.common.util.StringUtils;
 import com.hframe.domain.model.*;
 import com.hframework.generator.enums.HfmdEntityAttr1AttrTypeEnum;
+import javafx.util.Pair;
 
+import java.net.URLEncoder;
 import java.util.*;
 
 /**
@@ -463,10 +465,12 @@ public class HfModelContainerUtil {
     private static String getFieldShowTypeIdByEntityAttr(HfmdEntityAttr hfmdEntityAttr) {
 
         if(hfmdEntityAttr.getHfmdEnumClassId()!= null && hfmdEntityAttr.getHfmdEnumClassId() > 0) {//枚举值对象
-            return "3";//TODO
+            return "2";//TODO
         }else if(hfmdEntityAttr.getRelHfmdEntityAttrId()!= null && hfmdEntityAttr.getRelHfmdEntityAttrId() > 0){ //外键对象
             return "2";//TODO
-        }else {
+        }else if(hfmdEntityAttr.getAttrType() == HfmdEntityAttr1AttrTypeEnum.DATETIME.getIndex() || hfmdEntityAttr.getAttrType() == HfmdEntityAttr1AttrTypeEnum.DATE.getIndex()) {
+            return "3";//TODO
+        } else {
             return "1";//TODO
         }
     }
@@ -476,10 +480,12 @@ public class HfModelContainerUtil {
         if(hfmdEntityAttr.getHfmdEntityAttrCode().toLowerCase().endsWith("_id") && hfmdEntityAttr.getIspk() != null && hfmdEntityAttr.getIspk() == 1) {
             return "011";
         }else if("create_time".equals(hfmdEntityAttr.getHfmdEntityAttrCode().toLowerCase())
-                || "op_id".equals(hfmdEntityAttr.getHfmdEntityAttrCode().toLowerCase())) {
+                || "op_id".equals(hfmdEntityAttr.getHfmdEntityAttrCode().toLowerCase())
+                || "creator_id".equals(hfmdEntityAttr.getHfmdEntityAttrCode().toLowerCase())) {
             return "011";
         }else if("modify_op_id".equals(hfmdEntityAttr.getHfmdEntityAttrCode().toLowerCase())
-                || "modify_time".equals(hfmdEntityAttr.getHfmdEntityAttrCode().toLowerCase())) {
+                || "modify_time".equals(hfmdEntityAttr.getHfmdEntityAttrCode().toLowerCase())
+                || "modifier_id".equals(hfmdEntityAttr.getHfmdEntityAttrCode().toLowerCase())) {
             return "001";
         }else if("del_flag".equals(hfmdEntityAttr.getHfmdEntityAttrCode().toLowerCase())) {
             return "021";
@@ -488,6 +494,60 @@ public class HfModelContainerUtil {
         }else {
             return "221";
         }
+    }
+
+    public static List<String> getSql(List<Map<String, Object>> result, String tableName) {
+        if(result == null || result.size() == 0) return null;
+
+        Map<String, List<String>> tmpMap = new LinkedHashMap<String, List<String>>();
+
+        for (Map<String, Object> stringStringMap : result) {
+            String[] keyValuePair = getKeyValuePair(stringStringMap);
+            if(!tmpMap.containsKey(keyValuePair[0])) {
+                tmpMap.put(keyValuePair[0], new ArrayList<String>());
+            }
+            tmpMap.get(keyValuePair[0]).add(keyValuePair[1]);
+        }
+        List<String> sqls = new ArrayList<String>();
+        for (Map.Entry<String, List<String>> entry : tmpMap.entrySet()) {
+            StringBuffer sql = new StringBuffer().append("insert into " +  tableName + entry.getKey() + " values ");
+            for (String values : entry.getValue()) {
+                sql.append(values).append(",");
+            }
+            sqls.add(sql.substring(0, sql.length() - 1));
+        }
+
+        return sqls;
+    }
+
+    private static String[] getKeyValuePair(Map<String, Object> stringStringMap) {
+        List<Map.Entry<String, Object>> infoIds = new ArrayList<Map.Entry<String, Object>>(stringStringMap.entrySet());
+        Collections.sort(infoIds,
+                new Comparator<Map.Entry<String, Object>>() {
+                    public int compare(Map.Entry<String, Object> o1,
+                                       Map.Entry<String, Object> o2) {
+                        return (o1.getKey()).toString().compareTo(
+                                o2.getKey());
+                    }
+                });
+        String key = "";
+        String value = "";
+        for (int i = 0; i < infoIds.size(); i++) {
+            Map.Entry<String, Object> item = infoIds.get(i);
+            key += (item.getKey() + ",");
+            if (item.getValue() instanceof Long || item.getValue() instanceof Integer || item.getValue() instanceof Short
+                    || item.getValue() instanceof Double || item.getValue() instanceof Float) {
+                value += (item.getValue() + ",");
+            }else {
+                value += ("'" + item.getValue() + "',");
+            }
+
+        }
+
+        key = "(" +  key.substring(0,key.length()-1)+ ")";
+        value ="(" +  value.substring(0,value.length()-1) + ")";
+
+        return new String[]{key, value};
     }
 
     public static List<String> getSql(HfModelContainer addContainer, HfModelContainer modifyContainer) {

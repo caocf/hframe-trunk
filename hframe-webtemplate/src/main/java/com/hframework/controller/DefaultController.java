@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.parser.Feature;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Joiner;
 import com.hframe.domain.model.HfmdEnum;
 import com.hframe.domain.model.HfmdEnumClass;
 import com.hframe.domain.model.HfmdEnumClass_Example;
@@ -28,6 +29,7 @@ import com.hframework.common.util.BeanUtils;
 import com.hframework.common.util.message.Dom4jUtils;
 import com.hframework.ext.datasoucce.DataSourceContextHolder;
 import com.hframework.web.CreatorUtil;
+import com.hframework.web.SessionKey;
 import com.hframework.web.bean.*;
 import com.hframework.web.config.bean.DataSetHelper;
 import com.hframework.web.config.bean.Mapper;
@@ -46,10 +48,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.mock.http.MockHttpInputMessage;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.ConfigurableWebBindingInitializer;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -89,7 +88,7 @@ public class DefaultController {
     @Resource
     private CommonDataService commonDataService;
 
-    private ModelAttributeSetter modelAttributeSetter = new ModelAttributeSetter();
+    private ModelAttributeSetter modelAttributeSetter ;
 
     @Resource
     private IHfmdEnumClassSV iHfmdEnumClassSV;
@@ -98,7 +97,69 @@ public class DefaultController {
     @Resource
     private ObjectMapper mvcObjectMapper;
 
+    @Resource
+    private ConfigurableWebBindingInitializer initializer;
 
+    /**
+     * 字典查询
+     * @param dataCode
+     * @param dataValues
+     * @return
+     */
+    @RequestMapping(value = "/getTexts.json")
+    @ResponseBody
+    public ResultData getTexts(@ModelAttribute("dataCode") String dataCode ,
+                               @RequestParam(value="dataValues[]",required=false) final Set<String> dataValues){
+        logger.debug("request : {}", dataCode, dataValues);
+        DataSourceContextHolder.clear();
+        try{
+            if(dataValues == null || dataValues.size() == 0) {
+                return ResultData.success();
+            }
+            List<KVBean> kvBeans = null;
+            final String[] split = dataCode.split("\\.");
+            if(split.length < 3) {
+                HfmdEnumClass_Example hfmdEnumClass_example = new HfmdEnumClass_Example();
+                hfmdEnumClass_example.createCriteria().andHfmdEnumClassCodeEqualTo(dataCode);
+                List<HfmdEnumClass> hfmdEnumClassListByExample = iHfmdEnumClassSV.getHfmdEnumClassListByExample(hfmdEnumClass_example);
+                if(hfmdEnumClassListByExample != null && hfmdEnumClassListByExample.size() > 0) {
+                    Long hfmdEnumClassId = hfmdEnumClassListByExample.get(0).getHfmdEnumClassId();
+                    HfmdEnum_Example hfmdEnum_example = new HfmdEnum_Example();
+                    hfmdEnum_example.createCriteria().andHfmdEnumClassIdEqualTo(String.valueOf(hfmdEnumClassId));
+                    List<HfmdEnum> hfmdEnumList = iHfmdEnumSV.getHfmdEnumListByExample(hfmdEnum_example);
+                    kvBeans = CollectionUtils.from(hfmdEnumList, new Mapping<HfmdEnum, KVBean>() {
+                        public KVBean from(HfmdEnum hfmdEnum) {
+                            KVBean kvBean = new KVBean();
+                            kvBean.setValue(hfmdEnum.getHfmdEnumValue());
+                            kvBean.setText(hfmdEnum.getHfmdEnumText());
+                            return kvBean;
+                        }
+                    });
+                }
+            }else {
+                Map<String, String> dicInfo = new HashMap<String, String>(){{
+                    put("tableName", split[0]);
+                    put("keyColumn", split[1]);
+                    put("valueColumn", split[2]);
+                    if(split.length > 3) {
+                        put("extColumn", split[3]);
+
+                    }
+                    put("condition", split[1] + " in (" + Joiner.on(",").join(dataValues) + ")");
+                }};
+                kvBeans = commonDataService.selectDynamicTableDataList(dicInfo);
+            }
+            Map<String, KVBean> convert = CollectionUtils.convert(kvBeans, new com.hframework.common.ext.Mapper<String, KVBean>() {
+                public <K> K getKey(KVBean kvBean) {
+                    return (K) kvBean.getValue();
+                }
+            });
+            return ResultData.success(convert);
+        }catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+    }
 
     /**
      * 字典查询
@@ -315,6 +376,7 @@ public class DefaultController {
                 if(resultData.isSuccess()) {
                     Object data = resultData.getData();
                     request.getSession().setAttribute(java.lang.Class.forName(defPoClass.getClassPath()).getName(),data);
+                    request.getSession().setAttribute(SessionKey.USER,data);
                 }
                 return resultData;
             } catch (Exception e) {
@@ -332,7 +394,6 @@ public class DefaultController {
     @ResponseBody
     public ResultData saveData(HttpServletRequest request,
                                HttpServletResponse response){
-        WebContext.clear();
         String refererUrl = request.getHeader("referer");
         String[] refererUrlInfo = Arrays.copyOfRange(refererUrl.split("[/]+"), 2, refererUrl.split("[/]+").length);
         String module = refererUrlInfo[0];
@@ -918,6 +979,10 @@ public class DefaultController {
                             resultData = invokeMethod(controller, action,
                                     new java.lang.Class[]{java.lang.Class.forName(defPoClass.getClassPath())},
                                     new Object[]{po});
+                            //将页面传过来的参数覆盖原先的值，主要用于具体的form表单提交时需要附带一些参数值
+                            if(resultData.getData() != null) {
+                                ReflectUtils.setFieldValue(resultData.getData(), pageFlowParams);
+                            }
                             //这里将查询的单个对象存入线程中，别的组件在需要时可以获取想要的值，如数据集数据列智能提醒需要依赖数据集的主实体ID
                             WebContext.add(resultData.getData());
                         } else if ("tree".equals(action)) {
@@ -1580,7 +1645,12 @@ public class DefaultController {
     public static  Map<String, String> getPageContextRealyParams(Map<String, String> map) {
         Map<String, String> result = new HashMap<String, String>();
         for (String key : map.keySet()) {
-            result.put(key.substring(0,key.length()-4), map.get(key));
+            if(key.endsWith("PCXT")) {
+                result.put(key.substring(0,key.length()-4), map.get(key));
+            }else {
+                result.put(key, map.get(key));
+            }
+
         }
         return result;
     }
@@ -1591,6 +1661,8 @@ public class DefaultController {
        while (parameterNames.hasMoreElements()) {
            String paramName = (String)parameterNames.nextElement();
            if(paramName.endsWith("PCXT")) {
+               map.put(paramName, request.getParameter(paramName));
+           }else {
                map.put(paramName, request.getParameter(paramName));
            }
        }
@@ -1605,6 +1677,7 @@ public class DefaultController {
         if(declaredMethod == null) {
             logger.warn("{}", controller,action,defPoClass);
         }
+        if(modelAttributeSetter == null) modelAttributeSetter = new ModelAttributeSetter();
         Object po = modelAttributeSetter.resolveArgument(request, new MethodParameter(declaredMethod, 0));
         return po;
     }
@@ -1631,9 +1704,7 @@ public class DefaultController {
         public void init() {
             this.processor = new ServletModelAttributeMethodProcessor(false);
 
-            ConfigurableWebBindingInitializer initializer = new ConfigurableWebBindingInitializer();
-            initializer.setConversionService(new DefaultConversionService());
-
+            //调用spring-mvc中的配置的WebBindingInitializer
             this.binderFactory = new ServletRequestDataBinderFactory(null, initializer);
             this.mavContainer = new ModelAndViewContainer();
         }

@@ -23,6 +23,10 @@
     <if test="condition != null  and condition != ''"> where ${condition}</if>
   </select>
 
+  <select id="selectDynamicTableDataSome" resultType="java.util.Map"  parameterType="java.util.Map">
+    ${sql}
+  </select>
+
   <insert id="executeDBStructChange" parameterType="java.util.Map" statementType="STATEMENT">
     ${sql}
   </insert>

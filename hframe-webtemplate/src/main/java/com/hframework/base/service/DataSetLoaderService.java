@@ -186,6 +186,10 @@ public class DataSetLoaderService {
                     String editType = column.getShowType().getType();
                     field.setName(hfpmDataField.getHfpmDataFieldName());
                     field.setCode(hfpmDataField.getHfpmDataFieldCode());
+
+                    if(hfmdEntityAttr != null && hfmdEntityAttr.getIspk() != null && hfmdEntityAttr.getIspk() == 1) {
+                        field.setIsKey("true");
+                    }
                     field.setEditType(editType);
                     if(hfpmDataField.getFieldShowCode().length() > 1) {
                         field.setCreateEditType("0".equals(String.valueOf(hfpmDataField.getFieldShowCode().charAt(0))) ? "hidden"
@@ -207,6 +211,7 @@ public class DataSetLoaderService {
                         }
                         if(hfmdEntityAttr.getRelHfmdEntityAttrId() != null && hfmdEntityAttr.getRelHfmdEntityAttrId() > 0) {
                             HfmdEntityAttr relEntityAttr = hfmdEntityAttrIdEntityAttrMap.get(hfmdEntityAttr.getRelHfmdEntityAttrId());
+                            System.out.println("==>RelHfmdEntityAttrId【" + hfmdEntityAttr.getRelHfmdEntityAttrId() + "】没有找到对应的记录！");
                             Rel rel = getRel(relEntityAttr);
                             field.setRel(rel);
                             if("select-panel".equals(editType)) {
@@ -220,7 +225,11 @@ public class DataSetLoaderService {
                                 field.setRel(rel);
                             }
                         }
-
+                        if(Arrays.asList(new String[]{"op_id", "modify_op_id", "creator_id", "modifier_id"}).contains(hfmdEntityAttr.getHfmdEntityAttrCode())) {
+                            Rel rel = new Rel();
+                            rel.setEntityCode("hfsec_user/hfsec_user_id/hfsec_user_name");
+                            field.setRel(rel);
+                        }
                     }
 
                 }

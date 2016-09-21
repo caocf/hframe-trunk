@@ -42,6 +42,19 @@ public class CommonDataService {
     }
 
     /**
+     * 动态查询表数据
+     *
+     * @param entity
+     * @return
+     * @throws Exception
+     */
+    public List selectDynamicTableDataSome(Map entity) throws Exception {
+        return commonDataMapper.selectDynamicTableDataSome(entity);
+    }
+
+
+
+    /**
      * 数据库结构变更
      *
      * @param sqlInfo

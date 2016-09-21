@@ -4,7 +4,7 @@
   <entity>hfpm_entity_permission</entity>
   <name>实体权限【默认】</name>
   <fields>
-    <field code="hfpm_entity_permission_id" name="页面事件属性ID" edit-type="input">
+    <field code="hfpm_entity_permission_id" name="页面事件属性ID" edit-type="input" is-key="true">
       <create-edit-type>hidden</create-edit-type>
       <update-edit-type>text</update-edit-type>
     </field>
@@ -17,6 +17,7 @@
     <field code="value_type" name="值类型" edit-type="input"/>
     <field code="value" name="值" edit-type="input"/>
     <field code="op_id" name="创建人" edit-type="input">
+      <rel entity-code="hfsec_user/hfsec_user_id/hfsec_user_name"/>
       <create-edit-type>hidden</create-edit-type>
       <update-edit-type>text</update-edit-type>
     </field>
@@ -25,6 +26,7 @@
       <update-edit-type>text</update-edit-type>
     </field>
     <field code="modify_op_id" name="修改人" edit-type="input">
+      <rel entity-code="hfsec_user/hfsec_user_id/hfsec_user_name"/>
       <create-edit-type>hidden</create-edit-type>
       <update-edit-type>hidden</update-edit-type>
     </field>

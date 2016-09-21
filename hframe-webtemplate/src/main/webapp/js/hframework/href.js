@@ -147,7 +147,9 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
             var _data = {};
             var $componentParam  = formatContent($($this).attr("params"), $($this));
 
-            if($componentParam == "thisForm") {
+
+
+            if($componentParam != null && $componentParam.endsWith("thisForm")) {
                 $thisForm = $this.parents("form")[0];
                 _data = parseUrlParamToObject(decodeURIComponent($($thisForm).serialize()));
             }else {
@@ -164,12 +166,13 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
                     _data["checkIds"] = checkIds;
 
                 }else {
-                    $thisForm = $this.parents("form")[0];
                     _data = parseUrlParamToObject($param);
-                    tmpArray = parseUrlParamToObject($($thisForm).serialize());
-                    for(var $index in tmpArray) {
-                        _data[$index] = decodeURIComponent(tmpArray[$index]);
-                    }
+                    //版本冲突，不知道为什么加这部分内容， 注掉改部分内容
+                    //$thisForm = $this.parents("form")[0];
+                    //tmpArray = parseUrlParamToObject($($thisForm).serialize());
+                    //for(var $index in tmpArray) {
+                    //    _data[$index] = decodeURIComponent(tmpArray[$index]);
+                    //}
                 }
 
 
@@ -355,6 +358,7 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
             var $newHfList = $(data);
             $(compoContainer).find(".hflist-pager").html($newHfList.find(".hflist-pager").html());
             $(compoContainer).find(".hflist-data").html($newHfList.find(".hflist-data").html());
+            componentinit();
         },'html');
     }
 

@@ -106,11 +106,10 @@
     <bean id="modelLoaderService" class="com.hframework.base.service.ModelLoaderService"></bean>
 
     <!-- ①注册ConversionService -->
-    <!--&lt;!&ndash; ②使用 ConfigurableWebBindingInitializer 注册conversionService &ndash;&gt;-->
-    <!--<bean id="webBindingInitializer"-->
-          <!--class="org.springframework.web.bind.support.ConfigurableWebBindingInitializer">-->
-        <!--<property name="conversionService" ref="conversionService" />-->
-    <!--</bean>-->
+    <!-- ②使用 ConfigurableWebBindingInitializer 注册conversionService -->
+    <bean class="org.springframework.web.bind.support.ConfigurableWebBindingInitializer">
+        <property name="conversionService" ref="conversionService" />
+    </bean>
 
     <!--<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">-->
         <!--<property name="messageConverters">-->
@@ -176,5 +175,16 @@
             <bean class="com.ourangel.box.mvc.interceptor.PlatformUserInterceptor" />
         </mvc:interceptor>
     </mvc:interceptors>
+
 -->
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/**" />
+            <bean class="com.hframework.interceptor.ThreadContextInterceptor" />
+        </mvc:interceptor>
+        <!--<mvc:interceptor>-->
+            <!--<mvc:mapping path="/**" />-->
+            <!--<bean class="com.ucf.first.interceptors.ReqCheckInterceptor" ></bean>-->
+        <!--</mvc:interceptor>-->
+    </mvc:interceptors>
 </beans>
