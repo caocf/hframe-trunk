@@ -8,7 +8,7 @@
         <source scope="EOC" param="thisForm"></source>
         <effect type="ajaxSubmit" action="${createByAjax}"></effect>
         <effect type="confirm" content='创建成功，是否返回列表页？'></effect>
-        <effect type="component.reload" target-id="list"></effect>
+        <effect type="pageFwd" action='${mgr}' isStack="true"></effect>
     </event>
     <event name="update.submit">
         <attach anchor="EOFC">
@@ -17,7 +17,7 @@
         <source scope="EOC" param="thisForm"></source>
         <effect type="ajaxSubmit" action="${updateByAjax}"></effect>
         <effect type="confirm" content='修改，是否返回列表页？'></effect>
-        <effect type="component.reload" target-id="list"></effect>
+        <effect type="pageFwd" action='${mgr}' isStack="true"></effect>
     </event>
 
     <event name="batch.delete">

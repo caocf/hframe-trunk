@@ -136,33 +136,39 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
         });
     }
 
-    $("th[code][dataCode][dataCode!='']").each(function(){
-        var $this =$(this);
-        var code = $(this).attr("code");
-        var dataCode = $(this).attr("dataCode");
-        var dataValues=[];
-        $("span[code='" + code + "']").each(function(){
-            if($(this).text()) {
-                dataValues.push($(this).text());
-            }
-        });
-        var _url =  "/getTexts.json";
-        var _data = {"dataCode":dataCode, "dataValues" : dataValues};
-        ajax.Post(_url,_data,function(data){
-            if(data.resultCode == 0) {
-               if($this.html().endsWith("ID")) {
-                   $this.html($this.html().substring(0,$this.html().length-2));
-               }
-                $("span[code='" + code + "']").each(function(){
-                    if(data.data[$(this).text()] && data.data[$(this).text()].text) {
-                        $(this).attr("value",$(this).text());
-                        $(this).text(data.data[$(this).text()].text);
-                    }
-                });
+    $.reloadListDisplay = function () {
+        listTextDisplay();
+    }
 
-            }
+    function listTextDisplay() {
+        $("th[code][dataCode][dataCode!='']").each(function(){
+            var $this =$(this);
+            var code = $(this).attr("code");
+            var dataCode = $(this).attr("dataCode");
+            var dataValues=[];
+            $("span[code='" + code + "']").each(function(){
+                if($(this).text()) {
+                    dataValues.push($(this).text());
+                }
+            });
+            var _url =  "/getTexts.json";
+            var _data = {"dataCode":dataCode, "dataValues" : dataValues};
+            ajax.Post(_url,_data,function(data){
+                if(data.resultCode == 0) {
+                    if($this.html().endsWith("ID")) {
+                        $this.html($this.html().substring(0,$this.html().length-2));
+                    }
+                    $("span[code='" + code + "']").each(function(){
+                        if(data.data[$(this).text()] && data.data[$(this).text()].text) {
+                            $(this).attr("value",$(this).text());
+                            $(this).text(data.data[$(this).text()].text);
+                        }
+                    });
+                }
+            });
         });
-    });
+    }
+    listTextDisplay();
 
     $("[data-code][data-condition]").each(function(){
         var $this = $(this);

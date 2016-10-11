@@ -16,7 +16,7 @@ import java.util.*;
  * User: zhangqh6
  * Date: 2016/2/18 15:36:36
  */
-public class RedisUtils {
+public class RedisService {
     private RedisTemplate redisTemplate;
 
     public RedisTemplate getRedisTemplate() {
@@ -56,18 +56,6 @@ public class RedisUtils {
             }
         });
     }
-
-//    public boolean add(final String keyId, final String value) {
-//        return (Boolean) redisTemplate.execute(new RedisCallback<Boolean>() {
-//            public Boolean doInRedis(RedisConnection connection)
-//                    throws DataAccessException {
-//                RedisSerializer<String> serializer = getRedisSerializer();
-//                byte[] key = serializer.serialize(keyId);
-//                byte[] json = serializer.serialize(value);
-//                return connection.setNX(key, json);
-//            }
-//        });
-//    }
 
     /**
      * 修改

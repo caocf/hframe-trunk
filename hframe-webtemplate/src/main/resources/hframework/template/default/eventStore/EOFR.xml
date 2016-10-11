@@ -21,7 +21,7 @@
             <appendElement type="icon" param='{fillclass:"btn-danger",iconclass:"icon-trash"}'></appendElement>
         </attach>
         <source scope="CROW" param='${id}'></source>
-        <effect type="confirm" content='你是否删除【{${name}}】该数据!'></effect>
+        <effect type="confirm" content="是否删除 &lt;span style=&quot;color:red&quot;&gt;{${name}}&lt;/span&gt; ?"></effect>
         <effect type="ajaxSubmit" action="${delete}"></effect>
         <effect type="component.reload"></effect>
     </event>
@@ -30,7 +30,7 @@
             <appendElement type="icon" param='{fillclass:"btn-danger",iconclass:"icon-unlock"}'></appendElement>
         </attach>
         <source scope="CROW" param="${id}"></source>
-        <effect type="confirm" content='你是否生效【{${name}}】该数据!'></effect>
+        <effect type="confirm" content="是否生效 &lt;span style=&quot;color:red&quot;&gt;{${name}}&lt;/span&gt; ?"></effect>
         <effect type="ajaxSubmit" action="${updateByAjax}"></effect>
         <effect type="component.reload"></effect>
     </event>
@@ -39,7 +39,35 @@
             <appendElement type="icon" param='{fillclass:"btn-danger",iconclass:"icon-lock"}'></appendElement>
         </attach>
         <source scope="CROW" param="${id}"></source>
-        <effect type="confirm" content='你是否失效【{${name}}】该数据!'></effect>
+        <effect type="confirm" content="是否失效 &lt;span style=&quot;color:red&quot;&gt;{${name}}&lt;/span&gt; ?"></effect>
+        <effect type="ajaxSubmit" action="${updateByAjax}"></effect>
+        <effect type="component.reload"></effect>
+    </event>
+    <event name="confirm.play">
+        <attach anchor="EOFR">
+            <appendElement type="icon" param='{fillclass:"btn-danger",iconclass:"icon-play"}'></appendElement>
+        </attach>
+        <source scope="CROW" param="${id}"></source>
+        <effect type="confirm" content="是否启动 &lt;span style=&quot;color:red&quot;&gt;{${name}}&lt;/span&gt; ?"></effect>
+        <effect type="ajaxSubmit" action="${updateByAjax}"></effect>
+        <effect type="component.reload"></effect>
+    </event>
+    <event name="confirm.pause">
+        <pre-handle case="status" when="2" then="3"></pre-handle>
+        <attach anchor="EOFR">
+            <appendElement type="icon" param='{fillclass:"btn-danger",iconclass:"icon-pause"}'></appendElement>
+        </attach>
+        <source scope="CROW" param="${id}"></source>
+        <effect type="confirm" content="是否暂停 &lt;span style=&quot;color:red&quot;&gt;{${name}}&lt;/span&gt; ?"></effect>
+        <effect type="ajaxSubmit" action="${updateByAjax}"></effect>
+        <effect type="component.reload"></effect>
+    </event>
+    <event name="confirm.stop">
+        <attach anchor="EOFR">
+            <appendElement type="icon" param='{fillclass:"btn-danger",iconclass:"icon-stop"}'></appendElement>
+        </attach>
+        <source scope="CROW" param="${id}"></source>
+        <effect type="confirm" content="是否停止 &lt;span style=&quot;color:red&quot;&gt;{${name}}&lt;/span&gt; ?"></effect>
         <effect type="ajaxSubmit" action="${updateByAjax}"></effect>
         <effect type="component.reload"></effect>
     </event>
@@ -74,7 +102,7 @@
             <appendElement type="icon" param='{fillclass:"btn-danger",iconclass:"icon-trash"}'></appendElement>
         </attach>
         <source scope="CROW" param='${id}'></source>
-        <effect type="confirm" content='你是否删除【{${name}}】该数据!'></effect>
+        <effect type="confirm" content="是否删除 &lt;span style=&quot;color:red&quot;&gt;{${name}}&lt;/span&gt; ?"></effect>
         <effect type="ajaxSubmit" action="${delete}"></effect>
         <effect type="component.reload"></effect>
     </event>

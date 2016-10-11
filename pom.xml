@@ -24,6 +24,8 @@
         <module>hframe-webtemplate</module>
         <module>hframe-webbase</module>
         <module>hframe-rpc</module>
+        <module>hframe-extension</module>
+        <module>hframe-training</module>
     </modules>
 
     <dependencies>

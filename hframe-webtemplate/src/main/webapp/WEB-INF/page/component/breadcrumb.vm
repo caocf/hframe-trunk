@@ -1,5 +1,5 @@
 
-#if('$!breadcrumb' != "")
+#if("$!breadcrumb" != "")
 <div class="row-fluid collapse in" style="margin-top: -10px;"  id="breadcrumb">
     <div class="span12">
         <form>

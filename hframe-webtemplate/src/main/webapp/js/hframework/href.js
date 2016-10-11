@@ -73,10 +73,7 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
         }
 
         var url = $action[$type].action;
-        if($type == "pageFwd") {
-            var isStack =$action[$type].isStack;
-            location.href = url + "?" + $param;
-        }else if($type == "confirm") {
+        if($type == "confirm") {
             var content = formatContent($action[$type].content,$this);
             showConfirmDialog(content,function(){
                 delete $action[$type];
@@ -88,6 +85,9 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
                 delete $action[$type];
                 doEvent($action,$param,$this);
             });
+        }else if($type == "pageFwd") {
+            var isStack =$action[$type].isStack;
+            location.href = url + "?" + $param;
         }else if($type == "ajaxSubmitByJson") {
             var _data;
             var targetId =$action[$type].targetId;
@@ -359,6 +359,7 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
             $(compoContainer).find(".hflist-pager").html($newHfList.find(".hflist-pager").html());
             $(compoContainer).find(".hflist-data").html($newHfList.find(".hflist-data").html());
             componentinit();
+            $.reloadListDisplay();
         },'html');
     }
 

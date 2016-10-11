@@ -480,7 +480,7 @@ public class ComponentDataContainer {
 
         private String express;
 
-        private Map<String, String> initMap = new HashMap<String, String>();
+        private Map<String, String> initMap = new LinkedHashMap<String, String>();
 
         private List<String[]> values;
         private Object data;
@@ -1033,7 +1033,15 @@ public class ComponentDataContainer {
                 if("code".equals(var)) {
                     express = express.replace("${code}",dataSet.getCode());
                 }else if("name".equals(var)) {
-                    express = express.replace("${name}",dataSet.getName());
+                    //TODO
+                    if(dataSet.getName().contains("【") && dataSet.getName().contains("】")) {
+                        String relName = dataSet.getName().substring(0,dataSet.getName().lastIndexOf("【"));
+                        express = express.replace("${name}",relName);
+                    }else {
+                        express = express.replace("${name}",dataSet.getName());
+                    }
+
+
                 }else if("module".equals(var)) {
                     express = express.replace("${module}",dataSet.getModule());
                 }

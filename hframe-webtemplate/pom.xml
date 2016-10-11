@@ -43,6 +43,11 @@
         </dependency>
         <dependency>
             <groupId>com.hframe</groupId>
+            <artifactId>hframe-extension</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.hframe</groupId>
             <artifactId>hframe-generator-web</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>

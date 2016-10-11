@@ -67,11 +67,13 @@ public class ControllerHelper {
             case CREATE:
                 setDefaultValue(object, CustomProperty.createTime.name(), new Date());
                 setDefaultValue(object, CustomProperty.opId.name(), sessionUserId);
+                setDefaultValue(object, CustomProperty.creatorId.name(), sessionUserId);
                 setDefaultValue(object, CustomProperty.delFlag.name(), 0);
                 break;
             default:
                 setDefaultValue(object, CustomProperty.modifyTime.name(), new Date());
                 setDefaultValue(object, CustomProperty.modifyOpId.name(), sessionUserId);
+                setDefaultValue(object, CustomProperty.modifierId.name(), sessionUserId);
                 break;
         }
     }
@@ -183,7 +185,7 @@ public class ControllerHelper {
     }
 
     public enum CustomProperty {
-        createTime,modifyTime,opId,modifyOpId,delFlag
+        createTime,modifyTime,opId,modifyOpId,delFlag,creatorId,modifierId
     }
 
     public enum OperateType{

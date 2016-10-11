@@ -61,15 +61,16 @@
     <!--</event>-->
     <!--</events>-->
     <events>
-        <event name="submit">
-            <attach anchor="EOFC">
-                <appendElement type="button" param='{btnclass:"btn-primary",btnText:" 提 交 "}'></appendElement>
-            </attach>
-            <source scope="EOC" param="thisForm"></source>
-            <effect type="ajaxSubmit" action="${updateByAjax}"></effect>
-            <effect type="confirm" content='修改，是否返回列表页？'></effect>
-            <effect type="component.reload" target-id="list"></effect>
-        </event>
+        <event rel="#EOFC.update.submit" />
+        <!--<event name="submit">-->
+            <!--<attach anchor="EOFC">-->
+                <!--<appendElement type="button" param='{btnclass:"btn-primary",btnText:" 提 交 "}'></appendElement>-->
+            <!--</attach>-->
+            <!--<source scope="EOC" param="thisForm"></source>-->
+            <!--<effect type="ajaxSubmit" action="${updateByAjax}"></effect>-->
+            <!--<effect type="confirm" content='修改完成，是否返回列表页？'></effect>-->
+            <!--<effect type="pageFwd" action='${mgr}' isStack="true"></effect>-->
+        <!--</event>-->
     </events>
     <example>
         <![CDATA[

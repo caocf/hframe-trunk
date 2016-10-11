@@ -27,5 +27,28 @@ function componentinit(){
             }
         }
     });
+
+    $(".hflist  .box-content .hflist-data tr td").each(function(){
+        var count = 0;
+        var $this = $(this);
+        $(this).find("a").each(function(){
+            if( $(this).attr("when") &&  $(this).attr("when") !="{}") {
+                var conditions = JSON.parse( $(this).attr("when"));
+                for(var key in conditions) {
+                    var $span = $(this).parent("td").parent("tr").find("span[code='"+ key +"']");
+                    var value = conditions[key];
+                    if($span.attr("value") == value || $span.text() == value) {
+                        count = count + 1;
+                    }
+                }
+            }else {
+                count = count + 1;
+            }
+        });
+        if(count > 3) {
+            $($this).attr("width",count*50 + "px;");
+        }
+
+    });
 }
 componentinit();

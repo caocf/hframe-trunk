@@ -801,6 +801,7 @@ public class DefaultController {
                                  @ModelAttribute("pagination")  Pagination pagination,
                                  @ModelAttribute("isPop")  String isPop,
                                  HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        logger.debug("module: {},page: {},params: {}", module, pageCode, request.getQueryString());
         if(WebContext.get("subContext") == null) {
             WebContext.clear();
             DataSourceContextHolder.clear();
@@ -1074,7 +1075,7 @@ public class DefaultController {
                     jsonObject.put("title",componentDescriptor.getTitle());
                 }
 
-                jsonObject.put("icon","icon-edit");
+//                jsonObject.put("icon","icon-edit");
                 jsonObject.put("ruler",componentDescriptor.getDataSetDescriptor().getDataSetRulerJsonObject().toJSONString());
                 jsonObject.put("helper",componentDescriptor.getDataSetDescriptor().getDynamicHelper());
                 jsonObject.put("dc",componentDescriptor.getDataSetDescriptor().getDataSet().getCode());
