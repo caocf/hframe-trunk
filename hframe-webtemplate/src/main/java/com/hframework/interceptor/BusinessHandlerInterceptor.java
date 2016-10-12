@@ -1,22 +1,10 @@
 package com.hframework.interceptor;
 
-import com.hframe.domain.model.*;
-import com.hframe.service.interfaces.IHfmdEntityAttrSV;
-import com.hframe.service.interfaces.IHfmdEntitySV;
-import com.hframe.service.interfaces.IHfmdEnumClassSV;
-import com.hframe.service.interfaces.IHfpmModuleSV;
 import com.hframework.base.bean.BusinessHandlerFactory;
 import com.hframework.common.annotation.extension.*;
 import com.hframework.common.frame.ServiceFactory;
-import com.hframework.common.frame.cache.PropertyConfigurerUtils;
 import com.hframework.common.util.ReflectUtils;
 import com.hframework.common.util.StringUtils;
-import com.hframework.generator.util.CreatorUtil;
-import com.hframework.generator.web.bean.HfModelContainer;
-import com.hframework.generator.web.bean.HfModelContainerUtil;
-import com.hframework.generator.web.sql.HfModelService;
-import com.hframework.generator.web.sql.reverse.SQLParseUtil;
-import com.hframework.web.bean.WebContextHelper;
 import org.apache.commons.beanutils.BeanUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -25,12 +13,8 @@ import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -59,8 +43,9 @@ public class BusinessHandlerInterceptor {
     public void createBefore(JoinPoint joinPoint) throws Exception {
         Object targetObject = joinPoint.getArgs()[0];
         Map<BeforeCreateHandler, Method> handlers = BusinessHandlerFactory.getHandler(targetObject.getClass(), BeforeCreateHandler.class);
-        for (Method method : handlers.values()) {
-            invokeHandler(method, targetObject);
+        for (BeforeCreateHandler annotation : handlers.keySet()) {
+            Method method = handlers.get(annotation);
+            checkAndInvokeHandler(targetObject, annotation.attr(), null, annotation.target(), method, null);
         }
     }
 
@@ -69,8 +54,9 @@ public class BusinessHandlerInterceptor {
         if(retVal > 0) {
             Object targetObject = joinPoint.getArgs()[0];
             Map<AfterCreateHandler, Method> handlers = BusinessHandlerFactory.getHandler(targetObject.getClass(), AfterCreateHandler.class);
-            for (Method method : handlers.values()) {
-                invokeHandler(method, targetObject);
+            for (AfterCreateHandler annotation : handlers.keySet()) {
+                Method method = handlers.get(annotation);
+                checkAndInvokeHandler(targetObject, annotation.attr(), null, annotation.target(), method, null);
             }
         }
     }
@@ -114,8 +100,9 @@ public class BusinessHandlerInterceptor {
         if (targetObject instanceof Long) {
         }else {
             Map<BeforeDeleteHandler, Method> handlers = BusinessHandlerFactory.getHandler(targetObject.getClass(), BeforeDeleteHandler.class);
-            for (Method method : handlers.values()) {
-                invokeHandler(method, targetObject);
+            for (BeforeDeleteHandler annotation : handlers.keySet()) {
+                Method method = handlers.get(annotation);
+                checkAndInvokeHandler(targetObject, annotation.attr(), null, annotation.orig(), method, null);
             }
         }
     }
@@ -126,8 +113,9 @@ public class BusinessHandlerInterceptor {
         if (targetObject instanceof Long) {
         }else {
             Map<AfterDeleteHandler, Method> handlers = BusinessHandlerFactory.getHandler(targetObject.getClass(), AfterDeleteHandler.class);
-            for (Method method : handlers.values()) {
-                invokeHandler(method, targetObject);
+            for (AfterDeleteHandler annotation : handlers.keySet()) {
+                Method method = handlers.get(annotation);
+                checkAndInvokeHandler(targetObject, annotation.attr(), null, annotation.orig(), method, null);
             }
         }
     }
@@ -137,13 +125,13 @@ public class BusinessHandlerInterceptor {
         if(StringUtils.isNotBlank(attr)) {
             String propertyName = attr.trim();
             String targetPropertyValue = BeanUtils.getProperty(targetObject, propertyName);
-            if(StringUtils.isNotBlank(target) && !target.trim().equals(targetPropertyValue)) {
+            if(StringUtils.isNotBlank(target) && !checkValuePass(target, targetPropertyValue)) {
                 return;
             }
             if(StringUtils.isNotBlank(orig)) {
                 Object originObject = getOriginObject(targetObject, curServiceClass);
                 String originPropertyValue = BeanUtils.getProperty(originObject, propertyName);
-                if(!orig.trim().equals(originPropertyValue)) {
+                if(!checkValuePass(orig, originPropertyValue)) {
                     return;
                 }else {
                     invokeHandler(method, targetObject, originObject);
@@ -151,12 +139,25 @@ public class BusinessHandlerInterceptor {
             }else {
                 invokeHandler(method, targetObject);
             }
-
         }else {
             invokeHandler(method, targetObject);
         }
     }
 
+    private boolean checkValuePass(String request, String value) {
+        request = request.trim();
+        if(request.contains(",")) {
+            request = "," + request + ",";
+            return request.contains("," + value + ",");
+        }else if(request.startsWith("!")) {
+            return !request.equals(value);
+        }else {
+            return request.equals(value);
+        }
+
+
+
+    }
 
 
     private void invokeHandler(Method method, Object... targetObject) throws Exception {
@@ -164,14 +165,22 @@ public class BusinessHandlerInterceptor {
         if(targetObject == null) targetObject = new Object[0];
 
         try {
-
             Object[] args = new Object[method.getParameterTypes().length];
             for (int i = 0; i < targetObject.length; i++) {
                 args[i] = targetObject[i];
             }
             method.invoke(handler, args);
         } catch (Exception e) {
-            throw e;
+            try{
+                Object[] args = new Object[method.getParameterTypes().length +1];
+                for (int i = 0; i < targetObject.length; i++) {
+                    args[i] = targetObject[i];
+                }
+                args[method.getParameterTypes().length] = null;
+                method.invoke(handler, args);
+            }catch (Exception e1){
+                e1.printStackTrace();
+            }
         }
     }
 
@@ -183,6 +192,6 @@ public class BusinessHandlerInterceptor {
 
         String methodName = "get" + targetObject.getClass().getSimpleName() + "ByPK";
 
-        return ReflectUtils.invokeMethod(service,methodName, new Class[]{long.class}, new Object[]{Long.valueOf(keyPropertyValue)});
+        return ReflectUtils.invokeMethod(service, methodName, new Class[]{long.class}, new Object[]{Long.valueOf(keyPropertyValue)});
     }
 }

@@ -15,4 +15,6 @@ import static java.lang.annotation.ElementType.METHOD;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({METHOD, FIELD,})
 public @interface AfterCreateHandler {
+    String attr() default "";
+    String target() default "";
 }

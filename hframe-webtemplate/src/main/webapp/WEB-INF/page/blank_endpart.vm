@@ -46,6 +46,9 @@
 <script src="/static/plugins/cityPicker/js/city-picker.js"></script>
 <script src="/static/plugins/cityPicker/js/main.js"></script>
 
+<script type="text/javascript" src="/static/plugins/timepicker/jquery-ui-timepicker-addon.min.js"></script>
+<script type="text/javascript" src="/static/plugins/timepicker/i18n/jquery-ui-timepicker-zh-CN.js"></script>
+
 <script type="text/javascript" src="/static/plugins/require/require.js"></script>
 <script type="text/javascript" src="/js/hframework/utils/require.config.js"></script>
 <script src="/js/hframework/fn.js"></script>

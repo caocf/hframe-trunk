@@ -95,25 +95,25 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
             if(targetId != null) {
                 var json = {};
                 var targetIds = targetId.split(",");
-               for(var tarId in targetIds) {
-                   $component = $("[component= " + targetIds[tarId] +"]");
-                   if($component.find("form").length > 0) {
-                       //参数检查
-                       if(!$.checkSubmit($($component.find("form")[0]))) {
-                           //alert("字段不能为空！");
-                           return;
-                       }
-                       json[targetIds[tarId]] = JSON.parse($($component.find("form")[0]).serializeJson());
-                   }else {
-                       var hierarchy = $component.orgchart('getHierarchy');
-                       json[targetIds[tarId]]  = JSON.stringify(hierarchy, null, 2);
-                   }
-               }
+                for(var tarId in targetIds) {
+                    $component = $("[component= " + targetIds[tarId] +"]");
+                    if($component.find("form").length > 0) {
+                        //参数检查
+                        if(!$.checkSubmit($($component.find("form")[0]))) {
+                            //alert("字段不能为空！");
+                            return;
+                        }
+                        json[targetIds[tarId]] = JSON.parse($($component.find("form")[0]).serializeJson());
+                    }else {
+                        var hierarchy = $component.orgchart('getHierarchy');
+                        json[targetIds[tarId]]  = JSON.stringify(hierarchy, null, 2);
+                    }
+                }
                 //console.log(JSON.stringify(json));
                 _data = JSON.stringify(json);
             }else if($param.endsWith("thisForm")) {
                 if($this.parents("form").length == 0) {
-                   var $rootNodes = $this.parents("div .hfspan").children(".hfcontainer").children("div").children("div .box");
+                    var $rootNodes = $this.parents("div .hfspan").children(".hfcontainer").children("div").children("div .box");
                     var filePath = $this.parents("div .hfspan").find("div[path]").attr("path");
                     $param = $param + "&path=" + filePath;
                     //alert(filePath);
@@ -172,7 +172,7 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
                     //alert("字段不能为空！");
                     return;
                 }
-                _data = parseUrlParamToObject(decodeURIComponent($($thisForm).serialize()));
+                _data = parseUrlParamToObject(decodeURIComponent($($thisForm).serialize().replace(/\+/g," ")));
             }else {
                 if($($this).attr("params") == "checkIds") {
                     var checkIds = new Array();
@@ -285,7 +285,7 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
                 $target.next().remove();
                 //$target.citypicker.Constructor
 
-                  $.selectPanelLoad($target);;
+                $.selectPanelLoad($target);;
             });
             $($curRow).after($newRow);
         }else if($type == "component.row.up") {
@@ -382,7 +382,7 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
                 _data[key]=decodeURI(params[key]).trim();
             }
         }
-         console.log(_data);
+        console.log(_data);
         //alert(_data);
         ajax.Post(_url,_data,function(data){
             var $newHfList = $(data);
@@ -450,10 +450,10 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
                 //        result[key] = [result[key],value];
                 //    }
                 //}else {
-                    if(key == "createTime" || key == "modifyTime") {
-                        continue;
-                    }
-                    result[key] = value;
+                if(key == "createTime" || key == "modifyTime") {
+                    continue;
+                }
+                result[key] = value;
                 //}
             }
         }
@@ -471,7 +471,7 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
             }
             return $param.replace("{" + $position +"}",$value);
         }
-       return null;
+        return null;
     }
 
     function getPageContextInfo(){
