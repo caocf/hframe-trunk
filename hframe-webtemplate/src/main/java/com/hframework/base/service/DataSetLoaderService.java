@@ -191,6 +191,8 @@ public class DataSetLoaderService {
                         field.setIsKey("true");
                     }
                     field.setEditType(editType);
+                    if(column.getNullable() == 0) field.setNotNull("true");
+
                     if(hfpmDataField.getFieldShowCode().length() > 1) {
                         field.setCreateEditType("0".equals(String.valueOf(hfpmDataField.getFieldShowCode().charAt(0))) ? "hidden"
                                 : "1".equals(String.valueOf(hfpmDataField.getFieldShowCode().charAt(0))) ? "text" : null);

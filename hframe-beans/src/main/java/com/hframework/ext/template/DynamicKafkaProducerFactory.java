@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * ע�⣺DynamicKafkaTemplate��DynamicKafkaProducerFactory��Ҫͬʱʹ��
+ * 注意：DynamicKafkaTemplate与DynamicKafkaProducerFactory需要同时使用
  * Created by zhangquanhong on 2016/10/11.
  */
 public class DynamicKafkaProducerFactory<K, V> extends DefaultKafkaProducerFactory<K, V> implements ProducerFactory<K, V>, Lifecycle, DisposableBean {

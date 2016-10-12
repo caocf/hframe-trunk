@@ -4,7 +4,7 @@
   <entity>hfpm_program_cfg</entity>
   <name>项目设置【查询】</name>
   <fields>
-    <field code="hfpm_program_cfg_id" name="项目配置ID" edit-type="input" is-key="true"/>
+    <field code="hfpm_program_cfg_id" name="项目配置ID" edit-type="input" is-key="true" not-null="true"/>
     <field code="show_name" name="项目标题" edit-type="input"/>
     <field code="hfcfg_program_template_id" name="项目模板ID" edit-type="select">
       <rel entity-code="hfcfg_program_template/hfcfg_program_template_id/program_template_name"/>
@@ -19,7 +19,7 @@
     <field code="op_id" name="创建人" edit-type="input">
       <rel entity-code="hfsec_user/hfsec_user_id/hfsec_user_name"/>
     </field>
-    <field code="hfcfg_db_connect_id" name="数据库连接信息id" edit-type="select">
+    <field code="hfcfg_db_connect_id" name="数据库连接信息id" edit-type="select" not-null="true">
       <rel entity-code="hfcfg_db_connect/hfcfg_db_connect_id/hfcfg_db_connect_name"/>
     </field>
     <field code="hfpm_program_id" name="项目ID" edit-type="select">

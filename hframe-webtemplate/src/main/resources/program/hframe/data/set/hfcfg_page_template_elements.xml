@@ -4,7 +4,7 @@
   <entity>hfcfg_page_template_elements</entity>
   <name>页面模板元素</name>
   <fields>
-    <field code="hfcfg_page_template_elements_id" name="页面模板元素id" edit-type="input" is-key="true">
+    <field code="hfcfg_page_template_elements_id" name="页面模板元素id" edit-type="input" is-key="true" not-null="true">
       <create-edit-type>hidden</create-edit-type>
       <update-edit-type>text</update-edit-type>
     </field>
@@ -19,7 +19,7 @@
     <field code="event_extend" name="事件继承" edit-type="select">
       <enum-class code="DEFAULT.BOOLEAN"/>
     </field>
-    <field code="hfcfg_component_template_id" name="组件模板id" edit-type="select">
+    <field code="hfcfg_component_template_id" name="组件模板id" edit-type="select" not-null="true">
       <rel entity-code="hfcfg_component_template/hfcfg_component_template_id/hfcfg_component_template_name"/>
     </field>
     <field code="creator_id" name="创建人" edit-type="hidden">

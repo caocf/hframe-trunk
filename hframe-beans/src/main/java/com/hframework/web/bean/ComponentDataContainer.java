@@ -775,6 +775,8 @@ public class ComponentDataContainer {
                 return ResourceWrapper.JavaUtil.getJavaVarName(field.getCode());
             }else if("name".equals(code)) {
                 return field.getName();
+            }else if("notNull".equals(code)) {
+                return field.getNotNull();
             }else if("width".equals(code)) {
                 return null;
             }else if("editType".equals(code)) {

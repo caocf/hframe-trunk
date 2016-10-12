@@ -104,7 +104,7 @@
         <source scope="CROW" param='${id}'></source>
         <effect type="confirm" content="是否删除 &lt;span style=&quot;color:red&quot;&gt;{${name}}&lt;/span&gt; ?"></effect>
         <effect type="ajaxSubmit" action="${delete}"></effect>
-        <effect type="component.reload"></effect>
+        <!--<effect type="component.reload"></effect>-->
     </event>
 
 </event-store>

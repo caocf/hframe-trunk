@@ -65,7 +65,7 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
     });
 
 
-    function doEvent($action, $param, $this){
+    function doEvent($action, $param,  $this){
         $type = null;
         for(type in $action) {
             $type = type;
@@ -98,6 +98,11 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
                for(var tarId in targetIds) {
                    $component = $("[component= " + targetIds[tarId] +"]");
                    if($component.find("form").length > 0) {
+                       //参数检查
+                       if(!$.checkSubmit($($component.find("form")[0]))) {
+                           //alert("字段不能为空！");
+                           return;
+                       }
                        json[targetIds[tarId]] = JSON.parse($($component.find("form")[0]).serializeJson());
                    }else {
                        var hierarchy = $component.orgchart('getHierarchy');
@@ -117,6 +122,11 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
                     //console.log(JSON.stringify(json));
                 }else {
                     var $thisForm = $this.parents("form")[0];
+                    //参数检查
+                    if(!$.checkSubmit($($thisForm))) {
+                        //alert("字段不能为空！");
+                        return;
+                    }
                     _data = $($thisForm).serializeJson();
                 }
 
@@ -147,10 +157,21 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
             var _data = {};
             var $componentParam  = formatContent($($this).attr("params"), $($this));
 
+            if(url.endsWith("deleteByAjax.json") && $componentParam.endsWith("=")){
+                if($($this.parents("tr")[0]).siblings().size()> 0){
+                    $this.parents("tr")[0].remove();
+                }
+                return;
+            }
 
 
             if($componentParam != null && $componentParam.endsWith("thisForm")) {
                 $thisForm = $this.parents("form")[0];
+                //参数检查
+                if(!$.checkSubmit($thisForm)) {
+                    //alert("字段不能为空！");
+                    return;
+                }
                 _data = parseUrlParamToObject(decodeURIComponent($($thisForm).serialize()));
             }else {
                 if($($this).attr("params") == "checkIds") {
@@ -187,6 +208,12 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
                 }
 
                 delete $action[$type];
+                if(url.endsWith("deleteByAjax.json")){
+                    if($($this.parents("tr")[0]).siblings().size()> 0){
+                        $this.parents("tr")[0].remove();
+                    }
+                    return;
+                }
                 doEvent($action,$param,$this);
             });
         }else if($type == "component.reload") {
@@ -232,6 +259,7 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
             $curRow = $this.parents("tr")[0];
             $newRow = $($curRow).clone();
             $($newRow).find("input").val("");
+            $($newRow).find("[readonly=readonly]").removeAttr("readonly");
             $($curRow).find(".hfselect").each(function(i){
                 var $target = $($newRow).find(".hfselect").eq(i);
                 $target.removeClass("city-picker-input");
@@ -279,6 +307,8 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
             });
             $($curRow).before($newRow);
             $targetRow.remove();
+        }else if($type == "component.row.remove") {
+            $curRow = $this.parents("tr")[0];
         }else if($type == "dialog") {
             showDialog(url + "?" + "isPop=true&" +$param,function(){
                 delete $action[$type];

@@ -16,8 +16,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * ÖØĞ´Ò»¸ö¶¯Ì¬µÄkafkaTemplate
- * ×¢Òâ£ºDynamicKafkaTemplateÓëDynamicKafkaProducerFactoryĞèÒªÍ¬Ê±Ê¹ÓÃ
+ * é‡å†™ä¸€ä¸ªåŠ¨æ€çš„kafkaTemplate
+ * æ³¨æ„ï¼šDynamicKafkaTemplateä¸DynamicKafkaProducerFactoryéœ€è¦åŒæ—¶ä½¿ç”¨
  * Created by zhangquanhong on 2016/10/11.
  */
 public class DynamicKafkaTemplate<K, V> extends org.springframework.kafka.core.KafkaTemplate<K, V> implements KafkaOperations<K, V> {

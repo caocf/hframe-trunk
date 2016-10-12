@@ -4,7 +4,7 @@
   <entity>hfpm_page</entity>
   <name>页面</name>
   <fields>
-    <field code="hfpm_page_id" name="页面ID" edit-type="input" is-key="true"/>
+    <field code="hfpm_page_id" name="页面ID" edit-type="input" is-key="true" not-null="true"/>
     <field code="hfpm_page_code" name="页面编码" edit-type="input"/>
     <field code="hfpm_page_name" name="页面名称" edit-type="input"/>
     <field code="hfpm_page_type" name="页面类型" edit-type="input"/>

@@ -4,7 +4,7 @@
   <entity>hfmd_enum</entity>
   <name>枚举【默认】</name>
   <fields>
-    <field code="hfmd_enum_id" name="枚举ID" edit-type="input" is-key="true">
+    <field code="hfmd_enum_id" name="枚举ID" edit-type="input" is-key="true" not-null="true">
       <create-edit-type>hidden</create-edit-type>
       <update-edit-type>text</update-edit-type>
     </field>
@@ -43,7 +43,7 @@
       <create-edit-type>hidden</create-edit-type>
       <update-edit-type>hidden</update-edit-type>
     </field>
-    <field code="del_flag" name="删除标识" edit-type="hidden">
+    <field code="del_flag" name="删除标识" edit-type="hidden" not-null="true">
       <create-edit-type>hidden</create-edit-type>
     </field>
   </fields>

@@ -39,6 +39,9 @@ public class Field   {
     @XStreamAsAttribute
     @XStreamAlias("is-name")
     private String isName;
+    @XStreamAsAttribute
+    @XStreamAlias("not-null")
+    private String notNull;
 
  public Field() {
     }
@@ -130,5 +133,13 @@ public class Field   {
 
      public void setIsName(String isName) {
       this.isName = isName;
+     }
+
+     public String getNotNull() {
+      return notNull;
+     }
+
+     public void setNotNull(String notNull) {
+      this.notNull = notNull;
      }
 }

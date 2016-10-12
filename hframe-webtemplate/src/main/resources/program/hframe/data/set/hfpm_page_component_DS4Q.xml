@@ -7,7 +7,7 @@
     <field code="hfpm_page_component_id" name="页面组件ID" edit-type="input" is-key="true"/>
     <field code="hfpm_page_component_name" name="页面组件名称" edit-type="input"/>
     <field code="hfpm_page_component_type" name="页面组件类型" edit-type="input"/>
-    <field code="hfpm_page_id" name="页面ID" edit-type="select">
+    <field code="hfpm_page_id" name="页面ID" edit-type="select" not-null="true">
       <rel entity-code="hfpm_page/hfpm_page_id/hfpm_page_name"/>
     </field>
     <field code="hfpm_data_set_id" name="数据集ID" edit-type="select">

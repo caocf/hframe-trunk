@@ -7,13 +7,13 @@
     <field code="hfmd_entity_type" name="实体类型            " edit-type="select">
       <enum-class code="hfmd_entity.hfmd_entity_type"/>
     </field>
-    <field code="hfmd_entity_name" name="实体名称" edit-type="input"/>
+    <field code="hfmd_entity_name" name="实体名称" edit-type="input" not-null="true"/>
     <field code="hfpm_program_id" name="项目ID" edit-type="hidden">
       <rel entity-code="hfpm_program/hfpm_program_id/hfpm_program_name"/>
       <create-edit-type>hidden</create-edit-type>
       <update-edit-type>hidden</update-edit-type>
     </field>
-    <field code="hfmd_entity_code" name="实体编码" edit-type="input"/>
+    <field code="hfmd_entity_code" name="实体编码" edit-type="input" not-null="true"/>
     <field code="hfmd_entity_id" name="实体ID" edit-type="input" is-key="true"/>
     <field code="hfpm_module_id" name="模块ID" edit-type="hidden">
       <rel entity-code="hfpm_module/hfpm_module_id/hfpm_module_name"/>

@@ -16,7 +16,7 @@
       <create-edit-type>hidden</create-edit-type>
       <update-edit-type>hidden</update-edit-type>
     </field>
-    <field code="hfpm_page_id" name="页面ID" edit-type="select">
+    <field code="hfpm_page_id" name="页面ID" edit-type="select" not-null="true">
       <rel entity-code="hfpm_page/hfpm_page_id/hfpm_page_name"/>
       <create-edit-type>hidden</create-edit-type>
       <update-edit-type>hidden</update-edit-type>
@@ -45,7 +45,7 @@
     <field code="del_flag" name="删除标识" edit-type="input">
       <create-edit-type>hidden</create-edit-type>
     </field>
-    <field code="hfcfg_component_template_id" name="组件模板id" edit-type="select">
+    <field code="hfcfg_component_template_id" name="组件模板id" edit-type="select" not-null="true">
       <rel entity-code="hfcfg_component_template/hfcfg_component_template_id/hfcfg_component_template_name"/>
     </field>
   </fields>

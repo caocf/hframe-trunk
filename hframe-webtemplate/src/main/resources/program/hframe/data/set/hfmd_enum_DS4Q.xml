@@ -4,7 +4,7 @@
   <entity>hfmd_enum</entity>
   <name>枚举【查询】</name>
   <fields>
-    <field code="hfmd_enum_id" name="枚举ID" edit-type="input" is-key="true"/>
+    <field code="hfmd_enum_id" name="枚举ID" edit-type="input" is-key="true" not-null="true"/>
     <field code="hfmd_enum_value" name="枚举值" edit-type="input"/>
     <field code="hfmd_enum_text" name="枚举文本" edit-type="input"/>
     <field code="hfmd_enum_desc" name="枚举描述" edit-type="input"/>
@@ -28,6 +28,6 @@
     </field>
     <field code="modify_time_LEQ" name="修改结束时间" edit-type="datetime"/>
     <field code="modify_time_GEQ" name="修改开始时间" edit-type="datetime"/>
-    <field code="del_flag" name="删除标识" edit-type="hidden"/>
+    <field code="del_flag" name="删除标识" edit-type="hidden" not-null="true"/>
   </fields>
 </dataset>

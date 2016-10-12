@@ -5,17 +5,17 @@
   <name>实体属性【查询】</name>
   <fields>
     <field code="hfmd_entity_attr_id" name="实体属性ID" edit-type="input" is-key="true"/>
-    <field code="hfmd_entity_attr_name" name="实体属性名称" edit-type="input"/>
-    <field code="hfmd_entity_attr_code" name="实体属性编码" edit-type="input"/>
+    <field code="hfmd_entity_attr_name" name="实体属性名称" edit-type="input" not-null="true"/>
+    <field code="hfmd_entity_attr_code" name="实体属性编码" edit-type="input" not-null="true"/>
     <field code="hfmd_entity_attr_desc" name="实体属性描述" edit-type="input"/>
-    <field code="attr_type" name="属性类型" edit-type="select">
+    <field code="attr_type" name="属性类型" edit-type="select" not-null="true">
       <enum-class code="hfmd_entity_attr.attr_type"/>
     </field>
     <field code="size" name="大小" edit-type="input"/>
     <field code="ispk" name="是否主键" edit-type="select">
       <enum-class code="DEFAULT.BOOLEAN"/>
     </field>
-    <field code="nullable" name="是否为空" edit-type="select">
+    <field code="nullable" name="是否为空" edit-type="select" not-null="true">
       <enum-class code="DEFAULT.BOOLEAN"/>
     </field>
     <field code="is_busi_attr" name="是否业务属性" edit-type="select">

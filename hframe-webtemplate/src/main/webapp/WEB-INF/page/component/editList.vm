@@ -65,7 +65,7 @@
                 #end
                 #foreach($column in $list.columns)
                     #if($column.editType != "hidden")
-                        <th width="$column.width">$column.name</th>
+                        <th width="$column.width">$column.name #if($!column.notNull)<span style="color:red;">*</span> #end </th>
                     #end
                 #end
                 #if($list.EOFR)

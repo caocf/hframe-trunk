@@ -4,7 +4,7 @@
   <entity>hfpm_page</entity>
   <name>页面</name>
   <fields>
-    <field code="hfpm_page_id" name="页面ID" edit-type="input" is-key="true">
+    <field code="hfpm_page_id" name="页面ID" edit-type="input" is-key="true" not-null="true">
       <create-edit-type>hidden</create-edit-type>
       <update-edit-type>text</update-edit-type>
     </field>
