@@ -21,11 +21,10 @@
         <module>hframe-beans</module>
         <module>hframe-generator-web</module>
         <module>hframe-reconciliation</module>
-        <module>hframe-webtemplate</module>
+        <module>hframe-web</module>
         <module>hframe-webbase</module>
         <module>hframe-rpc</module>
         <module>hframe-extension</module>
-        <module>hframe-training</module>
     </modules>
 
     <dependencies>

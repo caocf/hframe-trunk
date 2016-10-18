@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<event-store group="EOFR">
+    <!--qlist事件-->
+    <event name="goto.create">
+        <attach anchor="EOFR">
+            <appendElement type="icon" param='{fillclass:"btn-success",iconclass:"icon-zoom-in"}'></appendElement>
+        </attach>
+        <effect type="pageFwd" action='${create}' isStack="true"></effect>
+        <effect type="component.reload"></effect>
+    </event>
+    <event name="goto.edit">
+        <attach anchor="EOFR">
+            <appendElement type="icon" param='{fillclass:"btn-info",iconclass:"icon-edit"}'></appendElement>
+        </attach>
+        <source scope="CROW" param="${id}"></source>
+        <effect type="pageFwd" action='${edit}' isStack="true"></effect>
+        <effect type="component.reload"></effect>
+    </event>
+    <event name="confirm.delete">
+        <attach anchor="EOFR">
+            <appendElement type="icon" param='{fillclass:"btn-danger",iconclass:"icon-trash"}'></appendElement>
+        </attach>
+        <source scope="CROW" param='${id}'></source>
+        <effect type="confirm" content="是否删除 &lt;span style=&quot;color:red&quot;&gt;{${name}}&lt;/span&gt; ?"></effect>
+        <effect type="ajaxSubmit" action="${delete}"></effect>
+        <effect type="component.reload"></effect>
+    </event>
+    <event name="confirm.on">
+        <attach anchor="EOFR">
+            <appendElement type="icon" param='{fillclass:"btn-danger",iconclass:"icon-unlock"}'></appendElement>
+        </attach>
+        <source scope="CROW" param="${id}"></source>
+        <effect type="confirm" content="是否生效 &lt;span style=&quot;color:red&quot;&gt;{${name}}&lt;/span&gt; ?"></effect>
+        <effect type="ajaxSubmit" action="${updateByAjax}"></effect>
+        <effect type="component.reload"></effect>
+    </event>
+    <event name="confirm.off">
+        <attach anchor="EOFR">
+            <appendElement type="icon" param='{fillclass:"btn-danger",iconclass:"icon-lock"}'></appendElement>
+        </attach>
+        <source scope="CROW" param="${id}"></source>
+        <effect type="confirm" content="是否失效 &lt;span style=&quot;color:red&quot;&gt;{${name}}&lt;/span&gt; ?"></effect>
+        <effect type="ajaxSubmit" action="${updateByAjax}"></effect>
+        <effect type="component.reload"></effect>
+    </event>
+    <event name="confirm.play">
+        <attach anchor="EOFR">
+            <appendElement type="icon" param='{fillclass:"btn-danger",iconclass:"icon-play"}'></appendElement>
+        </attach>
+        <source scope="CROW" param="${id}"></source>
+        <effect type="confirm" content="是否启动 &lt;span style=&quot;color:red&quot;&gt;{${name}}&lt;/span&gt; ?"></effect>
+        <effect type="ajaxSubmit" action="${updateByAjax}"></effect>
+        <effect type="component.reload"></effect>
+    </event>
+    <event name="confirm.pause">
+        <pre-handle case="status" when="2" then="3"></pre-handle>
+        <attach anchor="EOFR">
+            <appendElement type="icon" param='{fillclass:"btn-danger",iconclass:"icon-pause"}'></appendElement>
+        </attach>
+        <source scope="CROW" param="${id}"></source>
+        <effect type="confirm" content="是否暂停 &lt;span style=&quot;color:red&quot;&gt;{${name}}&lt;/span&gt; ?"></effect>
+        <effect type="ajaxSubmit" action="${updateByAjax}"></effect>
+        <effect type="component.reload"></effect>
+    </event>
+    <event name="confirm.stop">
+        <attach anchor="EOFR">
+            <appendElement type="icon" param='{fillclass:"btn-danger",iconclass:"icon-stop"}'></appendElement>
+        </attach>
+        <source scope="CROW" param="${id}"></source>
+        <effect type="confirm" content="是否停止 &lt;span style=&quot;color:red&quot;&gt;{${name}}&lt;/span&gt; ?"></effect>
+        <effect type="ajaxSubmit" action="${updateByAjax}"></effect>
+        <effect type="component.reload"></effect>
+    </event>
+
+    <!--eList 常用事件-->
+    <event name="row.insert">
+        <attach anchor="EOFR">
+            <appendElement type="icon" param='{fillclass:"btn-success",iconclass:" icon-file-alt"}'></appendElement>
+        </attach>
+        <effect type="component.row.add"></effect>
+    </event>
+    <event name="row.copy">
+        <attach anchor="EOFR">
+            <appendElement type="icon" param='{fillclass:"btn-success",iconclass:" icon-copy"}'></appendElement>
+        </attach>
+        <effect type="component.row.copy"></effect>
+    </event>
+    <event name="row.down">
+        <attach anchor="EOFR">
+            <appendElement type="icon" param='{fillclass:"btn-info",iconclass:"icon-circle-arrow-down"}'></appendElement>
+        </attach>
+        <effect type="component.row.down"></effect>
+    </event>
+    <event name="row.up">
+        <attach anchor="EOFR">
+            <appendElement type="icon" param='{fillclass:"btn-info",iconclass:" icon-circle-arrow-up"}'></appendElement>
+        </attach>
+        <effect type="component.row.up"></effect>
+    </event>
+    <event name="row.delete">
+        <attach anchor="EOFR">
+            <appendElement type="icon" param='{fillclass:"btn-danger",iconclass:"icon-trash"}'></appendElement>
+        </attach>
+        <source scope="CROW" param='${id}'></source>
+        <effect type="confirm" content="是否删除 &lt;span style=&quot;color:red&quot;&gt;{${name}}&lt;/span&gt; ?"></effect>
+        <effect type="ajaxSubmit" action="${delete}"></effect>
+        <!--<effect type="component.reload"></effect>-->
+    </event>
+
+</event-store>
