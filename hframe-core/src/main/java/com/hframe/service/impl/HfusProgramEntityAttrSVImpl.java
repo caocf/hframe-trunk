@@ -35,9 +35,9 @@ public class HfusProgramEntityAttrSVImpl  implements IHfusProgramEntityAttrSV {
         if(hfusProgramEntityAttrs != null) {
             for (HfusProgramEntityAttr hfusProgramEntityAttr : hfusProgramEntityAttrs) {
                 if(hfusProgramEntityAttr.getHfusProgramEntityAttrId() == null) {
-                    result += hfusProgramEntityAttrMapper.insertSelective(hfusProgramEntityAttr);
+                    result += this.create(hfusProgramEntityAttr);
                 }else {
-                    result += hfusProgramEntityAttrMapper.updateByPrimaryKeySelective(hfusProgramEntityAttr);
+                    result += this.update(hfusProgramEntityAttr);
                 }
             }
         }

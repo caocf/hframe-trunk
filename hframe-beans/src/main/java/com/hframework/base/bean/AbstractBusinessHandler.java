@@ -21,6 +21,16 @@ public abstract class AbstractBusinessHandler<T> implements InitializingBean,Bus
 
         Class<T> entryClass = (Class<T>) params[0];
 
+        //避免同一个类重复加载
+        if(BusinessHandlerFactory.contain(entryClass, AfterCreateHandler.class)
+                || BusinessHandlerFactory.contain(entryClass, AfterDeleteHandler.class)
+                || BusinessHandlerFactory.contain(entryClass, AfterUpdateHandler.class)
+                || BusinessHandlerFactory.contain(entryClass, BeforeCreateHandler.class)
+                || BusinessHandlerFactory.contain(entryClass, BeforeDeleteHandler.class)
+                || BusinessHandlerFactory.contain(entryClass, BeforeUpdateHandler.class)){
+            return ;
+        }
+
         Class handlerClass = this.getClass();
         Method[] declaredMethods = handlerClass.getDeclaredMethods();
         for (Method method : declaredMethods) {

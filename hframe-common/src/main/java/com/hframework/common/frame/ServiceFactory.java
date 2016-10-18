@@ -48,4 +48,8 @@ public class ServiceFactory implements ApplicationContextAware {
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         webappcontext = applicationContext;
     }
+
+    public static ApplicationContext getWebAppContext() {
+        return webappcontext;
+    }
 }

@@ -35,9 +35,9 @@ public class HfcfgProgramSkinSVImpl  implements IHfcfgProgramSkinSV {
         if(hfcfgProgramSkins != null) {
             for (HfcfgProgramSkin hfcfgProgramSkin : hfcfgProgramSkins) {
                 if(hfcfgProgramSkin.getHfcfgProgramSkinId() == null) {
-                    result += hfcfgProgramSkinMapper.insertSelective(hfcfgProgramSkin);
+                    result += this.create(hfcfgProgramSkin);
                 }else {
-                    result += hfcfgProgramSkinMapper.updateByPrimaryKeySelective(hfcfgProgramSkin);
+                    result += this.update(hfcfgProgramSkin);
                 }
             }
         }

@@ -3,15 +3,14 @@ package com.hframework.common.util.message;
 import com.hframework.common.util.FileUtils;
 import com.hframework.common.util.StringUtils;
 import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.naming.NoNameCoder;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * User: zhangqh6
@@ -26,34 +25,93 @@ public class XmlUtils {
         return (T) xstream.fromXML(content);
     }
 
+    /**
+     * 读取文件-类加载器中文件
+     * @param filePath
+     * @param valueType
+     * @param <T>
+     * @return
+     * @throws IOException
+     */
     public static <T> T readValueFromFile(String filePath, Class<T> valueType) throws IOException {
-        String rootClassPath = Thread.currentThread().getContextClassLoader ().getResource("").getPath();
-        return readValueFromFile(rootClassPath, filePath,valueType);
+        URL fileResource = XmlUtils.class.getResource("/" + filePath);
+        if(fileResource != null) {
+            return readValueFromAbsoluteFilePath(fileResource.getPath(), valueType);
+        }else {
+            return readValueFromAbsoluteFilePath(XmlUtils.class.getResource("/").getPath() + "/" + filePath, valueType);
+        }
     }
 
-    public static <T> List<T> readValuesFromDirectory(String directory, Class<T> valueType, String format) throws IOException {
-        String rootClassPath = Thread.currentThread().getContextClassLoader ().getResource("").getPath();
-        return readValuesFromDirectory(rootClassPath, directory, valueType, format);
-    }
-
-    public static <T> List<T> readValuesFromDirectory(String directory, Class<T> valueType) throws IOException {
-        String rootClassPath = Thread.currentThread().getContextClassLoader ().getResource("").getPath();
-        return readValuesFromDirectory(rootClassPath,directory,valueType,null);
-    }
-
+    /**
+     * 读取文件-根路径 +相对路径
+     * @param rootPath
+     * @param filePath
+     * @param valueType
+     * @param <T>
+     * @return
+     * @throws IOException
+     */
     public static <T> T readValueFromFile(String rootPath, String filePath, Class<T> valueType) throws IOException {
-        logger.debug("入参：{}|{}|{}",filePath,rootPath,valueType);
-        String xmlString = FileUtils.readFile(rootPath + "/"+ filePath);
+        if(new File(rootPath).exists()) {
+            return readValueFromAbsoluteFilePath(rootPath + "/" + filePath,valueType);
+        }else {
+            return readValueFromFile(filePath, valueType);
+        }
+    }
+
+    /**
+     * 读取文件-绝对路径
+     * @param filePath
+     * @param valueType
+     * @param <T>
+     * @return
+     * @throws IOException
+     */
+    public static <T> T readValueFromAbsoluteFilePath( String filePath, Class<T> valueType) throws IOException {
+        logger.debug("入参：{}|{}",filePath,valueType);
+        String xmlString = FileUtils.readFile(filePath);
         logger.debug("报文：{}", xmlString);
         T t = readValue(xmlString, valueType);
         logger.debug("对象：{}", t);
         return t;
     }
 
+    /**
+     * 读取文件列表-类加载器中资源目录
+     * @param directory
+     * @param valueType
+     * @param format
+     * @param <T>
+     * @return
+     * @throws IOException
+     */
+    public static <T> List<T> readValuesFromDirectory(String directory, Class<T> valueType, String format) throws IOException {
+        URL fileResource = XmlUtils.class.getResource("/" + directory);
+        if(fileResource != null) {
+            return readValueFromAbsoluteDirectoryPath(fileResource.getPath(), valueType, format);
+        }else {
+            return readValueFromAbsoluteDirectoryPath(XmlUtils.class.getResource("/").getPath() + "/" + directory, valueType, format);
+        }
+    }
+
+
     public static <T> List<T> readValuesFromDirectory(String rootPath, String directory, Class<T> valueType, String format) throws IOException {
+        if(new File(rootPath).exists()) {
+            return readValueFromAbsoluteDirectoryPath(rootPath + "/" + directory, valueType, format);
+        }else {
+            return readValuesFromDirectory(directory, valueType, format);
+        }
+
+    }
+
+    public static <T> List<T> readValuesFromDirectory(String directory, Class<T> valueType) throws IOException {
+        return readValuesFromDirectory(directory,valueType,null);
+    }
+
+    public static <T> List<T> readValueFromAbsoluteDirectoryPath(String directory, Class<T> valueType, String format) throws IOException {
         List<T> result = new ArrayList<T>();
-        logger.debug("入参：{}|{}|{}",directory,rootPath,valueType);
-        File[] fileList = FileUtils.getFileList(new File(rootPath + "/" + directory));
+        logger.debug("入参：{}|{}",directory,valueType);
+        File[] fileList = FileUtils.getFileList(new File(directory));
         if(fileList == null) {
             logger.warn("file not exists !");
             return result;
@@ -67,9 +125,9 @@ public class XmlUtils {
                 logger.debug("对象：{}", t);
             }
         }
-
         return result;
     }
+
 
 
     public static  <T> String writeValueAsString(T t) throws IOException {

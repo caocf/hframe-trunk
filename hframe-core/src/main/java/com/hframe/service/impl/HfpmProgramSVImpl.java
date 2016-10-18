@@ -35,9 +35,9 @@ public class HfpmProgramSVImpl  implements IHfpmProgramSV {
         if(hfpmPrograms != null) {
             for (HfpmProgram hfpmProgram : hfpmPrograms) {
                 if(hfpmProgram.getHfpmProgramId() == null) {
-                    result += hfpmProgramMapper.insertSelective(hfpmProgram);
+                    result += this.create(hfpmProgram);
                 }else {
-                    result += hfpmProgramMapper.updateByPrimaryKeySelective(hfpmProgram);
+                    result += this.update(hfpmProgram);
                 }
             }
         }

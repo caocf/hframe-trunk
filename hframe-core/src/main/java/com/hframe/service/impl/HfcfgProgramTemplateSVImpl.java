@@ -35,9 +35,9 @@ public class HfcfgProgramTemplateSVImpl  implements IHfcfgProgramTemplateSV {
         if(hfcfgProgramTemplates != null) {
             for (HfcfgProgramTemplate hfcfgProgramTemplate : hfcfgProgramTemplates) {
                 if(hfcfgProgramTemplate.getHfcfgProgramTemplateId() == null) {
-                    result += hfcfgProgramTemplateMapper.insertSelective(hfcfgProgramTemplate);
+                    result += this.create(hfcfgProgramTemplate);
                 }else {
-                    result += hfcfgProgramTemplateMapper.updateByPrimaryKeySelective(hfcfgProgramTemplate);
+                    result += this.update(hfcfgProgramTemplate);
                 }
             }
         }

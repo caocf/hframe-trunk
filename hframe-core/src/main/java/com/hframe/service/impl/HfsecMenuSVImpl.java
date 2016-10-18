@@ -38,9 +38,9 @@ public class HfsecMenuSVImpl  implements IHfsecMenuSV {
         if(hfsecMenus != null) {
             for (HfsecMenu hfsecMenu : hfsecMenus) {
                 if(hfsecMenu.getHfsecMenuId() == null) {
-                    result += hfsecMenuMapper.insertSelective(hfsecMenu);
+                    result += this.create(hfsecMenu);
                 }else {
-                    result += hfsecMenuMapper.updateByPrimaryKeySelective(hfsecMenu);
+                    result += this.update(hfsecMenu);
                 }
             }
         }

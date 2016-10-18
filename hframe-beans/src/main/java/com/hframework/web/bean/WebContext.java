@@ -522,7 +522,7 @@ public class WebContext {
         try{
             program = XmlUtils.readValueFromFile(contextHelper.programConfigRootDir,contextHelper.programConfigProgramFile, Program.class);
         }catch (Exception e) {
-            program = XmlUtils.readValueFromFile(contextHelper.programConfigRootDir.replace("hframe-webtemplate","hframe-web"),contextHelper.programConfigProgramFile, Program.class);
+            program = XmlUtils.readValueFromFile(contextHelper.programConfigRootDir,contextHelper.programConfigProgramFile, Program.class);
         }
         //加载模块信息
         List<Module> moduleList = XmlUtils.readValuesFromDirectory(contextHelper.programConfigRootDir, contextHelper.programConfigModuleDir, Module.class, ".xml");

@@ -35,9 +35,9 @@ public class HfpmPageCfgSVImpl  implements IHfpmPageCfgSV {
         if(hfpmPageCfgs != null) {
             for (HfpmPageCfg hfpmPageCfg : hfpmPageCfgs) {
                 if(hfpmPageCfg.getHfpmPageCfgId() == null) {
-                    result += hfpmPageCfgMapper.insertSelective(hfpmPageCfg);
+                    result += this.create(hfpmPageCfg);
                 }else {
-                    result += hfpmPageCfgMapper.updateByPrimaryKeySelective(hfpmPageCfg);
+                    result += this.update(hfpmPageCfg);
                 }
             }
         }

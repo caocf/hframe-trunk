@@ -35,9 +35,9 @@ public class HfpmPageEntityRelSVImpl  implements IHfpmPageEntityRelSV {
         if(hfpmPageEntityRels != null) {
             for (HfpmPageEntityRel hfpmPageEntityRel : hfpmPageEntityRels) {
                 if(hfpmPageEntityRel.getHfpmPageEntityRelId() == null) {
-                    result += hfpmPageEntityRelMapper.insertSelective(hfpmPageEntityRel);
+                    result += this.create(hfpmPageEntityRel);
                 }else {
-                    result += hfpmPageEntityRelMapper.updateByPrimaryKeySelective(hfpmPageEntityRel);
+                    result += this.update(hfpmPageEntityRel);
                 }
             }
         }

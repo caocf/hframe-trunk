@@ -38,9 +38,9 @@ public class HfpmTestSVImpl  implements IHfpmTestSV {
         if(hfpmTests != null) {
             for (HfpmTest hfpmTest : hfpmTests) {
                 if(hfpmTest.getHfpmTestId() == null) {
-                    result += hfpmTestMapper.insertSelective(hfpmTest);
+                    result += this.create(hfpmTest);
                 }else {
-                    result += hfpmTestMapper.updateByPrimaryKeySelective(hfpmTest);
+                    result += this.update(hfpmTest);
                 }
             }
         }

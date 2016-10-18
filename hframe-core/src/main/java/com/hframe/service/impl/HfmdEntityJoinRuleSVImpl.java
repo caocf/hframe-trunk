@@ -38,9 +38,9 @@ public class HfmdEntityJoinRuleSVImpl  implements IHfmdEntityJoinRuleSV {
         if(hfmdEntityJoinRules != null) {
             for (HfmdEntityJoinRule hfmdEntityJoinRule : hfmdEntityJoinRules) {
                 if(hfmdEntityJoinRule.getHfmdEntityJoinRuleId() == null) {
-                    result += hfmdEntityJoinRuleMapper.insertSelective(hfmdEntityJoinRule);
+                    result += this.create(hfmdEntityJoinRule);
                 }else {
-                    result += hfmdEntityJoinRuleMapper.updateByPrimaryKeySelective(hfmdEntityJoinRule);
+                    result += this.update(hfmdEntityJoinRule);
                 }
             }
         }

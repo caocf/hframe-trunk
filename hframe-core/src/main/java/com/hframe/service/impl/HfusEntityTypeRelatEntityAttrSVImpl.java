@@ -35,9 +35,9 @@ public class HfusEntityTypeRelatEntityAttrSVImpl  implements IHfusEntityTypeRela
         if(hfusEntityTypeRelatEntityAttrs != null) {
             for (HfusEntityTypeRelatEntityAttr hfusEntityTypeRelatEntityAttr : hfusEntityTypeRelatEntityAttrs) {
                 if(hfusEntityTypeRelatEntityAttr.getHfusEntityTypeRelatEntityAttrId() == null) {
-                    result += hfusEntityTypeRelatEntityAttrMapper.insertSelective(hfusEntityTypeRelatEntityAttr);
+                    result += this.create(hfusEntityTypeRelatEntityAttr);
                 }else {
-                    result += hfusEntityTypeRelatEntityAttrMapper.updateByPrimaryKeySelective(hfusEntityTypeRelatEntityAttr);
+                    result += this.update(hfusEntityTypeRelatEntityAttr);
                 }
             }
         }

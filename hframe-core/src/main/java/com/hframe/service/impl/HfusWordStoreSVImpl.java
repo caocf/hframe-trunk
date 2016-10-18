@@ -35,9 +35,9 @@ public class HfusWordStoreSVImpl  implements IHfusWordStoreSV {
         if(hfusWordStores != null) {
             for (HfusWordStore hfusWordStore : hfusWordStores) {
                 if(hfusWordStore.getHfusWordStoreId() == null) {
-                    result += hfusWordStoreMapper.insertSelective(hfusWordStore);
+                    result += this.create(hfusWordStore);
                 }else {
-                    result += hfusWordStoreMapper.updateByPrimaryKeySelective(hfusWordStore);
+                    result += this.update(hfusWordStore);
                 }
             }
         }

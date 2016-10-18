@@ -35,9 +35,9 @@ public class HfpmEntityPermissionSVImpl  implements IHfpmEntityPermissionSV {
         if(hfpmEntityPermissions != null) {
             for (HfpmEntityPermission hfpmEntityPermission : hfpmEntityPermissions) {
                 if(hfpmEntityPermission.getHfpmEntityPermissionId() == null) {
-                    result += hfpmEntityPermissionMapper.insertSelective(hfpmEntityPermission);
+                    result += this.create(hfpmEntityPermission);
                 }else {
-                    result += hfpmEntityPermissionMapper.updateByPrimaryKeySelective(hfpmEntityPermission);
+                    result += this.update(hfpmEntityPermission);
                 }
             }
         }

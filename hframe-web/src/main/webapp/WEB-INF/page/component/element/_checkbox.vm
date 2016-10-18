@@ -1,0 +1,22 @@
+<input name='$map.get("ViewObject")s.${column.javaVarName}' style='$widthStype'   type='hidden' value="$!oldObjectValue.get(${column.Name})"
+        /><input style='$widthStype'   type='$column.ShowType.Type' onclick='trueFalseCheckboxOnClick_Sys(this)'
+#########################if($null.isNull($oldObjectValue.get(${column.Name})))这种方法无效，为什么呢
+#if($oldObjectValue.get(${column.Name}))
+             value="1"
+#end
+
+#if($!oldObjectValue.get(${column.Name})==1)
+             checked="checked"
+#end
+
+    />
+
+
+<label class="checkbox">
+    <div class="checker disabled" id="uniform-optionsCheckbox2"><span><input type="checkbox" id="optionsCheckbox2" name="$column.code" value="option1" disabled=""></span></div>
+    This is a disabled checkbox
+</label>
+
+<label class="checkbox inline">
+    <div class="checker" id="uniform-inlineCheckbox1"><span class="checked"><input type="checkbox" id="inlineCheckbox1" name="$column.code" value="option1"></span></div> Option 1
+</label>

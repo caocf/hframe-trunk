@@ -29,9 +29,9 @@
         if(${varName}s != null) {
             for (${className} ${varName} : ${varName}s) {
                 if(${varName}.get${className}Id() == null) {
-                    result += ${varName}Mapper.insertSelective(${varName});
+                    result += this.create(${varName});
                 }else {
-                    result += ${varName}Mapper.updateByPrimaryKeySelective(${varName});
+                    result += this.update(${varName});
                 }
             }
         }

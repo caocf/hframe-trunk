@@ -38,9 +38,9 @@ public class HfcfgPageTemplateElementsSVImpl  implements IHfcfgPageTemplateEleme
         if(hfcfgPageTemplateElementss != null) {
             for (HfcfgPageTemplateElements hfcfgPageTemplateElements : hfcfgPageTemplateElementss) {
                 if(hfcfgPageTemplateElements.getHfcfgPageTemplateElementsId() == null) {
-                    result += hfcfgPageTemplateElementsMapper.insertSelective(hfcfgPageTemplateElements);
+                    result += this.create(hfcfgPageTemplateElements);
                 }else {
-                    result += hfcfgPageTemplateElementsMapper.updateByPrimaryKeySelective(hfcfgPageTemplateElements);
+                    result += this.update(hfcfgPageTemplateElements);
                 }
             }
         }
@@ -48,8 +48,8 @@ public class HfcfgPageTemplateElementsSVImpl  implements IHfcfgPageTemplateEleme
     }
 
     /**
-    * 更新
-    * @param hfcfgPageTemplateElements
+     * 更新
+     * @param hfcfgPageTemplateElements
     * @return
     * @throws Exception
     */

@@ -38,9 +38,9 @@ public class HfsecUserSVImpl  implements IHfsecUserSV {
         if(hfsecUsers != null) {
             for (HfsecUser hfsecUser : hfsecUsers) {
                 if(hfsecUser.getHfsecUserId() == null) {
-                    result += hfsecUserMapper.insertSelective(hfsecUser);
+                    result += this.create(hfsecUser);
                 }else {
-                    result += hfsecUserMapper.updateByPrimaryKeySelective(hfsecUser);
+                    result += this.update(hfsecUser);
                 }
             }
         }

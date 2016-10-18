@@ -35,9 +35,9 @@ public class HfpmDataFieldSVImpl  implements IHfpmDataFieldSV {
         if(hfpmDataFields != null) {
             for (HfpmDataField hfpmDataField : hfpmDataFields) {
                 if(hfpmDataField.getHfpmDataFieldId() == null) {
-                    result += hfpmDataFieldMapper.insertSelective(hfpmDataField);
+                    result += this.create(hfpmDataField);
                 }else {
-                    result += hfpmDataFieldMapper.updateByPrimaryKeySelective(hfpmDataField);
+                    result += this.update(hfpmDataField);
                 }
             }
         }

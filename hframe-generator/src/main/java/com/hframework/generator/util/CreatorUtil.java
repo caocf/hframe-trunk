@@ -76,16 +76,16 @@ public class CreatorUtil {
 	 */
 	public static String getTargetProjectBasePath(String companyName,
 										String projectName,String tableName) throws Exception {
-
-		if(StringUtils.isBlank(tableName)) {
-			throw new Exception("表名称为不能为空！");
-		}
+//
+//		if(StringUtils.isBlank(tableName)) {
+//			throw new Exception("表名称为不能为空！");
+//		}
 
 		companyName = StringUtils.isBlank(companyName)?"":""+(companyName);
 		projectName = StringUtils.isBlank(projectName)?"":""+(projectName);
 
 		return PropertyConfigurerUtils.getProperty(CreatorConst.TARGET_PROJECT_BASE_PATH,
-				companyName.toLowerCase(),projectName.toLowerCase(),tableName.toLowerCase());
+				companyName.toLowerCase(),projectName.toLowerCase(),tableName == null ? "" : tableName.toLowerCase());
 	}
 
 	/**

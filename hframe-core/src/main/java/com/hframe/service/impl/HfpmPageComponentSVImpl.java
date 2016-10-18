@@ -38,9 +38,9 @@ public class HfpmPageComponentSVImpl  implements IHfpmPageComponentSV {
         if(hfpmPageComponents != null) {
             for (HfpmPageComponent hfpmPageComponent : hfpmPageComponents) {
                 if(hfpmPageComponent.getHfpmPageComponentId() == null) {
-                    result += hfpmPageComponentMapper.insertSelective(hfpmPageComponent);
+                    result += this.create(hfpmPageComponent);
                 }else {
-                    result += hfpmPageComponentMapper.updateByPrimaryKeySelective(hfpmPageComponent);
+                    result += this.update(hfpmPageComponent);
                 }
             }
         }

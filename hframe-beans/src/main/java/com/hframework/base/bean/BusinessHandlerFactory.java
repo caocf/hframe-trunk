@@ -2,6 +2,7 @@ package com.hframework.base.bean;
 
 import com.google.common.base.Joiner;
 import com.hframework.common.annotation.extension.AfterCreateHandler;
+import com.hframework.common.annotation.extension.AfterDeleteHandler;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -15,7 +16,7 @@ import java.util.Map;
  */
 public class BusinessHandlerFactory {
 //    private static Map<String, BusinessHandler> handlers = new HashMap<String, BusinessHandler>();
-    private static Map<String, Map<Annotation, Method>> handlers = new HashMap<String, Map<Annotation, Method>>();
+    private static Map<String, Map<Annotation, List<Method>>> handlers = new HashMap<String, Map<Annotation, List<Method>>>();
 
     /**
      * 添加handler
@@ -29,8 +30,10 @@ public class BusinessHandlerFactory {
 
         String key = entryClass.getSimpleName()+ "|" + eventType.annotationType().getSimpleName();
 
-        if(!handlers.containsKey(key)) handlers.put(key, new HashMap<Annotation, Method>());
-        handlers.get(key).put(eventType, handlerMethod);
+        if(!handlers.containsKey(key)) handlers.put(key, new HashMap<Annotation, List<Method>>());
+        Map<Annotation, List<Method>> annotationListMap = handlers.get(key);
+        if(!annotationListMap.containsKey(eventType)) annotationListMap.put(eventType, new ArrayList<Method>());
+        annotationListMap.get(eventType).add(handlerMethod);
     }
 
     /**
@@ -40,10 +43,14 @@ public class BusinessHandlerFactory {
      * @param <T>
      * @return
      */
-    public static <T, V extends Annotation> Map<V, Method> getHandler(Class<T> entryClass, Class<V> eventTypeClass) {
+    public static <T, V extends Annotation> Map<V, List<Method>> getHandler(Class<T> entryClass, Class<V> eventTypeClass) {
         String key = entryClass.getSimpleName()+ "|" + eventTypeClass.getSimpleName();
-        return handlers.get(key) == null ? new HashMap<V, Method>() : (Map<V, Method>) handlers.get(key);
+        return handlers.get(key) == null ? new HashMap<V, List<Method>>() : (Map<V, List<Method>>) handlers.get(key);
     }
 
 
+    public static  <T, V extends Annotation>  boolean contain(Class<T> entryClass, Class<V> eventTypeClass) {
+        String key = entryClass.getSimpleName()+ "|" + eventTypeClass.getSimpleName();
+        return handlers.containsKey(key);
+    }
 }

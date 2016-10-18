@@ -372,7 +372,7 @@ public class HfModelContainerUtil {
         }
     }
 
-    private static HfpmDataSet getDataSetFromEntity(HfmdEntity hfmdEntity) {
+    public static HfpmDataSet getDataSetFromEntity(HfmdEntity hfmdEntity) {
         HfpmDataSet hfpmDataSet = new HfpmDataSet( CommonUtils.uuidL(),
                 hfmdEntity.getHfmdEntityName()+"【默认】",
                 hfmdEntity.getHfmdEntityCode(),
@@ -386,7 +386,7 @@ public class HfModelContainerUtil {
         return hfpmDataSet;
     }
 
-    private static HfpmDataSet getQryDataSetFromEntity(HfmdEntity hfmdEntity) {
+    public static HfpmDataSet getQryDataSetFromEntity(HfmdEntity hfmdEntity) {
         HfpmDataSet hfpmDataSet = new HfpmDataSet( CommonUtils.uuidL(),
                 hfmdEntity.getHfmdEntityName()+"【查询】",
                 hfmdEntity.getHfmdEntityCode()+"_DS4Q",
@@ -400,7 +400,7 @@ public class HfModelContainerUtil {
         return hfpmDataSet;
     }
 
-    private static HfpmDataField getDataFieldFromEntityAttr(HfmdEntityAttr hfmdEntityAttr, HfpmDataSet dataSet) {
+    public static HfpmDataField getDataFieldFromEntityAttr(HfmdEntityAttr hfmdEntityAttr, HfpmDataSet dataSet) {
         HfpmDataField hfpmDataField= new HfpmDataField();
         hfpmDataField.setHfpmDataFieldId(CommonUtils.uuidL());
         hfpmDataField.setHfpmDataFieldCode(hfmdEntityAttr.getHfmdEntityAttrCode());
@@ -421,7 +421,7 @@ public class HfModelContainerUtil {
         return hfpmDataField;
     }
 
-    private static List<HfpmDataField> getDS4QryDataFieldFromEntityAttr(HfmdEntityAttr hfmdEntityAttr, HfpmDataSet dataSet) {
+    public static List<HfpmDataField> getDS4QryDataFieldFromEntityAttr(HfmdEntityAttr hfmdEntityAttr, HfpmDataSet dataSet) {
 
         List<HfpmDataField> result = new ArrayList<HfpmDataField>();
 
@@ -462,7 +462,7 @@ public class HfModelContainerUtil {
      * @param hfmdEntityAttr
      * @return
      */
-    private static String getFieldShowTypeIdByEntityAttr(HfmdEntityAttr hfmdEntityAttr) {
+    public static String getFieldShowTypeIdByEntityAttr(HfmdEntityAttr hfmdEntityAttr) {
 
         if(hfmdEntityAttr.getHfmdEnumClassId()!= null && hfmdEntityAttr.getHfmdEnumClassId() > 0) {//枚举值对象
             return "2";//TODO
@@ -475,7 +475,7 @@ public class HfModelContainerUtil {
         }
     }
 
-    private static String getFieldShowCodeByEntityAttr(HfmdEntityAttr hfmdEntityAttr) {
+    public static String getFieldShowCodeByEntityAttr(HfmdEntityAttr hfmdEntityAttr) {
 
         if(hfmdEntityAttr.getHfmdEntityAttrCode().toLowerCase().endsWith("_id") && hfmdEntityAttr.getIspk() != null && hfmdEntityAttr.getIspk() == 1) {
             return "011";
