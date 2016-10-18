@@ -35,9 +35,9 @@ public class HfpmFieldShowTypeSVImpl  implements IHfpmFieldShowTypeSV {
         if(hfpmFieldShowTypes != null) {
             for (HfpmFieldShowType hfpmFieldShowType : hfpmFieldShowTypes) {
                 if(hfpmFieldShowType.getHfpmFieldShowTypeId() == null) {
-                    result += hfpmFieldShowTypeMapper.insertSelective(hfpmFieldShowType);
+                    result += this.create(hfpmFieldShowType);
                 }else {
-                    result += hfpmFieldShowTypeMapper.updateByPrimaryKeySelective(hfpmFieldShowType);
+                    result += this.update(hfpmFieldShowType);
                 }
             }
         }

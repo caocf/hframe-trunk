@@ -37,10 +37,10 @@ public class HfcfgComponentTemplateSVImpl  implements IHfcfgComponentTemplateSV 
         int result = 0;
         if(hfcfgComponentTemplates != null) {
             for (HfcfgComponentTemplate hfcfgComponentTemplate : hfcfgComponentTemplates) {
-                if(hfcfgComponentTemplate.getHfcfgComponentTemplateId() == null) {
-                    result += hfcfgComponentTemplateMapper.insertSelective(hfcfgComponentTemplate);
+                if(hfcfgComponentTemplate.getHfcfgComponentTemplateId() == null){
+                    result += this.create(hfcfgComponentTemplate);
                 }else {
-                    result += hfcfgComponentTemplateMapper.updateByPrimaryKeySelective(hfcfgComponentTemplate);
+                    result += this.update(hfcfgComponentTemplate);
                 }
             }
         }
@@ -48,8 +48,8 @@ public class HfcfgComponentTemplateSVImpl  implements IHfcfgComponentTemplateSV 
     }
 
     /**
-    * 更新
-    * @param hfcfgComponentTemplate
+     * 更新
+     * @param hfcfgComponentTemplate
     * @return
     * @throws Exception
     */

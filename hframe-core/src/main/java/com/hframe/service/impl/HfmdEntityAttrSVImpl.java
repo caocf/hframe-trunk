@@ -35,9 +35,9 @@ public class HfmdEntityAttrSVImpl  implements IHfmdEntityAttrSV {
         if(hfmdEntityAttrs != null) {
             for (HfmdEntityAttr hfmdEntityAttr : hfmdEntityAttrs) {
                 if(hfmdEntityAttr.getHfmdEntityAttrId() == null) {
-                    result += hfmdEntityAttrMapper.insertSelective(hfmdEntityAttr);
+                    result += this.create(hfmdEntityAttr);
                 }else {
-                    result += hfmdEntityAttrMapper.updateByPrimaryKeySelective(hfmdEntityAttr);
+                    result += this.update(hfmdEntityAttr);
                 }
             }
         }
