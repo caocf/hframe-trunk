@@ -12,7 +12,7 @@
       <rel entity-code="hfmd_entity/hfmd_entity_id/hfmd_entity_name"/>
     </field>
     <field code="hfmd_entity_attr_id" name="实体属性ID" edit-type="select">
-      <rel entity-code="hfmd_entity_attr/hfmd_entity_attr_id/hfmd_entity_attr_name"/>
+      <rel entity-code="hfmd_entity_attr/hfmd_entity_attr_id/hfmd_entity_attr_name" rel-field="hfmd_entity_id"/>
     </field>
     <field code="hfpm_data_field_code" name="数据列编码" edit-type="input"/>
     <field code="hfpm_data_field_name" name="数据列名称" edit-type="input"/>

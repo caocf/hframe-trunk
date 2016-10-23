@@ -1,3 +1,0 @@
-#parse("default_startpart.vm")
-            $!{content}
-#parse("default_endpart.vm")

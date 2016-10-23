@@ -20,8 +20,9 @@ public class VelocityUtil {
 		
 		Properties properties=new Properties();
 		properties.setProperty("resource.loader", "file");
-		properties.setProperty("userdirective", "org.apache.velocity.tools.generic.directive.Ifnull");
-		properties.setProperty("userdirective", "org.apache.velocity.tools.generic.directive.Ifnotnull");
+		//modify by zqh 2016-10-18
+//		properties.setProperty("userdirective", "org.apache.velocity.tools.generic.directive.Ifnull");
+//		properties.setProperty("userdirective", "org.apache.velocity.tools.generic.directive.Ifnotnull");
 
 //		String basePath = "D:/tomcat6.0/Tomcat6.0_AutoSystem/webapps/Hframe/WEB-INF/classes";//???????????д·????????
 		String basePath = "D:\\my_workspace\\hframe-trunk\\hframe-generator\\src\\main\\resources";//???????????д·????????
@@ -88,14 +89,17 @@ public class VelocityUtil {
 
 	public static void main(String[] args) {
 		
-		Map  map=new HashMap();
-		
-		map.put("colNum", 4);
-		map.put("info", "???????");
-		System.out.println("--->"+produceTemplateContent("com/hframe/tag/vm/autoformtemplate.vm", map));
-		
-		
-		
+//		Map  map=new HashMap();
+//
+//		map.put("colNum", 4);
+//		map.put("info", "???????");
+//		System.out.println("--->" + produceTemplateContent("com/hframe/tag/vm/autoformtemplate.vm", map));
+
+		Map map = new HashMap();
+		map.put("companyCode", "aa");
+		map.put("programCode", "bb");
+		String content = VelocityUtil.produceTemplateContent("com/hframework/generator/vm/compileBat.vm", map);
+		System.out.println(content);
 	}
 	
 }

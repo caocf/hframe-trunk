@@ -1,13 +1,10 @@
 package com.hframework.generator.web.bean;
 
-import com.hframework.common.util.CommonUtils;
-import com.hframework.common.util.ResourceWrapper;
-import com.hframework.common.util.StringUtils;
 import com.hframe.domain.model.*;
+import com.hframework.common.util.CommonUtils;
+import com.hframework.common.util.StringUtils;
 import com.hframework.generator.enums.HfmdEntityAttr1AttrTypeEnum;
-import javafx.util.Pair;
 
-import java.net.URLEncoder;
 import java.util.*;
 
 /**

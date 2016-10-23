@@ -1,6 +1,8 @@
 <pagetemplates>
 
-    <pagetemplate id="login" path="login.vm" name="登录页" type="forward"></pagetemplate>
+    <pagetemplate id="login" path="login.vm" name="登录页" type="forward">
+        <element id="programName" type="string"></element>
+    </pagetemplate>
 
     <pagetemplate id="default" path="default.vm" name="默认页" type="forward">
         <element id="programName" type="string"></element>
@@ -63,7 +65,7 @@
                     </attach>
                     <source scope="EOC" param="thisForm"></source>
                     <effect type="ajaxSubmitByJson" action="ajaxSubmits.json" target-id="eForm,eList"></effect>
-                    <effect type="component.reload"></effect>
+                    <effect type="page.reload"></effect>
                 </event>
             </events>
         </element>

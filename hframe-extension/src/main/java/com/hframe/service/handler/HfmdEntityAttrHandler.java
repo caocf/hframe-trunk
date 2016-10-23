@@ -24,6 +24,8 @@ public class HfmdEntityAttrHandler extends AbstractBusinessHandler<HfmdEntityAtt
     private IHfmdEntitySV hfmdEntitySV;
 
     @Resource
+    private IHfmdEntityAttrSV hfmdEntityAttrSV;
+    @Resource
     private IHfpmDataSetSV hfpmDataSetSV;
     @Resource
     private IHfpmDataFieldSV hfpmDataFieldSV;
@@ -76,6 +78,23 @@ public class HfmdEntityAttrHandler extends AbstractBusinessHandler<HfmdEntityAtt
         return true;
     }
 
+    @BeforeUpdateHandler(attr = "hfmdEntityAttrCode",target = "parent_hfsec_menu_id")
+    @BeforeCreateHandler(attr = "hfmdEntityAttrCode",target = "parent_hfsec_menu_id")
+    public boolean updateSelfRelat(HfmdEntityAttr hfmdEntityAttr) throws Exception {
+
+        if(hfmdEntityAttr.getRelHfmdEntityAttrId() == null) {
+            Long hfmdEntityId = hfmdEntityAttr.getHfmdEntityId();
+            HfmdEntityAttr_Example example = new HfmdEntityAttr_Example();
+            example.createCriteria().andHfmdEntityIdEqualTo(hfmdEntityId);
+            List<HfmdEntityAttr> hfmdEntityAttrListByExample = hfmdEntityAttrSV.getHfmdEntityAttrListByExample(example);
+            for (HfmdEntityAttr entityAttr : hfmdEntityAttrListByExample) {
+                if(entityAttr.getIspk() == 1) {
+                    hfmdEntityAttr.setRelHfmdEntityAttrId(entityAttr.getHfmdEntityAttrId());
+                }
+            }
+        }
+        return true;
+    }
 
     @AfterCreateHandler
     @AfterUpdateHandler
@@ -87,6 +106,7 @@ public class HfmdEntityAttrHandler extends AbstractBusinessHandler<HfmdEntityAtt
 
         DataSetLoaderService dataSetLoaderService = DataSetLoaderHelper.getDataSetLoaderService(
                 companyCode, programCode, null);
+        System.out.printf("hfmdEntityAttr : "  + hfmdEntityAttr.getHfmdEntityAttrName());
         dataSetLoaderService.overrideHfmdEntityAttr(hfmdEntityAttr);
         return true;
     }

@@ -10,7 +10,7 @@
       <rel entity-code="hfcfg_program_template/hfcfg_program_template_id/program_template_name"/>
     </field>
     <field code="hfcfg_program_skin_id" name="项目皮肤ID" edit-type="select">
-      <rel entity-code="hfcfg_program_skin/hfcfg_program_skin_id/program_skin_name"/>
+      <rel entity-code="hfcfg_program_skin/hfcfg_program_skin_id/program_skin_name" rel-field="hfcfg_program_template_id"/>
     </field>
     <field code="hfcfg_login_page_id" name="项目登陆页ID" edit-type="select">
       <rel entity-code="hfcfg_login_page/hfcfg_login_page_id/hfcfg_login_page_name"/>

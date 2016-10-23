@@ -128,10 +128,10 @@ public class DataSetDescriptor {
                         List<Mapping> mappingList = dataSetHelper.getMappings().getMappingList();
                         for (Mapping mapping : mappingList) {
                             if("true".equals(mapping.getIsCompareKey())) {
-                                object.put("compareKey",CreatorUtil.getJavaVarName(mapping.getEffectDatasetField()));
+                                object.put("compareKey", CreatorUtil.getJavaVarName(mapping.getEffectDatasetField()));
                             }
                             if("true".equals(mapping.getIsCompareName())) {
-                                object.put("compareName",CreatorUtil.getJavaVarName(mapping.getEffectDatasetField()));
+                                object.put("compareName", CreatorUtil.getJavaVarName(mapping.getEffectDatasetField()));
                             }
                         }
                         result.put(referDataFiledPropertyName,object);
@@ -141,10 +141,10 @@ public class DataSetDescriptor {
                     List<Mapping> mappingList = dataSetHelper.getMappings().getMappingList();
                     for (Mapping mapping : mappingList) {
                         if("true".equals(mapping.getIsCompareKey())) {
-                            object.put("compareKey",CreatorUtil.getJavaVarName(mapping.getEffectDatasetField()));
+                            object.put("compareKey", CreatorUtil.getJavaVarName(mapping.getEffectDatasetField()));
                         }
                         if("true".equals(mapping.getIsCompareName())) {
-                            object.put("compareName",CreatorUtil.getJavaVarName(mapping.getEffectDatasetField()));
+                            object.put("compareName", CreatorUtil.getJavaVarName(mapping.getEffectDatasetField()));
                         }
                     }
                     result.put("NE",object);
@@ -185,9 +185,29 @@ public class DataSetDescriptor {
                     object.put("editable",editable);
                     object.put("ruleType",ruleType);
 
-                    if("1".equals(ruleType)) {//1值映射 2 值关联
+                    if("1".equals(ruleType)) {//1值映射 2 值关联 //3范围映射
                         key = key + "=" + sourceValue;
                     }
+                    if(!dataSetRulerJsonObject.containsKey(key)) {
+                        dataSetRulerJsonObject.put(key, new JSONArray());
+                    }
+                    JSONArray jsonArray = dataSetRulerJsonObject.getJSONArray(key);
+                    jsonArray.add(object);
+                }
+            }
+        }
+
+        //范围映射需要增加默认dataset默认的rel关联
+        List<Field> fields = dataSet.getFields().getFieldList();
+        if(fields != null) {
+            for (Field field : fields) {
+                if(field.getRel() != null && StringUtils.isNotBlank(field.getRel().getRelField())) {
+                    JSONObject object = new JSONObject();
+                    object.put("sourceCode", ResourceWrapper.JavaUtil.getJavaVarName(field.getRel().getRelField()));
+                    object.put("targetCode", ResourceWrapper.JavaUtil.getJavaVarName(field.getCode()));
+//                    object.put("editable",true);
+                    object.put("ruleType",3);
+                    String key = ResourceWrapper.JavaUtil.getJavaVarName(field.getRel().getRelField());
                     if(!dataSetRulerJsonObject.containsKey(key)) {
                         dataSetRulerJsonObject.put(key, new JSONArray());
                     }
