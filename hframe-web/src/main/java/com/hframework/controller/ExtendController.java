@@ -919,4 +919,7 @@ public class ExtendController {
         return null;
     }
 
+    public static void main(String[] args) {
+        System.out.println(DateUtils.getDateYYYYMMDD(new Date(1475330401000L)));
+    }
 }

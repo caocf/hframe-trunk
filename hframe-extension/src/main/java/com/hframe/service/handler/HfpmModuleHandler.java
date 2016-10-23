@@ -69,8 +69,7 @@ public class HfpmModuleHandler extends AbstractBusinessHandler<HfpmModule> {
     @AfterDeleteHandler
     public boolean deleteModule(HfpmModule module) throws Exception {
         String companyCode = "hframe";
-        HfpmModule hfpmModuleByPK = hfpmModuleSV.getHfpmModuleByPK(module.getHfpmModuleId());
-        HfpmProgram hfpmProgram = hfpmProgramSV.getHfpmProgramByPK(hfpmModuleByPK.getHfpmProgramId());
+        HfpmProgram hfpmProgram = hfpmProgramSV.getHfpmProgramByPK(module.getHfpmProgramId());
         String programCode = hfpmProgram.getHfpmProgramCode();
         String projectBasePath = CreatorUtil.getTargetProjectBasePath(companyCode,
                 "hframe".equals(programCode) ? "trunk" : programCode, null);

@@ -1,8 +1,6 @@
 package com.hframework.base.bean;
 
-import com.google.common.base.Enums;
 import com.hframework.common.annotation.extension.*;
-import com.hframework.common.util.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 
 import java.lang.annotation.Annotation;
@@ -13,7 +11,7 @@ import java.lang.reflect.Type;
 /**
  * Created by zhangquanhong on 2016/9/22.
  */
-public abstract class AbstractBusinessHandler<T> implements InitializingBean,BusinessHandler<T>  {
+public abstract class AbstractBusinessHandler<T> implements InitializingBean,BusinessHandler<T> {
 
     public void afterPropertiesSet() throws Exception {
         Type genType = this.getClass().getGenericSuperclass();

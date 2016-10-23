@@ -1,9 +1,5 @@
 package com.hframework.base.bean;
 
-import com.google.common.base.Joiner;
-import com.hframework.common.annotation.extension.AfterCreateHandler;
-import com.hframework.common.annotation.extension.AfterDeleteHandler;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;

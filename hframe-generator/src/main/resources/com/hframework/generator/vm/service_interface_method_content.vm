@@ -87,7 +87,7 @@
     */
     public List<${className}> get${className}ListByExample(${className}_Example example) throws  Exception;
 
-#if($!{parentIdPropertyClassName} != "" )
+#if("$!{parentIdPropertyClassName}" != "" )
     /**
     * 通过父级${entityName}ID查询${entityName}树
     * @param ${varName}

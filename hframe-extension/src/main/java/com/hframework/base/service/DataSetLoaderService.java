@@ -145,23 +145,28 @@ public class DataSetLoaderService {
                 }
             });
 
-            //获取数据字段信息<HfpmDataFieldId, List<HfpmDataField>>
-            HfpmDataField_Example hfpmDataFieldExample = new HfpmDataField_Example();
-            hfpmDataFieldExample.createCriteria().andHfpmDataSetIdIn(
-                    CollectionUtils.fetch(hfpmDataSetAll, new Fetcher<HfpmDataSet, Long>() {
-                        public Long fetch(HfpmDataSet hfpmDataSet) {
-                            return hfpmDataSet.getHfpmDataSetId();
-                        }
-            }));
-            List<HfpmDataField> hfpmDataFieldAll = iHfpmDataFieldSV.getHfpmDataFieldListByExample(hfpmDataFieldExample);
+            if(hfpmDataSetAll.size() == 0) {
+                hfpmDataFieldInfoMap = new HashMap<Long, HfpmDataField>();
+                hfpmDataFieldMap = new HashMap<Long, List<HfpmDataField>>();
+            }else {
+                //获取数据字段信息<HfpmDataFieldId, List<HfpmDataField>>
+                HfpmDataField_Example hfpmDataFieldExample = new HfpmDataField_Example();
+                hfpmDataFieldExample.createCriteria().andHfpmDataSetIdIn(
+                        CollectionUtils.fetch(hfpmDataSetAll, new Fetcher<HfpmDataSet, Long>() {
+                            public Long fetch(HfpmDataSet hfpmDataSet) {
+                                return hfpmDataSet.getHfpmDataSetId();
+                            }
+                        }));
+                List<HfpmDataField> hfpmDataFieldAll = iHfpmDataFieldSV.getHfpmDataFieldListByExample(hfpmDataFieldExample);
 
-            hfpmDataFieldInfoMap = CollectionUtils.convert(hfpmDataFieldAll, new Mapper<Long, HfpmDataField>() {
-                public <K> K getKey(HfpmDataField dataField) {
-                    return (K) dataField.getHfpmDataFieldId();
-                }
-            });
+                hfpmDataFieldInfoMap = CollectionUtils.convert(hfpmDataFieldAll, new Mapper<Long, HfpmDataField>() {
+                    public <K> K getKey(HfpmDataField dataField) {
+                        return (K) dataField.getHfpmDataFieldId();
+                    }
+                });
 
-            hfpmDataFieldMap = getHfpmDataFieldMap(hfpmDataFieldAll);
+                hfpmDataFieldMap = getHfpmDataFieldMap(hfpmDataFieldAll);
+            }
 
             //获取展示方式信息
             List<HfpmFieldShowType> hfpmFieldShowTypeAll = iHfpmFieldShowTypeSV.getHfpmFieldShowTypeAll();
@@ -223,7 +228,7 @@ public class DataSetLoaderService {
                 List<HfpmDataField> hfpmDataFieldList = hfpmDataFieldMap.get(hfpmDataSet.getHfpmDataSetId());
                 if(hfpmDataFieldList != null) {
                     for (HfpmDataField hfpmDataField : hfpmDataFieldList) {
-                        fieldList.add(getField(hfpmDataField));
+                        fieldList.add(getField(fieldList, hfpmDataField));
                     }
                 }
 
@@ -273,7 +278,7 @@ public class DataSetLoaderService {
 
     }
 
-    public Field getField(HfpmDataField hfpmDataField) {
+    public Field getField(List<com.hframework.web.config.bean.dataset.Field> fieldList, HfpmDataField hfpmDataField) {
         HfmdEntityAttr hfmdEntityAttr = hfmdEntityAttrIdEntityAttrMap.get(hfpmDataField.getHfmdEntityAttrId());
         HfmdEnumClass hfmdEnumClass = hfmdEnumClassMap.get(hfmdEntityAttr.getHfmdEnumClassId());
         HfmdEntityAttr relEntityAttr = hfmdEntityAttrIdEntityAttrMap.get(hfmdEntityAttr.getRelHfmdEntityAttrId());
@@ -311,6 +316,7 @@ public class DataSetLoaderService {
 
                 System.out.println("==>RelHfmdEntityAttrId【" + hfmdEntityAttr.getRelHfmdEntityAttrId() + "】没有找到对应的记录！");
                 Rel rel = getRel(relEntityAttr);
+                rel.setRelField(getRelField(fieldList, relEntityAttr));
                 field.setRel(rel);
                 if("select-panel".equals(editType)) {
                     rel.setEntityCode(rel.getEntityCode() + "/hfmd_entity_id");
@@ -331,6 +337,29 @@ public class DataSetLoaderService {
         }
 
         return field;
+    }
+
+    /**
+     * 返回依赖的字段的上级依赖值
+     * @param fieldList
+     * @param relEntityAttr
+     */
+    private String getRelField(List<Field> fieldList, HfmdEntityAttr relEntityAttr) {
+
+        List<HfmdEntityAttr> hfmdEntityAttrs = hfmdEntityAttrMap.get(relEntityAttr.getHfmdEntityId());
+        for (int i = 0; i <hfmdEntityAttrs.indexOf(relEntityAttr); i++) {//查看当前获取元素之前的元素
+            //如果有依赖的属性
+            if(hfmdEntityAttrs.get(i).getRelHfmdEntityAttrId() != null && hfmdEntityAttrs.get(i).getRelHfmdEntityAttrId() > 0) {
+                HfmdEntityAttr rrelEntityAttr = hfmdEntityAttrIdEntityAttrMap.get(hfmdEntityAttrs.get(i).getRelHfmdEntityAttrId());
+                Rel rrel = getRel(rrelEntityAttr);
+                for (Field field : fieldList) {
+                    if(field.getRel() != null && rrel.getEntityCode().equals(field.getRel().getEntityCode())) {
+                        return field.getCode();
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     private Rel getRel(HfmdEntityAttr relEntityAttr) {
@@ -875,6 +904,13 @@ public class DataSetLoaderService {
             BeanUtils.copyProperties(hfmdEntityAttr, hfmdEntityAttrIdEntityAttrMap.get(hfmdEntityAttr.getHfmdEntityAttrId()));
             tempHfmdEntityAttr = hfmdEntityAttrIdEntityAttrMap.get(hfmdEntityAttr.getHfmdEntityAttrId());
         }else {
+            if(hfmdEntityAttrMap.get(hfmdEntityAttr.getHfmdEntityId()) == null) {
+                synchronized (this) {
+                    if(hfmdEntityAttrMap.get(hfmdEntityAttr.getHfmdEntityId()) == null) {
+                        hfmdEntityAttrMap.put(hfmdEntityAttr.getHfmdEntityId(), new ArrayList<HfmdEntityAttr>());
+                    }
+                }
+            }
             hfmdEntityAttrMap.get(hfmdEntityAttr.getHfmdEntityId()).add(hfmdEntityAttr);
             hfmdEntityAttrIdEntityAttrMap.put(hfmdEntityAttr.getHfmdEntityAttrId(), hfmdEntityAttr);
         }
@@ -952,7 +988,7 @@ public class DataSetLoaderService {
             fieldList = new ArrayList<Field>();
             dataSet.getFields().setFieldList(fieldList);
         }
-        Field targetField = getField(dataField);
+        Field targetField = getField(fieldList,dataField);
         boolean isNewField = true;
         for (Field field : fieldList) {
             if(targetField.getCode().equals(field.getCode())) {

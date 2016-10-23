@@ -97,7 +97,7 @@
         return ${varName}Mapper.selectByPrimaryKey(${varName}Id);
     }
 
-#if($!{parentIdPropertyClassName} != "" )
+#if("$!{parentIdPropertyClassName}" != "" )
     /**
     * 通过父级${entityName}ID查询${entityName}树
     * @param ${varName}

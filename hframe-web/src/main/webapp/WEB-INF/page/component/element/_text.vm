@@ -1,2 +1,0 @@
-<span>$!value</span>
-<input class="input-xlarge focused" id="$column.code" name="$column.code" type="hidden" value="$!value">

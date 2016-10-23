@@ -7,22 +7,21 @@ import com.hframework.common.util.StringUtils;
 import com.hframework.common.util.message.XmlUtils;
 import com.hframework.web.CreatorUtil;
 import com.hframework.web.config.bean.*;
-import com.hframework.web.config.bean.Component;
-import com.hframework.web.config.bean.Module;
 import com.hframework.web.config.bean.component.Event;
 import com.hframework.web.config.bean.dataset.Entity;
 import com.hframework.web.config.bean.dataset.Field;
 import com.hframework.web.config.bean.dataset.Fields;
 import com.hframework.web.config.bean.dataset.Node;
-import com.hframework.web.config.bean.module.*;
+import com.hframework.web.config.bean.module.Page;
 import com.hframework.web.config.bean.pagetemplates.Element;
 import com.hframework.web.config.bean.pagetemplates.Pagetemplate;
 import com.hframework.web.enums.ElementType;
+import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.IOException;
-import java.lang.Class;
 import java.util.*;
 
 /**
@@ -54,7 +53,7 @@ public class WebContext {
     //组件信息
     private Map<String, Component> components = new HashMap<String, Component>();
 
-    private Map<String, com.hframework.web.config.bean.component.Event> events = new HashMap<String, Event>();
+    private Map<String, Event> events = new HashMap<String, Event>();
 
     private Map<String, Map<String, PageDescriptor>> pageSetting = new HashMap<String, Map<String, PageDescriptor>>();
 
@@ -62,13 +61,21 @@ public class WebContext {
 
     private Map<Class, DataSetDescriptor> dataSetCache = new HashMap<Class, DataSetDescriptor>();
 
+    private Map<DataSetDescriptor, List<ComponentDescriptor>> dataSetComponentApplyCache = new HashMap<DataSetDescriptor, List<ComponentDescriptor>>();
+
+    private boolean flushAuto = false;
+
     public WebContext() {
-        this(null, null, null);
+        this(null, null, null, true);
+    }
+    public WebContext(String companyCode, String programCode, String templateCode) {
+        this(companyCode,programCode,templateCode, false);
     }
 
-    public WebContext(String companyCode, String programCode, String templateCode) {
+    public WebContext(String companyCode, String programCode, String templateCode, boolean flushAuto) {
         try {
             logger.info("web context init{} ..", companyCode, programCode, templateCode);
+            this.flushAuto = flushAuto;
             init(companyCode, programCode, templateCode);
             logger.info("web context init ok !", JSONObject.toJSONString(context));
         } catch (Exception e) {
@@ -98,12 +105,16 @@ public class WebContext {
         //页面架构数据初始化
         pageSettingInitial();
 
+        WebContextMonitor webContextMonitor = new WebContextMonitor(this);
+        webContextMonitor.addRootConfMap(DataSet.class, contextHelper.programConfigRootDir + "/" + contextHelper.programConfigDataSetDir);
+        webContextMonitor.start();
+
     }
 
     private void loadDataSet() throws Exception {
 
         //加载数据源信息
-        List<DataSet> dataSetList = XmlUtils.readValuesFromDirectory(contextHelper.programConfigRootDir,contextHelper.programConfigDataSetDir, DataSet.class, ".xml");
+        List<DataSet> dataSetList = XmlUtils.readValuesFromDirectory(contextHelper.programConfigRootDir, contextHelper.programConfigDataSetDir, DataSet.class, ".xml");
         for (DataSet dataSet : dataSetList) {
             DataSetDescriptor dataSetDescriptor = new DataSetDescriptor(dataSet);
 
@@ -303,7 +314,7 @@ public class WebContext {
 
     private void loadDataSetHelper() throws Exception {
 
-        List<DataSetHelper> dataSetHelperList = XmlUtils.readValuesFromDirectory(contextHelper.programConfigRootDir,contextHelper.programConfigDataSetHelperDir, DataSetHelper.class, ".xml");
+        List<DataSetHelper> dataSetHelperList = XmlUtils.readValuesFromDirectory(contextHelper.programConfigRootDir, contextHelper.programConfigDataSetHelperDir, DataSetHelper.class, ".xml");
         for (DataSetHelper dataSetHelper : dataSetHelperList) {
             String effectModuleCode = dataSetHelper.getEffectModule();
             String effectDatasetCode = dataSetHelper.getEffectDataset();
@@ -314,7 +325,7 @@ public class WebContext {
 
     private void loadDataSetRuler() throws Exception {
 
-        List<DataSetRuler> dataSetRulers = XmlUtils.readValuesFromDirectory(contextHelper.programConfigRootDir,contextHelper.programConfigDataSetRulerDir, DataSetRuler.class, ".xml");
+        List<DataSetRuler> dataSetRulers = XmlUtils.readValuesFromDirectory(contextHelper.programConfigRootDir, contextHelper.programConfigDataSetRulerDir, DataSetRuler.class, ".xml");
         for (DataSetRuler dataSetRuler : dataSetRulers) {
             String module = dataSetRuler.getModule();
             String entity = dataSetRuler.getEntity();
@@ -344,6 +355,7 @@ public class WebContext {
 
                     continue;
                 }
+
                 pageSetting.get(moduleCode).put(page.getId(), parsePageDescriptor(page, moduleCode));
             }
         }
@@ -468,6 +480,13 @@ public class WebContext {
 
         }
 
+        for (ComponentDescriptor componentDescriptor : pageDescriptor.getComponents().values()) {
+            DataSetDescriptor dataSetDescriptor = componentDescriptor.getDataSetDescriptor();
+            if(!dataSetComponentApplyCache.containsKey(dataSetDescriptor)) {
+                dataSetComponentApplyCache.put(dataSetDescriptor, new ArrayList<ComponentDescriptor>());
+            }
+            dataSetComponentApplyCache.get(dataSetDescriptor).add(componentDescriptor);
+        }
 
         return pageDescriptor;
     }
@@ -505,7 +524,7 @@ public class WebContext {
         return componentDescriptor;
     }
 
-    private Stack<Pagetemplate>  getPageTemplateStack(String pageTemplateId, Stack<Pagetemplate> pageTemplateStack) {
+    private Stack<Pagetemplate> getPageTemplateStack(String pageTemplateId, Stack<Pagetemplate> pageTemplateStack) {
         Pagetemplate pageTemplate = pageTemplates.get(pageTemplateId);
         pageTemplateStack.add(0,pageTemplate);
 //        pageTemplateStack.add(pageTemplate);
@@ -520,7 +539,7 @@ public class WebContext {
     private void loadComponentConfig() throws IOException {
         //加载项目信息
         try{
-            program = XmlUtils.readValueFromFile(contextHelper.programConfigRootDir,contextHelper.programConfigProgramFile, Program.class);
+            program = XmlUtils.readValueFromFile(contextHelper.programConfigRootDir, contextHelper.programConfigProgramFile, Program.class);
         }catch (Exception e) {
             program = XmlUtils.readValueFromFile(contextHelper.programConfigRootDir,contextHelper.programConfigProgramFile, Program.class);
         }
@@ -566,7 +585,7 @@ public class WebContext {
         }
 
         //加载事件信息
-        List<EventStore> eventStores = XmlUtils.readValuesFromDirectory(contextHelper.programConfigRootDir,contextHelper.templateResourceEventStoreDir, EventStore.class,".xml");
+        List<EventStore> eventStores = XmlUtils.readValuesFromDirectory(contextHelper.programConfigRootDir, contextHelper.templateResourceEventStoreDir, EventStore.class, ".xml");
         for (EventStore eventStore : eventStores) {
             String group = eventStore.getGroup();
             List<Event> eventList = eventStore.getEventList();
@@ -576,7 +595,7 @@ public class WebContext {
         }
 
         //加载组件模板信息
-        List<Component> componentList = XmlUtils.readValuesFromDirectory(contextHelper.programConfigRootDir,contextHelper.templateResourceComponentDir, Component.class,".xml");
+        List<Component> componentList = XmlUtils.readValuesFromDirectory(contextHelper.programConfigRootDir, contextHelper.templateResourceComponentDir, Component.class, ".xml");
         for (Component component : componentList) {
             if(StringUtils.isBlank(component.getId())) {
                 continue;
@@ -585,7 +604,7 @@ public class WebContext {
         }
 
         //加载默认数据映射信息
-        List<Mapper> defaultMappers = XmlUtils.readValuesFromDirectory(contextHelper.programConfigRootDir,contextHelper.templateResourceComponentMapperDir, Mapper.class,".mapper");
+        List<Mapper> defaultMappers = XmlUtils.readValuesFromDirectory(contextHelper.programConfigRootDir, contextHelper.templateResourceComponentMapperDir, Mapper.class, ".mapper");
         for (Mapper mapper : defaultMappers) {
             mappers.put(mapper.getComponentId(), mapper);
         }
@@ -706,13 +725,59 @@ public class WebContext {
                 propertyValue = ReflectUtils.getFieldValue(cacheObject, relPropertyName);
             }
             if(propertyValue != null) {
-                ReflectUtils.setFieldValue(t,propertyName, propertyValue);
+                ReflectUtils.setFieldValue(t, propertyName, propertyValue);
                 return true;
             }
 
         }
 
         return false;
+    }
+
+    public void overrideContext(List<File> diffFile, Class config) throws Exception {
+        if(config == DataSet.class) {
+            for (File file : diffFile) {
+                DataSet dataSet = XmlUtils.readValueFromAbsoluteFilePath(file.getAbsolutePath(), DataSet.class);
+
+                DataSetDescriptor dataSetDescriptor = dataSets.get(dataSet.getModule() + "/" + dataSet.getCode());
+                if(dataSetDescriptor == null) {
+                    dataSets.put(dataSet.getModule() + "/" + dataSet.getCode(), new DataSetDescriptor((dataSet)));
+                    dataSetDescriptor =  dataSets.get(dataSet.getModule() + "/" + dataSet.getCode());
+                    com.hframework.beans.class0.Class defPoClass = CreatorUtil.getDefPoClass("",
+                            program.getCode(), dataSet.getModule(), dataSet.getCode());
+                    if(dataSet.getCode().equals(dataSet.getEventObjectCode())) {
+                        try{
+                            Class<?> aClass = Class.forName(defPoClass.getClassPath());
+                            dataSetCache.put(aClass, dataSetDescriptor);
+                        }catch (Exception e) {}
+                    }
+                }else {
+                    BeanUtils.copyProperties(dataSetDescriptor.getDataSet(), dataSet);
+                }
+
+                List<Field> fieldList = dataSetDescriptor.getDataSet().getFields().getFieldList();
+                for (Field field : fieldList) {
+                    if(field.getRel() != null && field.getRel().getEntityCode() != null) {
+                        String entityCode = field.getRel().getEntityCode();
+                        String dataSetCode = entityCode.substring(0, entityCode.indexOf("/"));
+                        String relFieldCode = entityCode.substring(entityCode.indexOf("/") + 1, entityCode.lastIndexOf("/"));
+                        com.hframework.beans.class0.Class relPoClass =
+                                CreatorUtil.getDefPoClass("",
+                                        program.getCode(), "hframe", dataSetCode);
+                        DataSetDescriptor relDataSetDescriptor = dataSetCache.get(Class.forName(relPoClass.getClassPath()));
+                        dataSetDescriptor.addRelDataSet(field.getCode(), dataSetCode + "/" + relFieldCode, relDataSetDescriptor);
+                    }
+                }
+
+                List<ComponentDescriptor> componentDescriptors = dataSetComponentApplyCache.get(dataSetDescriptor);
+                for (ComponentDescriptor componentDescriptor : componentDescriptors) {
+                    //重新初始化组件内容
+                    componentDescriptor.initComponentDataContainer(events);
+                }
+
+            }
+
+        }
     }
 
     public static class Context{

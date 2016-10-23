@@ -1,8 +1,5 @@
-
-import com.google.common.collect.Maps;
 import com.hframework.base.service.CommonDataService;
 import com.hframework.generator.web.bean.HfModelContainerUtil;
-import javafx.util.Pair;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;

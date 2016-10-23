@@ -34,7 +34,7 @@
       <update-edit-type>text</update-edit-type>
     </field>
     <field code="create_time" name="创建时间" edit-type="datetime">
-      <rel entity-code="hfpm_data_set/hfpm_data_set_id/hfpm_data_set_name"/>
+      <rel entity-code="hfpm_data_set/hfpm_data_set_id/hfpm_data_set_name" rel-field="hfpm_program_id"/>
       <create-edit-type>hidden</create-edit-type>
       <update-edit-type>text</update-edit-type>
     </field>
@@ -43,7 +43,7 @@
       <update-edit-type>hidden</update-edit-type>
     </field>
     <field code="hfpm_data_set_id" name="数据集ID" edit-type="select">
-      <rel entity-code="hfpm_data_set/hfpm_data_set_id/hfpm_data_set_name"/>
+      <rel entity-code="hfpm_data_set/hfpm_data_set_id/hfpm_data_set_name" rel-field="hfpm_program_id"/>
     </field>
     <field code="pri" name="优先级" edit-type="select">
       <create-edit-type>hidden</create-edit-type>

@@ -7,12 +7,9 @@ import com.hframework.reconciliation.bean.RData;
 import com.hframework.reconciliation.bean.config.File;
 import com.hframework.reconciliation.bean.config.Item;
 import com.hframework.reconciliation.bean.config.Row;
-import com.mysql.jdbc.TimeUtil;
-import org.apache.commons.collections.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -92,7 +89,7 @@ public class FileReader extends AbstractReader  implements Reader{
             }
 
             //根据数据行规则将数据分组<规则，数据组对应结束行号>
-            Map<Row, Integer> rowRecordCounter = new HashedMap();
+            Map<Row, Integer> rowRecordCounter = new LinkedHashMap<Row, Integer>();
             int count = 0;
             for (Row row : rowList) {
                 if(mainDataRow != row) {

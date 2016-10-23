@@ -25,7 +25,6 @@ import com.hframework.common.ext.Grouper;
 import com.hframework.common.ext.Mapping;
 import com.hframework.common.frame.ServiceFactory;
 import com.hframework.common.util.*;
-import com.hframework.common.util.BeanUtils;
 import com.hframework.common.util.message.Dom4jUtils;
 import com.hframework.ext.datasoucce.DataSourceContextHolder;
 import com.hframework.web.CreatorUtil;
@@ -43,7 +42,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
-import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.mock.http.MockHttpInputMessage;
@@ -448,7 +446,7 @@ public class DefaultController {
                             String keyValue = newRel.getKey();
                             String parentKeyValue = newRel.getValue();
                             Object po = java.lang.Class.forName(defPoClass.getClassPath()).newInstance();
-                            ReflectUtils.setFieldValue(po,relPropertyNames[0],keyValue);
+                            ReflectUtils.setFieldValue(po, relPropertyNames[0], keyValue);
                             ReflectUtils.setFieldValue(po, relPropertyNames[1], parentKeyValue);
                             tempList.add(po);
                         }
@@ -461,9 +459,12 @@ public class DefaultController {
                     }
                 }
 
-                ResultData resultData = (ResultData) ReflectUtils.invokeMethod(controller,"batchCreate",new java.lang.Class[]{
+                ResultData resultData = (ResultData) ReflectUtils.invokeMethod(controller, "batchCreate", new java.lang.Class[]{
                         java.lang.reflect.Array.newInstance(java.lang.Class.forName(defPoClass.getClassPath()), 1).getClass()}, new Object[]{objects});
                 logger.debug("result: {}", JSON.toJSONString(resultData));
+                if(!resultData.isSuccess()) {
+                    return resultData;
+                }
                 if(type.endsWith("Form")) {
                     parentObject = ((Object[])objects)[0];
                     WebContext.add(parentObject);
@@ -770,7 +771,7 @@ public class DefaultController {
     }
 
     public ResultData invokeMethod(Object controller, String action, java.lang.Class[] classes, Object[] objects) throws InvocationTargetException {
-        ResultData resultData = (ResultData) ReflectUtils.invokeMethod(controller,action,classes,objects);
+        ResultData resultData = (ResultData) ReflectUtils.invokeMethod(controller, action, classes, objects);
         return resultData;
     }
 
@@ -783,9 +784,9 @@ public class DefaultController {
      */
     @RequestMapping(value = "/{page}.html")
     public ModelAndView gotoPage(@PathVariable("page") String pageCode,
-                                 @ModelAttribute("component")  String componentId,
-                                 @ModelAttribute("pagination")  Pagination pagination,
-                                 @ModelAttribute("isPop")  String isPop,
+                                 @ModelAttribute("component") String componentId,
+                                 @ModelAttribute("pagination") Pagination pagination,
+                                 @ModelAttribute("isPop") String isPop,
                                  HttpServletRequest request, HttpServletResponse response) throws Throwable {
         return gotoPage("",pageCode,componentId,pagination,isPop,request,response);
     }
@@ -797,9 +798,9 @@ public class DefaultController {
      */
     @RequestMapping(value = "/{module}/{page}.html")
     public ModelAndView gotoPage(@PathVariable("module") String module,@PathVariable("page") String pageCode,
-                                 @ModelAttribute("component")  String componentId,
-                                 @ModelAttribute("pagination")  Pagination pagination,
-                                 @ModelAttribute("isPop")  String isPop,
+                                 @ModelAttribute("component") String componentId,
+                                 @ModelAttribute("pagination") Pagination pagination,
+                                 @ModelAttribute("isPop") String isPop,
                                  HttpServletRequest request, HttpServletResponse response) throws Throwable {
         logger.debug("module: {},page: {},params: {}", module, pageCode, request.getQueryString());
         if(WebContext.get("subContext") == null) {
@@ -807,7 +808,6 @@ public class DefaultController {
             DataSourceContextHolder.clear();
         }
 
-        System.out.println("==> " + request.getQueryString());
         ModelAndView mav = new ModelAndView();
 
         PageDescriptor pageInfo = WebContext.get().getPageInfo(module, pageCode);
@@ -859,7 +859,7 @@ public class DefaultController {
                 JSONObject jsonObject = null;
                 String componentQueryString = null;
                 if("pageflow".equals(componentDescriptor.getMapper().getDataAuth())) {
-                    Map<String, String>  pageContextParams = getPageContextParams(request);
+                    Map<String, String> pageContextParams = getPageContextParams(request);
 //                    WebContext.get().add(getPageContextRealyParams(pageContextParams));
                     WebContext.putContext(getPageContextRealyParams(pageContextParams));
 
@@ -1015,7 +1015,7 @@ public class DefaultController {
     //                                new Object[]{po,poExample, pagination});
 
                             if (resultData.getData() instanceof Map) {
-                                List helperData = getHelperData(componentDescriptor.getDataSetDescriptor(), action, defPoClass, request);
+                                List helperData = getHelperData(extendData, componentDescriptor.getDataSetDescriptor(), action, defPoClass, request);
                                 ((Map) resultData.getData()).put("helperData", helperData);
                             }
                         }
@@ -1036,7 +1036,7 @@ public class DefaultController {
                     if("cList".equals(type)){
                         Class defPoClass = CreatorUtil.getDefPoClass("",
                                 WebContext.get().getProgram().getCode(), moduleCode, eventObjectCode);
-                        List helperData = getHelperData(componentDescriptor.getDataSetDescriptor(), "list", defPoClass,request);
+                        List helperData = getHelperData(extendData, componentDescriptor.getDataSetDescriptor(), "list", defPoClass,request);
                         ResultData resultData = ResultData.success().add("helperData",helperData);
                         jsonObject = componentDescriptor.getJson(resultData);
                     }else {
@@ -1053,7 +1053,7 @@ public class DefaultController {
                     }
                     if(((JSONArray) jsonObject.get("data")).size() == 0) {
                         String[] defaultNullData = new String[((JSONArray) jsonObject.get("columns")).size()];
-                        Arrays.fill(defaultNullData,"");
+                        Arrays.fill(defaultNullData, "");
                         ((JSONArray) jsonObject.get("data")).add(defaultNullData);
                     }
 
@@ -1229,7 +1229,7 @@ public class DefaultController {
                 continue;
             }
             String tempName = tempElement.getName();
-            addRowData(oneRowData,tempElement,StringUtils.isNotBlank(parentPath)?"." + tempName : tempName, excludeCode);
+            addRowData(oneRowData,tempElement, StringUtils.isNotBlank(parentPath)?"." + tempName : tempName, excludeCode);
         }
         if(element.isTextOnly()) {
             oneRowData.put(StringUtils.isNotBlank(parentPath) ? parentPath: "#", element.getText());
@@ -1266,7 +1266,7 @@ public class DefaultController {
     }
 
     private static Map<String,LinkedList<Element>> getElementMap(Element element) {
-        Map<String,LinkedList<Element>>  eleMap = new LinkedHashMap();
+        Map<String,LinkedList<Element>> eleMap = new LinkedHashMap();
         //添加子节点信息
         for (Object o : element.elements()) {
             Element ele = (Element) o;
@@ -1540,77 +1540,82 @@ public class DefaultController {
 //        }
 //    }
 
-    private List getHelperData(DataSetDescriptor dataSetDescriptor, String action, Class targetPoClass, HttpServletRequest request) {
+    private List getHelperData(Map<String, Object> extendData , DataSetDescriptor dataSetDescriptor, String action, Class targetPoClass, HttpServletRequest request) {
+        List helperDataList = extendData == null ? null : (List) extendData.get("HELPER");
         List helperPoList = new ArrayList();
         List<DataSetHelper> dataSetHelpers = dataSetDescriptor.getDataSetHelpers();
         nextHelper : for (DataSetHelper dataSetHelper : dataSetHelpers) {
-            String helpModule = dataSetHelper.getHelpModule();
-            String helpDataset = dataSetHelper.getHelpDataset();
-            String helpDatascore = dataSetHelper.getHelpDatascore();
             try {
-                Class defPoClass = CreatorUtil.getDefPoClass("",
-                        WebContext.get().getProgram().getCode(), helpModule, helpDataset);
-                Class defPoExampleClass = CreatorUtil.getDefPoExampleClass("",
-                        WebContext.get().getProgram().getCode(), helpModule, helpDataset);
-                Class defControllerClass = CreatorUtil.getDefControllerClass("",
-                        WebContext.get().getProgram().getCode(), helpModule, helpDataset);
-                Object po = java.lang.Class.forName(defPoClass.getClassPath()).newInstance();
-                Object poExample= java.lang.Class.forName(defPoExampleClass.getClassPath()).newInstance();
-                Pagination pagination = new Pagination();
-                Object controller= ServiceFactory.getService(defControllerClass.getClassName().substring(0, 1).toLowerCase() + defControllerClass.getClassName().substring(1));
-                Map<String, String> pageFlowParams = WebContext.get(HashMap.class.getName());
-                ReflectUtils.setFieldValue(po, pageFlowParams);
 
-                if(StringUtils.isNotBlank(helpDatascore)) {
-                    Map<String, String> condition = DataSetDescriptor.getConditionMap( helpDatascore);
-                    for (String propertyName : condition.keySet()) {
-                        String propertyValue = condition.get(propertyName);
-                        if(!propertyValue.startsWith("{") && !propertyValue.endsWith("}") ) {
-                            ReflectUtils.setFieldValue(po,propertyName.trim(),propertyValue);
-                            continue ;
-                        }
-                        propertyValue = propertyValue.substring(1, propertyValue.length() - 1);
+                if(helperDataList == null) {
+                    String helpModule = dataSetHelper.getHelpModule();
+                    String helpDataset = dataSetHelper.getHelpDataset();
+                    String helpDatascore = dataSetHelper.getHelpDatascore();
 
-                        //组件连带刷新时需要传入所选择的值
-                        String parameterValue = request.getParameter(propertyValue);
-                        if(parameterValue != null) {
-                            if(StringUtils.isNotBlank(parameterValue)) {
-                                ReflectUtils.setFieldValue(po,propertyName.trim(),parameterValue);
+                    Class defPoClass = CreatorUtil.getDefPoClass("",
+                            WebContext.get().getProgram().getCode(), helpModule, helpDataset);
+                    Class defPoExampleClass = CreatorUtil.getDefPoExampleClass("",
+                            WebContext.get().getProgram().getCode(), helpModule, helpDataset);
+                    Class defControllerClass = CreatorUtil.getDefControllerClass("",
+                            WebContext.get().getProgram().getCode(), helpModule, helpDataset);
+                    Object po = java.lang.Class.forName(defPoClass.getClassPath()).newInstance();
+                    Object poExample= java.lang.Class.forName(defPoExampleClass.getClassPath()).newInstance();
+                    Pagination pagination = new Pagination();
+                    Object controller= ServiceFactory.getService(defControllerClass.getClassName().substring(0, 1).toLowerCase() + defControllerClass.getClassName().substring(1));
+                    Map<String, String> pageFlowParams = WebContext.get(HashMap.class.getName());
+                    ReflectUtils.setFieldValue(po, pageFlowParams);
+
+                    if(StringUtils.isNotBlank(helpDatascore)) {
+                        Map<String, String> condition = DataSetDescriptor.getConditionMap(helpDatascore);
+                        for (String propertyName : condition.keySet()) {
+                            String propertyValue = condition.get(propertyName);
+                            if(!propertyValue.startsWith("{") && !propertyValue.endsWith("}") ) {
+                                ReflectUtils.setFieldValue(po, propertyName.trim(), propertyValue);
+                                continue ;
                             }
-                            continue;
-                        }
+                            propertyValue = propertyValue.substring(1, propertyValue.length() - 1);
 
-                        String referDataSetCode = propertyValue.substring(0, propertyValue.indexOf("/"));
-                        String referDataFiledCode = propertyValue.substring(propertyValue.indexOf("/") + 1);
-                        com.hframework.beans.class0.Class referClass =
-                                CreatorUtil.getDefPoClass("",
-                                        WebContext.get().getProgram().getCode(), "hframe", referDataSetCode);
-                        Object relPo = WebContext.get(java.lang.Class.forName(referClass.getClassPath()).getName());
-                        if(relPo != null) {
-                            Object fieldValue = ReflectUtils.getFieldValue(relPo, CreatorUtil.getJavaVarName(referDataFiledCode));
-                            ReflectUtils.setFieldValue(po,propertyName.trim(),fieldValue);
-                        }else {
-                            continue nextHelper;
+                            //组件连带刷新时需要传入所选择的值
+                            String parameterValue = request.getParameter(propertyValue);
+                            if(parameterValue != null) {
+                                if(StringUtils.isNotBlank(parameterValue)) {
+                                    ReflectUtils.setFieldValue(po, propertyName.trim(), parameterValue);
+                                }
+                                continue;
+                            }
+
+                            String referDataSetCode = propertyValue.substring(0, propertyValue.indexOf("/"));
+                            String referDataFiledCode = propertyValue.substring(propertyValue.indexOf("/") + 1);
+                            com.hframework.beans.class0.Class referClass =
+                                    CreatorUtil.getDefPoClass("",
+                                            WebContext.get().getProgram().getCode(), "hframe", referDataSetCode);
+                            Object relPo = WebContext.get(java.lang.Class.forName(referClass.getClassPath()).getName());
+                            if(relPo != null) {
+                                Object fieldValue = ReflectUtils.getFieldValue(relPo, CreatorUtil.getJavaVarName(referDataFiledCode));
+                                ReflectUtils.setFieldValue(po, propertyName.trim(), fieldValue);
+                            }else {
+                                continue nextHelper;
+                            }
                         }
                     }
+
+                    Map<String, String> params = BeanUtils.convertMap(po, false);
+                    String componentQueryString = UrlHelper.getUrlQueryString(params);
+                    System.out.println("=======> " + componentQueryString);
+                    PropertyDescriptor priPropertyDescriptor = org.springframework.beans.BeanUtils.getPropertyDescriptor(java.lang.Class.forName(defPoClass.getClassPath()), "pri");
+
+                    if(priPropertyDescriptor != null) {
+                        ReflectUtils.invokeMethod(poExample, "setOrderByClause", new java.lang.Class[]{String.class}, new Object[]{" pri asc"});
+                    }
+                    ResultData helperData = invokeMethod(controller, action,
+                            new java.lang.Class[]{java.lang.Class.forName(defPoClass.getClassPath()),
+                                    java.lang.Class.forName(defPoExampleClass.getClassPath()), Pagination.class},
+                            new Object[]{po, poExample, pagination});
+                    helperDataList = (List) ((Map) helperData.getData()).get("list");
                 }
 
 
-
-                Map<String, String> params = BeanUtils.convertMap(po, false);
-                String componentQueryString = UrlHelper.getUrlQueryString(params);
-                System.out.println("=======> " + componentQueryString);
-                PropertyDescriptor priPropertyDescriptor = org.springframework.beans.BeanUtils.getPropertyDescriptor(java.lang.Class.forName(defPoClass.getClassPath()), "pri");
-
-                if(priPropertyDescriptor != null) {
-                    ReflectUtils.invokeMethod(poExample, "setOrderByClause", new java.lang.Class[]{String.class}, new Object[]{" pri asc"});
-                }
-                    ResultData resultData = invokeMethod(controller, action,
-                        new java.lang.Class[]{java.lang.Class.forName(defPoClass.getClassPath()),
-                                java.lang.Class.forName(defPoExampleClass.getClassPath()), Pagination.class},
-                        new Object[]{po, poExample, pagination});
-                List list = (List) ((Map) resultData.getData()).get("list");
-                for (Object helpPo : list) {
+                for (Object helpPo : helperDataList) {
                     Object targetPo = java.lang.Class.forName(targetPoClass.getClassPath()).newInstance();
                     Mappings mappings = dataSetHelper.getMappings();
                     for (com.hframework.web.config.bean.datasethelper.Mapping mapping : mappings.getMappingList()) {
@@ -1625,7 +1630,7 @@ public class DefaultController {
                                 String targetChars = express.substring(express.indexOf(",") + 1, express.indexOf(")"));
                                 propertyValue = propertyValue.replace(originChars, targetChars);
                             }else {
-                                propertyValue = express.replace("*",propertyValue);
+                                propertyValue = express.contains("*") ? express.replace("*",propertyValue) : express;
                             }
                         }
                         org.apache.commons.beanutils.BeanUtils.setProperty(targetPo, ResourceWrapper.JavaUtil.getJavaVarName(effectDatasetField), propertyValue);
@@ -1643,7 +1648,7 @@ public class DefaultController {
 
 
 
-    public static  Map<String, String> getPageContextRealyParams(Map<String, String> map) {
+    public static Map<String, String> getPageContextRealyParams(Map<String, String> map) {
         Map<String, String> result = new HashMap<String, String>();
         for (String key : map.keySet()) {
             if(key.endsWith("PCXT")) {

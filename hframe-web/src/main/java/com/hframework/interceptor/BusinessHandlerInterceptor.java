@@ -6,6 +6,7 @@ import com.hframework.common.frame.ServiceFactory;
 import com.hframework.common.util.ReflectUtils;
 import com.hframework.common.util.ResourceWrapper;
 import com.hframework.common.util.StringUtils;
+import com.hframework.exceptions.BusinessException;
 import com.hframework.web.bean.DataSetDescriptor;
 import com.hframework.web.bean.WebContext;
 import com.hframework.web.config.bean.dataset.Field;
@@ -49,7 +50,7 @@ public class BusinessHandlerInterceptor {
     private Set<Object> createObject = new HashSet<Object>();
 
     @Before(value = "batchOperateMethod()")
-    public void batchOperateMethodBefore(JoinPoint joinPoint) throws Exception {
+    public void batchOperateMethodBefore(JoinPoint joinPoint) throws Throwable {
         Object[] targetObjects = (Object[]) joinPoint.getArgs()[0];
         if(targetObjects != null && targetObjects.length > 0) {
             createObject.clear();
@@ -69,7 +70,7 @@ public class BusinessHandlerInterceptor {
     }
 
     @AfterReturning(pointcut = "batchOperateMethod()", returning = "retVal")
-    public void batchOperateMethodAfter(JoinPoint joinPoint, int retVal) throws Exception {
+    public void batchOperateMethodAfter(JoinPoint joinPoint, int retVal) throws Throwable {
         Object[] targetObjects = (Object[]) joinPoint.getArgs()[0];
         if(targetObjects != null && targetObjects.length > 0) {
             for (Object targetObject : targetObjects) {
@@ -88,12 +89,12 @@ public class BusinessHandlerInterceptor {
 
 
     @Before(value = "createMethod()")
-    public void createBefore(JoinPoint joinPoint) throws Exception {
+    public void createBefore(JoinPoint joinPoint) throws Throwable {
         Object targetObject = joinPoint.getArgs()[0];
         createBefore(targetObject);
     }
 
-    public void createBefore(Object targetObject) throws Exception {
+    public void createBefore(Object targetObject) throws Throwable {
         Map<BeforeCreateHandler, List<Method>> handlers = BusinessHandlerFactory.getHandler(targetObject.getClass(), BeforeCreateHandler.class);
         for (BeforeCreateHandler annotation : handlers.keySet()) {
             List<Method> methods = handlers.get(annotation);
@@ -105,14 +106,14 @@ public class BusinessHandlerInterceptor {
     }
 
     @AfterReturning(pointcut = "createMethod()", returning = "retVal")
-    public void createAfter(JoinPoint joinPoint, int retVal) throws Exception {
+    public void createAfter(JoinPoint joinPoint, int retVal) throws Throwable {
         if(retVal > 0) {
             Object targetObject = joinPoint.getArgs()[0];
             createAfter(targetObject);
         }
     }
 
-    private void createAfter(Object targetObject) throws Exception {
+    private void createAfter(Object targetObject) throws Throwable {
         Map<AfterCreateHandler, List<Method>> handlers = BusinessHandlerFactory.getHandler(targetObject.getClass(), AfterCreateHandler.class);
         for (AfterCreateHandler annotation : handlers.keySet()) {
             List<Method> methods = handlers.get(annotation);
@@ -124,7 +125,7 @@ public class BusinessHandlerInterceptor {
 
 
     @Before(value = "updateMethod()")
-    public void updateBefore(JoinPoint joinPoint) throws Exception {
+    public void updateBefore(JoinPoint joinPoint) throws Throwable {
         if(joinPoint.getArgs().length == 1) {//update方法
             Object targetObject = joinPoint.getArgs()[0];
             Class curServiceClass = joinPoint.getSourceLocation().getWithinType();
@@ -134,7 +135,7 @@ public class BusinessHandlerInterceptor {
         }*/
     }
 
-    private void updateBefore(Object targetObject, Class curServiceClass) throws Exception {
+    private void updateBefore(Object targetObject, Class curServiceClass) throws Throwable {
         Map<BeforeUpdateHandler, List<Method>> handlers = BusinessHandlerFactory.getHandler(targetObject.getClass(), BeforeUpdateHandler.class);
         for (BeforeUpdateHandler annotation : handlers.keySet()) {
             List<Method> methods = handlers.get(annotation);
@@ -145,7 +146,7 @@ public class BusinessHandlerInterceptor {
     }
 
     @AfterReturning(value = "updateMethod()")
-    public void updateAfter(JoinPoint joinPoint) throws Exception {
+    public void updateAfter(JoinPoint joinPoint) throws Throwable {
         if(joinPoint.getArgs().length == 1) {//update方法
             Object targetObject = joinPoint.getArgs()[0];
             Class curServiceClass = joinPoint.getSourceLocation().getWithinType();
@@ -155,7 +156,7 @@ public class BusinessHandlerInterceptor {
         }*/
     }
 
-    private void updateAfter(Object targetObject, Class curServiceClass) throws Exception {
+    private void updateAfter(Object targetObject, Class curServiceClass) throws Throwable {
         Map<AfterUpdateHandler, List<Method>> handlers = BusinessHandlerFactory.getHandler(targetObject.getClass(), AfterUpdateHandler.class);
         for (AfterUpdateHandler annotation : handlers.keySet()) {
             List<Method> methods = handlers.get(annotation);
@@ -167,7 +168,7 @@ public class BusinessHandlerInterceptor {
     }
 
     @Before(value = "deleteMethod()")
-    public void deleteBefore(JoinPoint joinPoint) throws Exception {
+    public void deleteBefore(JoinPoint joinPoint) throws Throwable {
         Object targetObject = joinPoint.getArgs()[0];
         if (targetObject instanceof Long) {
         } else {
@@ -183,7 +184,7 @@ public class BusinessHandlerInterceptor {
     }
 
     @AfterReturning(pointcut = "deleteMethod()", returning = "retVal")
-    public void deleteAfter(JoinPoint joinPoint, int retVal) throws Exception {
+    public void deleteAfter(JoinPoint joinPoint, int retVal) throws Throwable {
         Object targetObject = joinPoint.getArgs()[0];
         if (targetObject instanceof Long) {
         }else {
@@ -199,7 +200,7 @@ public class BusinessHandlerInterceptor {
     }
 
     private void checkAndInvokeHandler(Object targetObject, String attr, String orig, String target,
-                                       Method method, Class curServiceClass) throws Exception {
+                                       Method method, Class curServiceClass) throws Throwable {
         if(StringUtils.isNotBlank(attr)) {
             String propertyName = attr.trim();
             String targetPropertyValue = BeanUtils.getProperty(targetObject, propertyName);
@@ -238,7 +239,7 @@ public class BusinessHandlerInterceptor {
     }
 
 
-    private void invokeHandler(Method method, Object... targetObject) throws Exception {
+    private void invokeHandler(Method method, Object... targetObject) throws Throwable {
         Object handler = ServiceFactory.getService(method.getDeclaringClass());
         if(targetObject == null) targetObject = new Object[0];
 
@@ -249,16 +250,20 @@ public class BusinessHandlerInterceptor {
             }
             method.invoke(handler, args);
         } catch (Exception e) {
-            e.printStackTrace();
-            try{
-                Object[] args = new Object[method.getParameterTypes().length +1];
-                for (int i = 0; i < targetObject.length; i++) {
-                    args[i] = targetObject[i];
+            if(((InvocationTargetException) e).getTargetException() instanceof BusinessException) {
+                throw ((InvocationTargetException) e).getTargetException();
+            }else {
+                try{
+                    Object[] args = new Object[method.getParameterTypes().length +1];
+                    for (int i = 0; i < targetObject.length; i++) {
+                        args[i] = targetObject[i];
+                    }
+                    args[method.getParameterTypes().length] = null;
+                    method.invoke(handler, args);
+                }catch (Exception e1){
+                    e1.printStackTrace();
+                    throw e1;
                 }
-                args[method.getParameterTypes().length] = null;
-                method.invoke(handler, args);
-            }catch (Exception e1){
-                e1.printStackTrace();
             }
         }
     }

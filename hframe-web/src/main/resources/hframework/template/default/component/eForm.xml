@@ -8,6 +8,7 @@
         <element id="name" type="characters"  default-value=""></element>
         <element id="editType" type="enums" relId="#{TYPE}"  default-value=""></element>
         <element id="notNull" type="characters"  default-value=""></element>
+        <element id="tipinfo" type="characters"  default-value=""></element>
         <element id="dataCode" type="characters"  default-value=""></element>
         <element id="dataCondition" type="characters"  default-value=""></element>
     </element>

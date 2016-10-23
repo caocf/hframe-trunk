@@ -9,14 +9,10 @@ import com.hframework.common.util.*;
 import com.hframework.web.config.bean.Component;
 import com.hframework.web.config.bean.DataSet;
 import com.hframework.web.config.bean.component.*;
-import com.hframework.web.config.bean.component.Element;
-import com.hframework.web.config.bean.dataset.*;
 import com.hframework.web.config.bean.dataset.Enum;
+import com.hframework.web.config.bean.dataset.Field;
+import com.hframework.web.config.bean.dataset.Rel;
 import com.hframework.web.config.bean.mapper.Mapping;
-import com.hframework.web.config.bean.pagetemplates.*;
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -410,7 +406,7 @@ public class ComponentDataContainer {
 
         public  boolean ok();
 
-        public  String toJson();
+        public String toJson();
 
         public Object getJsonObject();
 
@@ -546,7 +542,7 @@ public class ComponentDataContainer {
                             try {
                                 Class<?> type = BeanUtils.findPropertyType(propertyName, object.getClass());
                                 if(type == Date.class) {
-                                    Date date = (Date)ReflectUtils.getFieldValue(object, propertyName);
+                                    Date date = (Date) ReflectUtils.getFieldValue(object, propertyName);
                                     if(date != null) {
                                         value.add(DateUtils.getDateYYYYMMDDHHMMSS(date));
                                     }else {
@@ -675,7 +671,7 @@ public class ComponentDataContainer {
             try {
                 Class<?> type = BeanUtils.findPropertyType(propertyName, data.getClass());
                 if(type == Date.class) {
-                    Date date = (Date)ReflectUtils.getFieldValue(data, propertyName);
+                    Date date = (Date) ReflectUtils.getFieldValue(data, propertyName);
                     if(date != null) {
                         return DateUtils.getDateYYYYMMDDHHMMSS(date);
                     }else {
@@ -777,6 +773,8 @@ public class ComponentDataContainer {
                 return field.getName();
             }else if("notNull".equals(code)) {
                 return field.getNotNull();
+            }else if("tipinfo".equals(code)) {
+                return field.getTipinfo();
             }else if("width".equals(code)) {
                 return null;
             }else if("editType".equals(code)) {
@@ -793,8 +791,13 @@ public class ComponentDataContainer {
 //                    return field.getEnumClass().getCode();
 //            }else if("entityCode".equals(code) && field.getRel() != null) {
 //                return field.getRel().getEntityCode().replaceAll("/", ".");
-            }else if("relColumns".equals(code)  && field.getRel() != null) {
-                return field.getRel().getRelField();
+            }else if("relColumns".equals(code)) {
+                if(field.getRel() != null && StringUtils.isNotBlank(field.getRel().getRelField())) {
+                    return field.getRel().getRelField() +  "={" + ResourceWrapper.JavaUtil.getJavaVarName(field.getRel().getRelField())+"}";
+                }else {
+                    return null;
+                }
+
             }else {//${enumClass||entityCode}
                 if(field.getEnumClass() != null && field.getEnumClass().getCode() != null) {
                     return field.getEnumClass().getCode();
@@ -832,6 +835,10 @@ public class ComponentDataContainer {
                     }
 
                     return "JSON:" + enums.toJSONString().replaceAll("\"","'");
+                }
+
+                if(field.getRel() != null && StringUtils.isNotBlank(field.getRel().getUrl())) {
+                    return "URL:" + field.getRel().getUrl();
                 }
             }
             return null;

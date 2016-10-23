@@ -53,4 +53,11 @@ public class ResultCode {
         }
     }
 
+    public static ResultCode get(String code, String errorMsg) {
+        if(errorCodeMap.get(code) != null) {
+            return errorCodeMap.get(code);
+        }else {
+            return new ResultCode(code,errorMsg);
+        }
+    }
 }
