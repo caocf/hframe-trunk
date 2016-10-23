@@ -777,6 +777,8 @@ public class ComponentDataContainer {
                 return field.getTipinfo();
             }else if("width".equals(code)) {
                 return null;
+            }else if("showType".equals(code)) {
+                return field.getShowType();
             }else if("editType".equals(code)) {
                 if(this.componentType.startsWith("eList")){//eList组件
                     return StringUtils.isNotBlank(field.getCreateEditType()) ? field.getCreateEditType() : field.getEditType();

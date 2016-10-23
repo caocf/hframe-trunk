@@ -9,21 +9,21 @@
         </div>
     </div>
     <div class="box-content">
-##        <div class="row-fluid">
-##            <div class="span4">
-##                <div id="DataTables_Table_0_length" class="dataTables_length">
-##                    <label><select size="1" name="DataTables_Table_0_length" aria-controls="DataTables_Table_0"><option value="10" selected="selected">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select> records per page</label>
-##                </div>
-##            </div>
-##            <div class="span4">
-##                <div class="dataTables_filter" id="DataTables_Table_0_filter"><label>Search: <input type="text" aria-controls="DataTables_Table_0"></label>
-##                </div>
-##            </div>
-##            <div class="span4">
-##                <div class="dataTables_filter" id="DataTables_Table_0_filter"><label>Search: <input type="text" aria-controls="DataTables_Table_0"></label>
-##                </div>
-##            </div>
-##        </div>
+    ##        <div class="row-fluid">
+    ##            <div class="span4">
+    ##                <div id="DataTables_Table_0_length" class="dataTables_length">
+    ##                    <label><select size="1" name="DataTables_Table_0_length" aria-controls="DataTables_Table_0"><option value="10" selected="selected">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select> records per page</label>
+    ##                </div>
+    ##            </div>
+    ##            <div class="span4">
+    ##                <div class="dataTables_filter" id="DataTables_Table_0_filter"><label>Search: <input type="text" aria-controls="DataTables_Table_0"></label>
+    ##                </div>
+    ##            </div>
+    ##            <div class="span4">
+    ##                <div class="dataTables_filter" id="DataTables_Table_0_filter"><label>Search: <input type="text" aria-controls="DataTables_Table_0"></label>
+    ##                </div>
+    ##            </div>
+    ##        </div>
 
         <table class="table table-bordered table-striped table-condensed">
             <thead>
@@ -32,7 +32,10 @@
                     <th width="20px">$list.BOFR.get(0).component</th>
                 #end
                 #foreach($column in $list.columns)
-                    <th width="$!column.width" code="$!column.code" dataCode="$!column.dataCode">$column.name</th>
+                ##                    #if("$!{column.showType}" != "hidden")
+                    <th width="$!column.width" code="$!column.code" dataCode="$!column.dataCode" #if("$!{column.showType}" == "hidden") style="display: none"  #end>$column.name</th>
+                ##                    #end
+
                 #end
                 #if($list.EOFR)
                     <th width="150px;">操作</th>
@@ -47,7 +50,8 @@
                     #end
                     #set($count=0)
                     #foreach($item in $row)
-                        <td>
+                    ##                        #if("$!{list.columns.get($count).showType}" != "hidden")
+                        <td #if("$!{list.columns.get($count).showType}" == "hidden") style="display: none"  #end>
                             #if($!{list.ELE.get($!{list.columns.get($count).code})})
                                 #set($href = $!{list.ELE.get($!{list.columns.get($count).code})})
 
@@ -59,6 +63,7 @@
                             #end
                             #set($count=$count+1)
                         </td>
+                    ##                        #end
                     #end
 
                     #if($list.EOFR)

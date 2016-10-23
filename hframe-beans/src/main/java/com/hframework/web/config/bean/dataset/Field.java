@@ -31,6 +31,10 @@ public class Field {
 	@XStreamAsAttribute
     @XStreamAlias("edit-type")
 	private String editType;
+
+    @XStreamAsAttribute
+    @XStreamAlias("show-type")
+    private String showType;
 	@XStreamAsAttribute
     @XStreamAlias("action")
 	private String action;
@@ -152,5 +156,13 @@ public class Field {
 
     public void setTipinfo(String tipinfo) {
         this.tipinfo = tipinfo;
+    }
+
+    public String getShowType() {
+        return showType;
+    }
+
+    public void setShowType(String showType) {
+        this.showType = showType;
     }
 }
