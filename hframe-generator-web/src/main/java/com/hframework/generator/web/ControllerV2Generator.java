@@ -26,6 +26,8 @@ public class ControllerV2Generator extends AbstractGenerator {
 		editClass.addImportClass("com.hframework.beans.controller.ResultCode");
 		editClass.addImportClass("com.hframework.beans.controller.ResultData");
 		editClass.addImportClass("com.hframework.common.util.ExampleUtils");
+		editClass.addImportClass("com.hframework.exceptions.BusinessException");
+
 
 		editClass.addImportClass("org.slf4j.Logger");
 		editClass.addImportClass("org.slf4j.LoggerFactory");

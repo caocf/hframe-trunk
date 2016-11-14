@@ -7,12 +7,10 @@ import com.alibaba.fastjson.parser.Feature;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Joiner;
-import com.hframe.domain.model.HfmdEnum;
-import com.hframe.domain.model.HfmdEnumClass;
-import com.hframe.domain.model.HfmdEnumClass_Example;
-import com.hframe.domain.model.HfmdEnum_Example;
+import com.hframe.domain.model.*;
 import com.hframe.service.interfaces.IHfmdEnumClassSV;
 import com.hframe.service.interfaces.IHfmdEnumSV;
+import com.hframework.base.bean.AuthContext;
 import com.hframework.base.bean.KVBean;
 import com.hframework.base.service.CommonDataService;
 import com.hframework.beans.class0.Class;
@@ -32,6 +30,7 @@ import com.hframework.web.SessionKey;
 import com.hframework.web.bean.*;
 import com.hframework.web.config.bean.DataSetHelper;
 import com.hframework.web.config.bean.Mapper;
+import com.hframework.web.config.bean.dataset.Field;
 import com.hframework.web.config.bean.datasethelper.Mappings;
 import com.hframework.web.config.bean.module.Component;
 import org.dom4j.Attribute;
@@ -97,6 +96,9 @@ public class DefaultController {
 
     @Resource
     private ConfigurableWebBindingInitializer initializer;
+
+    @Resource
+    private AuthServiceProxy authServiceProxy;
 
     /**
      * 字典查询
@@ -375,6 +377,7 @@ public class DefaultController {
                     Object data = resultData.getData();
                     request.getSession().setAttribute(java.lang.Class.forName(defPoClass.getClassPath()).getName(),data);
                     request.getSession().setAttribute(SessionKey.USER,data);
+                    authServiceProxy.auth(request);
                 }
                 return resultData;
             } catch (Exception e) {
@@ -831,6 +834,10 @@ public class DefaultController {
 
         }
         Map<String, ContainerDescriptor> containers = pageInfo.getContainers();
+        Map<String, String> pageContextParams = getPageContextParams(request);
+//                    WebContext.get().add(getPageContextRealyParams(pageContextParams));
+        WebContext.putContext(getPageContextRealyParams(pageContextParams));
+
 
         Map<String, Object> result = new LinkedHashMap<String, Object>();
         Map<String, ComponentDescriptor> components = pageInfo.getComponents();
@@ -859,13 +866,13 @@ public class DefaultController {
                 JSONObject jsonObject = null;
                 String componentQueryString = null;
                 if("pageflow".equals(componentDescriptor.getMapper().getDataAuth())) {
-                    Map<String, String> pageContextParams = getPageContextParams(request);
+                    Map<String, String> pageContextParams2 = getPageContextParams(request);
 //                    WebContext.get().add(getPageContextRealyParams(pageContextParams));
-                    WebContext.putContext(getPageContextRealyParams(pageContextParams));
+                    WebContext.putContext(getPageContextRealyParams(pageContextParams2));
 
 //                        jsonObject.putAll(pageContextParams);
                     jsonObject = componentDescriptor.getJson();
-                    jsonObject.put("data", pageContextParams);
+                    jsonObject.put("data", pageContextParams2);
                 }else if("file".equals(componentDescriptor.getDataSetDescriptor().getDataSet().getSource())) {
 
                     if("container".equals(type)) {
@@ -952,15 +959,39 @@ public class DefaultController {
                         Class defControllerClass = CreatorUtil.getDefControllerClass("",
                                 WebContext.get().getProgram().getCode(), moduleCode, eventObjectCode);
 
-
                         System.out.println("dataId = " + componentDescriptor.getDataId());
                         Object poExample = java.lang.Class.forName(defPoExampleClass.getClassPath()).newInstance();
                         PropertyDescriptor priPropertyDescriptor = org.springframework.beans.BeanUtils.getPropertyDescriptor(java.lang.Class.forName(defPoClass.getClassPath()), "pri");
 
                         if (priPropertyDescriptor != null) {
                             ReflectUtils.invokeMethod(poExample, "setOrderByClause", new java.lang.Class[]{String.class}, new Object[]{" pri asc"});
-
                         }
+
+                        AuthContext authContext = authServiceProxy.getAuthContext(request);
+                        if(authContext != null && authContext.getAuthManager().getAuthFunctionClass().equals(java.lang.Class.forName(defPoClass.getClassPath()))) {
+                            List<Long> functionIds = authServiceProxy.getFunctionIds(request);
+                            if(functionIds == null || functionIds.size() == 0) {
+                                functionIds = new ArrayList<Long>(){{add(-999L);}};
+                            }
+                            Field keyField = componentDescriptor.getDataSetDescriptor().getKeyField();
+                            Object criteria = ReflectUtils.invokeMethod(poExample, "createCriteria", new java.lang.Class[]{}, new Object[]{});
+                            ReflectUtils.invokeMethod(criteria,
+                                    "and" + ResourceWrapper.JavaUtil.getJavaClassName(keyField.getCode()) + "In",
+                                    new java.lang.Class[]{List.class}, new Object[]{functionIds});
+                        }else if(authContext != null){
+                            String relFieldName = componentDescriptor.getDataSetDescriptor().getRelFieldCode(authContext.getAuthManager().getAuthDataClass());
+                            if(StringUtils.isNotBlank(relFieldName)) {
+                                Long funcId = authContext.getAuthFunctionManager().get("/" + module + "/" + pageCode + ".html");
+                                List<Long> dataUnitIds = authContext.getAuthManager().getDataUnitIds(funcId);
+                                Object criteria = ReflectUtils.invokeMethod(poExample, "createCriteria", new java.lang.Class[]{}, new Object[]{});
+                                ReflectUtils.invokeMethod(criteria,
+                                        "and" + ResourceWrapper.JavaUtil.getJavaClassName(relFieldName) + "In",
+                                        new java.lang.Class[]{List.class}, new Object[]{dataUnitIds});
+                            }
+                        }
+
+
+
                         Object controller = ServiceFactory.getService(defControllerClass.getClassName().substring(0, 1).toLowerCase() + defControllerClass.getClassName().substring(1));
                         Object po = null;
 
@@ -987,6 +1018,7 @@ public class DefaultController {
                             //这里将查询的单个对象存入线程中，别的组件在需要时可以获取想要的值，如数据集数据列智能提醒需要依赖数据集的主实体ID
                             WebContext.add(resultData.getData());
                         } else if ("tree".equals(action)) {
+
                             po = getPoInstance(request, controller, action, new java.lang.Class[]{java.lang.Class.forName(defPoClass.getClassPath()),
                                     java.lang.Class.forName(defPoExampleClass.getClassPath())});
                             resultData = invokeMethod(controller, action,
@@ -1085,7 +1117,7 @@ public class DefaultController {
                 jsonObject.put("param", componentQueryString);
                 jsonObject.put("component", componentDescriptor.getId());
                 jsonObject.put("container", componentDescriptor.getElement().getContainer());
-
+                jsonObject.put("group", componentDescriptor.getElement().getElementGroup());
                 if("treeChart".equals(componentDescriptor.getId())) {
                     jsonObject.put("id", "-1");
                     jsonObject.put("name","根节点");

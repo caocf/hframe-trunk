@@ -3,7 +3,12 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
     var ajax = require('ajax');
     //var flist = require('js/hframework/list');
 
-    $('form').submit(function(){
+    //$('form').submit(function(){
+    //    return false;
+    //});
+
+    //动态刷新的form注解需要捆绑改submit属性，否则就直接提交走了
+    $('form').live("submit", function(){
         return false;
     });
 
@@ -17,13 +22,13 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
     });
 
     $(".hfhref").live("click", function(){
-        $action =JSON.parse($(this).attr("action"));
-        $param  = formatContent($(this).attr("params"), $(this));
-        $contextValues = getPageContextInfo();
-        if($contextValues) {
-            $param = $contextValues + "&" + $param;
+        var action =JSON.parse($(this).attr("action"));
+        var param  = formatContent($(this).attr("params"), $(this));
+        var contextValues = getPageContextInfo();
+        if(contextValues) {
+            param = contextValues + "&" + param;
         }
-        doEvent($action, $param, $(this));
+        doEvent(action, param, $(this));
     });
 
     $(".hfselect").live("change", function(){
@@ -40,16 +45,22 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
         doEvent($action, $param, $(this));
     });
 
-    $('.tree').bind('selected',function(event,data){
-        var selectItem = data.info[0];
-        var id = selectItem.additionalParameters.id;
-
-        var $param = $($(".dyn-tree-ele span")[0]).attr("params");
-        var $action = JSON.parse($($(".dyn-tree-ele span")[0]).attr("action"));
+    $('.tree').bind('selected',function (event,data){
+        //treeClick(event,data.info[0],$(this));
+    });
+    $('.tree').bind('closed',function (event,data){
+        //treeClick(event,data,$(this));
+    });
+    $('.tree').bind('opened',function (event,data){
+        //treeClick(event,data,$(this));
+    });
+    $('.tree').bind('clickBtn',function (event,_$btn,data){
+        var id = data.additionalParameters.id;
+        var $param = _$btn.attr("params");
+        var $action = JSON.parse(_$btn.attr("action"));
         if($param.indexOf("{") > 0 && $param.indexOf("}") > 0) {
             $param = $param.replace($param.substring($param.indexOf("{") , $param.indexOf("}") + 1), id);
         }
-
         //给被刷新容器直接赋值
         if($("div[path][component]").size() > 0) {
             $("div[path][component]").attr("path",id);
@@ -57,12 +68,37 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
 
         var $contextValues = getPageContextInfo();
         if($contextValues) {
-            $param = $contextValues + "&" + $param;
+            if($param && "null" != $param) {
+                $param = $contextValues + "&" + $param;
+            }else {
+                $param = $contextValues;
+            }
         }
-        //alert($param);
         doEvent($action, $param, $(this))
-
     });
+
+    //function treeClick(event,selectItemData, $this){
+    //    var id = selectItemData.additionalParameters.id;
+    //
+    //    var $param = $($(".dyn-tree-ele span")[0]).attr("params");
+    //    var $action = JSON.parse($($(".dyn-tree-ele span")[0]).attr("action"));
+    //    if($param.indexOf("{") > 0 && $param.indexOf("}") > 0) {
+    //        $param = $param.replace($param.substring($param.indexOf("{") , $param.indexOf("}") + 1), id);
+    //    }
+    //
+    //    //给被刷新容器直接赋值
+    //    if($("div[path][component]").size() > 0) {
+    //        $("div[path][component]").attr("path",id);
+    //    }
+    //
+    //    var $contextValues = getPageContextInfo();
+    //    if($contextValues) {
+    //        $param = $contextValues + "&" + $param;
+    //    }
+    //    //alert($param);
+    //    doEvent($action, $param, $this)
+    //
+    //}
 
 
     function doEvent($action, $param,  $this){
@@ -157,7 +193,7 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
             var _data = {};
             var $componentParam  = formatContent($($this).attr("params"), $($this));
 
-            if(url.endsWith("deleteByAjax.json") && $componentParam.endsWith("=")){
+            if(url.endsWith("deleteByAjax.json") && $componentParam != null && $componentParam.endsWith("=")){
                 if($($this.parents("tr")[0]).siblings().size()> 0){
                     $this.parents("tr")[0].remove();
                 }
@@ -208,7 +244,7 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
                 }
 
                 delete $action[$type];
-                if(url.endsWith("deleteByAjax.json")){
+                if(url.endsWith("deleteByAjax.json") && $this.parents("tr").length> 0){
                     if($($this.parents("tr")[0]).siblings().size()> 0){
                         $this.parents("tr")[0].remove();
                     }
@@ -244,7 +280,12 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
 
 
         }else if($type == "page.reload") {
-            var paramObj = parseUrlParamToObject($param, true);
+            var paramObj = {};
+            var $curComponent = $this.parents("[component]")[0];
+            if(!$($curComponent).hasClass("hftree")) {
+                paramObj = parseUrlParamToObject($param, true);
+            }
+
             var url = location.href;
             //alert($param + " | " + url);
             for(var key in paramObj) {
@@ -414,13 +455,23 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
             var $newComponent = $(data);
 
             var $targetCoponent = $newComponent.find(".hfcontainer[component=container]");
-            if($targetCoponent != null) {//表明为容器
+            if($targetCoponent != null && $targetCoponent.size() > 0) {//表明为容器
                 $(compoContainer).html($targetCoponent.html());
                 componentinit();
                 $.reloadDisplay(compoContainer);
             }else {//表明为普通组件
                 $(compoContainer).find(".box-content").html($newComponent.find(".box-content").html());
                 $.reloadDisplay(compoContainer.find(".box-content"));
+                var $groupElement = compoContainer.parents("[group][group !='']:first");
+                if($groupElement) {
+                    var groupName = $groupElement.attr("group");
+                    $("[group][group='" + groupName + "']").each(function(index, element){
+                       if($(element) != $groupElement) {
+                           $(element).hide();
+                       }
+                    });
+                    $groupElement.show();
+                }
             }
 
         },'html');
@@ -462,14 +513,14 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
 
     function formatContent($param, $this){
         if($param) {
-            var $value;
-            $position = $param.substring($param.indexOf("{") + 1, $param.indexOf("}"));
-            if($this.parents("tr").find("span[code="+ $position +"]").size() > 0 ) {
-                $value = $this.parents("tr").find("span[code="+ $position +"]").text();
+            var value;
+            var position = $param.substring($param.indexOf("{") + 1, $param.indexOf("}"));
+            if($this.parents("tr").find("span[code="+ position +"]").size() > 0 ) {
+                value = $this.parents("tr").find("span[code="+ position +"]").text();
             }else {
-                $value = $this.parents("form").find("[name="+ $position +"]").val();
+                value = $this.parents("form").find("[name="+ position +"]").val();
             }
-            return $param.replace("{" + $position +"}",$value);
+            return $param.replace("{" + position +"}",value);
         }
         return null;
     }

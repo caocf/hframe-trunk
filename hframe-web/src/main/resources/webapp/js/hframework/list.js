@@ -19,7 +19,10 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
         $this = $(this);
         valueChange($this);
     });
-
+    $(".breadcrumb select").live("change", function(){
+        $this = $(this);
+        valueChange($this);
+    });
 
 
     $('.hfselect').live('input', function(){
@@ -35,9 +38,11 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
         //alert($code + "=" + $value);
         var $allRules;
         if($this.parents(".hfform").size() > 0) {
-            $allRules = JSON.parse($(".hfform .ruler").text());
-        }else {
+            $allRules = JSON.parse($this.parents(".hfform:first").find(".ruler").text());
+        }else if($this.parents("tr").size() > 0) {
             $allRules = JSON.parse($(".hflist .ruler").text());
+        }else if($this.parents(".breadcrumb").size() > 0) {
+            $allRules = JSON.parse($(".breadcrumb .ruler").text());
         }
 
         $curRules = $allRules[$code + "=" + $value];
@@ -92,6 +97,8 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
                         var $target;
                         if($this.parents(".hfform").size() > 0) {
                             $target =  $($this.parents(".hfform")[0]).find("[name=" + $targetCode + "]");
+                        }else if($this.parents(".breadcrumb").size() > 0) {
+                            $target = getTargetElement($this.parents(".breadcrumb"), "[name=" + $targetCode + "]");
                         }else {
                             $target = getTargetElement($this.parents("tr"), "[name=" + $targetCode + "]");
                         }
@@ -114,6 +121,8 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
                 var $target;
                 if($this.parents(".hfform").size() > 0) {
                     $target =  $($this.parents(".hfform")[0]).find("[name=" + $targetCode + "]");
+                }else if($this.parents(".breadcrumb").size() > 0) {
+                    $target = getTargetElement($this.parents(".breadcrumb"), "[name=" + $targetCode + "]");
                 }else {
                     $target = getTargetElement($this.parents("tr"), "[name=" + $targetCode + "]");
                 }

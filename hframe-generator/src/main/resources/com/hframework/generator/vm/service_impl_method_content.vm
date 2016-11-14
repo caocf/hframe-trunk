@@ -113,15 +113,19 @@
         return result;
     }
 
-    private void fill${className}TreeCascade(Map<Long, List<${className}>> result, List<Long> parentIds, ${className}_Example example) {
+    private void fill${className}TreeCascade(Map<Long, List<${className}>> result, List<Long> parentIds, ${className}_Example templateExample) {
         if(parentIds.size() == 0) {
             return ;
         }
-        if(example == null) {
-            example = new ${className}_Example();
+        if(templateExample == null) {
+            templateExample = new ${className}_Example();
+        }
+        ${className}_Example example = ExampleUtils.clone(templateExample);
+        if(example.getOredCriteria() == null || example.getOredCriteria().size() == 0) {
+            example.createCriteria();
         }
 
-        example.createCriteria().and${parentIdPropertyClassName}In(parentIds);
+        example.getOredCriteria().get(0).and${parentIdPropertyClassName}In(parentIds);
         List<${className}> ${varName}s = ${varName}Mapper.selectByExample(example);
         if(${varName}s == null || ${varName}s.size() == 0) {
             return;
@@ -144,7 +148,7 @@
             subIds.add(${varName}.get${className}Id());
         }
 
-        fill${className}TreeCascade(result,subIds, null);
+        fill${className}TreeCascade(result,subIds, templateExample);
     }
 #end
 

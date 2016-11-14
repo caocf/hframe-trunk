@@ -34,7 +34,7 @@
       <rel entity-code="hfpm_program/hfpm_program_id/hfpm_program_name"/>
     </field>
     <field code="hfpm_module_id" name="模块ID" edit-type="select">
-      <rel entity-code="hfpm_module/hfpm_module_id/hfpm_module_name"/>
+      <rel entity-code="hfpm_module/hfpm_module_id/hfpm_module_name" rel-field="hfpm_program_id"/>
     </field>
     <field code="hfmd_entity_id" name="实体ID" edit-type="select">
       <rel entity-code="hfmd_entity/hfmd_entity_id/hfmd_entity_name" rel-field="hfpm_program_id"/>

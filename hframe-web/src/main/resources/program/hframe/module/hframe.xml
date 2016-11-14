@@ -142,6 +142,7 @@
   <page id="hfcfg_component_template_create" name="组件模板创建" page-template="create" data-set="hframe/hfcfg_component_template"/>
   <page id="hfcfg_component_template_edit" name="组件模板修改" page-template="edit" data-set="hframe/hfcfg_component_template"/>
   <page id="hfcfg_component_template_detail" name="组件模板明细" page-template="edit" data-set="hframe/hfcfg_component_template"/>
+
   <page id="hfsec_user_mgr" name="用户管理" page-template="qlist" data-set="hframe/hfsec_user">
     <component id="qForm" data-set="hframe/hfsec_user_DS4Q" />
     <component id="qList" data-set="hframe/hfsec_user" event-extend="false">
@@ -156,9 +157,18 @@
       <event rel="#ELE.goto.detail"></event>
     </component>
   </page>
-  <page id="hfsec_user_create" name="用户创建" page-template="create" data-set="hframe/hfsec_user"/>
-  <page id="hfsec_user_edit" name="用户修改" page-template="edit" data-set="hframe/hfsec_user"/>
-  <page id="hfsec_user_detail" name="用户明细" page-template="edit" data-set="hframe/hfsec_user"/>
+  <page id="hfsec_user_create" name="用户添加" page-template="cComb" data-set="hframe/hfsec_user">
+    <component id="cForm" data-set="hframe/hfsec_user"/>
+    <component id="cList" data-set="hframe/hfsec_user_authorize"/>
+  </page>
+  <page id="hfsec_user_edit" name="用户修改" page-template="eComb" data-set="hframe/hfsec_user">
+    <component id="eForm" data-set="hframe/hfsec_user"/>
+    <component id="eList" data-set="hframe/hfsec_user_authorize"/>
+  </page>
+  <page id="hfsec_user_detail" name="用户查看" page-template="dComb" data-set="hframe/hfsec_user">
+    <component id="dForm" data-set="hframe/hfsec_user"/>
+    <component id="qList" data-set="hframe/hfsec_user_authorize"/>
+  </page>
   <page id="hfus_word_store_mgr" name="单词库管理" page-template="qlist" data-set="hframe/hfus_word_store">
     <component id="qForm" data-set="hframe/hfus_word_store_DS4Q"/>
   </page>
@@ -171,4 +181,25 @@
   <page id="hfcfg_db_connect_create" name="数据库连接信息创建" page-template="create" data-set="hframe/hfcfg_db_connect"/>
   <page id="hfcfg_db_connect_edit" name="数据库连接信息修改" page-template="edit" data-set="hframe/hfcfg_db_connect"/>
   <page id="hfcfg_db_connect_detail" name="数据库连接信息明细" page-template="edit" data-set="hframe/hfcfg_db_connect"/>
+
+
+  <page id="hfsec_organize_create" name="组织创建" page-template="create" data-set="hframe/hfsec_organize"/>
+  <page id="hfsec_organize_edit" name="组织修改" page-template="edit" data-set="hframe/hfsec_organize"/>
+  <page id="hfsec_organize_detail" name="组织明细" page-template="edit" data-set="hframe/hfsec_organize"/>
+  <page id="hfsec_role_mgr" name="角色管理" page-template="qlist" data-set="hframe/hfsec_role">
+    <component id="qForm" data-set="hframe/hfsec_role_DS4Q"/>
+  </page>
+  <page id="hfsec_role_create" name="角色添加" page-template="cComb" data-set="hframe/hfsec_role">
+    <component id="cForm" data-set="hframe/hfsec_role"/>
+    <component id="cList" data-set="hframe/hfsec_role_authorize"/>
+  </page>
+  <page id="hfsec_role_edit" name="角色修改" page-template="eComb" data-set="hframe/hfsec_role">
+    <component id="eForm" data-set="hframe/hfsec_role"/>
+    <component id="eList" data-set="hframe/hfsec_role_authorize"/>
+  </page>
+  <page id="hfsec_role_detail" name="角色查看" page-template="dComb" data-set="hframe/hfsec_role">
+    <component id="dForm" data-set="hframe/hfsec_role"/>
+    <component id="qList" data-set="hframe/hfsec_role_authorize"/>
+  </page>
+
 </module>

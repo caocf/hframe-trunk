@@ -22,6 +22,7 @@
     <source-code>rel_hfmd_entity_attr_id</source-code>
     <target-code>hfmd_entity_attr_name</target-code>
     <target-value>{object.hfmd_entity_attr_name}</target-value>
+    <rule-model>invalid-if-target-value-exists</rule-model>
     <editable>false</editable>
   </rule>
   <rule>
@@ -29,6 +30,7 @@
     <source-code>rel_hfmd_entity_attr_id</source-code>
     <target-code>hfmd_entity_attr_code</target-code>
     <target-value>{object.hfmd_entity_attr_code}</target-value>
+    <rule-model>invalid-if-target-value-exists</rule-model>
     <editable>false</editable>
   </rule>
   <rule>
@@ -36,6 +38,7 @@
     <source-code>rel_hfmd_entity_attr_id</source-code>
     <target-code>hfmd_entity_attr_desc</target-code>
     <target-value>{object.hfmd_entity_attr_desc}</target-value>
+    <rule-model>invalid-if-target-value-exists</rule-model>
     <editable>false</editable>
   </rule>
   <rule>

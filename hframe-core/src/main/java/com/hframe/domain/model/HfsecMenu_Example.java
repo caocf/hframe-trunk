@@ -112,6 +112,10 @@ public class HfsecMenu_Example {
             criteria.add(new Criterion(condition));
         }
 
+//        protected void addCriterion(Criterion criterion) {
+//            criteria.add(criterion);
+//        }
+
         protected void addCriterion(String condition, Object value, String property) {
             if (value == null) {
                 throw new RuntimeException("Value for " + property + " cannot be null");
@@ -1109,4 +1113,24 @@ public class HfsecMenu_Example {
             this(condition, value, secondValue, null);
         }
     }
+
+
+//    public HfsecMenu_Example clone(){
+//        HfsecMenu_Example example = new HfsecMenu_Example();
+//        example.setDistinct(distinct);
+//        example.setLimitEnd(limitEnd);
+//        example.setLimitStart(limitStart);
+//        example.setOrderByClause(orderByClause);
+//
+//        if(oredCriteria != null) {
+//            for (Criteria criteria : oredCriteria) {
+//                Criteria criteria1 = example.createCriteria();
+//                List<Criterion> allCriteria = criteria.getAllCriteria();
+//                for (Criterion criterion : allCriteria) {
+//                    criteria1.addCriterion(criterion);
+//                }
+//            }
+//        }
+//        return example;
+//    }
 }

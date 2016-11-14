@@ -1,6 +1,7 @@
 
 #if("$!breadcrumb" != "")
-<div class="row-fluid collapse in" style="margin-top: -10px;"  id="breadcrumb">
+<div class="row-fluid collapse in breadcrumb" style="margin-top: -10px;"  id="breadcrumb">
+    <span  class="ruler" style="display: none;">$!breadcrumb.ruler</span>
     <div class="span12">
         <form>
         <div class="">
@@ -12,6 +13,7 @@
             &nbsp;>&nbsp;
             #set($data = $breadcrumb.data)
             #set($value = $!data.get($column.code))
+            #set($href.params = 1)
             #set($elementSize = "medium")
             #parse("component/element/field.vm")
             #set($value = "" )

@@ -17,6 +17,8 @@ public class Rule   {
 	private String targetCode;
 	@XStreamAlias("target-value")
 	private String targetValue;
+    @XStreamAlias("rule-model")
+    private String ruleModel;
 	@XStreamAlias("editable")
 	private String editable;
 
@@ -71,5 +73,12 @@ public class Rule   {
      public void setEditable(String editable){
      	this.editable = editable;
      }
-	 
+
+     public String getRuleModel() {
+      return ruleModel;
+     }
+
+     public void setRuleModel(String ruleModel) {
+      this.ruleModel = ruleModel;
+     }
 }

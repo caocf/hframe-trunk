@@ -43,6 +43,7 @@
     <bean class="com.hframework.common.frame.cache.PropertyConfigurerUtils">
         <property name="locations">
             <list>
+                <value>classpath:hframe.properties</value>
                 <value>classpath:properties/dataSource.properties</value>
                 <value>classpath:properties/projectCreate.properties</value>
                 <value>classpath:properties/redis.properties</value>

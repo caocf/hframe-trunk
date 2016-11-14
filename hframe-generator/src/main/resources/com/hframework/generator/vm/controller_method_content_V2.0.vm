@@ -162,6 +162,8 @@
             if(result > 0) {
                 return ResultData.success(${varName});
             }
+        } catch (BusinessException e ){
+            return e.result();
         } catch (Exception e) {
             logger.error("error : ", e);
             return ResultData.error(ResultCode.ERROR);
@@ -188,6 +190,8 @@
             if(result > 0) {
                 return ResultData.success(${varName}s);
             }
+        } catch (BusinessException e ){
+            return e.result();
         } catch (Exception e) {
             logger.error("error : ", e);
             return ResultData.error(ResultCode.ERROR);
@@ -211,6 +215,8 @@
             if(result > 0) {
                 return ResultData.success(${varName});
             }
+        } catch (BusinessException e ){
+            return e.result();
         } catch (Exception e) {
             logger.error("error : ", e);
             return ResultData.error(ResultCode.ERROR);
@@ -234,6 +240,8 @@
             if(result > 0) {
                 return ResultData.success(${varName});
             }
+        } catch (BusinessException e ){
+            return e.result();
         } catch (Exception e) {
             logger.error("error : ", e);
             return ResultData.error(ResultCode.ERROR);
@@ -260,6 +268,8 @@
             }else {
                 return ResultData.error(ResultCode.RECODE_IS_NOT_EXISTS);
             }
+        } catch (BusinessException e ){
+            return e.result();
         } catch (Exception e) {
             logger.error("error : ", e);
             return ResultData.error(ResultCode.ERROR);

@@ -12,6 +12,12 @@
         <element id="children" type="objects" default-value="">
         </element>
     </element>
+    <events>
+        <event rel="#EOFR.refresh.create"></event>
+        <event rel="#EOFR.refresh.edit"></event>
+        <event rel="#EOFR.tree.confirm.delete"></event>
+        <event rel="#ELE.goto.detail"></event>
+    </events>
     <example>
         <![CDATA[
         ]]>

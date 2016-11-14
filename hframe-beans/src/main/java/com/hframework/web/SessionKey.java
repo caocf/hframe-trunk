@@ -5,5 +5,6 @@ package com.hframework.web;
  */
 public interface SessionKey {
     public static final String USER = "USER";
+    public static final String AUTH = "AUTH";
 
 }

@@ -77,16 +77,10 @@
     <pagetemplate id="dynamic" path="common.vm" parent-id = "default" name="动态页面" type="forward" />
 
     <pagetemplate id="editByCategory" path="container.vm" parent-id = "default" name="动态页面" type="forward">
-        <element id="dynTree" type="component" event-extend="false" container="span3">
-            <events>
-                <event name="onclick">
-                    <attach anchor="${name}"></attach>
-                    <source scope="CROW" param="${id}"></source>
-                    <effect type="component.reload" target-id="eForm"></effect>
-                </event>
-            </events>
+        <element id="dynTree" type="component" container="span3">
         </element>
-        <element id="eForm" type="component" event-extend="false"  container="span9"></element>
+        <element id="cForm" type="component" event-extend="true"  container="span9" element-group="form"></element>
+        <element id="eForm" type="component" event-extend="true"  container="span9" element-group="form"></element>
     </pagetemplate>
     <pagetemplate id="fileEditor" path="container.vm" parent-id = "default" name="动态页面" type="forward">
         <element id="dynTree" type="component" event-extend="false" container="span3">

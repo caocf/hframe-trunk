@@ -90,8 +90,9 @@ function transferDataToIceTreeData(origData){
         if(orig.children != null && orig.children.length > 0) {
             type = "folder";
             iconClass = "blue";
+            //name=orig.name + "<div style='float:right;'><a href='javascript:alert(1)'><i class='icon-file-alt blue'></i></a><div>";
         }else {
-            name = '<i class="icon-file-text blue"></i>' + name;
+            name = '<i class="icon-file-text blue"></i>' + name;// + "<div style='float:right;'><a href='javascript:alert(1)'><i class='icon-file-alt blue'></i></a><div>";
         }
         result.push({name : name,type : type,additionalParameters :{ id : orig.id},data: transferDataToIceTreeData(orig.children),'icon-class':iconClass});
     }
@@ -135,3 +136,23 @@ $('.tree').ace_tree({
     'selected-icon' : null,
     'unselected-icon' : null
 });
+
+$('.tree .tree-item').live("mouseover", function(){
+    $(this).find(".dyn-tree-oper").show();
+});
+
+$('.tree .tree-item').live("mouseout", function(){
+    $(this).find(".dyn-tree-oper").hide();
+});
+$('.tree .tree-folder-header').live("mouseover", function(){
+    $(this).find(".dyn-tree-oper").show();
+});
+
+$('.tree .tree-folder-header').live("mouseout", function(){
+    $(this).find(".dyn-tree-oper").hide();
+});
+
+
+//$('.tree').find(".tree-folder-header").each(function(){
+//   $(this).click();
+//});

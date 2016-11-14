@@ -21,8 +21,10 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
             var $relElement;
             if($this.parents(".hfform").size() > 0) {
                 $relElement =  $($this.parents(".hfform")[0]).find("[name=" + elementName + "]");
-            }else {
+            }else if($this.parents("tr").size() > 0) {
                 $relElement = $this.parents("tr").find("[name=" + elementName + "]");
+            }else if($this.parents(".breadcrumb").size() > 0) {
+                $relElement = $this.parents(".breadcrumb").find("[name=" + elementName + "]");
             }
 
             if(dataCondition) {

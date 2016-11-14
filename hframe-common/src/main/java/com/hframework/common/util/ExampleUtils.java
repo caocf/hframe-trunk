@@ -2,10 +2,7 @@ package com.hframework.common.util;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -53,6 +50,32 @@ public class ExampleUtils {
         return (T) parseExample(srcObj,exampleClass.newInstance());
     }
 
+    public static <T> T clone(Object example) throws IllegalAccessException, InstantiationException, InvocationTargetException {
+        Class<?> exampleClass = example.getClass();
+
+        Object newExample = exampleClass.newInstance();
+
+        ReflectUtils.setFieldValue(newExample,"distinct",ReflectUtils.getFieldValue(example, "distinct"));
+        ReflectUtils.setFieldValue(newExample, "limitEnd", ReflectUtils.getFieldValue(example, "limitEnd"));
+        ReflectUtils.setFieldValue(newExample, "limitStart", ReflectUtils.getFieldValue(example, "limitStart"));
+        ReflectUtils.setFieldValue(newExample, "orderByClause", ReflectUtils.getFieldValue(example, "orderByClause"));
+
+        List oredCriteria = (List) ReflectUtils.getFieldValue(example, "oredCriteria");
+
+        if(oredCriteria != null) {
+            for (Object criteria : oredCriteria) {
+                Object newCriteria = ReflectUtils.invokeMethod(newExample, "createCriteria", new Class[]{}, new Object[]{});
+                List newCriterions = new ArrayList();
+                List allCriteria = (List) ReflectUtils.invokeMethod(criteria, "getAllCriteria", new Class[]{}, new Object[]{});
+                for (Object criterion : allCriteria) {
+                    newCriterions.add(criterion);
+                }
+                ReflectUtils.setFieldValue(newCriteria, "criteria", newCriterions);
+
+            }
+        }
+        return (T) newExample;
+    }
 
     /**
      * 将一个业务对象转换为Example查询对象

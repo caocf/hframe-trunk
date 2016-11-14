@@ -25,7 +25,7 @@
     <field code="modify_time_LEQ" name="修改结束时间" edit-type="datetime"/>
     <field code="del_flag" name="删除标识" edit-type="input"/>
     <field code="hfpm_page_component_id" name="页面组件ID" edit-type="select">
-      <rel entity-code="hfpm_page_component/hfpm_page_component_id/hfpm_page_component_name"/>
+      <rel entity-code="hfpm_page_component/hfpm_page_component_id/hfpm_page_component_name" rel-field="hfpm_page_id"/>
     </field>
   </fields>
 </dataset>

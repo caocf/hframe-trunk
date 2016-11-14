@@ -19,7 +19,7 @@
       <create-edit-type>text</create-edit-type>
     </field>
     <field code="hfpm_module_id" name="模块ID" edit-type="select">
-      <rel entity-code="hfpm_module/hfpm_module_id/hfpm_module_name"/>
+      <rel entity-code="hfpm_module/hfpm_module_id/hfpm_module_name" rel-field="hfpm_program_id"/>
       <create-edit-type>text</create-edit-type>
     </field>
     <field code="op_id" name="创建人" edit-type="input">

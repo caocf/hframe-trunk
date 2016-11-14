@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
         "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
 <generatorConfiguration>
-    <properties resource="properties/dataSource.properties"></properties>
+    <properties url="file:///D:/my_workspace/hframe-trunk/hframe-core/src/main/resources/properties/dataSource.properties"></properties>
     <!-- <classPathEntry location="E:\\Users\\zhangqh6\\.m2\\repository\\mysql\\mysql-connector-java\\5.1.21\\mysql-connector-java-5.1.21.jar"/> -->
     <context id="default" targetRuntime="MyBatis3">
 
@@ -23,13 +23,13 @@
             <property name="suppressAllComments" value="true" />
             <property name="suppressDate" value="false" />
         </commentGenerator>
-        <jdbcConnection driverClass="${jdbc.driverClass}" connectionURL="${jdbc.url}" userId="${jdbc.user}" password="${jdbc.password}">
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://localhost:3306/autosystem?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull" userId="root" password="${jdbc.password}">
         </jdbcConnection>
         <javaTypeResolver >
             <property name="forceBigDecimals" value="false" />
         </javaTypeResolver>
         <!-- BO 对象实体 -->
-        <javaModelGenerator targetPackage="com.hframe.domain.model" targetProject="D:/my_workspace/hframe-oa/\hframe-core/src/main/java">
+        <javaModelGenerator targetPackage="com.hframe.domain.model" targetProject="D:/my_workspace/hframe-trunk/\hframe-core/src/main/java">
             <property name="constructorBased" value="true"/>
             <property name="enableSubPackages" value="false"/>
             <property name="immutable" value="true"/>
@@ -38,12 +38,12 @@
         </javaModelGenerator>
 
         <!-- mapper配置文件 -->
-        <sqlMapGenerator targetPackage="mapper" targetProject="D:/my_workspace/hframe-oa/\hframe-core/src/main/resources">
+        <sqlMapGenerator targetPackage="mapper" targetProject="D:/my_workspace/hframe-trunk/\hframe-core/src/main/resources">
             <property name="enableSubPackages" value="false"/>
         </sqlMapGenerator>
         <!-- DAO 对象实体 -->
         <!-- ANNOTATEDMAPPER  MIXEDMAPPER   XMLMAPPER-->
-        <javaClientGenerator targetPackage="com.hframe.dao" targetProject="D:/my_workspace/hframe-oa/\hframe-core/src/main/java" type="XMLMAPPER">
+        <javaClientGenerator targetPackage="com.hframe.dao" targetProject="D:/my_workspace/hframe-trunk/\hframe-core/src/main/java" type="XMLMAPPER">
             <property name="enableInsert" value="true"/>
             <property name="enableSubPackages" value=""/>
             <property name="exampleMethodVisibility" value="false"/>
@@ -51,9 +51,12 @@
             <property name="rootInterface" value=""/>
         </javaClientGenerator>
 
-         <table schema="" tableName="sec_org">
-            <property name="chineseName" value=""></property>
-            <generatedKey column="sec_org_id" sqlStatement="MySql" identity="true" />
+         <table schema="" tableName="hfsec_organize">
+            <property name="chineseName" value="组织"></property>
+            <property name="parentId" value="parent_hfsec_organize_id"></property>
+            <generatedKey column="hfsec_organize_id" sqlStatement="MySql" identity="true" />
+
+
         </table>
 
 

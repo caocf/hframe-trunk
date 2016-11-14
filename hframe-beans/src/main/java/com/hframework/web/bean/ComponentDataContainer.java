@@ -60,7 +60,7 @@ public class ComponentDataContainer {
             }else if(EnumUtils.compare(ComponentElementType.objects, element.getType())) {
                 elements.put(element.getId(), new ObjectsJsonSegmentParser(element,component.getType()));
             }else if(EnumUtils.compare(ComponentElementType.objectTree, element.getType())) {
-                elements.put(element.getId(), new ObjectTreeJsonSegmentParser(element,component.getType()));
+                elements.put(element.getId(), new ObjectTreeJsonSegmentParser(this,element,component.getType()));
             }else if(EnumUtils.compare(ComponentElementType.array, element.getType())) {
                 elements.put(element.getId(), new ArrayJsonSegmentParser(element, component.getType()));
             }else if(EnumUtils.compare(ComponentElementType.array2, element.getType())) {
@@ -255,36 +255,49 @@ public class ComponentDataContainer {
                 runtimeDataMap.get("${pager}").clear();
             }
 
-            for (Object key : map.keySet()) {
-                if ("list".equals(key)) {
-                    JsonSegmentParser jsonSegmentParser = runtimeDataMap.get("${data}");
-                    if (jsonSegmentParser instanceof Array2JsonSegmentParser) {
-                        Array2JsonSegmentParser segmentParser = (Array2JsonSegmentParser) jsonSegmentParser;
-                        JSONArray columns = (JSONArray) this.elements.get("columns").getJsonObject();
-                        segmentParser.setData(map.get("list"),columns);
-                    }
-                }if ("helperData".equals(key)) {
-                    JsonSegmentParser jsonSegmentParser = runtimeDataMap.get("${helperData}");
-                    if (jsonSegmentParser instanceof Array2JsonSegmentParser) {
-                        Array2JsonSegmentParser segmentParser = (Array2JsonSegmentParser) jsonSegmentParser;
-                        JSONArray columns = (JSONArray) this.elements.get("columns").getJsonObject();
-                        segmentParser.setData(map.get("helperData"),columns);
-                    }
-                } else if ("pager".equals(key)) {
-                    JsonSegmentParser jsonSegmentParser = runtimeDataMap.get("${pager}");
-                    if (jsonSegmentParser instanceof Array2JsonSegmentParser) {
-                        Array2JsonSegmentParser segmentParser = (Array2JsonSegmentParser) jsonSegmentParser;
-                        segmentParser.setData(map.get("pager"), null);
-                    }
-                }else {
-                    JsonSegmentParser jsonSegmentParser = runtimeDataMap.get("${data}");
-                    if (jsonSegmentParser instanceof ObjectTreeJsonSegmentParser) {
-                        ObjectTreeJsonSegmentParser segmentParser = (ObjectTreeJsonSegmentParser) jsonSegmentParser;
+            if(map.containsKey("list")) {
+                JsonSegmentParser jsonSegmentParser = runtimeDataMap.get("${data}");
+                if (jsonSegmentParser instanceof Array2JsonSegmentParser) {
+                    Array2JsonSegmentParser segmentParser = (Array2JsonSegmentParser) jsonSegmentParser;
+                    JSONArray columns = (JSONArray) this.elements.get("columns").getJsonObject();
+                    segmentParser.setData(map.get("list"),columns);
+                }
+                map.remove("list");
+            }
+
+            if (map.containsKey("helperData")) {
+                JsonSegmentParser jsonSegmentParser = runtimeDataMap.get("${helperData}");
+                if (jsonSegmentParser instanceof Array2JsonSegmentParser) {
+                    Array2JsonSegmentParser segmentParser = (Array2JsonSegmentParser) jsonSegmentParser;
+                    JSONArray columns = (JSONArray) this.elements.get("columns").getJsonObject();
+                    segmentParser.setData(map.get("helperData"),columns);
+                }
+                map.remove("helperData");
+            }
+
+            if (map.containsKey("pager")) {
+                JsonSegmentParser jsonSegmentParser = runtimeDataMap.get("${pager}");
+                if (jsonSegmentParser instanceof Array2JsonSegmentParser) {
+                    Array2JsonSegmentParser segmentParser = (Array2JsonSegmentParser) jsonSegmentParser;
+                    segmentParser.setData(map.get("pager"), null);
+                }
+                map.remove("pager");
+            }
+
+                JsonSegmentParser jsonSegmentParser = runtimeDataMap.get("${data}");
+                if (jsonSegmentParser instanceof ObjectTreeJsonSegmentParser) {
+                    ObjectTreeJsonSegmentParser segmentParser = (ObjectTreeJsonSegmentParser) jsonSegmentParser;
+                    if(map.size() > 0) {
                         Map map1 = transMapKeyStringType(map);
                         segmentParser.setData(map1);
+                    }else {
+                        segmentParser.setData(new HashMap<String, Object>());
                     }
                 }
-            }
+
+
+
+
         } else {//详情返回
             JsonSegmentParser jsonSegmentParser = runtimeDataMap.get("${data}");
             if (jsonSegmentParser instanceof ObjectJsonSegmentParser) {
@@ -742,13 +755,18 @@ public class ComponentDataContainer {
                         System.out.println(1);
                     }
                     List<Field> fields = dataSet.getFields().getFieldList();
-                    for (Field field : fields) {
-                        Map<String, String> tempMap= new LinkedHashMap<String, String>();
-                        for (String key : initMap.keySet()) {
-                            tempMap.put(key, getValueFromField(field, initMap.get(key)));
+                    if(fields ==null) {
+                        logger.warn("dataset:{} fields is empty !", dataSet.getCode());
+                    }else {
+                        for (Field field : fields) {
+                            Map<String, String> tempMap= new LinkedHashMap<String, String>();
+                            for (String key : initMap.keySet()) {
+                                tempMap.put(key, getValueFromField(field, initMap.get(key)));
+                            }
+                            resultList.add(tempMap);
                         }
-                        resultList.add(tempMap);
                     }
+
                     int visibleColumnCount = 0;
                     for (Map<String, String> stringStringMap : resultList) {
                         if(stringStringMap.containsKey("editType") && !"hidden".equals(stringStringMap.get("editType"))) {
@@ -795,7 +813,8 @@ public class ComponentDataContainer {
 //                return field.getRel().getEntityCode().replaceAll("/", ".");
             }else if("relColumns".equals(code)) {
                 if(field.getRel() != null && StringUtils.isNotBlank(field.getRel().getRelField())) {
-                    return field.getRel().getRelField() +  "={" + ResourceWrapper.JavaUtil.getJavaVarName(field.getRel().getRelField())+"}";
+                    return (field.getRel().getRelField().endsWith("_PCXT") ? field.getRel().getRelField().substring(0, field.getRel().getRelField().length()-5) : field.getRel().getRelField())
+                            +  "={" + ResourceWrapper.JavaUtil.getJavaVarName(field.getRel().getRelField())+"}";
                 }else {
                     return null;
                 }
@@ -856,8 +875,39 @@ public class ComponentDataContainer {
 
         private List<Map<String, Object>> resultTree= new ArrayList<Map<String, Object>>();
 
-        public ObjectTreeJsonSegmentParser(Element element, String type) {
+        private ComponentDataContainer componentDataContainer;
+        private String endOfRowHtml = null;
+
+        private String endOfRowHtml(){
+            if(endOfRowHtml == null) {
+                synchronized (this) {
+                    if(endOfRowHtml == null) {
+                        endOfRowHtml = "";
+                        List<EventElement> endOfCompList = componentDataContainer.endOfRowList;
+
+                        if(endOfCompList != null && endOfCompList.size() > 0) {
+                            endOfRowHtml = "<div class='dyn-tree-oper' style='float:right;display:none;'>";
+                            for (EventElement eventElement : endOfCompList) {
+                                endOfRowHtml += "<a " +
+                                        "class=\"btn" +eventElement.getFillclass() + " hfhref\" " +
+                                        "href=\"javascript:void(0)\"  " +
+                                        "params=\"" + eventElement.getParams() +"\" " +
+                                        "action='" + eventElement.getAction()+ "' " +
+                                        "when='" + eventElement.getWhen() + "'> " + eventElement.getComponent()+" </a>";
+                            }
+                            endOfRowHtml += "</div>";
+                            endOfRowHtml = endOfRowHtml.replaceAll("<","&lt;").replaceAll(">","&gt;");
+                        }
+
+                    }
+                }
+            }
+            return endOfRowHtml;
+        }
+
+        public ObjectTreeJsonSegmentParser(ComponentDataContainer componentDataContainer, Element element, String type) {
             super(element, type);
+            this.componentDataContainer =componentDataContainer;
         }
 
         @Override
@@ -939,13 +989,32 @@ public class ComponentDataContainer {
                     }
 
                     String propertyNameExp = initMap.get(code);
-                    String propertyName = ResourceWrapper.JavaUtil.getJavaVarName(propertyNameExp);
-                    try {
-                        String stringVal = org.apache.commons.beanutils.BeanUtils.getProperty(object,propertyName);
-                        map.put(code, stringVal);
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    List<String> varList = RegexUtils.findVarList(propertyNameExp);
+                    if(varList != null && varList.size() > 0) {
+                        String resultVal = propertyNameExp;
+                        for (String var : varList) {
+                            String propertyName = ResourceWrapper.JavaUtil.getJavaVarName(var);
+                            try {
+                                String stringVal = org.apache.commons.beanutils.BeanUtils.getProperty(object,propertyName);
+                                resultVal = resultVal.replace("${" + var + "}", stringVal);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        resultVal = resultVal.replaceAll("<","&lt;").replaceAll(">","&gt;");
+                        if(code.equals("name")) resultVal += endOfRowHtml();
+                        map.put(code, resultVal);
+                    }else {
+                        String propertyName = ResourceWrapper.JavaUtil.getJavaVarName(propertyNameExp);
+                        try {
+                            String stringVal = org.apache.commons.beanutils.BeanUtils.getProperty(object,propertyName);
+                            if(code.equals("name")) stringVal += endOfRowHtml();
+                            map.put(code, stringVal);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
+
                 }
             }
             return map;

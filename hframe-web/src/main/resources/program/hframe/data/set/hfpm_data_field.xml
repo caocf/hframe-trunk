@@ -22,7 +22,7 @@
     <field code="field_show_code" name="列展示码            " edit-type="input"/>
     <field code="data_get_method" name="数据获取方式          " edit-type="input"/>
     <field code="hfpm_data_set_id" name="数据集ID" edit-type="select">
-      <rel entity-code="hfpm_data_set/hfpm_data_set_id/hfpm_data_set_name"/>
+      <rel entity-code="hfpm_data_set/hfpm_data_set_id/hfpm_data_set_name" rel-field="hfmd_entity_id"/>
       <create-edit-type>hidden</create-edit-type>
       <update-edit-type>hidden</update-edit-type>
     </field>

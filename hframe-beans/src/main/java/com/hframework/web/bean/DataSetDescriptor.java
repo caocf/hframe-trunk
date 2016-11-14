@@ -49,7 +49,7 @@ public class DataSetDescriptor {
 
     public DataSetDescriptor(DataSet dataSet) {
         this.dataSet = dataSet;
-        if(dataSet.getFields() != null) {
+        if(dataSet.getFields() != null && dataSet.getFields().getFieldList() != null) {
             for (Field field : dataSet.getFields().getFieldList()) {
                 if("true".equals(field.getIsKey())) {
                     keyField = field;
@@ -85,6 +85,24 @@ public class DataSetDescriptor {
 
         return result;
     }
+
+    public String getRelFieldCode(Class relPoClass) throws Exception {
+        for (String fieldCode : relFieldKeyMap.keySet()) {
+            DataSetDescriptor relDataSetDescriptor = relDataSetMap.get(relFieldKeyMap.get(fieldCode));
+            com.hframework.beans.class0.Class poClass =
+                    CreatorUtil.getDefPoClass("",
+                            WebContext.get().getProgram().getCode(), "hframe", relDataSetDescriptor.getDataSet().getEventObjectCode());
+            if(Class.forName(poClass.getClassPath()) == relPoClass) {
+                return fieldCode;
+            }
+        }
+
+        return null;
+    }
+
+
+
+
 
     public void addDataSetHelper(DataSetHelper dataSetHelper) {
         dataSetHelpers.add(dataSetHelper);
@@ -198,8 +216,8 @@ public class DataSetDescriptor {
         }
 
         //范围映射需要增加默认dataset默认的rel关联
-        List<Field> fields = dataSet.getFields().getFieldList();
-        if(fields != null) {
+        if(dataSet.getFields() != null && dataSet.getFields().getFieldList() != null) {
+            List<Field> fields = dataSet.getFields().getFieldList();
             for (Field field : fields) {
                 if(field.getRel() != null && StringUtils.isNotBlank(field.getRel().getRelField())) {
                     JSONObject object = new JSONObject();

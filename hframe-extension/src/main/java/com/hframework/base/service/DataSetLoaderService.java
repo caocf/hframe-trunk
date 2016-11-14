@@ -130,6 +130,7 @@ public class DataSetLoaderService {
             //获取实体属性信息
             HfmdEntityAttr_Example hfmdEntityAttrExample = new HfmdEntityAttr_Example();
             hfmdEntityAttrExample.createCriteria().andHfpmProgramIdEqualTo(programId);
+            hfmdEntityAttrExample.setOrderByClause("pri asc");
             List<HfmdEntityAttr> hfmdEntityAttrAll = iHfmdEntityAttrSV.getHfmdEntityAttrListByExample(hfmdEntityAttrExample);
             hfmdEntityAttrMap = getHfmdEntityAttrMap(hfmdEntityAttrAll);
             hfmdEntityAttrIdEntityAttrMap = getHfmdEntityAttrIdEntityAttrMap(hfmdEntityAttrAll);
@@ -347,7 +348,7 @@ public class DataSetLoaderService {
     private String getRelField(List<Field> fieldList, HfmdEntityAttr relEntityAttr) {
 
         List<HfmdEntityAttr> hfmdEntityAttrs = hfmdEntityAttrMap.get(relEntityAttr.getHfmdEntityId());
-        for (int i = 0; i <hfmdEntityAttrs.indexOf(relEntityAttr); i++) {//查看当前获取元素之前的元素
+        for (int i = 0; i <hfmdEntityAttrs.size(); i++) {//查看当前获取元素之前的元素
             //如果有依赖的属性
             if(hfmdEntityAttrs.get(i).getRelHfmdEntityAttrId() != null && hfmdEntityAttrs.get(i).getRelHfmdEntityAttrId() > 0) {
                 HfmdEntityAttr rrelEntityAttr = hfmdEntityAttrIdEntityAttrMap.get(hfmdEntityAttrs.get(i).getRelHfmdEntityAttrId());

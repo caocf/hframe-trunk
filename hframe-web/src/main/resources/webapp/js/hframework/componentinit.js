@@ -27,6 +27,13 @@ function componentinit(){
             }
         }
     });
+
+    $("div[group][group!='']").each(function(index,element){
+        if(index != 0) {
+            $(this).hide();
+        }
+    });
+
     $(".hflist  .box-content .hflist-data tr td").each(function(){
         var count = 0;
         var $this = $(this);

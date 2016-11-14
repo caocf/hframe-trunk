@@ -13,8 +13,8 @@
       <arg column="addr" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="avatar" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="last_login_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="hfsec_organize_id" jdbcType="BIGINT" javaType="java.lang.Long" />
       <arg column="STATUS" jdbcType="INTEGER" javaType="java.lang.Integer" />
-      <arg column="hfuc_org_id" jdbcType="BIGINT" javaType="java.lang.Long" />
       <arg column="creator_id" jdbcType="BIGINT" javaType="java.lang.Long" />
       <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
       <arg column="modifier_id" jdbcType="BIGINT" javaType="java.lang.Long" />
@@ -82,8 +82,8 @@
   </sql>
   <sql id="Base_Column_List" >
     hfsec_user_id, hfsec_user_name, account, PASSWORD, gender, mobile, email, addr, avatar, 
-    last_login_time, STATUS, hfuc_org_id, creator_id, create_time, modifier_id, modify_time, 
-    del_flag
+    last_login_time, hfsec_organize_id, STATUS, creator_id, create_time, modifier_id, 
+    modify_time, del_flag
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.hframe.domain.model.HfsecUser_Example" >
     select
@@ -125,13 +125,13 @@
     insert into hfsec_user (hfsec_user_name, account, PASSWORD, 
       gender, mobile, email, 
       addr, avatar, last_login_time, 
-      STATUS, hfuc_org_id, creator_id, 
+      hfsec_organize_id, STATUS, creator_id, 
       create_time, modifier_id, modify_time, 
       del_flag)
     values (#{hfsecUserName,jdbcType=VARCHAR}, #{account,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
       #{gender,jdbcType=INTEGER}, #{mobile,jdbcType=VARCHAR}, #{email,jdbcType=INTEGER}, 
       #{addr,jdbcType=INTEGER}, #{avatar,jdbcType=VARCHAR}, #{lastLoginTime,jdbcType=TIMESTAMP}, 
-      #{status,jdbcType=INTEGER}, #{hfucOrgId,jdbcType=BIGINT}, #{creatorId,jdbcType=BIGINT}, 
+      #{hfsecOrganizeId,jdbcType=BIGINT}, #{status,jdbcType=INTEGER}, #{creatorId,jdbcType=BIGINT}, 
       #{createTime,jdbcType=TIMESTAMP}, #{modifierId,jdbcType=BIGINT}, #{modifyTime,jdbcType=TIMESTAMP}, 
       #{delFlag,jdbcType=INTEGER})
   </insert>
@@ -168,11 +168,11 @@
       <if test="lastLoginTime != null" >
         last_login_time,
       </if>
+      <if test="hfsecOrganizeId != null" >
+        hfsec_organize_id,
+      </if>
       <if test="status != null" >
         STATUS,
-      </if>
-      <if test="hfucOrgId != null" >
-        hfuc_org_id,
       </if>
       <if test="creatorId != null" >
         creator_id,
@@ -218,11 +218,11 @@
       <if test="lastLoginTime != null" >
         #{lastLoginTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="hfsecOrganizeId != null" >
+        #{hfsecOrganizeId,jdbcType=BIGINT},
+      </if>
       <if test="status != null" >
         #{status,jdbcType=INTEGER},
-      </if>
-      <if test="hfucOrgId != null" >
-        #{hfucOrgId,jdbcType=BIGINT},
       </if>
       <if test="creatorId != null" >
         #{creatorId,jdbcType=BIGINT},
@@ -280,11 +280,11 @@
       <if test="record.lastLoginTime != null" >
         last_login_time = #{record.lastLoginTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="record.hfsecOrganizeId != null" >
+        hfsec_organize_id = #{record.hfsecOrganizeId,jdbcType=BIGINT},
+      </if>
       <if test="record.status != null" >
         STATUS = #{record.status,jdbcType=INTEGER},
-      </if>
-      <if test="record.hfucOrgId != null" >
-        hfuc_org_id = #{record.hfucOrgId,jdbcType=BIGINT},
       </if>
       <if test="record.creatorId != null" >
         creator_id = #{record.creatorId,jdbcType=BIGINT},
@@ -318,8 +318,8 @@
       addr = #{record.addr,jdbcType=INTEGER},
       avatar = #{record.avatar,jdbcType=VARCHAR},
       last_login_time = #{record.lastLoginTime,jdbcType=TIMESTAMP},
+      hfsec_organize_id = #{record.hfsecOrganizeId,jdbcType=BIGINT},
       STATUS = #{record.status,jdbcType=INTEGER},
-      hfuc_org_id = #{record.hfucOrgId,jdbcType=BIGINT},
       creator_id = #{record.creatorId,jdbcType=BIGINT},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       modifier_id = #{record.modifierId,jdbcType=BIGINT},
@@ -359,11 +359,11 @@
       <if test="lastLoginTime != null" >
         last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="hfsecOrganizeId != null" >
+        hfsec_organize_id = #{hfsecOrganizeId,jdbcType=BIGINT},
+      </if>
       <if test="status != null" >
         STATUS = #{status,jdbcType=INTEGER},
-      </if>
-      <if test="hfucOrgId != null" >
-        hfuc_org_id = #{hfucOrgId,jdbcType=BIGINT},
       </if>
       <if test="creatorId != null" >
         creator_id = #{creatorId,jdbcType=BIGINT},
@@ -394,8 +394,8 @@
       addr = #{addr,jdbcType=INTEGER},
       avatar = #{avatar,jdbcType=VARCHAR},
       last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP},
+      hfsec_organize_id = #{hfsecOrganizeId,jdbcType=BIGINT},
       STATUS = #{status,jdbcType=INTEGER},
-      hfuc_org_id = #{hfucOrgId,jdbcType=BIGINT},
       creator_id = #{creatorId,jdbcType=BIGINT},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       modifier_id = #{modifierId,jdbcType=BIGINT},

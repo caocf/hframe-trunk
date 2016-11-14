@@ -775,6 +775,66 @@ public class HfsecUser_Example {
             return (Criteria) this;
         }
 
+        public Criteria andHfsecOrganizeIdIsNull() {
+            addCriterion("hfsec_organize_id is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfsecOrganizeIdIsNotNull() {
+            addCriterion("hfsec_organize_id is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfsecOrganizeIdEqualTo(Long value) {
+            addCriterion("hfsec_organize_id =", value, "hfsecOrganizeId");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfsecOrganizeIdNotEqualTo(Long value) {
+            addCriterion("hfsec_organize_id <>", value, "hfsecOrganizeId");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfsecOrganizeIdGreaterThan(Long value) {
+            addCriterion("hfsec_organize_id >", value, "hfsecOrganizeId");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfsecOrganizeIdGreaterThanOrEqualTo(Long value) {
+            addCriterion("hfsec_organize_id >=", value, "hfsecOrganizeId");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfsecOrganizeIdLessThan(Long value) {
+            addCriterion("hfsec_organize_id <", value, "hfsecOrganizeId");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfsecOrganizeIdLessThanOrEqualTo(Long value) {
+            addCriterion("hfsec_organize_id <=", value, "hfsecOrganizeId");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfsecOrganizeIdIn(List<Long> values) {
+            addCriterion("hfsec_organize_id in", values, "hfsecOrganizeId");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfsecOrganizeIdNotIn(List<Long> values) {
+            addCriterion("hfsec_organize_id not in", values, "hfsecOrganizeId");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfsecOrganizeIdBetween(Long value1, Long value2) {
+            addCriterion("hfsec_organize_id between", value1, value2, "hfsecOrganizeId");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfsecOrganizeIdNotBetween(Long value1, Long value2) {
+            addCriterion("hfsec_organize_id not between", value1, value2, "hfsecOrganizeId");
+            return (Criteria) this;
+        }
+
         public Criteria andStatusIsNull() {
             addCriterion("STATUS is null");
             return (Criteria) this;
@@ -832,66 +892,6 @@ public class HfsecUser_Example {
 
         public Criteria andStatusNotBetween(Integer value1, Integer value2) {
             addCriterion("STATUS not between", value1, value2, "status");
-            return (Criteria) this;
-        }
-
-        public Criteria andHfucOrgIdIsNull() {
-            addCriterion("hfuc_org_id is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andHfucOrgIdIsNotNull() {
-            addCriterion("hfuc_org_id is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andHfucOrgIdEqualTo(Long value) {
-            addCriterion("hfuc_org_id =", value, "hfucOrgId");
-            return (Criteria) this;
-        }
-
-        public Criteria andHfucOrgIdNotEqualTo(Long value) {
-            addCriterion("hfuc_org_id <>", value, "hfucOrgId");
-            return (Criteria) this;
-        }
-
-        public Criteria andHfucOrgIdGreaterThan(Long value) {
-            addCriterion("hfuc_org_id >", value, "hfucOrgId");
-            return (Criteria) this;
-        }
-
-        public Criteria andHfucOrgIdGreaterThanOrEqualTo(Long value) {
-            addCriterion("hfuc_org_id >=", value, "hfucOrgId");
-            return (Criteria) this;
-        }
-
-        public Criteria andHfucOrgIdLessThan(Long value) {
-            addCriterion("hfuc_org_id <", value, "hfucOrgId");
-            return (Criteria) this;
-        }
-
-        public Criteria andHfucOrgIdLessThanOrEqualTo(Long value) {
-            addCriterion("hfuc_org_id <=", value, "hfucOrgId");
-            return (Criteria) this;
-        }
-
-        public Criteria andHfucOrgIdIn(List<Long> values) {
-            addCriterion("hfuc_org_id in", values, "hfucOrgId");
-            return (Criteria) this;
-        }
-
-        public Criteria andHfucOrgIdNotIn(List<Long> values) {
-            addCriterion("hfuc_org_id not in", values, "hfucOrgId");
-            return (Criteria) this;
-        }
-
-        public Criteria andHfucOrgIdBetween(Long value1, Long value2) {
-            addCriterion("hfuc_org_id between", value1, value2, "hfucOrgId");
-            return (Criteria) this;
-        }
-
-        public Criteria andHfucOrgIdNotBetween(Long value1, Long value2) {
-            addCriterion("hfuc_org_id not between", value1, value2, "hfucOrgId");
             return (Criteria) this;
         }
 

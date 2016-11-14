@@ -23,9 +23,9 @@ public class HfsecUser {
 
     private Date lastLoginTime;
 
-    private Integer status;
+    private Long hfsecOrganizeId;
 
-    private Long hfucOrgId;
+    private Integer status;
 
     private Long creatorId;
 
@@ -37,7 +37,7 @@ public class HfsecUser {
 
     private Integer delFlag;
 
-    public HfsecUser(Long hfsecUserId, String hfsecUserName, String account, String password, Integer gender, String mobile, Integer email, Integer addr, String avatar, Date lastLoginTime, Integer status, Long hfucOrgId, Long creatorId, Date createTime, Long modifierId, Date modifyTime, Integer delFlag) {
+    public HfsecUser(Long hfsecUserId, String hfsecUserName, String account, String password, Integer gender, String mobile, Integer email, Integer addr, String avatar, Date lastLoginTime, Long hfsecOrganizeId, Integer status, Long creatorId, Date createTime, Long modifierId, Date modifyTime, Integer delFlag) {
         this.hfsecUserId = hfsecUserId;
         this.hfsecUserName = hfsecUserName;
         this.account = account;
@@ -48,8 +48,8 @@ public class HfsecUser {
         this.addr = addr;
         this.avatar = avatar;
         this.lastLoginTime = lastLoginTime;
+        this.hfsecOrganizeId = hfsecOrganizeId;
         this.status = status;
-        this.hfucOrgId = hfucOrgId;
         this.creatorId = creatorId;
         this.createTime = createTime;
         this.modifierId = modifierId;
@@ -97,12 +97,12 @@ public class HfsecUser {
         return lastLoginTime;
     }
 
-    public Integer getStatus() {
-        return status;
+    public Long getHfsecOrganizeId() {
+        return hfsecOrganizeId;
     }
 
-    public Long getHfucOrgId() {
-        return hfucOrgId;
+    public Integer getStatus() {
+        return status;
     }
 
     public Long getCreatorId() {
@@ -165,12 +165,12 @@ public class HfsecUser {
         this.lastLoginTime=lastLoginTime;
     }
 
-    public void setStatus(Integer status) {
-        this.status=status;
+    public void setHfsecOrganizeId(Long hfsecOrganizeId) {
+        this.hfsecOrganizeId=hfsecOrganizeId;
     }
 
-    public void setHfucOrgId(Long hfucOrgId) {
-        this.hfucOrgId=hfucOrgId;
+    public void setStatus(Integer status) {
+        this.status=status;
     }
 
     public void setCreatorId(Long creatorId) {

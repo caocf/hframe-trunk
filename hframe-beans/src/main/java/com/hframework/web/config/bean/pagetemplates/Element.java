@@ -21,8 +21,9 @@ public class Element   {
     @XStreamAsAttribute
     @XStreamAlias("event-extend")
     private String eventExtend;
-
-
+    @XStreamAsAttribute
+    @XStreamAlias("element-group")
+    private String elementGroup;
 
     @XStreamAlias("events")
     private Events events;
@@ -69,5 +70,13 @@ public class Element   {
 
     public void setContainer(String container) {
         this.container = container;
+    }
+
+    public String getElementGroup() {
+        return elementGroup;
+    }
+
+    public void setElementGroup(String elementGroup) {
+        this.elementGroup = elementGroup;
     }
 }

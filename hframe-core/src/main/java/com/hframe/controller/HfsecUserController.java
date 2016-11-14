@@ -4,6 +4,7 @@ import com.hframework.beans.controller.Pagination;
 import com.hframework.beans.controller.ResultCode;
 import com.hframework.beans.controller.ResultData;
 import com.hframework.common.util.ExampleUtils;
+import com.hframework.exceptions.BusinessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -37,17 +38,17 @@ public class HfsecUserController   {
 
 
 
-//
-//    @InitBinder
-//    protected void initBinder(HttpServletRequest request,
-//        ServletRequestDataBinder binder) throws Exception {
-//        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//        CustomDateEditor editor = new CustomDateEditor(df, true);
-//        binder.registerCustomEditor(Date.class, editor);
-//    }
+
+    @InitBinder
+    protected void initBinder(HttpServletRequest request,
+        ServletRequestDataBinder binder) throws Exception {
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        CustomDateEditor editor = new CustomDateEditor(df, false);
+        binder.registerCustomEditor(Date.class, editor);
+    }
 
     /**
-     * 查询展示鐢ㄦ埛列表
+     * 查询展示用户列表
      * @param hfsecUser
      * @return
      * @throws Throwable
@@ -76,7 +77,7 @@ public class HfsecUserController   {
 
 
     /**
-     * 查询展示鐢ㄦ埛明细
+     * 查询展示用户明细
      * @param hfsecUser
      * @return
      * @throws Throwable
@@ -86,7 +87,17 @@ public class HfsecUserController   {
     public ResultData detail(@ModelAttribute("hfsecUser") HfsecUser hfsecUser){
         logger.debug("request : {},{}", hfsecUser.getHfsecUserId(), hfsecUser);
         try{
-            HfsecUser result = iHfsecUserSV.getHfsecUserByPK(hfsecUser.getHfsecUserId());
+            HfsecUser result = null;
+            if(hfsecUser.getHfsecUserId() != null) {
+                result = iHfsecUserSV.getHfsecUserByPK(hfsecUser.getHfsecUserId());
+            }else {
+                HfsecUser_Example example = ExampleUtils.parseExample(hfsecUser, HfsecUser_Example.class);
+                List<HfsecUser> list = iHfsecUserSV.getHfsecUserListByExample(example);
+                if(list != null && list.size() == 1) {
+                    result = list.get(0);
+                }
+            }
+
             if(result != null) {
                 return ResultData.success(result);
             }else {
@@ -99,7 +110,7 @@ public class HfsecUserController   {
     }
 
     /**
-    * 搜索一个鐢ㄦ埛
+    * 搜索一个用户
     * @param  hfsecUser
     * @return
     * @throws Throwable
@@ -136,7 +147,7 @@ public class HfsecUserController   {
     }
 
     /**
-    * 创建鐢ㄦ埛
+    * 创建用户
     * @param hfsecUser
     * @return
     * @throws Throwable
@@ -151,6 +162,8 @@ public class HfsecUserController   {
             if(result > 0) {
                 return ResultData.success(hfsecUser);
             }
+        } catch (BusinessException e ){
+            return e.result();
         } catch (Exception e) {
             logger.error("error : ", e);
             return ResultData.error(ResultCode.ERROR);
@@ -159,7 +172,7 @@ public class HfsecUserController   {
     }
 
     /**
-    * 批量维护鐢ㄦ埛
+    * 批量维护用户
     * @param hfsecUsers
     * @return
     * @throws Throwable
@@ -177,6 +190,8 @@ public class HfsecUserController   {
             if(result > 0) {
                 return ResultData.success(hfsecUsers);
             }
+        } catch (BusinessException e ){
+            return e.result();
         } catch (Exception e) {
             logger.error("error : ", e);
             return ResultData.error(ResultCode.ERROR);
@@ -185,7 +200,7 @@ public class HfsecUserController   {
     }
 
     /**
-    * 更新鐢ㄦ埛
+    * 更新用户
     * @param hfsecUser
     * @return
     * @throws Throwable
@@ -200,6 +215,8 @@ public class HfsecUserController   {
             if(result > 0) {
                 return ResultData.success(hfsecUser);
             }
+        } catch (BusinessException e ){
+            return e.result();
         } catch (Exception e) {
             logger.error("error : ", e);
             return ResultData.error(ResultCode.ERROR);
@@ -208,7 +225,32 @@ public class HfsecUserController   {
     }
 
     /**
-    * 删除鐢ㄦ埛
+    * 创建或更新用户
+    * @param hfsecUser
+    * @return
+    * @throws Throwable
+    */
+    @RequestMapping(value = "/saveOrUpdateByAjax.json")
+    @ResponseBody
+    public ResultData saveOrUpdate(@ModelAttribute("hfsecUser") HfsecUser hfsecUser) {
+        logger.debug("request : {}", hfsecUser);
+        try {
+            ControllerHelper.setDefaultValue(hfsecUser, "hfsecUserId");
+            int result = iHfsecUserSV.batchOperate(new HfsecUser[]{hfsecUser});
+            if(result > 0) {
+                return ResultData.success(hfsecUser);
+            }
+        } catch (BusinessException e ){
+            return e.result();
+        } catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+        return ResultData.error(ResultCode.UNKNOW);
+    }
+
+    /**
+    * 删除用户
     * @param hfsecUser
     * @return
     * @throws Throwable
@@ -226,6 +268,8 @@ public class HfsecUserController   {
             }else {
                 return ResultData.error(ResultCode.RECODE_IS_NOT_EXISTS);
             }
+        } catch (BusinessException e ){
+            return e.result();
         } catch (Exception e) {
             logger.error("error : ", e);
             return ResultData.error(ResultCode.ERROR);

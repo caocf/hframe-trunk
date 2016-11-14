@@ -1,4 +1,4 @@
-<div class="box span12 hflist" id='$list.id'  module="$module" page="$page" param="$!list.param" component="$list.component" style="$!style">
+<div class="box span12 hflist" id='$list.id'  module="$module" page="$page" param="$!list.param" component="$list.component" style="$!style;overflow:inherit">
     <span  class="ruler" style="display: none;">$!list.ruler</span>
     <span  class="helper" style="display: none;">$!list.helper</span>
     <div class="box-header">

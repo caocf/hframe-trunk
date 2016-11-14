@@ -1,6 +1,9 @@
 package com.hframe.service.impl;
 
 import java.util.*;
+
+import com.hframework.common.util.BeanUtils;
+import com.hframework.common.util.ExampleUtils;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import com.google.common.collect.Lists;
@@ -120,14 +123,14 @@ public class HfsecMenuSVImpl  implements IHfsecMenuSV {
         return result;
     }
 
-    private void fillHfsecMenuTreeCascade(Map<Long, List<HfsecMenu>> result, List<Long> parentIds, HfsecMenu_Example example) {
+    private void fillHfsecMenuTreeCascade(Map<Long, List<HfsecMenu>> result, List<Long> parentIds, HfsecMenu_Example templateExample) throws Exception {
         if(parentIds.size() == 0) {
             return ;
         }
-        if(example == null) {
-            example = new HfsecMenu_Example();
+        if(templateExample == null) {
+            templateExample = new HfsecMenu_Example();
         }
-
+        HfsecMenu_Example example = ExampleUtils.clone(templateExample);
         if(example.getOredCriteria() != null && example.getOredCriteria().size() > 0) {
             example.getOredCriteria().get(0).andParentHfsecMenuIdIn(parentIds);
         }else {
@@ -156,7 +159,7 @@ public class HfsecMenuSVImpl  implements IHfsecMenuSV {
             subIds.add(hfsecMenu.getHfsecMenuId());
         }
 
-        fillHfsecMenuTreeCascade(result,subIds, null);
+        fillHfsecMenuTreeCascade(result,subIds, templateExample);
     }
 
     /**

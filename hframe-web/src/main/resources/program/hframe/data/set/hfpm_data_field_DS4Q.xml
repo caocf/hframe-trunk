@@ -19,7 +19,7 @@
     <field code="data_get_method" name="数据获取方式          " edit-type="input"/>
     <field code="hfpm_data_field_name" name="数据列名称" edit-type="input"/>
     <field code="hfpm_data_set_id" name="数据集ID" edit-type="select">
-      <rel entity-code="hfpm_data_set/hfpm_data_set_id/hfpm_data_set_name"/>
+      <rel entity-code="hfpm_data_set/hfpm_data_set_id/hfpm_data_set_name" rel-field="hfmd_entity_id"/>
     </field>
     <field code="op_id" name="创建人" edit-type="input">
       <rel entity-code="hfsec_user/hfsec_user_id/hfsec_user_name"/>

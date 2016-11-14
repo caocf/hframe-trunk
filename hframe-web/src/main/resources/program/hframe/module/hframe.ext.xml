@@ -69,6 +69,10 @@
         <component id="dynTree" data-set="hframe/hfsec_menu"/>
         <component id="eForm" data-set="hframe/hfsec_menu"/>
     </page>
+
+    <page id="hfsec_organize_mgr" name="组织管理" page-template="editByCategory" data-set="hframe/hfsec_organize">
+        <component id="dynTree" data-set="hframe/hfsec_organize"/>
+    </page>
     <!--<page id="canal_manager" name="canal实例管理" page-template="fileEditor" data-set="hframe/hfsec_menu">-->
         <!--<component id="dynTree"  data-set="hffile/folder.tree.feditor" dataid="D:/my_workspace/hframe-trunk/hframe-reconciliation/src/main/resources"/>-->
         <!--&lt;!&ndash;<component id="dynTree" data-set="hframe/hfsec_menu"/>&ndash;&gt;-->

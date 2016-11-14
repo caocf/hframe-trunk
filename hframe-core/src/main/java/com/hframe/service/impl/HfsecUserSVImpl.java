@@ -18,7 +18,7 @@ public class HfsecUserSVImpl  implements IHfsecUserSV {
 
 
     /**
-    * 创建鐢ㄦ埛
+    * 创建用户
     * @param hfsecUser
     * @return
     * @throws Exception
@@ -28,7 +28,7 @@ public class HfsecUserSVImpl  implements IHfsecUserSV {
     }
 
     /**
-    * 批量维护鐢ㄦ埛
+    * 批量维护用户
     * @param hfsecUsers
     * @return
     * @throws Exception
@@ -48,7 +48,7 @@ public class HfsecUserSVImpl  implements IHfsecUserSV {
     }
 
     /**
-    * 更新鐢ㄦ埛
+    * 更新用户
     * @param hfsecUser
     * @return
     * @throws Exception
@@ -58,7 +58,7 @@ public class HfsecUserSVImpl  implements IHfsecUserSV {
     }
 
     /**
-    * 通过查询对象更新鐢ㄦ埛
+    * 通过查询对象更新用户
     * @param hfsecUser
     * @param example
     * @return
@@ -69,7 +69,7 @@ public class HfsecUserSVImpl  implements IHfsecUserSV {
     }
 
     /**
-    * 删除鐢ㄦ埛
+    * 删除用户
     * @param hfsecUser
     * @return
     * @throws Exception
@@ -79,7 +79,7 @@ public class HfsecUserSVImpl  implements IHfsecUserSV {
     }
 
     /**
-    * 删除鐢ㄦ埛
+    * 删除用户
     * @param hfsecUserId
     * @return
     * @throws Exception
@@ -89,7 +89,7 @@ public class HfsecUserSVImpl  implements IHfsecUserSV {
     }
 
     /**
-    * 查找所有鐢ㄦ埛
+    * 查找所有用户
     * @return
     */
     public List<HfsecUser> getHfsecUserAll()  throws  Exception {
@@ -97,7 +97,7 @@ public class HfsecUserSVImpl  implements IHfsecUserSV {
     }
 
     /**
-    * 通过鐢ㄦ埛ID查询鐢ㄦ埛
+    * 通过用户ID查询用户
     * @param hfsecUserId
     * @return
     * @throws Exception
@@ -108,7 +108,7 @@ public class HfsecUserSVImpl  implements IHfsecUserSV {
 
 
     /**
-    * 通过MAP参数查询鐢ㄦ埛
+    * 通过MAP参数查询用户
     * @param params
     * @return
     * @throws Exception
@@ -120,7 +120,7 @@ public class HfsecUserSVImpl  implements IHfsecUserSV {
 
 
     /**
-    * 通过查询对象查询鐢ㄦ埛
+    * 通过查询对象查询用户
     * @param example
     * @return
     * @throws Exception
@@ -130,7 +130,7 @@ public class HfsecUserSVImpl  implements IHfsecUserSV {
     }
 
     /**
-    * 通过MAP参数查询鐢ㄦ埛数量
+    * 通过MAP参数查询用户数量
     * @param params
     * @return
     * @throws Exception
@@ -140,7 +140,7 @@ public class HfsecUserSVImpl  implements IHfsecUserSV {
     }
 
     /**
-    * 通过查询对象查询鐢ㄦ埛数量
+    * 通过查询对象查询用户数量
     * @param example
     * @return
     * @throws Exception
