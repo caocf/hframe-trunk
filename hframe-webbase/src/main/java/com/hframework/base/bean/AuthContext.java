@@ -22,8 +22,8 @@ public class AuthContext {
 
     public class AuthManager extends HashMap<Long, List<AuthDataUnit>> {
 
-        private Class authDataClass;
-        private Class authFunctionClass;
+        private List<Class> authDataClass;
+        private List<Class> authFunctionClass;
 
 
         public void add(Long dataUnitId, Long functionId) {
@@ -61,21 +61,44 @@ public class AuthContext {
             return Lists.newArrayList();
         }
 
-        public Class getAuthDataClass() {
+        public List<Class> getAuthDataClass() {
             return authDataClass;
         }
 
-        public void setAuthDataClass(Class authDataClass) {
+        public void setAuthDataClass(List<Class> authDataClass) {
             this.authDataClass = authDataClass;
         }
 
-        public Class getAuthFunctionClass() {
+        public void addAuthDataClass(Class authDataClass) {
+            if(this.authDataClass == null) {
+                synchronized (this) {
+                    if(this.authDataClass == null) {
+                        this.authDataClass = new ArrayList<Class>();
+                    }
+                }
+            }
+            this.authDataClass.add(authDataClass);
+        }
+
+        public List<Class> getAuthFunctionClass() {
             return authFunctionClass;
         }
 
-        public void setAuthFunctionClass(Class authFunctionClass) {
+        public void setAuthFunctionClass(List<Class> authFunctionClass) {
             this.authFunctionClass = authFunctionClass;
         }
+
+        public void addAuthFunctionClass(Class authFunctionClass) {
+            if(this.authFunctionClass == null) {
+                synchronized (this) {
+                    if(this.authFunctionClass == null) {
+                        this.authFunctionClass = new ArrayList<Class>();
+                    }
+                }
+            }
+            this.authFunctionClass.add(authFunctionClass);
+        }
+
     }
 
     public class AuthDataUnitRelManager extends HashMap<Long, Set<Long>> {
@@ -118,6 +141,15 @@ public class AuthContext {
     }
 
     public class AuthFunctionManager extends HashMap<String, Long> {
+        private List allFunctions ;
+
+        public List getAllFunctions() {
+            return allFunctions;
+        }
+
+        public void setAllFunctions(List allFunctions) {
+            this.allFunctions = allFunctions;
+        }
     }
 
     public static class AuthUser{

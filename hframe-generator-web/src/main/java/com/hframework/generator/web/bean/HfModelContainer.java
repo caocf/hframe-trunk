@@ -4,9 +4,7 @@ import com.hframework.common.util.CommonUtils;
 import com.hframe.domain.model.*;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 模型数据容器
@@ -27,6 +25,9 @@ public class HfModelContainer {
 	//实体属性信息<entityCode.entityAttrCode,HfmdEntityAttr>
 	private Map<String,HfmdEntityAttr> entityAttrMap;
 
+	private Map<HfmdEntityAttr, AttrChangeType> entityAttrChangeTypeMap;
+	private Map<String, String> relEntityAttr2AttrMapper;
+
 	//实体属计数表
 	private Map<String,BigDecimal> entityAttrCountMap;
 	//实体关系信息
@@ -34,6 +35,7 @@ public class HfModelContainer {
 
 	//枚举类信息
 	private Map<Long,HfmdEnumClass> enumClassMap;
+	private Map<String,HfmdEnumClass> enumClassCodeMap;
 	//枚举信息
 	private Map<Long,HfmdEnum> enumMap;
 
@@ -137,6 +139,14 @@ public class HfModelContainer {
 		return enumClassMap;
 	}
 
+	public Map<String, HfmdEnumClass> getEnumClassCodeMap() {
+		return enumClassCodeMap;
+	}
+
+	public void setEnumClassCodeMap(Map<String, HfmdEnumClass> enumClassCodeMap) {
+		this.enumClassCodeMap = enumClassCodeMap;
+	}
+
 	public void setEnumClassMap(Map<Long, HfmdEnumClass> enumClassMap) {
 		this.enumClassMap = enumClassMap;
 	}
@@ -188,5 +198,39 @@ public class HfModelContainer {
 
 	public void setContainerType(int containerType) {
 		this.containerType = containerType;
+	}
+
+	public Map<HfmdEntityAttr, AttrChangeType> getEntityAttrChangeTypeMap() {
+		if(entityAttrChangeTypeMap == null) {
+			entityAttrChangeTypeMap = new HashMap<HfmdEntityAttr, AttrChangeType>();
+		}
+		return entityAttrChangeTypeMap;
+	}
+
+	public void setEntityAttrChangeTypeMap(Map<HfmdEntityAttr, AttrChangeType> entityAttrChangeTypeMap) {
+		this.entityAttrChangeTypeMap = entityAttrChangeTypeMap;
+	}
+
+	public Map<String, String> getRelEntityAttr2AttrMapper() {
+		if(relEntityAttr2AttrMapper == null) {
+			relEntityAttr2AttrMapper = new HashMap<String, String>();
+		}
+		return relEntityAttr2AttrMapper;
+	}
+
+	public void setRelEntityAttr2AttrMapper(Map<String, String> relEntityAttr2AttrMapper) {
+		this.relEntityAttr2AttrMapper = relEntityAttr2AttrMapper;
+	}
+
+	public enum AttrChangeType{
+		FIELD,FK,FULL;
+
+		public boolean containField() {
+			return this.equals(FIELD) || this.equals(FULL);
+		}
+		public boolean containFk() {
+			return this.equals(FK) || this.equals(FULL);
+		}
+
 	}
 }

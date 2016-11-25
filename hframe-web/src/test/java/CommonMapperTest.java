@@ -43,7 +43,7 @@ public class CommonMapperTest {
             put("sql","SELECT hfmd_enum_id,hfmd_enum_value,hfmd_enum_desc,is_default,pri,ext1,ext2,hfmd_enum_class_id,hfmd_enum_class_code,op_id,create_time,del_flag FROM hfmd_enum t WHERE t.hfpm_program_id IN (151031375397) OR hfpm_program_id IS NULL");
         }});
 
-        List<String> hfmd_enum = HfModelContainerUtil.getSql(list, "hfmd_enum");
+        List<String> hfmd_enum = HfModelContainerUtil.getSql(list, "hfmd_enum", true);
         for (String s : hfmd_enum) {
             System.out.println("sql = > " + s);
         }

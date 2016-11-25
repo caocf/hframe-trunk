@@ -209,6 +209,9 @@ public class DataSetLoaderService {
     }
 
     private void createDataSetDescriptorXml(HfpmDataSet hfpmDataSet) throws IOException {
+        if(hfpmDataSet.getHfpmDataSetCode().equals("sql_reverse_input")) {
+            System.out.println(1);
+        }
                 DataSet dataSet = new DataSet();
                 dataSet.setModule("hframe");
                 HfmdEntity hfmdEntity = hfmdEntityIdEntityMap.get(hfpmDataSet.getMainHfmdEntityId());
@@ -280,21 +283,9 @@ public class DataSetLoaderService {
     }
 
     public Field getField(List<com.hframework.web.config.bean.dataset.Field> fieldList, HfpmDataField hfpmDataField) {
-        HfmdEntityAttr hfmdEntityAttr = hfmdEntityAttrIdEntityAttrMap.get(hfpmDataField.getHfmdEntityAttrId());
-        HfmdEnumClass hfmdEnumClass = hfmdEnumClassMap.get(hfmdEntityAttr.getHfmdEnumClassId());
-        HfmdEntityAttr relEntityAttr = hfmdEntityAttrIdEntityAttrMap.get(hfmdEntityAttr.getRelHfmdEntityAttrId());
         com.hframework.web.config.bean.dataset.Field field = new com.hframework.web.config.bean.dataset.Field();
-
-        com.hframe.tag.bean.Column column = getColumnFromHfmdEntityAttr(hfmdEntityAttr, hfpmDataField.getHfpmFieldShowTypeId());
-        String editType = column.getShowType().getType();
         field.setName(hfpmDataField.getHfpmDataFieldName());
         field.setCode(hfpmDataField.getHfpmDataFieldCode());
-
-        if(hfmdEntityAttr != null && hfmdEntityAttr.getIspk() != null && hfmdEntityAttr.getIspk() == 1) {
-            field.setIsKey("true");
-        }
-        field.setEditType(editType);
-        if(column.getNullable() == 0) field.setNotNull("true");
 
         if(hfpmDataField.getFieldShowCode().length() > 1) {
             field.setCreateEditType("0".equals(String.valueOf(hfpmDataField.getFieldShowCode().charAt(0))) ? "hidden"
@@ -302,6 +293,25 @@ public class DataSetLoaderService {
             field.setUpdateEditType("0".equals(String.valueOf(hfpmDataField.getFieldShowCode().charAt(1))) ? "hidden"
                     : "1".equals(String.valueOf(hfpmDataField.getFieldShowCode().charAt(1))) ? "text" : null);
         }
+
+        if(hfpmDataField.getHfmdEntityAttrId() == null) {
+            field.setEditType(getShowTypesByFieldShowTypeIds(new String[]{hfpmDataField.getHfpmFieldShowTypeId()}).get(0).getType());
+            return field;
+        }
+        HfmdEntityAttr hfmdEntityAttr = hfmdEntityAttrIdEntityAttrMap.get(hfpmDataField.getHfmdEntityAttrId());
+        HfmdEnumClass hfmdEnumClass = hfmdEnumClassMap.get(hfmdEntityAttr.getHfmdEnumClassId());
+        HfmdEntityAttr relEntityAttr = hfmdEntityAttrIdEntityAttrMap.get(hfmdEntityAttr.getRelHfmdEntityAttrId());
+
+
+        com.hframe.tag.bean.Column column = getColumnFromHfmdEntityAttr(hfmdEntityAttr, hfpmDataField.getHfpmFieldShowTypeId());
+        String editType = column.getShowType().getType();
+
+
+        if(hfmdEntityAttr != null && hfmdEntityAttr.getIspk() != null && hfmdEntityAttr.getIspk() == 1) {
+            field.setIsKey("true");
+        }
+        field.setEditType(editType);
+        if(column.getNullable() == 0) field.setNotNull("true");
 
 //                    field.setAction();
 
@@ -314,8 +324,10 @@ public class DataSetLoaderService {
 
             }
             if(hfmdEntityAttr.getRelHfmdEntityAttrId() != null && hfmdEntityAttr.getRelHfmdEntityAttrId() > 0) {
+                if(relEntityAttr == null) {
+                    System.out.println("==>RelHfmdEntityAttrId【" + hfmdEntityAttr.getRelHfmdEntityAttrId() + "】没有找到对应的记录！");
+                }
 
-                System.out.println("==>RelHfmdEntityAttrId【" + hfmdEntityAttr.getRelHfmdEntityAttrId() + "】没有找到对应的记录！");
                 Rel rel = getRel(relEntityAttr);
                 rel.setRelField(getRelField(fieldList, relEntityAttr));
                 field.setRel(rel);
@@ -403,6 +415,9 @@ public class DataSetLoaderService {
     private void loadDataSet(List<HfpmDataSet> hfpmDataSetAll, Map<Long, List<HfpmDataField>> hfpmDataFieldMap) throws Exception {
         if (hfpmDataSetAll != null) {
             for (HfpmDataSet hfpmDataSet : hfpmDataSetAll) {
+                if(hfpmDataSet.getHfpmDataSetCode().equals("sql_reverse_input")) {
+                    System.out.println(1);
+                }
 
                 //if ("fields".equals(coreSet.getCoreSetType()))
                 List<HfpmDataField> hfpmDataFieldList = hfpmDataFieldMap.get(hfpmDataSet.getHfpmDataSetId());

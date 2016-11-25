@@ -113,7 +113,7 @@
         return result;
     }
 
-    private void fill${className}TreeCascade(Map<Long, List<${className}>> result, List<Long> parentIds, ${className}_Example templateExample) {
+    private void fill${className}TreeCascade(Map<Long, List<${className}>> result, List<Long> parentIds, ${className}_Example templateExample)  throws Exception {
         if(parentIds.size() == 0) {
             return ;
         }

@@ -1,5 +1,6 @@
 package com.hframework.web.bean;
 
+import com.hframework.web.config.bean.module.Page;
 import com.hframework.web.config.bean.pagetemplates.Pagetemplate;
 
 import java.util.HashMap;
@@ -13,6 +14,7 @@ public class PageDescriptor{
     private String module;
     private String code;
     private String name;
+    private Page page;
 
     private Pagetemplate pageTemplate;
 
@@ -96,5 +98,13 @@ public class PageDescriptor{
 
     public void setContainers(Map<String, ContainerDescriptor> containers) {
         this.containers = containers;
+    }
+
+    public Page getPage() {
+        return page;
+    }
+
+    public void setPage(Page page) {
+        this.page = page;
     }
 }

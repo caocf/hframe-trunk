@@ -61,6 +61,8 @@ public class HfModelContainerUtil {
 
         }
 
+
+
         Map<String, HfmdEntity> dbEntityMap = baseModelContainer.getEntityMap();
         Map<String, HfmdEntity> targetEntityMap = targetModelContainer.getEntityMap();
 
@@ -96,10 +98,45 @@ public class HfModelContainerUtil {
         Map<String,HfmdEntityAttr> dbEntityAttrMap = baseModelContainer.getEntityAttrMap();
         Map<String,HfmdEntityAttr> targetEntityAttrMap = targetModelContainer.getEntityAttrMap();
 
+        Map<String, HfmdEnumClass> enumClassCodeMap = baseModelContainer.getEnumClassCodeMap();
+        if(enumClassCodeMap != null && targetEntityAttrMap != null) {
+            for (String entityAttrCode : targetEntityAttrMap.keySet()) {
+                if(enumClassCodeMap.containsKey(entityAttrCode)) {
+                    targetEntityAttrMap.get(entityAttrCode).setHfmdEnumClassId(enumClassCodeMap.get(entityAttrCode).getHfmdEnumClassId());
+                }
+            }
+        }
+
+
+
         Map<String,HfmdEntityAttr> addEntityAttrMap = new HashMap<String, HfmdEntityAttr>();
         addModelContainer.setEntityAttrMap(addEntityAttrMap);
         Map<String,HfmdEntityAttr> modEntityAttrMap = new HashMap<String, HfmdEntityAttr>();
         modModelContainer.setEntityAttrMap(modEntityAttrMap);
+
+        Map<Long, List<String>> dbKeyRewriteCacheMap = new HashMap<Long, List<String>>();
+        for (String emtityAttrCode : targetEntityAttrMap.keySet()) {
+            HfmdEntityAttr targetEntityAttr = targetEntityAttrMap.get(emtityAttrCode);
+            if(targetEntityAttr.getRelHfmdEntityAttrId() != null) {
+                if(!dbKeyRewriteCacheMap.containsKey(targetEntityAttr.getRelHfmdEntityAttrId())) {
+                    dbKeyRewriteCacheMap.put(targetEntityAttr.getRelHfmdEntityAttrId(), new ArrayList<String>());
+                }
+                dbKeyRewriteCacheMap.get(targetEntityAttr.getRelHfmdEntityAttrId()).add(emtityAttrCode);
+            }
+        }
+        for (String emtityAttrCode : targetEntityAttrMap.keySet()) {
+            HfmdEntityAttr targetEntityAttr = targetEntityAttrMap.get(emtityAttrCode);
+            if(dbKeyRewriteCacheMap.containsKey(targetEntityAttr.getHfmdEntityAttrId())) {
+                List<String> strings = dbKeyRewriteCacheMap.get(targetEntityAttr.getHfmdEntityAttrId());
+                for (String string : strings) {
+                    modModelContainer.getRelEntityAttr2AttrMapper().put(string, emtityAttrCode);
+                    addModelContainer.getRelEntityAttr2AttrMapper().put(string, emtityAttrCode);
+                }
+            }
+        }
+
+        //针对于外键优先替换
+        overrideRelHfmdEntityAttrIdIfDbExists(dbEntityAttrMap, targetEntityAttrMap, modModelContainer);
 
         for (String emtityAttrCode : targetEntityAttrMap.keySet()) {
             HfmdEntityAttr targetEntityAttr = targetEntityAttrMap.get(emtityAttrCode);
@@ -120,7 +157,7 @@ public class HfModelContainerUtil {
             }
 
 
-            if(targetEntityAttr != null && StringUtils.isBlank(targetEntityAttr.getSize())) {
+            if(targetEntityAttr != null && targetEntityAttr.getAttrType() != null && StringUtils.isBlank(targetEntityAttr.getSize())) {
                 Integer defaultSize = HfmdEntityAttr1AttrTypeEnum.getDefaultSize(targetEntityAttr.getAttrType());
                 if(defaultSize != null && defaultSize > 0) {
                     targetEntityAttr.setSize(String.valueOf(defaultSize));
@@ -128,52 +165,48 @@ public class HfModelContainerUtil {
             }
 
 
-
             if(dbEntityAttr == null) {
-                addModelContainer.getEntityAttrMap().put(emtityAttrCode,targetEntityAttr);
-            }else if(dbEntityAttr.getAttrType() == null ) {
-                System.out.println();
-            }else if (dbEntityAttr.getHfmdEntityAttrName() != null
-                    &&!( dbEntityAttr.getHfmdEntityAttrName().trim().equals(targetEntityAttr.getHfmdEntityAttrName().trim())
-                    || checkEntityName(dbEntityAttr.getHfmdEntityAttrName().trim(), targetEntityAttr.getHfmdEntityAttrName().trim()))) {
-                System.out.println("=> diff: entityCode : " + emtityAttrCode + "; curAttrName : " + dbEntityAttr.getHfmdEntityAttrName() +
-                        "; targetAttrName : " + targetEntityAttr.getHfmdEntityAttrName());
-                dbEntityAttr.setHfmdEntityAttrName(targetEntityAttr.getHfmdEntityAttrName());
-                dbEntityAttr.setIspk(targetEntityAttr.getIspk());
-                dbEntityAttr.setAttrType(targetEntityAttr.getAttrType());
-                dbEntityAttr.setPri(targetEntityAttr.getPri());
-                dbEntityAttr.setSize(targetEntityAttr.getSize());
-                dbEntityAttr.setNullable(targetEntityAttr.getNullable());
-                modModelContainer.getEntityAttrMap().put(emtityAttrCode,dbEntityAttr);
-            }else if (!dbEntityAttr.getIspk().equals(targetEntityAttr.getIspk())) {
-                System.out.println("=> diff: entityCode : " + emtityAttrCode + "; curIspk : " + dbEntityAttr.getIspk() +
-                        "; targetIspk : " + targetEntityAttr.getIspk());
-                dbEntityAttr.setHfmdEntityAttrName(targetEntityAttr.getHfmdEntityAttrName());
-                dbEntityAttr.setIspk(targetEntityAttr.getIspk());
-                dbEntityAttr.setAttrType(targetEntityAttr.getAttrType());
-                dbEntityAttr.setPri(targetEntityAttr.getPri());
-                dbEntityAttr.setSize(targetEntityAttr.getSize());
-                dbEntityAttr.setNullable(targetEntityAttr.getNullable());
-                modModelContainer.getEntityAttrMap().put(emtityAttrCode,dbEntityAttr);
-            }else if (!dbEntityAttr.getAttrType().equals(targetEntityAttr.getAttrType())) {
-                if(dbEntityAttr.getAttrType() == HfmdEntityAttr1AttrTypeEnum.NUMERIC.getIndex()
-                        && targetEntityAttr.getAttrType() == HfmdEntityAttr1AttrTypeEnum.DECIMAL.getIndex()) {
-                    continue;
+                addModelContainer.getEntityAttrMap().put(emtityAttrCode, targetEntityAttr);
+            }else {
+                boolean changed = false;
+                if(dbEntityAttr.getAttrType() == null ) {
+                    System.out.println();
+                }else if (checkEntityNameDiff(dbEntityAttr.getHfmdEntityAttrName(), targetEntityAttr.getHfmdEntityAttrName())) {
+                    System.out.println("=> diff: entityCode : " + emtityAttrCode + "; curAttrName : " + dbEntityAttr.getHfmdEntityAttrName() +
+                            "; targetAttrName : " + targetEntityAttr.getHfmdEntityAttrName());
+                    changed = true;
+                }else if (isDiff(dbEntityAttr.getIspk(), targetEntityAttr.getIspk())) {
+                    System.out.println("=> diff: entityCode : " + emtityAttrCode + "; curIspk : " + dbEntityAttr.getIspk() +
+                            "; targetIspk : " + targetEntityAttr.getIspk());
+                    changed = true;
+                }else if (!dbEntityAttr.getNullable().equals(targetEntityAttr.getNullable())
+                        && dbEntityAttr.getIspk() !=1  && targetEntityAttr.getIspk() !=1) {
+                    System.out.println("=> diff entityCode : " + emtityAttrCode + "; :curNullable : " + dbEntityAttr.getNullable() +
+                            "; targetNullable : " + targetEntityAttr.getNullable());
+                    changed = true;
+                }else if (isDiff(dbEntityAttr.getSize(), targetEntityAttr.getSize())) {
+                    System.out.println("=> diff:curSize : " + dbEntityAttr.getSize() +
+                            "; targetSize : " + targetEntityAttr.getSize());
+                    changed = true;
+                }else if (isDiff(dbEntityAttr.getHfmdEnumClassId(), targetEntityAttr.getHfmdEnumClassId())
+                        && targetEntityAttr.getHfmdEnumClassId() != null) {
+                    System.out.println("=> diff:curHfmdEnumClassId : " + dbEntityAttr.getHfmdEnumClassId() +
+                            "; targetHfmdEnumClassId : " + targetEntityAttr.getHfmdEnumClassId());
+                    changed = true;
                 }
+                if (!dbEntityAttr.getAttrType().equals(targetEntityAttr.getAttrType())) {
+                    if(dbEntityAttr.getAttrType() != null && dbEntityAttr.getAttrType() == HfmdEntityAttr1AttrTypeEnum.NUMERIC.getIndex()
+                            && targetEntityAttr.getAttrType() == HfmdEntityAttr1AttrTypeEnum.DECIMAL.getIndex()) {
+                        continue;
+                    }
 
-                if(targetEntityAttr.getAttrType() == HfmdEntityAttr1AttrTypeEnum.NUMERIC.getIndex()
-                        && dbEntityAttr.getAttrType() == HfmdEntityAttr1AttrTypeEnum.DECIMAL.getIndex()) {
-                    continue;
-                }
-                System.out.println("=> diff: entityCode : " + emtityAttrCode + "; curAttrType : " + dbEntityAttr.getAttrType() +
-                        "; targetAttrType : " + targetEntityAttr.getAttrType());
-                dbEntityAttr.setHfmdEntityAttrName(targetEntityAttr.getHfmdEntityAttrName());
-                dbEntityAttr.setIspk(targetEntityAttr.getIspk());
-                dbEntityAttr.setAttrType(targetEntityAttr.getAttrType());
-                dbEntityAttr.setPri(targetEntityAttr.getPri());
-                dbEntityAttr.setSize(targetEntityAttr.getSize());
-                dbEntityAttr.setNullable(targetEntityAttr.getNullable());
-                modModelContainer.getEntityAttrMap().put(emtityAttrCode,dbEntityAttr);
+                    if(targetEntityAttr.getAttrType() != null && targetEntityAttr.getAttrType() == HfmdEntityAttr1AttrTypeEnum.NUMERIC.getIndex()
+                            && dbEntityAttr.getAttrType() == HfmdEntityAttr1AttrTypeEnum.DECIMAL.getIndex()) {
+                        continue;
+                    }
+                    System.out.println("=> diff: entityCode : " + emtityAttrCode + "; curAttrType : " + dbEntityAttr.getAttrType() +
+                            "; targetAttrType : " + targetEntityAttr.getAttrType());
+                    changed = true;
 //            }else if (!(dbEntityAttr.getPri().compareTo(targetEntityAttr.getPri()) == 0)) {
 //                System.out.println("=> diff:curPri : " + dbEntityAttr.getPri() +
 //                        "; targetPri : " + targetEntityAttr.getPri());
@@ -184,26 +217,41 @@ public class HfModelContainerUtil {
 //                dbEntityAttr.setSize(targetEntityAttr.getSize());
 //                dbEntityAttr.setNullable(targetEntityAttr.getNullable());
 //                modModelContainer.getEntityAttrMap().put(emtityAttrCode,dbEntityAttr);
-            }else if (!dbEntityAttr.getNullable().equals(targetEntityAttr.getNullable())) {
-                System.out.println("=> diff entityCode : " + emtityAttrCode + "; :curNullable : " + dbEntityAttr.getNullable() +
-                        "; targetNullable : " + targetEntityAttr.getNullable());
-                dbEntityAttr.setHfmdEntityAttrName(targetEntityAttr.getHfmdEntityAttrName());
-                dbEntityAttr.setIspk(targetEntityAttr.getIspk());
-                dbEntityAttr.setAttrType(targetEntityAttr.getAttrType());
-                dbEntityAttr.setPri(targetEntityAttr.getPri());
-                dbEntityAttr.setSize(targetEntityAttr.getSize());
-                dbEntityAttr.setNullable(targetEntityAttr.getNullable());
-                modModelContainer.getEntityAttrMap().put(emtityAttrCode,dbEntityAttr);
-            }else if ((dbEntityAttr.getSize() != null && !dbEntityAttr.getSize().equals(targetEntityAttr.getSize()))) {
-                System.out.println("=> diff:curSize : " + dbEntityAttr.getSize() +
-                        "; targetSize : " + targetEntityAttr.getSize());
-                dbEntityAttr.setHfmdEntityAttrName(targetEntityAttr.getHfmdEntityAttrName());
-                dbEntityAttr.setIspk(targetEntityAttr.getIspk());
-                dbEntityAttr.setAttrType(targetEntityAttr.getAttrType());
-                dbEntityAttr.setPri(targetEntityAttr.getPri());
-                dbEntityAttr.setSize(targetEntityAttr.getSize());
-                dbEntityAttr.setNullable(targetEntityAttr.getNullable());
-                modModelContainer.getEntityAttrMap().put(emtityAttrCode,dbEntityAttr);
+                }
+
+                if(changed && targetEntityAttr.getAttrType() != null) {
+                    modModelContainer.getEntityAttrChangeTypeMap().put(dbEntityAttr, HfModelContainer.AttrChangeType.FIELD);
+                }
+
+                if (isDiff(dbEntityAttr.getRelHfmdEntityAttrId(), targetEntityAttr.getRelHfmdEntityAttrId())) {
+                    System.out.println("=> diff: entityCode : " + emtityAttrCode + "; curRelHfmdEntityAttrId : " + dbEntityAttr.getRelHfmdEntityAttrId() +
+                            "; targetRelHfmdEntityAttrId : " + targetEntityAttr.getRelHfmdEntityAttrId());
+                    if(modModelContainer.getEntityAttrChangeTypeMap().get(dbEntityAttr) != null
+                            && modModelContainer.getEntityAttrChangeTypeMap().get(dbEntityAttr) == HfModelContainer.AttrChangeType.FIELD ) {
+                        modModelContainer.getEntityAttrChangeTypeMap().put(dbEntityAttr, HfModelContainer.AttrChangeType.FULL);
+                    }else {
+                        modModelContainer.getEntityAttrChangeTypeMap().put(dbEntityAttr, HfModelContainer.AttrChangeType.FK);
+                    }
+                    changed = true;
+                }
+
+                if(changed) {
+                    if(modModelContainer.getEntityAttrChangeTypeMap().get(dbEntityAttr) != null) {
+                        if(modModelContainer.getEntityAttrChangeTypeMap().get(dbEntityAttr).containField()) {
+                            dbEntityAttr.setHfmdEntityAttrName(targetEntityAttr.getHfmdEntityAttrName());
+                            dbEntityAttr.setIspk(targetEntityAttr.getIspk());
+                            dbEntityAttr.setAttrType(targetEntityAttr.getAttrType());
+                            dbEntityAttr.setPri(targetEntityAttr.getPri());
+                            dbEntityAttr.setSize(targetEntityAttr.getSize());
+                            dbEntityAttr.setNullable(targetEntityAttr.getNullable());
+                            dbEntityAttr.setHfmdEnumClassId(targetEntityAttr.getHfmdEnumClassId());
+                        }
+                        if(modModelContainer.getEntityAttrChangeTypeMap().get(dbEntityAttr).containFk()) {
+                            dbEntityAttr.setRelHfmdEntityAttrId(targetEntityAttr.getRelHfmdEntityAttrId());
+                        }
+                        modModelContainer.getEntityAttrMap().put(emtityAttrCode,dbEntityAttr);
+                    }
+                }
             }
 
             HfmdEntity hfmdEntity = dbEntityMap.get(emtityAttrCode.split("\\.")[0].trim());
@@ -224,9 +272,80 @@ public class HfModelContainerUtil {
         return result;
     }
 
-    private static boolean checkEntityName(String s1, String s2) {
-        s1 = s1.replace(":", " ").replace("\\n"," ");
-        s2 = s2.replace(":", " ").replace("\\n"," ");
+    private static boolean isDiff(Long originValue, Long targetValue) {
+        if(originValue == null && targetValue == null) {
+            return false;
+        }
+        if(originValue == null || targetValue == null) {
+            return true;
+        }
+        return !originValue.equals(targetValue);
+    }
+
+    private static boolean isDiff(Integer originValue, Integer targetValue) {
+        if(originValue == null && targetValue == null) {
+            return false;
+        }
+        if(originValue == null || targetValue == null) {
+            return true;
+        }
+        return !originValue.equals(targetValue);
+    }
+
+    private static boolean isDiff(String originValue, String targetValue) {
+        if(StringUtils.isBlank(originValue) && StringUtils.isBlank(targetValue)) {
+            return false;
+        }
+
+        if(StringUtils.isBlank(originValue) || StringUtils.isBlank(targetValue)) {
+            return true;
+        }
+        return !originValue.trim().equals(targetValue.trim());
+    }
+
+
+    private static void overrideRelHfmdEntityAttrIdIfDbExists(Map<String, HfmdEntityAttr> dbEntityAttrMap,
+                                                              Map<String, HfmdEntityAttr> targetEntityAttrMap,
+                                                              HfModelContainer modModelContainer) {
+        if(dbEntityAttrMap != null) {
+            Map<Long, Long> dbKeyRewriteMap = new HashMap<Long, Long>();
+            for (String emtityAttrCode : targetEntityAttrMap.keySet()) {
+                HfmdEntityAttr targetEntityAttr = targetEntityAttrMap.get(emtityAttrCode);
+                if(targetEntityAttr.getRelHfmdEntityAttrId() != null) {
+                    dbKeyRewriteMap.put(targetEntityAttr.getRelHfmdEntityAttrId(), null);
+
+                }
+            }
+            for (String emtityAttrCode : targetEntityAttrMap.keySet()) {
+                HfmdEntityAttr targetEntityAttr = targetEntityAttrMap.get(emtityAttrCode);
+                if(dbKeyRewriteMap.containsKey(targetEntityAttr.getHfmdEntityAttrId())) {
+                    if(dbEntityAttrMap.containsKey(emtityAttrCode)) {//该主键是别的表的外检，且数据库已经存在该主键
+                        HfmdEntityAttr dbEntityAttr = dbEntityAttrMap.get(emtityAttrCode);
+                        dbKeyRewriteMap.put(targetEntityAttr.getHfmdEntityAttrId(), dbEntityAttr.getHfmdEntityAttrId());
+                    }
+                }
+            }
+            for (HfmdEntityAttr targetEntityAttr : targetEntityAttrMap.values()) {
+                if(targetEntityAttr.getRelHfmdEntityAttrId() != null) {
+                    Long dbKey = dbKeyRewriteMap.get(targetEntityAttr.getRelHfmdEntityAttrId());
+                    if(dbKey != null) {
+                        targetEntityAttr.setRelHfmdEntityAttrId(dbKey);
+                    }
+                }
+            }
+        }
+    }
+
+    private static boolean checkEntityNameDiff(String s1, String s2) {
+        if(StringUtils.isBlank(s1) && StringUtils.isBlank(s2)) {
+            return false;
+        }
+
+        if(StringUtils.isBlank(s1) || StringUtils.isBlank(s2)) {
+            return true;
+        }
+        s1 = s1.trim().replace(":", " ").replace("\\n"," ");
+        s2 = s2.trim().replace(":", " ").replace("\\n"," ");
         if(s1.contains(" ")) {
             s1 = s1.substring(0, s1.indexOf(" "));
         }
@@ -235,7 +354,7 @@ public class HfModelContainerUtil {
             s2 = s2.substring(0, s2.indexOf(" "));
         }
 //        System.out.println(s1 +"|" + s2);
-        return s1.equals(s2);
+        return !s1.equals(s2);
     }
 
     public static HfModelContainer[] mergerEntityToDataSet(HfModelContainer[] resultModelContainers, HfModelContainer dbModelContainer) {
@@ -493,8 +612,8 @@ public class HfModelContainerUtil {
         }
     }
 
-    public static List<String> getSql(List<Map<String, Object>> result, String tableName) {
-        if(result == null || result.size() == 0) return null;
+    public static List<String> getSql(List<Map<String, Object>> result, String tableName, boolean merge) {
+        if(result == null || result.size() == 0) return new ArrayList<String>();
 
         Map<String, List<String>> tmpMap = new LinkedHashMap<String, List<String>>();
 
@@ -508,12 +627,19 @@ public class HfModelContainerUtil {
         List<String> sqls = new ArrayList<String>();
         for (Map.Entry<String, List<String>> entry : tmpMap.entrySet()) {
             StringBuffer sql = new StringBuffer().append("insert into " +  tableName + entry.getKey() + " values ");
-            for (String values : entry.getValue()) {
-                sql.append(values).append(",");
+            if(merge) {
+                for (String values : entry.getValue()) {
+                    sql.append(values).append(",");
+                }
+                sqls.add(sql.substring(0, sql.length() - 1));
+            }else {
+                for (String values : entry.getValue()) {
+                    sqls.add(sql.toString() + values );
+                }
             }
-            sqls.add(sql.substring(0, sql.length() - 1));
-        }
 
+        }
+        Collections.sort(sqls);
         return sqls;
     }
 
@@ -554,6 +680,8 @@ public class HfModelContainerUtil {
         Map<HfmdEntity, List<HfmdEntityAttr>> newTableMap = new HashMap<HfmdEntity, List<HfmdEntityAttr>>();
 
         Map<String, HfmdEntityAttr> entityAttrMap = addContainer.getEntityAttrMap();
+        List<String> tempList = new ArrayList<String>();
+
         for (String key : entityAttrMap.keySet()) {
 
             HfmdEntityAttr entityAttr = entityAttrMap.get(key);
@@ -568,10 +696,13 @@ public class HfModelContainerUtil {
             }else{
                 StringBuffer sql = new StringBuffer();
                 sql.append("alter table " + entityName + " add column " + getColumnInfo(entityAttr) + ";");
-                result.add(sql.toString());
+                tempList.add(sql.toString());
             }
         }
+        Collections.sort(tempList);
+        result.addAll(tempList);
 
+        tempList = new ArrayList<String>();
         for (HfmdEntity hfmdEntity : newTableMap.keySet()) {
             StringBuffer sql = new StringBuffer();
             sql.append("create table " + hfmdEntity.getHfmdEntityCode() + "(").append("\n");
@@ -590,24 +721,58 @@ public class HfModelContainerUtil {
                 sql.append(" comment '" + hfmdEntity.getHfmdEntityName() + "'");
             }
             sql.append(";");
-            result.add(sql.toString());
+            tempList.add(sql.toString());
         }
+        Collections.sort(tempList);
+        result.addAll(0, tempList);
 
+
+        tempList = new ArrayList<String>();
         for (HfmdEntity hfmdEntity : modifyContainer.getEntityMap().values()) {
             StringBuffer sql = new StringBuffer();
-            sql.append("alter table " + hfmdEntity.getHfmdEntityCode() + " comment " + hfmdEntity.getHfmdEntityName() + ";");
-            result.add(sql.toString());
+            sql.append("alter table " + hfmdEntity.getHfmdEntityCode() + " comment '" + hfmdEntity.getHfmdEntityName() + "';");
+            tempList.add(sql.toString());
         }
+        Collections.sort(tempList);
+        result.addAll(tempList);
 
         entityAttrMap = modifyContainer.getEntityAttrMap();
+        tempList = new ArrayList<String>();
         for (String key : entityAttrMap.keySet()) {
             HfmdEntityAttr entityAttr = entityAttrMap.get(key);
-            String entityName = key.substring(0, key.indexOf("."));
-            StringBuffer sql = new StringBuffer();
-            sql.append("alter table " + entityName + " modify column " + getColumnInfo(entityAttr) + ";");
-            result.add(sql.toString());
+            if(modifyContainer.getEntityAttrChangeTypeMap().containsKey(entityAttr)
+                    && modifyContainer.getEntityAttrChangeTypeMap().get(entityAttr).containField()) {
+                String entityName = key.substring(0, key.indexOf("."));
+                StringBuffer sql = new StringBuffer();
+                sql.append("alter table " + entityName + " modify column " + getColumnInfo(entityAttr) + ";");
+                tempList.add(sql.toString());
+            }
+        }
+        Collections.sort(tempList);
+        result.addAll(tempList);
+
+        tempList = new ArrayList<String>();
+        for (String key : entityAttrMap.keySet()) {
+            HfmdEntityAttr entityAttr = entityAttrMap.get(key);
+            if(entityAttr.getRelHfmdEntityAttrId() != null && entityAttr.getRelHfmdEntityAttrId() > 0
+                    && modifyContainer.getEntityAttrChangeTypeMap().containsKey(entityAttr)
+                    && modifyContainer.getEntityAttrChangeTypeMap().get(entityAttr).containFk()) {
+
+                String entityName = key.substring(0, key.indexOf("."));
+                String entityAttrName = key.substring(key.indexOf(".") + 1);
+                StringBuffer sql = new StringBuffer();
+                String relEntityInfo = modifyContainer.getRelEntityAttr2AttrMapper().get(key);
+                String relEntityName = relEntityInfo.substring(0, relEntityInfo.indexOf("."));
+                String relEntityAttrName = relEntityInfo.substring(relEntityInfo.indexOf(".") + 1);
+                sql.append("alter table " + entityName + " add constraint FK_" + entityName + "_4_" + entityAttrName
+                        + " foreign key ( " + entityAttrName + ") references " + relEntityName +"(" + relEntityAttrName
+                        +") on delete restrict on update restrict;");
+                tempList.add(sql.toString());
+            }
         }
 
+        Collections.sort(tempList);
+        result.addAll(tempList);
         return result;
     }
 

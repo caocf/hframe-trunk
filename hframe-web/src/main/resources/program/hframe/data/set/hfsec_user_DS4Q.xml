@@ -8,13 +8,17 @@
     <field code="hfsec_user_name" name="用户名称" edit-type="input"/>
     <field code="account" name="用户账号" edit-type="input"/>
     <field code="password" name="用户密码" edit-type="input"/>
-    <field code="gender" name="性别" edit-type="input"/>
+    <field code="gender" name="性别" edit-type="select">
+      <enum-class code="DEFAULT.GENDER"/>
+    </field>
     <field code="mobile" name="手机号" edit-type="input"/>
     <field code="email" name="邮箱" edit-type="input"/>
     <field code="addr" name="地址" edit-type="input"/>
     <field code="last_login_time" name="上次登录时间" edit-type="datetime"/>
-    <field code="status" name="状态" edit-type="input"/>
-    <field code="hfsec_org_id" name="归属组织ID" edit-type="hidden" not-null="true">
+    <field code="status" name="状态" edit-type="select">
+      <enum-class code="hfsec_user.status"/>
+    </field>
+    <field code="hfsec_org_id" name="归属组织ID" edit-type="input" not-null="true">
       <rel entity-code="hfsec_organize/hfsec_organize_id/hfsec_organize_name"/>
     </field>
     <field code="creator_id" name="创建人" edit-type="input">

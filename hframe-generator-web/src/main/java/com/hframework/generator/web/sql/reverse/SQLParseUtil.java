@@ -38,6 +38,9 @@ public class SQLParseUtil {
 	private static final String CREATE_TABLE = "create table";
 	private static final String COMMENT = "comment";
 	private static final String ADD_CONSTRAINT = "add constraint";
+	private static final String ADD_COLUMN  = "add column";
+	private static final String MODIFY_COLUMN  = "modify column";
+
 	private static final String REFERENCES = "references";
 	private static final String FOREIGN_KEY = "foreign key";
 	private static final String ALTER_TABLE = "alter table";
@@ -63,7 +66,7 @@ public class SQLParseUtil {
 //					}
 
 					parseSQL2ModelContainer(modelContainer,
-							cmd.replaceAll("/\\*[ a-zA-Z:0-9_\\=. /]+\\*/", "").replaceAll("`", ""));
+							cmd.replaceAll("/\\*[ a-zA-Z:0-9_\\=. /]+\\*/", "").replaceAll("`", "").trim());
 
 					System.out.println(cmd.replaceAll("/\\*[ a-zA-Z:0-9_\\=. /]+\\*/", "").trim());
 				}
@@ -98,6 +101,18 @@ public class SQLParseUtil {
 
 //				System.out.println("==>" + tmpString);
 			}
+			if(tablesDesc.toLowerCase().indexOf(COMMENT + " ") > 0) {
+//				System.out.println("==>" + tablesDesc + ";" +tablesDesc.toLowerCase().indexOf(COMMENT + "="));
+				String tmpString = tablesDesc.substring(tablesDesc.toLowerCase().indexOf(COMMENT + " ") + 8);
+				tmpString = tmpString.substring(tmpString.indexOf("'") + 1);
+//				System.out.println("==>" + tmpString);
+				tmpString = tmpString.substring(0, tmpString.indexOf("'"));
+				entity.setHfmdEntityName(tmpString);
+				entity.setHfmdEntityDesc(tmpString);
+
+//				System.out.println("==>" + tmpString);
+			}
+
 			String[] splitStrs = tableContent.split(",");
 			String columnInfo = "";
 			for (String splitStr : splitStrs) {
@@ -141,21 +156,79 @@ public class SQLParseUtil {
 	}
 
 	private static void parseAlterInfo(HfmdEntity entity, String alterInfo) {
-		if(alterInfo.toLowerCase().contains(COMMENT)) {
-			entity.setHfmdEntityName(alterInfo.substring(alterInfo.toLowerCase().indexOf(COMMENT) + 7).trim().replaceAll("'",""));
-			entity.setHfmdEntityDesc(alterInfo.substring(alterInfo.toLowerCase().indexOf(COMMENT)+7).trim().replaceAll("'",""));
+		if(alterInfo.toLowerCase().contains(ADD_COLUMN)) {
+			String tableContent = alterInfo.substring(ADD_COLUMN.length());
+			String[] splitStrs = tableContent.split(",");
+			String columnInfo = "";
+			for (String splitStr : splitStrs) {
+				columnInfo += splitStr;
 
-		}
-		if(alterInfo.toLowerCase().contains(ADD_CONSTRAINT)) {
-			String attrName = alterInfo.substring(
-					alterInfo.toLowerCase().indexOf(FOREIGN_KEY + " (")+13,alterInfo.indexOf(")")).trim();
-			String relEntityInfo = alterInfo.substring(
-					alterInfo.toLowerCase().indexOf(REFERENCES)+10,alterInfo.lastIndexOf(")")).trim();
-			String relEntityName = relEntityInfo.split("\\(")[0].trim();
-			String relEntityAttrName = relEntityInfo.split("\\(")[1].trim();
-			HfmdEntityAttr entityAttr = modelContainer.getEntityAttr(entity.getHfmdEntityCode(), attrName);
-			HfmdEntityAttr relEntityAttr = modelContainer.getEntityAttr(relEntityName, relEntityAttrName);
-			entityAttr.setRelHfmdEntityAttrId(relEntityAttr.getHfmdEntityAttrId());
+				//表明为描述中带有",",该行信息并没有正常结束
+				if(columnInfo.toLowerCase().indexOf(COMMENT)> 2 &&  columnInfo.indexOf("'") == columnInfo.lastIndexOf("'")) {
+					continue;
+				}
+
+				//表明可能为字段类型可能为numric(10,2)形式，没有正常结束
+				if(columnInfo.contains("(") && !columnInfo.contains(")")) {
+					columnInfo += ",";
+					continue;
+				}
+
+				String comment = "";
+				if(columnInfo.toLowerCase().indexOf(COMMENT)> 2){
+					comment = columnInfo.substring(columnInfo.toLowerCase().indexOf(COMMENT)+7).trim();
+					columnInfo = columnInfo.substring(0,columnInfo.toLowerCase().indexOf(COMMENT));
+				}
+
+				parseColumnInfo(entity,columnInfo,comment);
+				columnInfo = "";
+			}
+
+		}else if(alterInfo.toLowerCase().contains(MODIFY_COLUMN)) {
+			String tableContent = alterInfo.substring(MODIFY_COLUMN.length());
+			String[] splitStrs = tableContent.split(",");
+			String columnInfo = "";
+			for (String splitStr : splitStrs) {
+				columnInfo += splitStr;
+
+				//表明为描述中带有",",该行信息并没有正常结束
+				if(columnInfo.toLowerCase().indexOf(COMMENT)> 2 &&  columnInfo.indexOf("'") == columnInfo.lastIndexOf("'")) {
+					continue;
+				}
+
+				//表明可能为字段类型可能为numric(10,2)形式，没有正常结束
+				if(columnInfo.contains("(") && !columnInfo.contains(")")) {
+					columnInfo += ",";
+					continue;
+				}
+
+				String comment = "";
+				if(columnInfo.toLowerCase().indexOf(COMMENT)> 2){
+					comment = columnInfo.substring(columnInfo.toLowerCase().indexOf(COMMENT)+7).trim();
+					columnInfo = columnInfo.substring(0,columnInfo.toLowerCase().indexOf(COMMENT));
+				}
+
+				parseColumnInfo(entity,columnInfo,comment);
+				columnInfo = "";
+			}
+
+		}else {
+			if(alterInfo.toLowerCase().contains(COMMENT)) {
+				entity.setHfmdEntityName(alterInfo.substring(alterInfo.toLowerCase().indexOf(COMMENT) + 7).trim().replaceAll("'",""));
+				entity.setHfmdEntityDesc(alterInfo.substring(alterInfo.toLowerCase().indexOf(COMMENT)+7).trim().replaceAll("'",""));
+
+			}
+			if(alterInfo.toLowerCase().contains(ADD_CONSTRAINT)) {
+				String attrName = alterInfo.substring(
+						alterInfo.toLowerCase().indexOf(FOREIGN_KEY + " (")+13,alterInfo.indexOf(")")).trim();
+				String relEntityInfo = alterInfo.substring(
+						alterInfo.toLowerCase().indexOf(REFERENCES)+10,alterInfo.lastIndexOf(")")).trim();
+				String relEntityName = relEntityInfo.split("\\(")[0].trim();
+				String relEntityAttrName = relEntityInfo.split("\\(")[1].trim();
+				HfmdEntityAttr entityAttr = modelContainer.getEntityAttr(entity.getHfmdEntityCode(), attrName);
+				HfmdEntityAttr relEntityAttr = modelContainer.getEntityAttr(relEntityName, relEntityAttrName);
+				entityAttr.setRelHfmdEntityAttrId(relEntityAttr.getHfmdEntityAttrId());
+			}
 		}
 
 
@@ -336,8 +409,10 @@ public class SQLParseUtil {
 					hfmdEntityAttr.setModifyOpId(opId);
 					hfmdEntityAttr.setModifyTime(curDate);
 					hfmdEntityAttr.setDelFlag(delFlag);
-					hfmdEntityAttr.setHfmdEntityId(
-					modelContainer.getEntityMap().get(attrId.split("\\.")[0]).getHfmdEntityId());
+					if(modelContainer.getEntityMap().get(attrId.split("\\.")[0]) != null) {
+						hfmdEntityAttr.setHfmdEntityId(
+								modelContainer.getEntityMap().get(attrId.split("\\.")[0]).getHfmdEntityId());
+					}
 				}
 			}
 

@@ -102,6 +102,12 @@ public class WebContext {
 
         //加载数据集连带规则信息
         loadDataSetRuler();
+
+        for (DataSetDescriptor dataSetDescriptor : dataSets.values()) {
+            dataSetDescriptor.setDataSetRulers();
+        }
+
+
         //页面架构数据初始化
         pageSettingInitial();
 
@@ -366,6 +372,7 @@ public class WebContext {
         pageDescriptor.setModule(moduleCode);
         pageDescriptor.setCode(page.getId());
         pageDescriptor.setName(page.getName());
+        pageDescriptor.setPage(page);
         pageDescriptor.setPageTemplate(pageTemplates.get(page.getPageTemplate()));
 
 

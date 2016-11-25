@@ -1,11 +1,12 @@
 package com.hframe.service.handler;
 
-import com.hframe.domain.model.HfpmModule;
-import com.hframe.domain.model.HfpmModule_Example;
-import com.hframe.domain.model.HfpmProgram;
+import com.hframe.domain.model.*;
+import com.hframe.service.interfaces.IHfmdEnumClassSV;
 import com.hframe.service.interfaces.IHfpmModuleSV;
 import com.hframework.base.bean.AbstractBusinessHandler;
 import com.hframework.common.annotation.extension.AfterCreateHandler;
+import com.hframework.common.ext.CollectionUtils;
+import com.hframework.common.ext.Mapper;
 import com.hframework.common.util.FileUtils;
 import com.hframework.common.util.message.VelocityUtil;
 import com.hframework.common.util.message.XmlUtils;
@@ -35,6 +36,9 @@ import java.util.Map;
 public class HfpmProgramHandler extends AbstractBusinessHandler<HfpmProgram> {
     @Resource
     private IHfpmModuleSV hfpmModuleSV;
+    @Resource
+    private IHfmdEnumClassSV hfmdEnumClassSV;
+
 
     @AfterCreateHandler
     public boolean initProgramCodes(HfpmProgram hfpmProgram) throws Exception {
@@ -126,11 +130,28 @@ public class HfpmProgramHandler extends AbstractBusinessHandler<HfpmProgram> {
         final HfModelContainer sqlFileModelContainer = SQLParseUtil.parseModelContainerFromSQLFile(
                 sqlFile, program.getHfpmProgramCode(), program.getHfpmProgramName(), hframeModule.getHfpmModuleCode(),
                 hframeModule.getHfpmModuleName());
+
         final HfModelContainer baseModelContainer = HfModelContainerUtil.getInstance();
         baseModelContainer.setProgram(program);
         baseModelContainer.setModuleMap(new HashMap<Long, HfpmModule>() {{
             put(hframeModule.getHfpmModuleId(), hframeModule);
         }});
+        //添加枚举值
+        HfmdEnumClass_Example example1 = new HfmdEnumClass_Example();
+        example1.createCriteria().andHfpmProgramIdEqualTo(program.getHfpmProgramId());
+        example1.or().andHfpmProgramIdIsNull();
+        List<HfmdEnumClass> hfmdEnumClasses = hfmdEnumClassSV.getHfmdEnumClassListByExample(example1);
+        baseModelContainer.setEnumClassCodeMap(CollectionUtils.convert(hfmdEnumClasses, new Mapper<String, HfmdEnumClass>() {
+            public <K> K getKey(HfmdEnumClass hfmdEnumClass) {
+                return (K) hfmdEnumClass.getHfmdEnumClassCode();
+            }
+        }));
+        baseModelContainer.setEnumClassMap(CollectionUtils.convert(hfmdEnumClasses, new Mapper<Long, HfmdEnumClass>() {
+            public <K> K getKey(HfmdEnumClass hfmdEnumClass) {
+                return (K) hfmdEnumClass.getHfmdEnumClassId();
+            }
+        }));
+
         HfModelContainer[] resultModelContainers =
                 HfModelContainerUtil.mergerModelContainer(baseModelContainer, sqlFileModelContainer);
         HfModelService.get().executeModelInsert(resultModelContainers[0]);

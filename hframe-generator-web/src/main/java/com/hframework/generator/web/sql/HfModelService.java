@@ -2,6 +2,8 @@ package com.hframework.generator.web.sql;
 
 import com.hframe.domain.model.*;
 import com.hframe.service.interfaces.*;
+import com.hframework.common.ext.CollectionUtils;
+import com.hframework.common.ext.Mapper;
 import com.hframework.common.frame.ServiceFactory;
 import com.hframework.generator.web.bean.HfModelContainer;
 
@@ -26,6 +28,9 @@ public class HfModelService {
     private IHfpmDataSetSV iHfpmDataSetSV = ServiceFactory.getService(IHfpmDataSetSV.class);
     @Resource
     private IHfpmDataFieldSV iHfpmDataFieldSV = ServiceFactory.getService(IHfpmDataFieldSV.class);
+    @Resource
+    private IHfmdEnumClassSV hfmdEnumClassSV = ServiceFactory.getService(IHfmdEnumClassSV.class);
+
 
     public HfModelContainer getModelContainerFromDB(String programCode, String programeName, String moduleCode, String moduleName) throws Exception {
 
@@ -107,6 +112,23 @@ public class HfModelService {
                     dataFieldListMap.put(hfpmDataSet.getHfpmDataSetCode(), hfpmDataFieldList);
                 }
             }
+
+            //添加枚举值
+            HfmdEnumClass_Example example1 = new HfmdEnumClass_Example();
+            example1.createCriteria().andHfpmProgramIdEqualTo(programId);
+            example1.or().andHfpmProgramIdIsNull();
+            List<HfmdEnumClass> hfmdEnumClasses = hfmdEnumClassSV.getHfmdEnumClassListByExample(example1);
+            hfModelContainer.setEnumClassCodeMap(CollectionUtils.convert(hfmdEnumClasses, new Mapper<String, HfmdEnumClass>() {
+                public <K> K getKey(HfmdEnumClass hfmdEnumClass) {
+                    return (K) hfmdEnumClass.getHfmdEnumClassCode();
+                }
+            }));
+            hfModelContainer.setEnumClassMap(CollectionUtils.convert(hfmdEnumClasses, new Mapper<Long, HfmdEnumClass>() {
+                public <K> K getKey(HfmdEnumClass hfmdEnumClass) {
+                    return (K) hfmdEnumClass.getHfmdEnumClassId();
+                }
+            }));
+
         }
 
         return hfModelContainer;

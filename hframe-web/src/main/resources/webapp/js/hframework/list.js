@@ -33,8 +33,14 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
 
     function valueChange($this){
 
-        $code = $this.attr("name");
-        $value =$this.val();
+        var $code = $this.attr("name");
+        var curValue =$this.val();
+
+        var lastValue = $this.attr("last-value");
+        if(lastValue == curValue) {
+            return;
+        }
+        $this.attr("last-value", curValue);
         //alert($code + "=" + $value);
         var $allRules;
         if($this.parents(".hfform").size() > 0) {
@@ -45,11 +51,11 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
             $allRules = JSON.parse($(".breadcrumb .ruler").text());
         }
 
-        $curRules = $allRules[$code + "=" + $value];
+        $curRules = $allRules[$code + "=" + curValue];
         if(!$curRules) {
             $curRules = $allRules[$code];
         }
-        doRulerEvent($this, $curRules, $value);
+        doRulerEvent($this, $curRules, curValue);
 
         var helperJson = $(" .helper").text();
         if(!helperJson) helperJson="{}";
@@ -57,7 +63,7 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
         $curRules = $allRules[$code];
 
         var $targetComponent = $(" .helper").parents("[component]")[0];
-        doHelperEvent($allRules,$this, $curRules, $value,$targetComponent);
+        doHelperEvent($allRules,$this, $curRules, curValue,$targetComponent);
     }
 
     function doHelperEvent(_allRules, $this, $curRules,$value,$targetComponent) {
@@ -126,7 +132,10 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
                 }else {
                     $target = getTargetElement($this.parents("tr"), "[name=" + $targetCode + "]");
                 }
-                $.selectLoad($target);
+                if($target[0].tagName == 'SELECT') {
+                    $.selectLoad($target);
+                }
+
             }
         }else {
             for(var $index in $curRules) {
@@ -185,12 +194,19 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
             //$curRow =$(".hflist-fast-data [id='" + compareKey + "'][value='" + compareValue + "']").parents("tr")[0];
 
             var $newRow = $($curRow).clone();
+
             $($newRow).find("input[type=hidden]").val("");
             $newRow.find("input[value*='{'][value*='}']").each(function(){
                 $(this).val(replaceVarChars($(this).val()));
             });
             $($curRow).find("select").each(function(i){
                 $($newRow).find("select").eq(i).val($(this).val());
+            });
+            $(".hflist-data").append($newRow);
+            $($newRow).find(".hfselectx").each(function(i){
+                $(this).next().remove();
+                $(this).show();
+                $(this).chosen();//…Ë÷√Œ™selectx
             });
 
             if(($(".hflist-data").children(":last").find("input[value !='']").size() == 0 ||
@@ -199,7 +215,7 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
                 $(".hflist-data").children(":last").remove()
             }
 
-            $(".hflist-data").append($newRow);
+
             //
             //$($curRow).after($newRow);
 
@@ -245,7 +261,7 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
                         $this.find("[id="+ compareKey + "]").each(function(){
                             $.selectLoad($(this),function(){
                                 fastDataTagInitExe($this, compareKey, compareName);
-                            }, true);
+                            }, false);
                         });
                     }else {
                         fastDataTagInitExe($this, compareKey, compareName);
@@ -360,10 +376,7 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
             $(compoContainer).find(".hflist-data").html($newHfList.find(".hflist-data").html());
             componentinit();
             $.reloadListDisplay();
-            $(compoContainer).find("[data-code][data-condition]").each(function(){
-                var $this = $(this);
-                $.selectLoad($this,null,true);
-            });
+            $.reloadDisplay(compoContainer);
         },'html');
     }
 
@@ -395,11 +408,7 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
             var $newHfList = $(data);
             //console.log(data);
             $(compoContainer).find(".hflist-fast-data").html($newHfList.find(".hflist-fast-data").html());
-
-            $(compoContainer).find(".hflist-fast-data").find("[data-code][data-condition]").each(function(){
-                var $this = $(this);
-                $.selectLoad($this,null,true);
-            });
+            $.reloadDisplay($(compoContainer).find(".hflist-fast-data"));
             fastDataTagInit();
         },'html');
     }

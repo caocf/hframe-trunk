@@ -2,10 +2,7 @@ package com.hframework.base.service;
 
 import com.google.common.collect.Lists;
 import com.hframe.domain.model.*;
-import com.hframe.service.interfaces.IHfsecMenuSV;
-import com.hframe.service.interfaces.IHfsecOrganizeSV;
-import com.hframe.service.interfaces.IHfsecRoleAuthorizeSV;
-import com.hframe.service.interfaces.IHfsecUserAuthorizeSV;
+import com.hframe.service.interfaces.*;
 import com.hframework.base.bean.AuthContext;
 import com.hframework.common.ext.CollectionUtils;
 import com.hframework.common.ext.Mapper;
@@ -33,6 +30,9 @@ public class OrgRoleAuthService implements AuthService {
     private IHfsecOrganizeSV hfsecOrganizeSV;
 
     @Resource
+    private IHfsecRoleSV hfsecRoleSV;
+
+    @Resource
     private IHfsecMenuSV hfsecMenuSV;
 
 
@@ -53,7 +53,13 @@ public class OrgRoleAuthService implements AuthService {
             context.getAuthFunctionManager().put(hfsecMenu.getUrl(), hfsecMenu.getHfsecMenuId());
         }
 
-
+        Long superOperatorRoleId = -1L;
+        List<HfsecRole> hfsecRoleAll = hfsecRoleSV.getHfsecRoleAll();
+        for (HfsecRole hfsecRole : hfsecRoleAll) {
+            if("super_operator".equals(hfsecRole.getHfsecRoleCode())) {
+                superOperatorRoleId = hfsecRole.getHfsecRoleId();
+            }
+        }
 
         //设置用户功能-数据授权信息（去重）
         Long userId = hfsecUser.getHfsecUserId();
@@ -64,17 +70,24 @@ public class OrgRoleAuthService implements AuthService {
 
         for (HfsecUserAuthorize hfsecUserAuthorize : userAuthorizeList) {
             Long hfsecRoleId = hfsecUserAuthorize.getHfsecRoleId();
+            //如果是超级操作员，添加所有菜单给授权
+            if(superOperatorRoleId == hfsecRoleId) {
+                for (HfsecMenu hfsecMenu : hfsecMenuAll) {
+                    context.getAuthManager().add(hfsecUserAuthorize.getHfsecOrganizeId(), hfsecMenu.getHfsecMenuId());
+                }
+                continue;
+            }
             HfsecRoleAuthorize_Example roleAuthorizeExample = new HfsecRoleAuthorize_Example();
             roleAuthorizeExample.createCriteria().andHfsecRoleIdEqualTo(hfsecRoleId);
             List<HfsecRoleAuthorize> roleAuthorizeList =
                     hfsecRoleAuthorizeSV.getHfsecRoleAuthorizeListByExample(roleAuthorizeExample);
             for (HfsecRoleAuthorize hfsecRoleAuthorize : roleAuthorizeList) {
-                context.getAuthManager().add(hfsecUserAuthorize.getHfsecOrganizeId(), hfsecRoleAuthorize.getHfsecMenuId());
+                    context.getAuthManager().add(hfsecUserAuthorize.getHfsecOrganizeId(), hfsecRoleAuthorize.getHfsecMenuId());
             }
         }
 
-        context.getAuthManager().setAuthDataClass(HfsecOrganize.class);
-        context.getAuthManager().setAuthFunctionClass(HfsecMenu.class);
+        context.getAuthManager().addAuthDataClass(HfsecOrganize.class);
+        context.getAuthManager().addAuthFunctionClass(HfsecMenu.class);
 
         request.getSession().setAttribute(SessionKey.AUTH, context);
         return context;

@@ -28,6 +28,7 @@ public class DataSetDescriptor {
 
     private Field keyField;
 
+    //<hfpm_program_id,hfpm_program/hfpm_program_id>
     private Map<String, String> relFieldKeyMap = new HashMap<String, String>();
 
     //<hfpm_program/hfpm_program_id,ProgramDescriptor.class>
@@ -100,9 +101,38 @@ public class DataSetDescriptor {
         return null;
     }
 
+    public List<String> getRelFieldCodes(List<Class> relPoClass) throws Exception {
+        List<String> result = new ArrayList<String>();
+        for (String fieldCode : relFieldKeyMap.keySet()) {
+            DataSetDescriptor relDataSetDescriptor = relDataSetMap.get(relFieldKeyMap.get(fieldCode));
+            com.hframework.beans.class0.Class poClass =
+                    CreatorUtil.getDefPoClass("",
+                            WebContext.get().getProgram().getCode(), "hframe", relDataSetDescriptor.getDataSet().getEventObjectCode());
+            if(relPoClass.contains(Class.forName(poClass.getClassPath()))) {
+                result.add(fieldCode);
+            }
+        }
 
+        return result;
+    }
 
+    public boolean isSelfDepend() {
+        for (String relDataSetInfo : relFieldKeyMap.values()) {
+            if(relDataSetMap.get(relDataSetInfo).equals(this)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
+    public String getSelfDependPropertyName() {
+        for (String fieldName : relFieldKeyMap.keySet()) {
+            if(relDataSetMap.get(relFieldKeyMap.get(fieldName)).equals(this)) {
+                return fieldName;
+            }
+        }
+        return null;
+    }
 
     public void addDataSetHelper(DataSetHelper dataSetHelper) {
         dataSetHelpers.add(dataSetHelper);

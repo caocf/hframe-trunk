@@ -202,6 +202,19 @@ public class RegexUtils {
         return result.toArray(new String[0]);
     }
 
+    public static String[] split(String string, String pattern) {
+
+        List<String> result = new ArrayList<String>();
+
+        String[] split = string.split(pattern);
+        for (String s : split) {
+            if(StringUtils.isNotBlank(s)) {
+                result.add(s.trim());
+            }
+        }
+        return result.toArray(new String[0]);
+    }
+
     public static List<String> findVarList(String string) {
         List<String> varList = new ArrayList<String>();
         String[] strings = RegexUtils.find(string, "[\\$]\\{[ a-zA-Z:0-9_]+\\}");

@@ -11,11 +11,14 @@ import com.hframework.web.bean.DataSetDescriptor;
 import com.hframework.web.bean.WebContext;
 import com.hframework.web.config.bean.dataset.Field;
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.InvocationTargetException;
@@ -32,6 +35,8 @@ import java.util.Set;
 @Component
 @Aspect
 public class BusinessHandlerInterceptor {
+
+    private static final Logger logger = LoggerFactory.getLogger(BusinessHandlerInterceptor.class);
 
     private static final long ENUM_CLASS_DEFAULT_HOLDER = 2;
 
@@ -252,7 +257,7 @@ public class BusinessHandlerInterceptor {
         } catch (Exception e) {
             if(((InvocationTargetException) e).getTargetException() instanceof BusinessException) {
                 throw ((InvocationTargetException) e).getTargetException();
-            }else {
+            }else if(((InvocationTargetException) e).getTargetException() instanceof IllegalArgumentException){
                 try{
                     Object[] args = new Object[method.getParameterTypes().length +1];
                     for (int i = 0; i < targetObject.length; i++) {
@@ -261,9 +266,13 @@ public class BusinessHandlerInterceptor {
                     args[method.getParameterTypes().length] = null;
                     method.invoke(handler, args);
                 }catch (Exception e1){
+                    logger.error("class[{}], method[{}], error={}",method.getDeclaringClass().getName(), method.getName(), ExceptionUtils.getFullStackTrace(e1));
                     e1.printStackTrace();
                     throw e1;
                 }
+            }else {
+                logger.error("class[{}], method[{}], error={}",method.getDeclaringClass().getName(), method.getName(), ExceptionUtils.getFullStackTrace(e));
+                throw ((InvocationTargetException) e).getTargetException();
             }
         }
     }

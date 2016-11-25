@@ -968,7 +968,7 @@ public class DefaultController {
                         }
 
                         AuthContext authContext = authServiceProxy.getAuthContext(request);
-                        if(authContext != null && authContext.getAuthManager().getAuthFunctionClass().equals(java.lang.Class.forName(defPoClass.getClassPath()))) {
+                        if(authContext != null && authContext.getAuthManager().getAuthFunctionClass().contains(java.lang.Class.forName(defPoClass.getClassPath()))) {
                             List<Long> functionIds = authServiceProxy.getFunctionIds(request);
                             if(functionIds == null || functionIds.size() == 0) {
                                 functionIds = new ArrayList<Long>(){{add(-999L);}};
@@ -978,16 +978,32 @@ public class DefaultController {
                             ReflectUtils.invokeMethod(criteria,
                                     "and" + ResourceWrapper.JavaUtil.getJavaClassName(keyField.getCode()) + "In",
                                     new java.lang.Class[]{List.class}, new Object[]{functionIds});
+                        }else if(authContext != null && authContext.getAuthManager().getAuthDataClass().contains(java.lang.Class.forName(defPoClass.getClassPath()))) {
+                            Long funcId = authContext.getAuthFunctionManager().get("/" + module + "/" + pageCode + ".html");
+                            List<Long> dataUnitIds = authContext.getAuthManager().getDataUnitIds(funcId);
+
+                            Field keyField = componentDescriptor.getDataSetDescriptor().getKeyField();
+                            Object criteria = ReflectUtils.invokeMethod(poExample, "createCriteria", new java.lang.Class[]{}, new Object[]{});
+                            ReflectUtils.invokeMethod(criteria,
+                                    "and" + ResourceWrapper.JavaUtil.getJavaClassName(keyField.getCode()) + "In",
+                                    new java.lang.Class[]{List.class}, new Object[]{dataUnitIds});
                         }else if(authContext != null){
-                            String relFieldName = componentDescriptor.getDataSetDescriptor().getRelFieldCode(authContext.getAuthManager().getAuthDataClass());
-                            if(StringUtils.isNotBlank(relFieldName)) {
-                                Long funcId = authContext.getAuthFunctionManager().get("/" + module + "/" + pageCode + ".html");
-                                List<Long> dataUnitIds = authContext.getAuthManager().getDataUnitIds(funcId);
+                            List<String> relFieldNames = componentDescriptor.getDataSetDescriptor().getRelFieldCodes(authContext.getAuthManager().getAuthDataClass());
+                            if(relFieldNames.size() > 0) {
                                 Object criteria = ReflectUtils.invokeMethod(poExample, "createCriteria", new java.lang.Class[]{}, new Object[]{});
-                                ReflectUtils.invokeMethod(criteria,
-                                        "and" + ResourceWrapper.JavaUtil.getJavaClassName(relFieldName) + "In",
-                                        new java.lang.Class[]{List.class}, new Object[]{dataUnitIds});
+                                for (String relFieldName : relFieldNames) {
+                                    Long funcId = authContext.getAuthFunctionManager().get("/" + module + "/" + pageCode + ".html");
+                                    if(funcId == null) {
+                                        String relPageCode = pageInfo.getPage().getRelPage();
+                                        funcId = authContext.getAuthFunctionManager().get("/" + module + "/" + relPageCode + ".html");
+                                    }
+                                    List<Long> dataUnitIds = authContext.getAuthManager().getDataUnitIds(funcId);
+                                    ReflectUtils.invokeMethod(criteria,
+                                            "and" + ResourceWrapper.JavaUtil.getJavaClassName(relFieldName) + "In",
+                                            new java.lang.Class[]{List.class}, new Object[]{dataUnitIds});
+                                }
                             }
+
                         }
 
 
@@ -1579,7 +1595,7 @@ public class DefaultController {
         nextHelper : for (DataSetHelper dataSetHelper : dataSetHelpers) {
             try {
 
-                if(helperDataList == null) {
+                if(extendData == null || extendData.get("HELPER") ==null) {
                     String helpModule = dataSetHelper.getHelpModule();
                     String helpDataset = dataSetHelper.getHelpDataset();
                     String helpDatascore = dataSetHelper.getHelpDatascore();

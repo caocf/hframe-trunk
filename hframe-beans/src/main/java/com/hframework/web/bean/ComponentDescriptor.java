@@ -46,7 +46,7 @@ public class ComponentDescriptor extends ElementDescriptor{
             dataContainer.addMappingAndDataSetDescriptor(mapping, this, dataSetDescriptor, false);
         }
         dataContainer.setElementOfRowMap();
-        dataSetDescriptor.setDataSetRulers();
+//        dataSetDescriptor.setDataSetRulers();//该地方执行会有重复数据，需要再datasetrule加载完毕后直接设置连带rule
     }
 
     public JSONObject getJson(ResultData resultData){

@@ -87,8 +87,18 @@ public class ExampleUtils {
      */
     public static Object parseExample(Object srcObj,Object exampleObj) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
 
-        Method criteriaMethod = exampleObj.getClass().getMethod("or");
-        Object criteriaObj = criteriaMethod.invoke(exampleObj);
+        List oredCriteria = (List) ReflectUtils.getFieldValue(exampleObj, "oredCriteria");
+        Object criteriaObj = null;
+        if(oredCriteria != null && oredCriteria.size() > 0) {
+            criteriaObj = oredCriteria.get(0);
+        }else {
+            Method criteriaMethod = exampleObj.getClass().getMethod("createCriteria");
+            criteriaObj = criteriaMethod.invoke(exampleObj);
+        }
+
+
+
+
 
         // 方法名称及方法
         Map<String, Method> criteriaMethods = BeanUtils.getMethods(criteriaObj.getClass());

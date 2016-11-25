@@ -9,7 +9,9 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
 
     //动态刷新的form注解需要捆绑改submit属性，否则就直接提交走了
     $('form').live("submit", function(){
-        return false;
+        if(!$(this).attr("action")) {
+            return false;
+        }
     });
 
     $("a").click(function(){
@@ -123,7 +125,24 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
             });
         }else if($type == "pageFwd") {
             var isStack =$action[$type].isStack;
-            location.href = url + "?" + $param;
+            var $componentParam  = formatContent($($this).attr("params"), $($this));
+            if($componentParam != null && $componentParam.endsWith("thisForm")) {
+                $thisForm = $this.parents("form")[0];
+                //参数检查
+                if(!$.checkSubmit($thisForm)) {
+                    //alert("字段不能为空！");
+                    return;
+                }
+                $($thisForm).attr("action", url + "?" + $param);
+                $($thisForm).attr("method", "post");
+                $($thisForm).submit();
+            }else {
+                location.href = url + "?" + $param;
+            }
+
+
+
+
         }else if($type == "ajaxSubmitByJson") {
             var _data;
             var targetId =$action[$type].targetId;
@@ -296,11 +315,20 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
 
             delete $action[$type];
             location.href = url;
+        }else if($type == "page.reload.static") {
+            delete $action[$type];
+            location.reload();
         }else if($type == "component.row.add") {
             $curRow = $this.parents("tr")[0];
             $newRow = $($curRow).clone();
             $($newRow).find("input").val("");
             $($newRow).find("[readonly=readonly]").removeAttr("readonly");
+            $($curRow).after($newRow);
+            $($newRow).find(".hfselectx").each(function(i){
+                $(this).next().remove();
+                $(this).show();
+                $(this).chosen();//设置为selectx
+            });
             $($curRow).find(".hfselect").each(function(i){
                 var $target = $($newRow).find(".hfselect").eq(i);
                 $target.removeClass("city-picker-input");
@@ -310,7 +338,7 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
 
                 $.selectPanelLoad($target);;
             });
-            $($curRow).after($newRow);
+
 
         }else if($type == "component.row.copy") {
             $curRow = $this.parents("tr")[0];
@@ -319,6 +347,13 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
             $($curRow).find("select").each(function(i){
                 $($newRow).find("select").eq(i).val($(this).val());
             });
+            $($curRow).after($newRow);
+            $($newRow).find(".hfselectx").each(function(i){
+                $(this).next().remove();
+                $(this).show();
+                $(this).chosen();//设置为selectx
+            });
+
             $($curRow).find(".hfselect").each(function(i){
                 var $target = $($newRow).find(".hfselect").eq(i);
                 $target.removeClass("city-picker-input");
@@ -328,7 +363,7 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
 
                 $.selectPanelLoad($target);;
             });
-            $($curRow).after($newRow);
+
         }else if($type == "component.row.up") {
             $curRow = $this.parents("tr")[0];
             $targetRow = $($curRow).prev();

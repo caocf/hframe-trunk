@@ -26,7 +26,8 @@ public class ServiceImplGenerator extends AbstractGenerator{
 		editClass.addImportClass("org.springframework.stereotype.Service");
 		editClass.addImportClass("javax.annotation.Resource");
 		editClass.addImportClass("com.google.common.collect.Lists");
-
+		editClass.addImportClass("com.google.common.collect.Lists");
+		editClass.addImportClass("com.hframework.common.util.ExampleUtils");
 
 		editClass.addImportClass(poClass.getClassPath());
 		editClass.addImportClass(poExampleClass.getClassPath());

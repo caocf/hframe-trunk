@@ -9,7 +9,7 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
 
     }
 
-    $.selectLoad = function ($this, _func, batchLoad) {
+    $.selectLoad = function ($this, _func, batchLoad, _$container) {
         var $tagName = $this[0].tagName;
         var  dataCode = $this.attr("data-code");
         var  dataCondition = $this.attr("data-condition");
@@ -27,10 +27,15 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
                 $relElement = $this.parents(".breadcrumb").find("[name=" + elementName + "]");
             }
 
+            var relElementValue =$relElement.val();
+            if(!relElementValue) {//由于使用依赖的元素也是通过ajax加载，对应的value值还不能正确取出
+                relElementValue = $relElement.attr("data-value");
+            }
+
             if(dataCondition) {
-                dataCondition = dataCondition + " && " + relatElement.replace("{" + elementName + "}",  $relElement.val());
+                dataCondition = dataCondition + " && " + relatElement.replace("{" + elementName + "}",  relElementValue);
             }else {
-                dataCondition = relatElement + "=" +relatElement.replace("{" + elementName + "}",  $relElement.val());
+                dataCondition = relatElement + "=" +relatElement.replace("{" + elementName + "}",  relElementValue);
             }
         }
 
@@ -52,12 +57,12 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
         }
 
         if(batchLoad) {
-            if(loadingDictionaryKeys[dataCode + "|" + dataCondition] == null) {//首次加载
-                loadingDictionaryKeys[dataCode + "|" + dataCondition] = -1;
-            }else if(loadingDictionaryKeys[dataCode + "|" + dataCondition] == -1) {//正在加载过程中，服务端还未返回
+            if(loadingDictionaryKeys[_$container.attr("id") + dataCode + "|" + dataCondition] == null) {//首次加载
+                loadingDictionaryKeys[_$container.attr("id") + dataCode + "|" + dataCondition] = -1;
+            }else if(loadingDictionaryKeys[_$container.attr("id") + dataCode + "|" + dataCondition] == -1) {//正在加载过程中，服务端还未返回
                 return;
             }else {//已有加载完成
-                loadingDictionaryKeys[dataCode + "|" + dataCondition] = -1;;
+                loadingDictionaryKeys[_$container.attr("id") + dataCode + "|" + dataCondition] = -1;;
             }
         }
 
@@ -78,13 +83,16 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
                     }
 
                     var htmlStr = _html.join('');
-                    loadingDictionaryKeys[dataCode + "|" + dataCondition] = 1;
+                    if(batchLoad) {
+                        loadingDictionaryKeys[_$container.attr("id") + dataCode + "|" + dataCondition] = 1;
+                    }
                     if(data.data) {
                         if(batchLoad) {
-                            $("select[data-code='" + dataCode + "'][data-condition='" + dataCondition + "']").each(function(){
+                            _$container.find("select[data-code='" + dataCode + "'][data-condition='" + dataCondition + "']").each(function(){
                                 $(this).html(htmlStr);
                                 $(this).val($(this).attr("data-value"));
                                 if((dataCode.startsWith("URL:") || dataCode.split(".").length > 2) && data.data.length > 10) { //选择框设置为selectx元素
+                                    $(this).addClass("hfselectx");
                                     $(this).chosen();//设置为selectx
                                 }
 
@@ -94,6 +102,7 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
                             $this.html(_html.join(''));
                             $this.val(dataValue);
                             if((dataCode.startsWith("URL:") || dataCode.split(".").length > 2) && data.data.length > 10) { //选择框设置为selectx元素
+                                $this.addClass("hfselectx");
                                 $this.chosen();//设置为selectx
                             }
                             $this.change();
@@ -156,20 +165,20 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
             //$($this).input();
             //$($this).change();
         }
-
-
     }
 
-    $.reloadDisplay = function (_$this) {
-        $(_$this).find("[data-code][data-condition]").each(function(){
+    $.reloadDisplay = function (_$container) {
+        var $elements = $(_$container).find("[data-code][data-condition]");
+        $elements.each(function(){
             var $this = $(this);
             if($this.is('select')) {
-                $.selectLoad($this,null,true);
+                $.selectLoad($this,null,true,_$container);
             }else {
                 $.selectPanelLoad($this);
             }
         });
     }
+    $.reloadDisplay($("body"));
 
     $.reloadListDisplay = function () {
         listTextDisplay();
@@ -206,14 +215,15 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
     listTextDisplay();
 
 
-    $("[data-code][data-condition]").each(function(){
-        var $this = $(this);
-        if($this.is('select')) {
-            $.selectLoad($this,null,true);
-        }else {
-            $.selectPanelLoad($this);
-        }
-    });
+    //
+    //$("[data-code][data-condition]").each(function(){
+    //    var $this = $(this);
+    //    if($this.is('select')) {
+    //        $.selectLoad($this,null,true,$("body"));
+    //    }else {
+    //        $.selectPanelLoad($this);
+    //    }
+    //});
 
     function dealData1(_source, _data, _list) {
         var _html = [];

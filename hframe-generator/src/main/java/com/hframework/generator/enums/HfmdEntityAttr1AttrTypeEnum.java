@@ -73,7 +73,7 @@ public enum HfmdEntityAttr1AttrTypeEnum {
     // 普通方法
     public static int getIndex(String name) {
         for (HfmdEntityAttr1AttrTypeEnum c : HfmdEntityAttr1AttrTypeEnum.values()) {
-            if (c.getName().equals(name)) {
+            if (name != null && c.getName().equals(name.toLowerCase())) {
                 return c.index;
             }
         }
