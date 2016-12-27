@@ -90,7 +90,7 @@ public class HfpmProgramHandler extends AbstractBusinessHandler<HfpmProgram> {
         template.setPath("hframework.template.default");
         program.setTemplate(template);
 
-        program.setWelcome("uc/login.html");
+        program.setWelcome("/login.html");
 
         SuperManager superManager = new SuperManager();
         superManager.setCode("admin");
@@ -115,7 +115,14 @@ public class HfpmProgramHandler extends AbstractBusinessHandler<HfpmProgram> {
         return true;
     }
 
-    @AfterCreateHandler
+    /**
+     * 通过常用实体添加功能手动设置
+     * @param program
+     * @return
+     * @throws Exception
+     */
+    @Deprecated
+//    @AfterCreateHandler
     public boolean programDefaultSetting(HfpmProgram program) throws Exception {
 
         final HfpmModule hframeModule = new HfpmModule();

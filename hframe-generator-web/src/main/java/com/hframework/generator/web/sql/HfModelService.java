@@ -85,7 +85,7 @@ public class HfModelService {
                         continue;
                     }
 
-                    if("hfpm_page.hfpm_page_id".equals(entity.getHfmdEntityCode() + "." + hfmdEntityAttr.getHfmdEntityAttrCode())) {
+                    if("hfpm_page_cfg.hfpm_program_cfg_id".equals(entity.getHfmdEntityCode() + "." + hfmdEntityAttr.getHfmdEntityAttrCode())) {
                         System.out.println("1");
                     }
 

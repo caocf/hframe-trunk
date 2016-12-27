@@ -170,7 +170,7 @@ public class DefaultController {
     @RequestMapping(value = "/dictionary.json")
     @ResponseBody
     public ResultData dictionary(@ModelAttribute("dataCode") String dataCode ,
-                                 @ModelAttribute("dataCondition") final String dataCondition){
+                                 @ModelAttribute("dataCondition") String dataCondition){
         logger.debug("request : {}", dataCode, dataCondition);
         DataSourceContextHolder.clear();
         try{
@@ -197,15 +197,22 @@ public class DefaultController {
                 }
                 return ResultData.error(ResultCode.RECODE_IS_NOT_EXISTS);
             }else {
+                DataSetDescriptor dataSetDescriptor = WebContext.get().getOnlyDataSetDescriptor(split[0]);
+                if(dataSetDescriptor != null) {
+                    if(dataSetDescriptor.getFields().containsKey("pri")) {
+                        dataCondition += " order by pri asc";
+                    }
+                }
+
+                final String dataConditionFinal = dataCondition;
                 Map<String, String> dicInfo = new HashMap<String, String>(){{
                     put("tableName", split[0]);
                     put("keyColumn", split[1]);
                     put("valueColumn", split[2]);
                     if(split.length > 3) {
                         put("extColumn", split[3]);
-
                     }
-                    put("condition", dataCondition);
+                    put("condition", dataConditionFinal);
                 }};
                 List<KVBean> kvBeans = commonDataService.selectDynamicTableDataList(dicInfo);
 
@@ -266,7 +273,7 @@ public class DefaultController {
         String dataDisplayValue = null;
         try{
             final String[] dataCodeArray = dataCodes.split(";");
-            Map<String, KVBean> cache = new HashMap<String, KVBean>();
+            Map<String, KVBean> cache = new LinkedHashMap<String, KVBean>();
             for (String dataCode : dataCodeArray) {
                 ResultData dictionary = dictionary(dataCode, dataCondition);
                 List<KVBean> kvBeans = (List<KVBean>) dictionary.getData();
@@ -296,7 +303,7 @@ public class DefaultController {
                         }
                     });
                     for (Map.Entry<String, List<KVBean>> entry : group.entrySet()) {
-                        Map<String, String> recode = new HashMap<String, String>();
+                        Map<String, String> recode = new LinkedHashMap<String, String>();
                         if(StringUtils.isBlank(entry.getKey())) {//存在垃圾数据时
                             continue;
                         }
@@ -778,6 +785,36 @@ public class DefaultController {
         return resultData;
     }
 
+    /**
+     * 页面跳转
+     * @return
+     * @throws Throwable
+     */
+    @RequestMapping(value = "/modeler.html")
+    public ModelAndView modeler(@ModelAttribute("modelId") String modelId,
+
+                                 HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        ModelAndView mav = new ModelAndView();
+        mav.addObject("modelId",modelId);
+        mav.setViewName("/modeler");
+        return mav;
+    }
+
+    /**
+     * 页面跳转
+     * @return
+     * @throws Throwable
+     */
+    @RequestMapping(value = "/editor-app/editor.html")
+    public ModelAndView editor(@ModelAttribute("modelId") String modelId,
+
+                                HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        ModelAndView mav = new ModelAndView();
+        mav.addObject("modelId",modelId);
+        mav.setViewName("/editor");
+        return mav;
+    }
+
 
 
     /**
@@ -962,9 +999,11 @@ public class DefaultController {
                         System.out.println("dataId = " + componentDescriptor.getDataId());
                         Object poExample = java.lang.Class.forName(defPoExampleClass.getClassPath()).newInstance();
                         PropertyDescriptor priPropertyDescriptor = org.springframework.beans.BeanUtils.getPropertyDescriptor(java.lang.Class.forName(defPoClass.getClassPath()), "pri");
-
+                        PropertyDescriptor createTimePropertyDescriptor = org.springframework.beans.BeanUtils.getPropertyDescriptor(java.lang.Class.forName(defPoClass.getClassPath()), "createTime");
                         if (priPropertyDescriptor != null) {
                             ReflectUtils.invokeMethod(poExample, "setOrderByClause", new java.lang.Class[]{String.class}, new Object[]{" pri asc"});
+                        }else if(createTimePropertyDescriptor != null){
+                            ReflectUtils.invokeMethod(poExample, "setOrderByClause", new java.lang.Class[]{String.class}, new Object[]{" create_time desc"});
                         }
 
                         AuthContext authContext = authServiceProxy.getAuthContext(request);
@@ -1099,9 +1138,19 @@ public class DefaultController {
                     if(jsonObject.get("data") == null) {
                         jsonObject.put("data", new JSONArray());
                     }
+
                     if(((JSONArray) jsonObject.get("data")).size() == 0) {
+                        int cnt = 0;
                         String[] defaultNullData = new String[((JSONArray) jsonObject.get("columns")).size()];
-                        Arrays.fill(defaultNullData, "");
+                        Map<String, String> pageFlowParams = WebContext.get(HashMap.class.getName());
+                        for (Object columns : (JSONArray) jsonObject.get("columns")) {
+                            if(pageFlowParams.containsKey(((JSONObject) columns).get("code"))) {
+                                defaultNullData[cnt++] = pageFlowParams.get(((JSONObject) columns).get("code"));
+                            }else {
+                                defaultNullData[cnt++] = "";
+                            }
+                        }
+//                        Arrays.fill(defaultNullData, "");
                         ((JSONArray) jsonObject.get("data")).add(defaultNullData);
                     }
 
@@ -1589,6 +1638,7 @@ public class DefaultController {
 //    }
 
     private List getHelperData(Map<String, Object> extendData , DataSetDescriptor dataSetDescriptor, String action, Class targetPoClass, HttpServletRequest request) {
+        Map<String, String> pageFlowParams = WebContext.get(HashMap.class.getName());
         List helperDataList = extendData == null ? null : (List) extendData.get("HELPER");
         List helperPoList = new ArrayList();
         List<DataSetHelper> dataSetHelpers = dataSetDescriptor.getDataSetHelpers();
@@ -1610,7 +1660,7 @@ public class DefaultController {
                     Object poExample= java.lang.Class.forName(defPoExampleClass.getClassPath()).newInstance();
                     Pagination pagination = new Pagination();
                     Object controller= ServiceFactory.getService(defControllerClass.getClassName().substring(0, 1).toLowerCase() + defControllerClass.getClassName().substring(1));
-                    Map<String, String> pageFlowParams = WebContext.get(HashMap.class.getName());
+
                     ReflectUtils.setFieldValue(po, pageFlowParams);
 
                     if(StringUtils.isNotBlank(helpDatascore)) {
@@ -1683,6 +1733,8 @@ public class DefaultController {
                         }
                         org.apache.commons.beanutils.BeanUtils.setProperty(targetPo, ResourceWrapper.JavaUtil.getJavaVarName(effectDatasetField), propertyValue);
                     }
+
+                    ReflectUtils.setFieldValue(targetPo, pageFlowParams);
                     helperPoList.add(targetPo);
                 }
             } catch (Exception e) {
@@ -1785,7 +1837,7 @@ public class DefaultController {
         StringBuilder sb = new StringBuilder();
         sb.append("URL").append("--").append("Class").append("--").append("Function").append('\n');
 
-        Map<RequestMappingInfo, HandlerMethod> map = requestMappingHandlerMapping.getHandlerMethods();
+        Map<RequestMappingInfo, HandlerMethod> map = ServiceFactory.getService(RequestMappingHandlerMapping.class).getHandlerMethods();
 
         for (Map.Entry<RequestMappingInfo, HandlerMethod> m : map.entrySet()) {
             RequestMappingInfo info = m.getKey();
@@ -1811,7 +1863,7 @@ public class DefaultController {
         HandlerExecutionChain handler = null;
         if(urlMapping.size() == 0) {
             synchronized (DefaultController.class){
-                Map<RequestMappingInfo, HandlerMethod> map = requestMappingHandlerMapping.getHandlerMethods();
+                Map<RequestMappingInfo, HandlerMethod> map = ServiceFactory.getService(RequestMappingHandlerMapping.class).getHandlerMethods();
                 for (Map.Entry<RequestMappingInfo, HandlerMethod> m : map.entrySet()) {
                     RequestMappingInfo info = m.getKey();
                     HandlerMethod method = m.getValue();

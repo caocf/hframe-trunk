@@ -944,6 +944,646 @@ public class HfpmPageEvent_Example {
             addCriterion("hfpm_page_component_id not between", value1, value2, "hfpmPageComponentId");
             return (Criteria) this;
         }
+
+        public Criteria andCreatorIdIsNull() {
+            addCriterion("creator_id is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreatorIdIsNotNull() {
+            addCriterion("creator_id is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreatorIdEqualTo(Long value) {
+            addCriterion("creator_id =", value, "creatorId");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreatorIdNotEqualTo(Long value) {
+            addCriterion("creator_id <>", value, "creatorId");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreatorIdGreaterThan(Long value) {
+            addCriterion("creator_id >", value, "creatorId");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreatorIdGreaterThanOrEqualTo(Long value) {
+            addCriterion("creator_id >=", value, "creatorId");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreatorIdLessThan(Long value) {
+            addCriterion("creator_id <", value, "creatorId");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreatorIdLessThanOrEqualTo(Long value) {
+            addCriterion("creator_id <=", value, "creatorId");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreatorIdIn(List<Long> values) {
+            addCriterion("creator_id in", values, "creatorId");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreatorIdNotIn(List<Long> values) {
+            addCriterion("creator_id not in", values, "creatorId");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreatorIdBetween(Long value1, Long value2) {
+            addCriterion("creator_id between", value1, value2, "creatorId");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreatorIdNotBetween(Long value1, Long value2) {
+            addCriterion("creator_id not between", value1, value2, "creatorId");
+            return (Criteria) this;
+        }
+
+        public Criteria andEffectFieldIsNull() {
+            addCriterion("effect_field is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andEffectFieldIsNotNull() {
+            addCriterion("effect_field is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andEffectFieldEqualTo(Long value) {
+            addCriterion("effect_field =", value, "effectField");
+            return (Criteria) this;
+        }
+
+        public Criteria andEffectFieldNotEqualTo(Long value) {
+            addCriterion("effect_field <>", value, "effectField");
+            return (Criteria) this;
+        }
+
+        public Criteria andEffectFieldGreaterThan(Long value) {
+            addCriterion("effect_field >", value, "effectField");
+            return (Criteria) this;
+        }
+
+        public Criteria andEffectFieldGreaterThanOrEqualTo(Long value) {
+            addCriterion("effect_field >=", value, "effectField");
+            return (Criteria) this;
+        }
+
+        public Criteria andEffectFieldLessThan(Long value) {
+            addCriterion("effect_field <", value, "effectField");
+            return (Criteria) this;
+        }
+
+        public Criteria andEffectFieldLessThanOrEqualTo(Long value) {
+            addCriterion("effect_field <=", value, "effectField");
+            return (Criteria) this;
+        }
+
+        public Criteria andEffectFieldIn(List<Long> values) {
+            addCriterion("effect_field in", values, "effectField");
+            return (Criteria) this;
+        }
+
+        public Criteria andEffectFieldNotIn(List<Long> values) {
+            addCriterion("effect_field not in", values, "effectField");
+            return (Criteria) this;
+        }
+
+        public Criteria andEffectFieldBetween(Long value1, Long value2) {
+            addCriterion("effect_field between", value1, value2, "effectField");
+            return (Criteria) this;
+        }
+
+        public Criteria andEffectFieldNotBetween(Long value1, Long value2) {
+            addCriterion("effect_field not between", value1, value2, "effectField");
+            return (Criteria) this;
+        }
+
+        public Criteria andEventSourceIsNull() {
+            addCriterion("event_source is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andEventSourceIsNotNull() {
+            addCriterion("event_source is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andEventSourceEqualTo(Byte value) {
+            addCriterion("event_source =", value, "eventSource");
+            return (Criteria) this;
+        }
+
+        public Criteria andEventSourceNotEqualTo(Byte value) {
+            addCriterion("event_source <>", value, "eventSource");
+            return (Criteria) this;
+        }
+
+        public Criteria andEventSourceGreaterThan(Byte value) {
+            addCriterion("event_source >", value, "eventSource");
+            return (Criteria) this;
+        }
+
+        public Criteria andEventSourceGreaterThanOrEqualTo(Byte value) {
+            addCriterion("event_source >=", value, "eventSource");
+            return (Criteria) this;
+        }
+
+        public Criteria andEventSourceLessThan(Byte value) {
+            addCriterion("event_source <", value, "eventSource");
+            return (Criteria) this;
+        }
+
+        public Criteria andEventSourceLessThanOrEqualTo(Byte value) {
+            addCriterion("event_source <=", value, "eventSource");
+            return (Criteria) this;
+        }
+
+        public Criteria andEventSourceIn(List<Byte> values) {
+            addCriterion("event_source in", values, "eventSource");
+            return (Criteria) this;
+        }
+
+        public Criteria andEventSourceNotIn(List<Byte> values) {
+            addCriterion("event_source not in", values, "eventSource");
+            return (Criteria) this;
+        }
+
+        public Criteria andEventSourceBetween(Byte value1, Byte value2) {
+            addCriterion("event_source between", value1, value2, "eventSource");
+            return (Criteria) this;
+        }
+
+        public Criteria andEventSourceNotBetween(Byte value1, Byte value2) {
+            addCriterion("event_source not between", value1, value2, "eventSource");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmPageEventCodeIsNull() {
+            addCriterion("hfpm_page_event_code is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmPageEventCodeIsNotNull() {
+            addCriterion("hfpm_page_event_code is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmPageEventCodeEqualTo(String value) {
+            addCriterion("hfpm_page_event_code =", value, "hfpmPageEventCode");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmPageEventCodeNotEqualTo(String value) {
+            addCriterion("hfpm_page_event_code <>", value, "hfpmPageEventCode");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmPageEventCodeGreaterThan(String value) {
+            addCriterion("hfpm_page_event_code >", value, "hfpmPageEventCode");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmPageEventCodeGreaterThanOrEqualTo(String value) {
+            addCriterion("hfpm_page_event_code >=", value, "hfpmPageEventCode");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmPageEventCodeLessThan(String value) {
+            addCriterion("hfpm_page_event_code <", value, "hfpmPageEventCode");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmPageEventCodeLessThanOrEqualTo(String value) {
+            addCriterion("hfpm_page_event_code <=", value, "hfpmPageEventCode");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmPageEventCodeLike(String value) {
+            addCriterion("hfpm_page_event_code like", value, "hfpmPageEventCode");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmPageEventCodeNotLike(String value) {
+            addCriterion("hfpm_page_event_code not like", value, "hfpmPageEventCode");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmPageEventCodeIn(List<String> values) {
+            addCriterion("hfpm_page_event_code in", values, "hfpmPageEventCode");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmPageEventCodeNotIn(List<String> values) {
+            addCriterion("hfpm_page_event_code not in", values, "hfpmPageEventCode");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmPageEventCodeBetween(String value1, String value2) {
+            addCriterion("hfpm_page_event_code between", value1, value2, "hfpmPageEventCode");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmPageEventCodeNotBetween(String value1, String value2) {
+            addCriterion("hfpm_page_event_code not between", value1, value2, "hfpmPageEventCode");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmPageEventNameIsNull() {
+            addCriterion("hfpm_page_event_name is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmPageEventNameIsNotNull() {
+            addCriterion("hfpm_page_event_name is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmPageEventNameEqualTo(String value) {
+            addCriterion("hfpm_page_event_name =", value, "hfpmPageEventName");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmPageEventNameNotEqualTo(String value) {
+            addCriterion("hfpm_page_event_name <>", value, "hfpmPageEventName");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmPageEventNameGreaterThan(String value) {
+            addCriterion("hfpm_page_event_name >", value, "hfpmPageEventName");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmPageEventNameGreaterThanOrEqualTo(String value) {
+            addCriterion("hfpm_page_event_name >=", value, "hfpmPageEventName");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmPageEventNameLessThan(String value) {
+            addCriterion("hfpm_page_event_name <", value, "hfpmPageEventName");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmPageEventNameLessThanOrEqualTo(String value) {
+            addCriterion("hfpm_page_event_name <=", value, "hfpmPageEventName");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmPageEventNameLike(String value) {
+            addCriterion("hfpm_page_event_name like", value, "hfpmPageEventName");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmPageEventNameNotLike(String value) {
+            addCriterion("hfpm_page_event_name not like", value, "hfpmPageEventName");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmPageEventNameIn(List<String> values) {
+            addCriterion("hfpm_page_event_name in", values, "hfpmPageEventName");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmPageEventNameNotIn(List<String> values) {
+            addCriterion("hfpm_page_event_name not in", values, "hfpmPageEventName");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmPageEventNameBetween(String value1, String value2) {
+            addCriterion("hfpm_page_event_name between", value1, value2, "hfpmPageEventName");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmPageEventNameNotBetween(String value1, String value2) {
+            addCriterion("hfpm_page_event_name not between", value1, value2, "hfpmPageEventName");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmPageEventTypeIsNull() {
+            addCriterion("hfpm_page_event_type is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmPageEventTypeIsNotNull() {
+            addCriterion("hfpm_page_event_type is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmPageEventTypeEqualTo(Byte value) {
+            addCriterion("hfpm_page_event_type =", value, "hfpmPageEventType");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmPageEventTypeNotEqualTo(Byte value) {
+            addCriterion("hfpm_page_event_type <>", value, "hfpmPageEventType");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmPageEventTypeGreaterThan(Byte value) {
+            addCriterion("hfpm_page_event_type >", value, "hfpmPageEventType");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmPageEventTypeGreaterThanOrEqualTo(Byte value) {
+            addCriterion("hfpm_page_event_type >=", value, "hfpmPageEventType");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmPageEventTypeLessThan(Byte value) {
+            addCriterion("hfpm_page_event_type <", value, "hfpmPageEventType");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmPageEventTypeLessThanOrEqualTo(Byte value) {
+            addCriterion("hfpm_page_event_type <=", value, "hfpmPageEventType");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmPageEventTypeIn(List<Byte> values) {
+            addCriterion("hfpm_page_event_type in", values, "hfpmPageEventType");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmPageEventTypeNotIn(List<Byte> values) {
+            addCriterion("hfpm_page_event_type not in", values, "hfpmPageEventType");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmPageEventTypeBetween(Byte value1, Byte value2) {
+            addCriterion("hfpm_page_event_type between", value1, value2, "hfpmPageEventType");
+            return (Criteria) this;
+        }
+
+        public Criteria andHfpmPageEventTypeNotBetween(Byte value1, Byte value2) {
+            addCriterion("hfpm_page_event_type not between", value1, value2, "hfpmPageEventType");
+            return (Criteria) this;
+        }
+
+        public Criteria andModifierIdIsNull() {
+            addCriterion("modifier_id is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andModifierIdIsNotNull() {
+            addCriterion("modifier_id is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andModifierIdEqualTo(Long value) {
+            addCriterion("modifier_id =", value, "modifierId");
+            return (Criteria) this;
+        }
+
+        public Criteria andModifierIdNotEqualTo(Long value) {
+            addCriterion("modifier_id <>", value, "modifierId");
+            return (Criteria) this;
+        }
+
+        public Criteria andModifierIdGreaterThan(Long value) {
+            addCriterion("modifier_id >", value, "modifierId");
+            return (Criteria) this;
+        }
+
+        public Criteria andModifierIdGreaterThanOrEqualTo(Long value) {
+            addCriterion("modifier_id >=", value, "modifierId");
+            return (Criteria) this;
+        }
+
+        public Criteria andModifierIdLessThan(Long value) {
+            addCriterion("modifier_id <", value, "modifierId");
+            return (Criteria) this;
+        }
+
+        public Criteria andModifierIdLessThanOrEqualTo(Long value) {
+            addCriterion("modifier_id <=", value, "modifierId");
+            return (Criteria) this;
+        }
+
+        public Criteria andModifierIdIn(List<Long> values) {
+            addCriterion("modifier_id in", values, "modifierId");
+            return (Criteria) this;
+        }
+
+        public Criteria andModifierIdNotIn(List<Long> values) {
+            addCriterion("modifier_id not in", values, "modifierId");
+            return (Criteria) this;
+        }
+
+        public Criteria andModifierIdBetween(Long value1, Long value2) {
+            addCriterion("modifier_id between", value1, value2, "modifierId");
+            return (Criteria) this;
+        }
+
+        public Criteria andModifierIdNotBetween(Long value1, Long value2) {
+            addCriterion("modifier_id not between", value1, value2, "modifierId");
+            return (Criteria) this;
+        }
+
+        public Criteria andTargetHfpmPageIdIsNull() {
+            addCriterion("target_hfpm_page_id is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andTargetHfpmPageIdIsNotNull() {
+            addCriterion("target_hfpm_page_id is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andTargetHfpmPageIdEqualTo(Long value) {
+            addCriterion("target_hfpm_page_id =", value, "targetHfpmPageId");
+            return (Criteria) this;
+        }
+
+        public Criteria andTargetHfpmPageIdNotEqualTo(Long value) {
+            addCriterion("target_hfpm_page_id <>", value, "targetHfpmPageId");
+            return (Criteria) this;
+        }
+
+        public Criteria andTargetHfpmPageIdGreaterThan(Long value) {
+            addCriterion("target_hfpm_page_id >", value, "targetHfpmPageId");
+            return (Criteria) this;
+        }
+
+        public Criteria andTargetHfpmPageIdGreaterThanOrEqualTo(Long value) {
+            addCriterion("target_hfpm_page_id >=", value, "targetHfpmPageId");
+            return (Criteria) this;
+        }
+
+        public Criteria andTargetHfpmPageIdLessThan(Long value) {
+            addCriterion("target_hfpm_page_id <", value, "targetHfpmPageId");
+            return (Criteria) this;
+        }
+
+        public Criteria andTargetHfpmPageIdLessThanOrEqualTo(Long value) {
+            addCriterion("target_hfpm_page_id <=", value, "targetHfpmPageId");
+            return (Criteria) this;
+        }
+
+        public Criteria andTargetHfpmPageIdIn(List<Long> values) {
+            addCriterion("target_hfpm_page_id in", values, "targetHfpmPageId");
+            return (Criteria) this;
+        }
+
+        public Criteria andTargetHfpmPageIdNotIn(List<Long> values) {
+            addCriterion("target_hfpm_page_id not in", values, "targetHfpmPageId");
+            return (Criteria) this;
+        }
+
+        public Criteria andTargetHfpmPageIdBetween(Long value1, Long value2) {
+            addCriterion("target_hfpm_page_id between", value1, value2, "targetHfpmPageId");
+            return (Criteria) this;
+        }
+
+        public Criteria andTargetHfpmPageIdNotBetween(Long value1, Long value2) {
+            addCriterion("target_hfpm_page_id not between", value1, value2, "targetHfpmPageId");
+            return (Criteria) this;
+        }
+
+        public Criteria andFromConditionIsNull() {
+            addCriterion("from_condition is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andFromConditionIsNotNull() {
+            addCriterion("from_condition is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andFromConditionEqualTo(String value) {
+            addCriterion("from_condition =", value, "fromCondition");
+            return (Criteria) this;
+        }
+
+        public Criteria andFromConditionNotEqualTo(String value) {
+            addCriterion("from_condition <>", value, "fromCondition");
+            return (Criteria) this;
+        }
+
+        public Criteria andFromConditionGreaterThan(String value) {
+            addCriterion("from_condition >", value, "fromCondition");
+            return (Criteria) this;
+        }
+
+        public Criteria andFromConditionGreaterThanOrEqualTo(String value) {
+            addCriterion("from_condition >=", value, "fromCondition");
+            return (Criteria) this;
+        }
+
+        public Criteria andFromConditionLessThan(String value) {
+            addCriterion("from_condition <", value, "fromCondition");
+            return (Criteria) this;
+        }
+
+        public Criteria andFromConditionLessThanOrEqualTo(String value) {
+            addCriterion("from_condition <=", value, "fromCondition");
+            return (Criteria) this;
+        }
+
+        public Criteria andFromConditionLike(String value) {
+            addCriterion("from_condition like", value, "fromCondition");
+            return (Criteria) this;
+        }
+
+        public Criteria andFromConditionNotLike(String value) {
+            addCriterion("from_condition not like", value, "fromCondition");
+            return (Criteria) this;
+        }
+
+        public Criteria andFromConditionIn(List<String> values) {
+            addCriterion("from_condition in", values, "fromCondition");
+            return (Criteria) this;
+        }
+
+        public Criteria andFromConditionNotIn(List<String> values) {
+            addCriterion("from_condition not in", values, "fromCondition");
+            return (Criteria) this;
+        }
+
+        public Criteria andFromConditionBetween(String value1, String value2) {
+            addCriterion("from_condition between", value1, value2, "fromCondition");
+            return (Criteria) this;
+        }
+
+        public Criteria andFromConditionNotBetween(String value1, String value2) {
+            addCriterion("from_condition not between", value1, value2, "fromCondition");
+            return (Criteria) this;
+        }
+
+        public Criteria andToResultIsNull() {
+            addCriterion("to_result is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andToResultIsNotNull() {
+            addCriterion("to_result is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andToResultEqualTo(String value) {
+            addCriterion("to_result =", value, "toResult");
+            return (Criteria) this;
+        }
+
+        public Criteria andToResultNotEqualTo(String value) {
+            addCriterion("to_result <>", value, "toResult");
+            return (Criteria) this;
+        }
+
+        public Criteria andToResultGreaterThan(String value) {
+            addCriterion("to_result >", value, "toResult");
+            return (Criteria) this;
+        }
+
+        public Criteria andToResultGreaterThanOrEqualTo(String value) {
+            addCriterion("to_result >=", value, "toResult");
+            return (Criteria) this;
+        }
+
+        public Criteria andToResultLessThan(String value) {
+            addCriterion("to_result <", value, "toResult");
+            return (Criteria) this;
+        }
+
+        public Criteria andToResultLessThanOrEqualTo(String value) {
+            addCriterion("to_result <=", value, "toResult");
+            return (Criteria) this;
+        }
+
+        public Criteria andToResultLike(String value) {
+            addCriterion("to_result like", value, "toResult");
+            return (Criteria) this;
+        }
+
+        public Criteria andToResultNotLike(String value) {
+            addCriterion("to_result not like", value, "toResult");
+            return (Criteria) this;
+        }
+
+        public Criteria andToResultIn(List<String> values) {
+            addCriterion("to_result in", values, "toResult");
+            return (Criteria) this;
+        }
+
+        public Criteria andToResultNotIn(List<String> values) {
+            addCriterion("to_result not in", values, "toResult");
+            return (Criteria) this;
+        }
+
+        public Criteria andToResultBetween(String value1, String value2) {
+            addCriterion("to_result between", value1, value2, "toResult");
+            return (Criteria) this;
+        }
+
+        public Criteria andToResultNotBetween(String value1, String value2) {
+            addCriterion("to_result not between", value1, value2, "toResult");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {

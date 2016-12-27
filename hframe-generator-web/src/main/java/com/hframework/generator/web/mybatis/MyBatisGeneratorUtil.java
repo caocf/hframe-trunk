@@ -22,7 +22,9 @@ import java.util.*;
 public class MyBatisGeneratorUtil {
 
     public static void main(String[] args) throws IOException, XMLParserException, InvalidConfigurationException, InterruptedException, SQLException {
-        generate(new File("D://my_workspace/hframe-trunk/hframe-core/src/main/resources/hframe/generator/mybatis-generator-config-hframe.xml"));
+//        generate(new File("D://my_workspace/hframe-trunk/hframe-core/src/main/resources/hframe/generator/mybatis-generator-config-hframe.xml"));
+        generate(new File("D:\\my_workspace\\hframe-trunk\\hframe-generator-web\\src\\main\\resources\\mybatis-generator-config-lcs.xml"));
+
     }
 
     public static  void generate() throws IOException, XMLParserException, InvalidConfigurationException, SQLException, InterruptedException {
@@ -30,7 +32,7 @@ public class MyBatisGeneratorUtil {
     }
 
     public static  List<TableConfiguration> getTableCfg() throws IOException, XMLParserException, InvalidConfigurationException, SQLException, InterruptedException {
-        return getTableCfg("mybatis-generator-config.xml");
+        return getTableCfg("mybatis-generator-config-lcs.xml");
     }
 
     public static  List<TableConfiguration> getTableCfg(String cfgFileName) throws IOException, XMLParserException, InvalidConfigurationException, SQLException, InterruptedException {

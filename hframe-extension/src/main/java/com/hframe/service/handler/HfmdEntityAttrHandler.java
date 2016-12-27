@@ -96,6 +96,19 @@ public class HfmdEntityAttrHandler extends AbstractBusinessHandler<HfmdEntityAtt
         return true;
     }
 
+    @AfterDeleteHandler
+    public boolean deleteDataFiled(HfmdEntityAttr hfmdEntityAttr) throws Exception {
+        HfpmDataField_Example example = new HfpmDataField_Example();
+        example.createCriteria().andHfmdEntityAttrIdEqualTo(hfmdEntityAttr.getHfmdEntityAttrId());
+        List<HfpmDataField> hfpmDataFieldListByExample = hfpmDataFieldSV.getHfpmDataFieldListByExample(example);
+        if(hfpmDataFieldListByExample != null) {
+            for (HfpmDataField hfpmDataField : hfpmDataFieldListByExample) {
+                hfpmDataFieldSV.delete(hfpmDataField);
+            }
+        }
+        return true;
+    }
+
     @AfterCreateHandler
     @AfterUpdateHandler
     public boolean updateDataSetService(HfmdEntityAttr hfmdEntityAttr) throws Exception {
@@ -152,20 +165,5 @@ public class HfmdEntityAttrHandler extends AbstractBusinessHandler<HfmdEntityAtt
         }
         return true;
     }
-
-    @AfterDeleteHandler
-    public boolean deleteDataFiled(HfmdEntityAttr hfmdEntityAttr) throws Exception {
-        HfpmDataField_Example example = new HfpmDataField_Example();
-        example.createCriteria().andHfmdEntityAttrIdEqualTo(hfmdEntityAttr.getHfmdEntityAttrId());
-        List<HfpmDataField> hfpmDataFieldListByExample = hfpmDataFieldSV.getHfpmDataFieldListByExample(example);
-        if(hfpmDataFieldListByExample != null) {
-            for (HfpmDataField hfpmDataField : hfpmDataFieldListByExample) {
-                hfpmDataFieldSV.delete(hfpmDataField);
-            }
-        }
-        return true;
-    }
-
-
 
 }

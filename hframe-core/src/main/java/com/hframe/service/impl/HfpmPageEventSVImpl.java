@@ -3,6 +3,8 @@ package com.hframe.service.impl;
 import java.util.*;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
+import com.google.common.collect.Lists;
+import com.hframework.common.util.ExampleUtils;
 import com.hframe.domain.model.HfpmPageEvent;
 import com.hframe.domain.model.HfpmPageEvent_Example;
 import com.hframe.dao.HfpmPageEventMapper;
@@ -14,6 +16,8 @@ public class HfpmPageEventSVImpl  implements IHfpmPageEventSV {
 	@Resource
 	private HfpmPageEventMapper hfpmPageEventMapper;
   
+
+
     /**
     * 创建页面事件
     * @param hfpmPageEvent
@@ -102,6 +106,7 @@ public class HfpmPageEventSVImpl  implements IHfpmPageEventSV {
     public HfpmPageEvent getHfpmPageEventByPK(long hfpmPageEventId)  throws  Exception {
         return hfpmPageEventMapper.selectByPrimaryKey(hfpmPageEventId);
     }
+
 
     /**
     * 通过MAP参数查询页面事件

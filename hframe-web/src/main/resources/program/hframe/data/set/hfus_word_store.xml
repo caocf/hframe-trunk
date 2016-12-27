@@ -2,7 +2,7 @@
   <module>hframe</module>
   <code>hfus_word_store</code>
   <entity>hfus_word_store</entity>
-  <name>单词库【默认】</name>
+  <name>单词库</name>
   <fields>
     <field code="hfus_word_store_id" name="单词库ID" edit-type="input" is-key="true">
       <create-edit-type>hidden</create-edit-type>
@@ -29,8 +29,9 @@
       <create-edit-type>hidden</create-edit-type>
       <update-edit-type>hidden</update-edit-type>
     </field>
-    <field code="del_flag" name="删除标识" edit-type="input">
+    <field code="del_flag" name="删除标识" edit-type="checkbox">
       <create-edit-type>hidden</create-edit-type>
+      <enum-class code="DEFAULT.BOOLEAN"/>
     </field>
   </fields>
 </dataset>

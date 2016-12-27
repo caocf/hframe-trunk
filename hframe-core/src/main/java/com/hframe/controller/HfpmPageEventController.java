@@ -1,26 +1,30 @@
 package com.hframe.controller;
 
-import com.hframe.domain.model.HfpmPageEvent;
-import com.hframe.domain.model.HfpmPageEvent_Example;
-import com.hframe.service.interfaces.IHfpmPageEventSV;
 import com.hframework.beans.controller.Pagination;
 import com.hframework.beans.controller.ResultCode;
 import com.hframework.beans.controller.ResultData;
 import com.hframework.common.util.ExampleUtils;
-import com.hframework.web.ControllerHelper;
+import com.hframework.exceptions.BusinessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.ServletRequestDataBinder;
-import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
+import java.util.*;
 import javax.servlet.http.HttpServletRequest;
+import org.springframework.web.bind.ServletRequestDataBinder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
+import com.hframework.web.ControllerHelper;
+import com.hframe.domain.model.HfpmPageEvent;
+import com.hframe.domain.model.HfpmPageEvent_Example;
+import com.hframe.service.interfaces.IHfpmPageEventSV;
 
 @Controller
 @RequestMapping(value = "/hframe/hfpmPageEvent")
@@ -30,6 +34,7 @@ public class HfpmPageEventController   {
 	@Resource
 	private IHfpmPageEventSV iHfpmPageEventSV;
   
+
 
 
 
@@ -69,6 +74,8 @@ public class HfpmPageEventController   {
         }
     }
 
+
+
     /**
      * 查询展示页面事件明细
      * @param hfpmPageEvent
@@ -80,7 +87,54 @@ public class HfpmPageEventController   {
     public ResultData detail(@ModelAttribute("hfpmPageEvent") HfpmPageEvent hfpmPageEvent){
         logger.debug("request : {},{}", hfpmPageEvent.getHfpmPageEventId(), hfpmPageEvent);
         try{
-            HfpmPageEvent result = iHfpmPageEventSV.getHfpmPageEventByPK(hfpmPageEvent.getHfpmPageEventId());
+            HfpmPageEvent result = null;
+            if(hfpmPageEvent.getHfpmPageEventId() != null) {
+                result = iHfpmPageEventSV.getHfpmPageEventByPK(hfpmPageEvent.getHfpmPageEventId());
+            }else {
+                HfpmPageEvent_Example example = ExampleUtils.parseExample(hfpmPageEvent, HfpmPageEvent_Example.class);
+                List<HfpmPageEvent> list = iHfpmPageEventSV.getHfpmPageEventListByExample(example);
+                if(list != null && list.size() == 1) {
+                    result = list.get(0);
+                }
+            }
+
+            if(result != null) {
+                return ResultData.success(result);
+            }else {
+                return ResultData.error(ResultCode.RECODE_IS_NOT_EXISTS);
+            }
+        }catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+    }
+
+    /**
+    * 搜索一个页面事件
+    * @param  hfpmPageEvent
+    * @return
+    * @throws Throwable
+    */
+    @RequestMapping(value = "/searchOneByAjax.json")
+    @ResponseBody
+    public ResultData search(@ModelAttribute(" hfpmPageEvent") HfpmPageEvent  hfpmPageEvent){
+        logger.debug("request : {}",  hfpmPageEvent);
+        try{
+            HfpmPageEvent result = null;
+            if(hfpmPageEvent.getHfpmPageEventId() != null) {
+                result =  iHfpmPageEventSV.getHfpmPageEventByPK(hfpmPageEvent.getHfpmPageEventId());
+            }else {
+                HfpmPageEvent_Example example = ExampleUtils.parseExample( hfpmPageEvent, HfpmPageEvent_Example.class);
+
+                example.setLimitStart(0);
+                example.setLimitEnd(1);
+
+                List<HfpmPageEvent> list =  iHfpmPageEventSV.getHfpmPageEventListByExample(example);
+                if(list != null && list.size() > 0) {
+                    result = list.get(0);
+                }
+            }
+
             if(result != null) {
                 return ResultData.success(result);
             }else {
@@ -108,6 +162,8 @@ public class HfpmPageEventController   {
             if(result > 0) {
                 return ResultData.success(hfpmPageEvent);
             }
+        } catch (BusinessException e ){
+            return e.result();
         } catch (Exception e) {
             logger.error("error : ", e);
             return ResultData.error(ResultCode.ERROR);
@@ -134,6 +190,8 @@ public class HfpmPageEventController   {
             if(result > 0) {
                 return ResultData.success(hfpmPageEvents);
             }
+        } catch (BusinessException e ){
+            return e.result();
         } catch (Exception e) {
             logger.error("error : ", e);
             return ResultData.error(ResultCode.ERROR);
@@ -157,6 +215,33 @@ public class HfpmPageEventController   {
             if(result > 0) {
                 return ResultData.success(hfpmPageEvent);
             }
+        } catch (BusinessException e ){
+            return e.result();
+        } catch (Exception e) {
+            logger.error("error : ", e);
+            return ResultData.error(ResultCode.ERROR);
+        }
+        return ResultData.error(ResultCode.UNKNOW);
+    }
+
+    /**
+    * 创建或更新页面事件
+    * @param hfpmPageEvent
+    * @return
+    * @throws Throwable
+    */
+    @RequestMapping(value = "/saveOrUpdateByAjax.json")
+    @ResponseBody
+    public ResultData saveOrUpdate(@ModelAttribute("hfpmPageEvent") HfpmPageEvent hfpmPageEvent) {
+        logger.debug("request : {}", hfpmPageEvent);
+        try {
+            ControllerHelper.setDefaultValue(hfpmPageEvent, "hfpmPageEventId");
+            int result = iHfpmPageEventSV.batchOperate(new HfpmPageEvent[]{hfpmPageEvent});
+            if(result > 0) {
+                return ResultData.success(hfpmPageEvent);
+            }
+        } catch (BusinessException e ){
+            return e.result();
         } catch (Exception e) {
             logger.error("error : ", e);
             return ResultData.error(ResultCode.ERROR);
@@ -183,6 +268,8 @@ public class HfpmPageEventController   {
             }else {
                 return ResultData.error(ResultCode.RECODE_IS_NOT_EXISTS);
             }
+        } catch (BusinessException e ){
+            return e.result();
         } catch (Exception e) {
             logger.error("error : ", e);
             return ResultData.error(ResultCode.ERROR);

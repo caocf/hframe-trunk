@@ -924,6 +924,616 @@ public class HfpmProgramCfg_Example {
             addCriterion("hfpm_program_id not between", value1, value2, "hfpmProgramId");
             return (Criteria) this;
         }
+
+        public Criteria andDataEntityNameIsNull() {
+            addCriterion("data_entity_name is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andDataEntityNameIsNotNull() {
+            addCriterion("data_entity_name is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andDataEntityNameEqualTo(String value) {
+            addCriterion("data_entity_name =", value, "dataEntityName");
+            return (Criteria) this;
+        }
+
+        public Criteria andDataEntityNameNotEqualTo(String value) {
+            addCriterion("data_entity_name <>", value, "dataEntityName");
+            return (Criteria) this;
+        }
+
+        public Criteria andDataEntityNameGreaterThan(String value) {
+            addCriterion("data_entity_name >", value, "dataEntityName");
+            return (Criteria) this;
+        }
+
+        public Criteria andDataEntityNameGreaterThanOrEqualTo(String value) {
+            addCriterion("data_entity_name >=", value, "dataEntityName");
+            return (Criteria) this;
+        }
+
+        public Criteria andDataEntityNameLessThan(String value) {
+            addCriterion("data_entity_name <", value, "dataEntityName");
+            return (Criteria) this;
+        }
+
+        public Criteria andDataEntityNameLessThanOrEqualTo(String value) {
+            addCriterion("data_entity_name <=", value, "dataEntityName");
+            return (Criteria) this;
+        }
+
+        public Criteria andDataEntityNameLike(String value) {
+            addCriterion("data_entity_name like", value, "dataEntityName");
+            return (Criteria) this;
+        }
+
+        public Criteria andDataEntityNameNotLike(String value) {
+            addCriterion("data_entity_name not like", value, "dataEntityName");
+            return (Criteria) this;
+        }
+
+        public Criteria andDataEntityNameIn(List<String> values) {
+            addCriterion("data_entity_name in", values, "dataEntityName");
+            return (Criteria) this;
+        }
+
+        public Criteria andDataEntityNameNotIn(List<String> values) {
+            addCriterion("data_entity_name not in", values, "dataEntityName");
+            return (Criteria) this;
+        }
+
+        public Criteria andDataEntityNameBetween(String value1, String value2) {
+            addCriterion("data_entity_name between", value1, value2, "dataEntityName");
+            return (Criteria) this;
+        }
+
+        public Criteria andDataEntityNameNotBetween(String value1, String value2) {
+            addCriterion("data_entity_name not between", value1, value2, "dataEntityName");
+            return (Criteria) this;
+        }
+
+        public Criteria andDictionarysIsNull() {
+            addCriterion("dictionarys is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andDictionarysIsNotNull() {
+            addCriterion("dictionarys is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andDictionarysEqualTo(String value) {
+            addCriterion("dictionarys =", value, "dictionarys");
+            return (Criteria) this;
+        }
+
+        public Criteria andDictionarysNotEqualTo(String value) {
+            addCriterion("dictionarys <>", value, "dictionarys");
+            return (Criteria) this;
+        }
+
+        public Criteria andDictionarysGreaterThan(String value) {
+            addCriterion("dictionarys >", value, "dictionarys");
+            return (Criteria) this;
+        }
+
+        public Criteria andDictionarysGreaterThanOrEqualTo(String value) {
+            addCriterion("dictionarys >=", value, "dictionarys");
+            return (Criteria) this;
+        }
+
+        public Criteria andDictionarysLessThan(String value) {
+            addCriterion("dictionarys <", value, "dictionarys");
+            return (Criteria) this;
+        }
+
+        public Criteria andDictionarysLessThanOrEqualTo(String value) {
+            addCriterion("dictionarys <=", value, "dictionarys");
+            return (Criteria) this;
+        }
+
+        public Criteria andDictionarysLike(String value) {
+            addCriterion("dictionarys like", value, "dictionarys");
+            return (Criteria) this;
+        }
+
+        public Criteria andDictionarysNotLike(String value) {
+            addCriterion("dictionarys not like", value, "dictionarys");
+            return (Criteria) this;
+        }
+
+        public Criteria andDictionarysIn(List<String> values) {
+            addCriterion("dictionarys in", values, "dictionarys");
+            return (Criteria) this;
+        }
+
+        public Criteria andDictionarysNotIn(List<String> values) {
+            addCriterion("dictionarys not in", values, "dictionarys");
+            return (Criteria) this;
+        }
+
+        public Criteria andDictionarysBetween(String value1, String value2) {
+            addCriterion("dictionarys between", value1, value2, "dictionarys");
+            return (Criteria) this;
+        }
+
+        public Criteria andDictionarysNotBetween(String value1, String value2) {
+            addCriterion("dictionarys not between", value1, value2, "dictionarys");
+            return (Criteria) this;
+        }
+
+        public Criteria andFuncAuthPathIsNull() {
+            addCriterion("func_auth_path is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andFuncAuthPathIsNotNull() {
+            addCriterion("func_auth_path is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andFuncAuthPathEqualTo(String value) {
+            addCriterion("func_auth_path =", value, "funcAuthPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andFuncAuthPathNotEqualTo(String value) {
+            addCriterion("func_auth_path <>", value, "funcAuthPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andFuncAuthPathGreaterThan(String value) {
+            addCriterion("func_auth_path >", value, "funcAuthPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andFuncAuthPathGreaterThanOrEqualTo(String value) {
+            addCriterion("func_auth_path >=", value, "funcAuthPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andFuncAuthPathLessThan(String value) {
+            addCriterion("func_auth_path <", value, "funcAuthPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andFuncAuthPathLessThanOrEqualTo(String value) {
+            addCriterion("func_auth_path <=", value, "funcAuthPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andFuncAuthPathLike(String value) {
+            addCriterion("func_auth_path like", value, "funcAuthPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andFuncAuthPathNotLike(String value) {
+            addCriterion("func_auth_path not like", value, "funcAuthPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andFuncAuthPathIn(List<String> values) {
+            addCriterion("func_auth_path in", values, "funcAuthPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andFuncAuthPathNotIn(List<String> values) {
+            addCriterion("func_auth_path not in", values, "funcAuthPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andFuncAuthPathBetween(String value1, String value2) {
+            addCriterion("func_auth_path between", value1, value2, "funcAuthPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andFuncAuthPathNotBetween(String value1, String value2) {
+            addCriterion("func_auth_path not between", value1, value2, "funcAuthPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andFuncEntityNameIsNull() {
+            addCriterion("func_entity_name is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andFuncEntityNameIsNotNull() {
+            addCriterion("func_entity_name is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andFuncEntityNameEqualTo(String value) {
+            addCriterion("func_entity_name =", value, "funcEntityName");
+            return (Criteria) this;
+        }
+
+        public Criteria andFuncEntityNameNotEqualTo(String value) {
+            addCriterion("func_entity_name <>", value, "funcEntityName");
+            return (Criteria) this;
+        }
+
+        public Criteria andFuncEntityNameGreaterThan(String value) {
+            addCriterion("func_entity_name >", value, "funcEntityName");
+            return (Criteria) this;
+        }
+
+        public Criteria andFuncEntityNameGreaterThanOrEqualTo(String value) {
+            addCriterion("func_entity_name >=", value, "funcEntityName");
+            return (Criteria) this;
+        }
+
+        public Criteria andFuncEntityNameLessThan(String value) {
+            addCriterion("func_entity_name <", value, "funcEntityName");
+            return (Criteria) this;
+        }
+
+        public Criteria andFuncEntityNameLessThanOrEqualTo(String value) {
+            addCriterion("func_entity_name <=", value, "funcEntityName");
+            return (Criteria) this;
+        }
+
+        public Criteria andFuncEntityNameLike(String value) {
+            addCriterion("func_entity_name like", value, "funcEntityName");
+            return (Criteria) this;
+        }
+
+        public Criteria andFuncEntityNameNotLike(String value) {
+            addCriterion("func_entity_name not like", value, "funcEntityName");
+            return (Criteria) this;
+        }
+
+        public Criteria andFuncEntityNameIn(List<String> values) {
+            addCriterion("func_entity_name in", values, "funcEntityName");
+            return (Criteria) this;
+        }
+
+        public Criteria andFuncEntityNameNotIn(List<String> values) {
+            addCriterion("func_entity_name not in", values, "funcEntityName");
+            return (Criteria) this;
+        }
+
+        public Criteria andFuncEntityNameBetween(String value1, String value2) {
+            addCriterion("func_entity_name between", value1, value2, "funcEntityName");
+            return (Criteria) this;
+        }
+
+        public Criteria andFuncEntityNameNotBetween(String value1, String value2) {
+            addCriterion("func_entity_name not between", value1, value2, "funcEntityName");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserAuthPathIsNull() {
+            addCriterion("user_auth_path is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserAuthPathIsNotNull() {
+            addCriterion("user_auth_path is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserAuthPathEqualTo(String value) {
+            addCriterion("user_auth_path =", value, "userAuthPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserAuthPathNotEqualTo(String value) {
+            addCriterion("user_auth_path <>", value, "userAuthPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserAuthPathGreaterThan(String value) {
+            addCriterion("user_auth_path >", value, "userAuthPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserAuthPathGreaterThanOrEqualTo(String value) {
+            addCriterion("user_auth_path >=", value, "userAuthPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserAuthPathLessThan(String value) {
+            addCriterion("user_auth_path <", value, "userAuthPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserAuthPathLessThanOrEqualTo(String value) {
+            addCriterion("user_auth_path <=", value, "userAuthPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserAuthPathLike(String value) {
+            addCriterion("user_auth_path like", value, "userAuthPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserAuthPathNotLike(String value) {
+            addCriterion("user_auth_path not like", value, "userAuthPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserAuthPathIn(List<String> values) {
+            addCriterion("user_auth_path in", values, "userAuthPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserAuthPathNotIn(List<String> values) {
+            addCriterion("user_auth_path not in", values, "userAuthPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserAuthPathBetween(String value1, String value2) {
+            addCriterion("user_auth_path between", value1, value2, "userAuthPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserAuthPathNotBetween(String value1, String value2) {
+            addCriterion("user_auth_path not between", value1, value2, "userAuthPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserEntityNameIsNull() {
+            addCriterion("user_entity_name is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserEntityNameIsNotNull() {
+            addCriterion("user_entity_name is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserEntityNameEqualTo(String value) {
+            addCriterion("user_entity_name =", value, "userEntityName");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserEntityNameNotEqualTo(String value) {
+            addCriterion("user_entity_name <>", value, "userEntityName");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserEntityNameGreaterThan(String value) {
+            addCriterion("user_entity_name >", value, "userEntityName");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserEntityNameGreaterThanOrEqualTo(String value) {
+            addCriterion("user_entity_name >=", value, "userEntityName");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserEntityNameLessThan(String value) {
+            addCriterion("user_entity_name <", value, "userEntityName");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserEntityNameLessThanOrEqualTo(String value) {
+            addCriterion("user_entity_name <=", value, "userEntityName");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserEntityNameLike(String value) {
+            addCriterion("user_entity_name like", value, "userEntityName");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserEntityNameNotLike(String value) {
+            addCriterion("user_entity_name not like", value, "userEntityName");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserEntityNameIn(List<String> values) {
+            addCriterion("user_entity_name in", values, "userEntityName");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserEntityNameNotIn(List<String> values) {
+            addCriterion("user_entity_name not in", values, "userEntityName");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserEntityNameBetween(String value1, String value2) {
+            addCriterion("user_entity_name between", value1, value2, "userEntityName");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserEntityNameNotBetween(String value1, String value2) {
+            addCriterion("user_entity_name not between", value1, value2, "userEntityName");
+            return (Criteria) this;
+        }
+
+        public Criteria andSuperAuthFilterEntityIsNull() {
+            addCriterion("super_auth_filter_entity is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andSuperAuthFilterEntityIsNotNull() {
+            addCriterion("super_auth_filter_entity is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andSuperAuthFilterEntityEqualTo(Long value) {
+            addCriterion("super_auth_filter_entity =", value, "superAuthFilterEntity");
+            return (Criteria) this;
+        }
+
+        public Criteria andSuperAuthFilterEntityNotEqualTo(Long value) {
+            addCriterion("super_auth_filter_entity <>", value, "superAuthFilterEntity");
+            return (Criteria) this;
+        }
+
+        public Criteria andSuperAuthFilterEntityGreaterThan(Long value) {
+            addCriterion("super_auth_filter_entity >", value, "superAuthFilterEntity");
+            return (Criteria) this;
+        }
+
+        public Criteria andSuperAuthFilterEntityGreaterThanOrEqualTo(Long value) {
+            addCriterion("super_auth_filter_entity >=", value, "superAuthFilterEntity");
+            return (Criteria) this;
+        }
+
+        public Criteria andSuperAuthFilterEntityLessThan(Long value) {
+            addCriterion("super_auth_filter_entity <", value, "superAuthFilterEntity");
+            return (Criteria) this;
+        }
+
+        public Criteria andSuperAuthFilterEntityLessThanOrEqualTo(Long value) {
+            addCriterion("super_auth_filter_entity <=", value, "superAuthFilterEntity");
+            return (Criteria) this;
+        }
+
+        public Criteria andSuperAuthFilterEntityIn(List<Long> values) {
+            addCriterion("super_auth_filter_entity in", values, "superAuthFilterEntity");
+            return (Criteria) this;
+        }
+
+        public Criteria andSuperAuthFilterEntityNotIn(List<Long> values) {
+            addCriterion("super_auth_filter_entity not in", values, "superAuthFilterEntity");
+            return (Criteria) this;
+        }
+
+        public Criteria andSuperAuthFilterEntityBetween(Long value1, Long value2) {
+            addCriterion("super_auth_filter_entity between", value1, value2, "superAuthFilterEntity");
+            return (Criteria) this;
+        }
+
+        public Criteria andSuperAuthFilterEntityNotBetween(Long value1, Long value2) {
+            addCriterion("super_auth_filter_entity not between", value1, value2, "superAuthFilterEntity");
+            return (Criteria) this;
+        }
+
+        public Criteria andSuperAuthFilterFieldIsNull() {
+            addCriterion("super_auth_filter_field is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andSuperAuthFilterFieldIsNotNull() {
+            addCriterion("super_auth_filter_field is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andSuperAuthFilterFieldEqualTo(Long value) {
+            addCriterion("super_auth_filter_field =", value, "superAuthFilterField");
+            return (Criteria) this;
+        }
+
+        public Criteria andSuperAuthFilterFieldNotEqualTo(Long value) {
+            addCriterion("super_auth_filter_field <>", value, "superAuthFilterField");
+            return (Criteria) this;
+        }
+
+        public Criteria andSuperAuthFilterFieldGreaterThan(Long value) {
+            addCriterion("super_auth_filter_field >", value, "superAuthFilterField");
+            return (Criteria) this;
+        }
+
+        public Criteria andSuperAuthFilterFieldGreaterThanOrEqualTo(Long value) {
+            addCriterion("super_auth_filter_field >=", value, "superAuthFilterField");
+            return (Criteria) this;
+        }
+
+        public Criteria andSuperAuthFilterFieldLessThan(Long value) {
+            addCriterion("super_auth_filter_field <", value, "superAuthFilterField");
+            return (Criteria) this;
+        }
+
+        public Criteria andSuperAuthFilterFieldLessThanOrEqualTo(Long value) {
+            addCriterion("super_auth_filter_field <=", value, "superAuthFilterField");
+            return (Criteria) this;
+        }
+
+        public Criteria andSuperAuthFilterFieldIn(List<Long> values) {
+            addCriterion("super_auth_filter_field in", values, "superAuthFilterField");
+            return (Criteria) this;
+        }
+
+        public Criteria andSuperAuthFilterFieldNotIn(List<Long> values) {
+            addCriterion("super_auth_filter_field not in", values, "superAuthFilterField");
+            return (Criteria) this;
+        }
+
+        public Criteria andSuperAuthFilterFieldBetween(Long value1, Long value2) {
+            addCriterion("super_auth_filter_field between", value1, value2, "superAuthFilterField");
+            return (Criteria) this;
+        }
+
+        public Criteria andSuperAuthFilterFieldNotBetween(Long value1, Long value2) {
+            addCriterion("super_auth_filter_field not between", value1, value2, "superAuthFilterField");
+            return (Criteria) this;
+        }
+
+        public Criteria andSuperAuthFilterFieldValueIsNull() {
+            addCriterion("super_auth_filter_field_value is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andSuperAuthFilterFieldValueIsNotNull() {
+            addCriterion("super_auth_filter_field_value is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andSuperAuthFilterFieldValueEqualTo(String value) {
+            addCriterion("super_auth_filter_field_value =", value, "superAuthFilterFieldValue");
+            return (Criteria) this;
+        }
+
+        public Criteria andSuperAuthFilterFieldValueNotEqualTo(String value) {
+            addCriterion("super_auth_filter_field_value <>", value, "superAuthFilterFieldValue");
+            return (Criteria) this;
+        }
+
+        public Criteria andSuperAuthFilterFieldValueGreaterThan(String value) {
+            addCriterion("super_auth_filter_field_value >", value, "superAuthFilterFieldValue");
+            return (Criteria) this;
+        }
+
+        public Criteria andSuperAuthFilterFieldValueGreaterThanOrEqualTo(String value) {
+            addCriterion("super_auth_filter_field_value >=", value, "superAuthFilterFieldValue");
+            return (Criteria) this;
+        }
+
+        public Criteria andSuperAuthFilterFieldValueLessThan(String value) {
+            addCriterion("super_auth_filter_field_value <", value, "superAuthFilterFieldValue");
+            return (Criteria) this;
+        }
+
+        public Criteria andSuperAuthFilterFieldValueLessThanOrEqualTo(String value) {
+            addCriterion("super_auth_filter_field_value <=", value, "superAuthFilterFieldValue");
+            return (Criteria) this;
+        }
+
+        public Criteria andSuperAuthFilterFieldValueLike(String value) {
+            addCriterion("super_auth_filter_field_value like", value, "superAuthFilterFieldValue");
+            return (Criteria) this;
+        }
+
+        public Criteria andSuperAuthFilterFieldValueNotLike(String value) {
+            addCriterion("super_auth_filter_field_value not like", value, "superAuthFilterFieldValue");
+            return (Criteria) this;
+        }
+
+        public Criteria andSuperAuthFilterFieldValueIn(List<String> values) {
+            addCriterion("super_auth_filter_field_value in", values, "superAuthFilterFieldValue");
+            return (Criteria) this;
+        }
+
+        public Criteria andSuperAuthFilterFieldValueNotIn(List<String> values) {
+            addCriterion("super_auth_filter_field_value not in", values, "superAuthFilterFieldValue");
+            return (Criteria) this;
+        }
+
+        public Criteria andSuperAuthFilterFieldValueBetween(String value1, String value2) {
+            addCriterion("super_auth_filter_field_value between", value1, value2, "superAuthFilterFieldValue");
+            return (Criteria) this;
+        }
+
+        public Criteria andSuperAuthFilterFieldValueNotBetween(String value1, String value2) {
+            addCriterion("super_auth_filter_field_value not between", value1, value2, "superAuthFilterFieldValue");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {

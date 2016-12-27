@@ -9,7 +9,7 @@
       <update-edit-type>text</update-edit-type>
     </field>
     <field code="hfpm_page_event_id" name="页面事件ID" edit-type="select">
-      <rel entity-code="hfpm_page_event/hfpm_page_event_id/hfpm_event_name"/>
+      <rel entity-code="hfpm_page_event/hfpm_page_event_id/hfpm_page_event_name"/>
     </field>
     <field code="hfpm_page_event_attr_type" name="页面事件属性类型        " edit-type="input"/>
     <field code="hfmd_entity_attr_id" name="实体属性ID" edit-type="select">

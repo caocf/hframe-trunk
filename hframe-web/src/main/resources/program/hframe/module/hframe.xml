@@ -23,17 +23,11 @@
   <page id="hfpm_program_cfg_mgr" name="项目设置管理" page-template="qlist" data-set="hframe/hfpm_program_cfg">
     <component id="qForm" data-set="hframe/hfpm_program_cfg_DS4Q"/>
   </page>
-  <page id="hfpm_program_cfg_create" name="项目设置添加" page-template="cComb" data-set="hframe/hfpm_program_cfg">
-    <component id="cForm" data-set="hframe/hfpm_program_cfg"/>
-    <component id="cList" data-set="hframe/hfpm_program_cfg"/>
+  <page id="hfpm_program_cfg_create" name="项目设置添加" page-template="create" data-set="hframe/hfpm_program_cfg">
   </page>
-  <page id="hfpm_program_cfg_edit" name="项目设置修改" page-template="eComb" data-set="hframe/hfpm_program_cfg">
-    <component id="eForm" data-set="hframe/hfpm_program_cfg"/>
-    <component id="eList" data-set="hframe/hfpm_program_cfg"/>
+  <page id="hfpm_program_cfg_edit" name="项目设置修改" page-template="edit" data-set="hframe/hfpm_program_cfg">
   </page>
-  <page id="hfpm_program_cfg_detail" name="项目设置查看" page-template="dComb" data-set="hframe/hfpm_program_cfg">
-    <component id="dForm" data-set="hframe/hfpm_program_cfg"/>
-    <component id="qList" data-set="hframe/hfpm_program_cfg"/>
+  <page id="hfpm_program_cfg_detail" name="项目设置查看" page-template="edit" data-set="hframe/hfpm_program_cfg">
   </page>
   <page id="hfpm_program_mgr" name="项目管理" page-template="qlist" data-set="hframe/hfpm_program">
     <component id="qForm" data-set="hframe/hfpm_program_DS4Q"/>
@@ -201,5 +195,12 @@
     <component id="dForm" data-set="hframe/hfsec_role"/>
     <component id="qList" data-set="hframe/hfsec_role_authorize"/>
   </page>
+
+  <page id="hfus_entity_store_mgr" name="常用实体库管理" page-template="qlist" data-set="hframe/hfus_entity_store">
+    <component id="qForm" data-set="hframe/hfus_entity_store_DS4Q"/>
+  </page>
+  <page id="hfus_entity_store_create" name="常用实体库创建" page-template="create" data-set="hframe/hfus_entity_store" rel-page="hframe/hfus_entity_store_mgr"/>
+  <page id="hfus_entity_store_edit" name="常用实体库修改" page-template="edit" data-set="hframe/hfus_entity_store" rel-page="hframe/hfus_entity_store_mgr"/>
+  <page id="hfus_entity_store_detail" name="常用实体库明细" page-template="edit" data-set="hframe/hfus_entity_store" rel-page="hframe/hfus_entity_store_mgr"/>
 
 </module>

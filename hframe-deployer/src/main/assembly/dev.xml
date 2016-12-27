@@ -9,5 +9,6 @@
 	<includeBaseDirectory>false</includeBaseDirectory>
 	 <componentDescriptors>
     <componentDescriptor>src/main/assembly/component.xml</componentDescriptor>
+	 <componentDescriptor>src/main/assembly/workflow-designer.xml</componentDescriptor>
   </componentDescriptors>
 </assembly>

@@ -13,6 +13,13 @@
     </baseMapper>
     <eventMapper>
         <mapping id="id" value="hfsec_menu_id"></mapping>
+        <mapping id="pid" value="parent_hfsec_menu_id"></mapping>
         <mapping id="name" value="hfsec_menu_name"></mapping>
+        <mapping id="create" value="${create}.html"></mapping>
+        <mapping id="edit" value="${edit}.html"></mapping>
+        <mapping id="detail" value="${detail}.html"></mapping>
+        <mapping id="delete" value="${deleteByAjax}.json"></mapping>
+        <mapping id="updateByAjax" value="${updateByAjax}.json"></mapping>
+        <mapping id="batchDelete" value="${batchDelete}.html"></mapping>
     </eventMapper>
 </mapper>

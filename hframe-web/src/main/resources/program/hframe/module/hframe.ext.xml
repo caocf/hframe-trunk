@@ -12,6 +12,52 @@
             </event>
         </component>
     </page>
+    <page id="general_entity_add" name="常用实体添加" page-template="dynamic" >
+        <component id="qList" data-set="hframe/hfpm_program_cfg_auth_part" dataid="hfpmProgramCfgAuthPart" title="设置权限模型">
+            <event name="save">
+                <attach anchor="EOFC">
+                    <appendElement type="button" param='{btnclass:"btn-primary",btnText:"预执行"}'></appendElement>
+                </attach>
+                <source scope="BOFR" param="checkIds" >
+                    <appendElement type="checkbox" param='groupId'></appendElement>
+                </source>
+                <effect type="pageFwd" action='/hframe/general_entity_add_diff.html' isStack="true"></effect>
+            </event>
+        </component>
+        <component id="qList" data-set="hframe/hfpm_program_cfg_dict_part" dataid="hfpmProgramCfgDictPart" title="设置字典模型">
+            <event name="save">
+                <attach anchor="EOFC">
+                    <appendElement type="button" param='{btnclass:"btn-primary",btnText:"预执行"}'></appendElement>
+                </attach>
+                <source scope="BOFR" param="checkIds" >
+                    <appendElement type="checkbox" param='groupId'></appendElement>
+                </source>
+                <effect type="pageFwd" action='/hframe/general_entity_add_diff.html' isStack="true"></effect>
+            </event>
+        </component>
+
+
+
+    </page>
+    <page id="general_entity_add_diff" name="快速模型差异" page-template="dynamic" >
+        <component id="qList" data-set="hframe/sql"  dataid="sql"  title="快速模型-差异结果">
+            <event name="dbChange">
+                <attach anchor="EOFC">
+                    <appendElement type="button" param='{btnclass:"btn-primary",btnText:"生成实体信息"}'></appendElement>
+                </attach>
+                <source scope="BOFR" param="checkIds" >
+                    <appendElement type="checkbox" param='sql'></appendElement>
+                </source>
+                <!--<effect type="ajaxSubmit" action='${batchDelete}' param="ids" isStack="true"></effect>-->
+                <effect type="ajaxSubmit" action='/extend/sql_reverse_execute.json' isStack="true"></effect>
+                <effect type="page.reload.static"></effect>
+            </event>
+        </component>
+        <component id="qList" data-set="hframe/hfmd_entity" dataid="NewEntityId" title="新增实体信息"></component>
+        <component id="qList" data-set="hframe/hfmd_entity_attr" dataid="NewEntityAttrId"  title="新增实体属性信息"></component>
+        <component id="qList" data-set="hframe/hfmd_entity" dataid="ModEntityId"  title="修改实体属性信息"></component>
+        <component id="qList" data-set="hframe/hfmd_entity_attr"  dataid="ModEntityAttrId"  title="修改实体属性信息" />
+    </page>
     <page id="sql_reverse_diff" name="反向工程差异结果" page-template="dynamic" >
         <component id="qList" data-set="hframe/sql"  dataid="sql"  title="SQL反向-差异结果">
             <event name="dbChange">
@@ -31,9 +77,11 @@
         <component id="qList" data-set="hframe/hfmd_entity" dataid="ModEntityId"  title="修改实体属性信息"></component>
         <component id="qList" data-set="hframe/hfmd_entity_attr"  dataid="ModEntityAttrId"  title="修改实体属性信息" />
     </page>
+
+
     <page id="model_diff" name="模型差异分析" page-template="dynamic" >
         <component id="eForm" data-set="hframe/hfpm_program_cfg_dbinfo_DS4Save"   title="选择数据库">
-            <event name="detail">
+            <event name="onchange">
                 <attach anchor="hfcfg_db_connect_id"></attach>
                 <source scope="EOC" param="thisForm"></source>
                 <effect type="ajaxSubmit" action="${saveOrUpdateByAjax}"></effect>

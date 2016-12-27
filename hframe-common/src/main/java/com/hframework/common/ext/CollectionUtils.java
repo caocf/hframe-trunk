@@ -4,10 +4,7 @@ package com.hframework.common.ext;
 import org.apache.commons.beanutils.BeanUtils;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * User: zhangqh6
@@ -24,7 +21,7 @@ public class CollectionUtils {
      * @return
      */
     public static <K,V> Map<K,List<V>> group(List<V> list, Grouper<? super K, ? super V> grouper) {
-        Map<K,List<V>> retMap = new HashMap<K, List<V>>();
+        Map<K,List<V>> retMap = new LinkedHashMap<K, List<V>>();
         if(list != null && list.size() > 0) {
             for (V value : list) {
                 K key = grouper.groupKey(value);
@@ -45,7 +42,7 @@ public class CollectionUtils {
      * @return
      */
     public static <K,V> Map<K,V> convert(List<V> list, Mapper<? super K, ? super V> mapper) {
-        Map<K,V> retMap = new HashMap<K, V>();
+        Map<K,V> retMap = new LinkedHashMap<K, V>();
         if(list != null && list.size() > 0) {
             for (V value : list) {
                 K key = mapper.getKey(value);

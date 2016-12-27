@@ -4,6 +4,7 @@ import com.hframework.beans.controller.Pagination;
 import com.hframework.beans.controller.ResultCode;
 import com.hframework.beans.controller.ResultData;
 import com.hframework.common.util.ExampleUtils;
+import com.hframework.exceptions.BusinessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -47,7 +48,7 @@ public class HfpmProgramCfgController   {
     }
 
     /**
-     * 查询展示椤圭洰璁剧疆列表
+     * 查询展示项目设置列表
      * @param hfpmProgramCfg
      * @return
      * @throws Throwable
@@ -76,7 +77,7 @@ public class HfpmProgramCfgController   {
 
 
     /**
-     * 查询展示椤圭洰璁剧疆明细
+     * 查询展示项目设置明细
      * @param hfpmProgramCfg
      * @return
      * @throws Throwable
@@ -88,9 +89,9 @@ public class HfpmProgramCfgController   {
         try{
             HfpmProgramCfg result = null;
             if(hfpmProgramCfg.getHfpmProgramCfgId() != null) {
-                 result = iHfpmProgramCfgSV.getHfpmProgramCfgByPK(hfpmProgramCfg.getHfpmProgramCfgId());
+                result = iHfpmProgramCfgSV.getHfpmProgramCfgByPK(hfpmProgramCfg.getHfpmProgramCfgId());
             }else {
-                HfpmProgramCfg_Example example = ExampleUtils.parseExample( hfpmProgramCfg, HfpmProgramCfg_Example.class);
+                HfpmProgramCfg_Example example = ExampleUtils.parseExample(hfpmProgramCfg, HfpmProgramCfg_Example.class);
                 List<HfpmProgramCfg> list = iHfpmProgramCfgSV.getHfpmProgramCfgListByExample(example);
                 if(list != null && list.size() == 1) {
                     result = list.get(0);
@@ -109,7 +110,7 @@ public class HfpmProgramCfgController   {
     }
 
     /**
-    * 搜索一个椤圭洰璁剧疆
+    * 搜索一个项目设置
     * @param  hfpmProgramCfg
     * @return
     * @throws Throwable
@@ -146,7 +147,7 @@ public class HfpmProgramCfgController   {
     }
 
     /**
-    * 创建椤圭洰璁剧疆
+    * 创建项目设置
     * @param hfpmProgramCfg
     * @return
     * @throws Throwable
@@ -161,6 +162,8 @@ public class HfpmProgramCfgController   {
             if(result > 0) {
                 return ResultData.success(hfpmProgramCfg);
             }
+        } catch (BusinessException e ){
+            return e.result();
         } catch (Exception e) {
             logger.error("error : ", e);
             return ResultData.error(ResultCode.ERROR);
@@ -169,7 +172,7 @@ public class HfpmProgramCfgController   {
     }
 
     /**
-    * 批量维护椤圭洰璁剧疆
+    * 批量维护项目设置
     * @param hfpmProgramCfgs
     * @return
     * @throws Throwable
@@ -187,6 +190,8 @@ public class HfpmProgramCfgController   {
             if(result > 0) {
                 return ResultData.success(hfpmProgramCfgs);
             }
+        } catch (BusinessException e ){
+            return e.result();
         } catch (Exception e) {
             logger.error("error : ", e);
             return ResultData.error(ResultCode.ERROR);
@@ -195,7 +200,7 @@ public class HfpmProgramCfgController   {
     }
 
     /**
-    * 更新椤圭洰璁剧疆
+    * 更新项目设置
     * @param hfpmProgramCfg
     * @return
     * @throws Throwable
@@ -210,6 +215,8 @@ public class HfpmProgramCfgController   {
             if(result > 0) {
                 return ResultData.success(hfpmProgramCfg);
             }
+        } catch (BusinessException e ){
+            return e.result();
         } catch (Exception e) {
             logger.error("error : ", e);
             return ResultData.error(ResultCode.ERROR);
@@ -218,11 +225,11 @@ public class HfpmProgramCfgController   {
     }
 
     /**
-     * 更新椤圭洰璁剧疆
-     * @param hfpmProgramCfg
-     * @return
-     * @throws Throwable
-     */
+    * 创建或更新项目设置
+    * @param hfpmProgramCfg
+    * @return
+    * @throws Throwable
+    */
     @RequestMapping(value = "/saveOrUpdateByAjax.json")
     @ResponseBody
     public ResultData saveOrUpdate(@ModelAttribute("hfpmProgramCfg") HfpmProgramCfg hfpmProgramCfg) {
@@ -233,6 +240,8 @@ public class HfpmProgramCfgController   {
             if(result > 0) {
                 return ResultData.success(hfpmProgramCfg);
             }
+        } catch (BusinessException e ){
+            return e.result();
         } catch (Exception e) {
             logger.error("error : ", e);
             return ResultData.error(ResultCode.ERROR);
@@ -240,10 +249,8 @@ public class HfpmProgramCfgController   {
         return ResultData.error(ResultCode.UNKNOW);
     }
 
-
-
     /**
-    * 删除椤圭洰璁剧疆
+    * 删除项目设置
     * @param hfpmProgramCfg
     * @return
     * @throws Throwable
@@ -261,6 +268,8 @@ public class HfpmProgramCfgController   {
             }else {
                 return ResultData.error(ResultCode.RECODE_IS_NOT_EXISTS);
             }
+        } catch (BusinessException e ){
+            return e.result();
         } catch (Exception e) {
             logger.error("error : ", e);
             return ResultData.error(ResultCode.ERROR);

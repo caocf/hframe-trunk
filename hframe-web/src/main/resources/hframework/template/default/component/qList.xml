@@ -34,7 +34,8 @@
         </event>
     </baseEvents>
     <events>
-        <event rel="#EOFR.goto.create"></event>
+        <event rel="#BOFC.goto.create"></event>
+        <!--<event rel="#EOFR.goto.create"></event>-->
         <event rel="#EOFR.goto.edit"></event>
         <event rel="#EOFR.confirm.delete"></event>
         <event rel="#ELE.goto.detail"></event>

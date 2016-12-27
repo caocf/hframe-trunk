@@ -19,7 +19,7 @@ public class DataSetLoaderListener  implements ServletContextListener {
         WebApplicationContext webappcontext = WebApplicationContextUtils
                 .getRequiredWebApplicationContext(event.getServletContext());
         DataSetLoaderService dataSetLoaderService = (DataSetLoaderService) webappcontext.getBean("dataSetLoaderService");
-        dataSetLoaderService.load(event.getServletContext());
+//        dataSetLoaderService.load(event.getServletContext());
     }
 
 

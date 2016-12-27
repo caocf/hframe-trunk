@@ -16,6 +16,16 @@
       <arg column="modify_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
       <arg column="del_flag" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="hfpm_page_component_id" jdbcType="BIGINT" javaType="java.lang.Long" />
+      <arg column="creator_id" jdbcType="BIGINT" javaType="java.lang.Long" />
+      <arg column="effect_field" jdbcType="BIGINT" javaType="java.lang.Long" />
+      <arg column="event_source" jdbcType="TINYINT" javaType="java.lang.Byte" />
+      <arg column="hfpm_page_event_code" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="hfpm_page_event_name" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="hfpm_page_event_type" jdbcType="TINYINT" javaType="java.lang.Byte" />
+      <arg column="modifier_id" jdbcType="BIGINT" javaType="java.lang.Long" />
+      <arg column="target_hfpm_page_id" jdbcType="BIGINT" javaType="java.lang.Long" />
+      <arg column="from_condition" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="to_result" jdbcType="VARCHAR" javaType="java.lang.String" />
     </constructor>
   </resultMap>
   <sql id="Example_Where_Clause" >
@@ -79,7 +89,9 @@
   <sql id="Base_Column_List" >
     hfpm_page_event_id, hfpm_page_id, hfpm_event_name, hfpm_event_monitor_object, hfpm_event_monitor_object_type, 
     hfpm_event_type, hfpm_event_effect_object, op_id, create_time, modify_op_id, modify_time, 
-    del_flag, hfpm_page_component_id
+    del_flag, hfpm_page_component_id, creator_id, effect_field, event_source, hfpm_page_event_code, 
+    hfpm_page_event_name, hfpm_page_event_type, modifier_id, target_hfpm_page_id, from_condition, 
+    to_result
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.hframe.domain.model.HfpmPageEvent_Example" >
     select
@@ -122,12 +134,18 @@
       hfpm_event_monitor_object_type, hfpm_event_type, 
       hfpm_event_effect_object, op_id, create_time, 
       modify_op_id, modify_time, del_flag, 
-      hfpm_page_component_id)
+      hfpm_page_component_id, creator_id, effect_field, 
+      event_source, hfpm_page_event_code, hfpm_page_event_name, 
+      hfpm_page_event_type, modifier_id, target_hfpm_page_id, 
+      from_condition, to_result)
     values (#{hfpmPageId,jdbcType=BIGINT}, #{hfpmEventName,jdbcType=VARCHAR}, #{hfpmEventMonitorObject,jdbcType=VARCHAR}, 
       #{hfpmEventMonitorObjectType,jdbcType=VARCHAR}, #{hfpmEventType,jdbcType=INTEGER}, 
       #{hfpmEventEffectObject,jdbcType=VARCHAR}, #{opId,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, 
       #{modifyOpId,jdbcType=BIGINT}, #{modifyTime,jdbcType=TIMESTAMP}, #{delFlag,jdbcType=INTEGER}, 
-      #{hfpmPageComponentId,jdbcType=BIGINT})
+      #{hfpmPageComponentId,jdbcType=BIGINT}, #{creatorId,jdbcType=BIGINT}, #{effectField,jdbcType=BIGINT}, 
+      #{eventSource,jdbcType=TINYINT}, #{hfpmPageEventCode,jdbcType=VARCHAR}, #{hfpmPageEventName,jdbcType=VARCHAR}, 
+      #{hfpmPageEventType,jdbcType=TINYINT}, #{modifierId,jdbcType=BIGINT}, #{targetHfpmPageId,jdbcType=BIGINT}, 
+      #{fromCondition,jdbcType=VARCHAR}, #{toResult,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.hframe.domain.model.HfpmPageEvent" >
     <selectKey resultType="java.lang.Long" keyProperty="hfpmPageEventId" order="AFTER" >
@@ -171,6 +189,36 @@
       <if test="hfpmPageComponentId != null" >
         hfpm_page_component_id,
       </if>
+      <if test="creatorId != null" >
+        creator_id,
+      </if>
+      <if test="effectField != null" >
+        effect_field,
+      </if>
+      <if test="eventSource != null" >
+        event_source,
+      </if>
+      <if test="hfpmPageEventCode != null" >
+        hfpm_page_event_code,
+      </if>
+      <if test="hfpmPageEventName != null" >
+        hfpm_page_event_name,
+      </if>
+      <if test="hfpmPageEventType != null" >
+        hfpm_page_event_type,
+      </if>
+      <if test="modifierId != null" >
+        modifier_id,
+      </if>
+      <if test="targetHfpmPageId != null" >
+        target_hfpm_page_id,
+      </if>
+      <if test="fromCondition != null" >
+        from_condition,
+      </if>
+      <if test="toResult != null" >
+        to_result,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="hfpmPageId != null" >
@@ -208,6 +256,36 @@
       </if>
       <if test="hfpmPageComponentId != null" >
         #{hfpmPageComponentId,jdbcType=BIGINT},
+      </if>
+      <if test="creatorId != null" >
+        #{creatorId,jdbcType=BIGINT},
+      </if>
+      <if test="effectField != null" >
+        #{effectField,jdbcType=BIGINT},
+      </if>
+      <if test="eventSource != null" >
+        #{eventSource,jdbcType=TINYINT},
+      </if>
+      <if test="hfpmPageEventCode != null" >
+        #{hfpmPageEventCode,jdbcType=VARCHAR},
+      </if>
+      <if test="hfpmPageEventName != null" >
+        #{hfpmPageEventName,jdbcType=VARCHAR},
+      </if>
+      <if test="hfpmPageEventType != null" >
+        #{hfpmPageEventType,jdbcType=TINYINT},
+      </if>
+      <if test="modifierId != null" >
+        #{modifierId,jdbcType=BIGINT},
+      </if>
+      <if test="targetHfpmPageId != null" >
+        #{targetHfpmPageId,jdbcType=BIGINT},
+      </if>
+      <if test="fromCondition != null" >
+        #{fromCondition,jdbcType=VARCHAR},
+      </if>
+      <if test="toResult != null" >
+        #{toResult,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -259,6 +337,36 @@
       <if test="record.hfpmPageComponentId != null" >
         hfpm_page_component_id = #{record.hfpmPageComponentId,jdbcType=BIGINT},
       </if>
+      <if test="record.creatorId != null" >
+        creator_id = #{record.creatorId,jdbcType=BIGINT},
+      </if>
+      <if test="record.effectField != null" >
+        effect_field = #{record.effectField,jdbcType=BIGINT},
+      </if>
+      <if test="record.eventSource != null" >
+        event_source = #{record.eventSource,jdbcType=TINYINT},
+      </if>
+      <if test="record.hfpmPageEventCode != null" >
+        hfpm_page_event_code = #{record.hfpmPageEventCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.hfpmPageEventName != null" >
+        hfpm_page_event_name = #{record.hfpmPageEventName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.hfpmPageEventType != null" >
+        hfpm_page_event_type = #{record.hfpmPageEventType,jdbcType=TINYINT},
+      </if>
+      <if test="record.modifierId != null" >
+        modifier_id = #{record.modifierId,jdbcType=BIGINT},
+      </if>
+      <if test="record.targetHfpmPageId != null" >
+        target_hfpm_page_id = #{record.targetHfpmPageId,jdbcType=BIGINT},
+      </if>
+      <if test="record.fromCondition != null" >
+        from_condition = #{record.fromCondition,jdbcType=VARCHAR},
+      </if>
+      <if test="record.toResult != null" >
+        to_result = #{record.toResult,jdbcType=VARCHAR},
+      </if>
     </set>
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
@@ -278,7 +386,17 @@
       modify_op_id = #{record.modifyOpId,jdbcType=BIGINT},
       modify_time = #{record.modifyTime,jdbcType=TIMESTAMP},
       del_flag = #{record.delFlag,jdbcType=INTEGER},
-      hfpm_page_component_id = #{record.hfpmPageComponentId,jdbcType=BIGINT}
+      hfpm_page_component_id = #{record.hfpmPageComponentId,jdbcType=BIGINT},
+      creator_id = #{record.creatorId,jdbcType=BIGINT},
+      effect_field = #{record.effectField,jdbcType=BIGINT},
+      event_source = #{record.eventSource,jdbcType=TINYINT},
+      hfpm_page_event_code = #{record.hfpmPageEventCode,jdbcType=VARCHAR},
+      hfpm_page_event_name = #{record.hfpmPageEventName,jdbcType=VARCHAR},
+      hfpm_page_event_type = #{record.hfpmPageEventType,jdbcType=TINYINT},
+      modifier_id = #{record.modifierId,jdbcType=BIGINT},
+      target_hfpm_page_id = #{record.targetHfpmPageId,jdbcType=BIGINT},
+      from_condition = #{record.fromCondition,jdbcType=VARCHAR},
+      to_result = #{record.toResult,jdbcType=VARCHAR}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -322,6 +440,36 @@
       <if test="hfpmPageComponentId != null" >
         hfpm_page_component_id = #{hfpmPageComponentId,jdbcType=BIGINT},
       </if>
+      <if test="creatorId != null" >
+        creator_id = #{creatorId,jdbcType=BIGINT},
+      </if>
+      <if test="effectField != null" >
+        effect_field = #{effectField,jdbcType=BIGINT},
+      </if>
+      <if test="eventSource != null" >
+        event_source = #{eventSource,jdbcType=TINYINT},
+      </if>
+      <if test="hfpmPageEventCode != null" >
+        hfpm_page_event_code = #{hfpmPageEventCode,jdbcType=VARCHAR},
+      </if>
+      <if test="hfpmPageEventName != null" >
+        hfpm_page_event_name = #{hfpmPageEventName,jdbcType=VARCHAR},
+      </if>
+      <if test="hfpmPageEventType != null" >
+        hfpm_page_event_type = #{hfpmPageEventType,jdbcType=TINYINT},
+      </if>
+      <if test="modifierId != null" >
+        modifier_id = #{modifierId,jdbcType=BIGINT},
+      </if>
+      <if test="targetHfpmPageId != null" >
+        target_hfpm_page_id = #{targetHfpmPageId,jdbcType=BIGINT},
+      </if>
+      <if test="fromCondition != null" >
+        from_condition = #{fromCondition,jdbcType=VARCHAR},
+      </if>
+      <if test="toResult != null" >
+        to_result = #{toResult,jdbcType=VARCHAR},
+      </if>
     </set>
     where hfpm_page_event_id = #{hfpmPageEventId,jdbcType=BIGINT}
   </update>
@@ -338,7 +486,17 @@
       modify_op_id = #{modifyOpId,jdbcType=BIGINT},
       modify_time = #{modifyTime,jdbcType=TIMESTAMP},
       del_flag = #{delFlag,jdbcType=INTEGER},
-      hfpm_page_component_id = #{hfpmPageComponentId,jdbcType=BIGINT}
+      hfpm_page_component_id = #{hfpmPageComponentId,jdbcType=BIGINT},
+      creator_id = #{creatorId,jdbcType=BIGINT},
+      effect_field = #{effectField,jdbcType=BIGINT},
+      event_source = #{eventSource,jdbcType=TINYINT},
+      hfpm_page_event_code = #{hfpmPageEventCode,jdbcType=VARCHAR},
+      hfpm_page_event_name = #{hfpmPageEventName,jdbcType=VARCHAR},
+      hfpm_page_event_type = #{hfpmPageEventType,jdbcType=TINYINT},
+      modifier_id = #{modifierId,jdbcType=BIGINT},
+      target_hfpm_page_id = #{targetHfpmPageId,jdbcType=BIGINT},
+      from_condition = #{fromCondition,jdbcType=VARCHAR},
+      to_result = #{toResult,jdbcType=VARCHAR}
     where hfpm_page_event_id = #{hfpmPageEventId,jdbcType=BIGINT}
   </update>
 </mapper>

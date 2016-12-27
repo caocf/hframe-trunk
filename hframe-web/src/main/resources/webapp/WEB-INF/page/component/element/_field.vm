@@ -20,6 +20,8 @@
 	#parse("component/element/_hidden.vm")
 #elseif($column.editType=='select')
 	#parse("component/element/_select.vm")
+#elseif($column.editType=='muti-select')
+	#parse("component/element/_multiple-select.vm")
 #elseif($column.editType=='datetime')
 		#parse("component/element/_datetime.vm")
 #elseif($column.editType=='tipinput')

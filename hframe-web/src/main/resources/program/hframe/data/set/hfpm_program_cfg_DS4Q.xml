@@ -4,7 +4,7 @@
   <entity>hfpm_program_cfg</entity>
   <name>项目设置【查询】</name>
   <fields>
-    <field code="hfpm_program_cfg_id" name="项目配置ID" edit-type="input" is-key="true" not-null="true"/>
+    <field code="hfpm_program_cfg_id" name="项目设置id" edit-type="hidden" is-key="true" not-null="true"/>
     <field code="show_name" name="项目标题" edit-type="input"/>
     <field code="hfcfg_program_template_id" name="项目模板ID" edit-type="select">
       <rel entity-code="hfcfg_program_template/hfcfg_program_template_id/program_template_name"/>
@@ -25,13 +25,27 @@
     <field code="hfpm_program_id" name="项目ID" edit-type="select">
       <rel entity-code="hfpm_program/hfpm_program_id/hfpm_program_name"/>
     </field>
+    <field code="user_entity_name" name="用户登录实体" edit-type="select">
+      <rel entity-code="hfmd_entity/hfmd_entity_id/hfmd_entity_name" rel-field="hfpm_program_id"/>
+    </field>
     <field code="create_time_LEQ" name="创建结束时间" edit-type="datetime"/>
     <field code="create_time_GEQ" name="创建开始时间" edit-type="datetime"/>
+    <field code="data_entity_name" name="数据权限实体" edit-type="input">
+      <rel entity-code="hfmd_entity/hfmd_entity_id/hfmd_entity_name" rel-field="hfpm_program_id"/>
+    </field>
     <field code="modify_op_id" name="修改人" edit-type="input">
       <rel entity-code="hfsec_user/hfsec_user_id/hfsec_user_name"/>
     </field>
+    <field code="func_entity_name" name="功能权限实体" edit-type="input">
+      <rel entity-code="hfmd_entity/hfmd_entity_id/hfmd_entity_name" rel-field="hfpm_program_id"/>
+    </field>
     <field code="modify_time_GEQ" name="修改开始时间" edit-type="datetime"/>
     <field code="modify_time_LEQ" name="修改结束时间" edit-type="datetime"/>
+    <field code="user_auth_path" name="用户授权路径" edit-type="input"/>
     <field code="del_flag" name="删除标识" edit-type="input"/>
+    <field code="func_auth_path" name="功能授权路径" edit-type="input"/>
+    <field code="dictionarys" name="系统字典实体" edit-type="input">
+      <rel entity-code="hfmd_entity/hfmd_entity_id/hfmd_entity_name" rel-field="hfpm_program_id"/>
+    </field>
   </fields>
 </dataset>

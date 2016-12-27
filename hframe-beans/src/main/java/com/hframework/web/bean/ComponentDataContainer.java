@@ -36,6 +36,8 @@ public class ComponentDataContainer {
     //每一行结尾(如：添加操作图标)
     private List<EventElement> endOfRowList = new ArrayList<EventElement>();
     //组件结尾(如：提交按钮)
+    private List<EventElement> beforeOfCompList = new ArrayList<EventElement>();
+    //组件结尾(如：提交按钮)
     private List<EventElement> endOfCompList = new ArrayList<EventElement>();
     //每一行某一列（如：点击名称进行超链接）
     private List<EventElement> elementOfCompList = new ArrayList<EventElement>();
@@ -102,6 +104,8 @@ public class ComponentDataContainer {
                 endOfRowList.add(new EventElement(event));
             }else if(EnumUtils.compare(ComponentEventAnchor.EOFC, event.getAttach().getAnchor())) {
                 endOfCompList.add(new EventElement(event));
+            }else if(EnumUtils.compare(ComponentEventAnchor.BOFC, event.getAttach().getAnchor())) {
+                beforeOfCompList.add(new EventElement(event));
             }else {
                 elementOfCompList.add(new EventElement(event));
             }
@@ -114,6 +118,8 @@ public class ComponentDataContainer {
                     endOfRowList.add(new EventElement(appendElement));
                 }else if(EnumUtils.compare(ComponentEventAnchor.EOFC, event.getSource().getScope())) {
                     endOfCompList.add(new EventElement(appendElement));
+                }else if(EnumUtils.compare(ComponentEventAnchor.BOFC, event.getSource().getScope())) {
+                    beforeOfCompList.add(new EventElement(appendElement));
                 }else {
                     elementOfCompList.add(new EventElement(appendElement));
                 }
@@ -164,6 +170,7 @@ public class ComponentDataContainer {
             peddingEventElement(beforeOfRowList, mapping, dataSetDescriptor,componentDescriptor);
             peddingEventElement(endOfRowList, mapping, dataSetDescriptor,componentDescriptor);
             peddingEventElement(endOfCompList, mapping, dataSetDescriptor,componentDescriptor);
+            peddingEventElement(beforeOfCompList, mapping, dataSetDescriptor,componentDescriptor);
             peddingEventElement(elementOfCompList, mapping, dataSetDescriptor, componentDescriptor);
         }
     }
@@ -357,6 +364,7 @@ public class ComponentDataContainer {
         jsonObject.put("BOFR",beforeOfRowList.size() == 0 ? null : beforeOfRowList );
         jsonObject.put("EOFR",endOfRowList.size() == 0 ? null : endOfRowList );
         jsonObject.put("EOF",endOfCompList.size() == 0 ? null : endOfCompList );
+        jsonObject.put("BOF",beforeOfCompList.size() == 0 ? null : beforeOfCompList );
         jsonObject.put("ELE",elementOfRowMap.size() == 0 ? null : elementOfRowMap );
         return jsonObject;
     }
@@ -761,7 +769,7 @@ public class ComponentDataContainer {
                         for (Field field : fields) {
                             Map<String, String> tempMap= new LinkedHashMap<String, String>();
                             for (String key : initMap.keySet()) {
-                                tempMap.put(key, getValueFromField(field, initMap.get(key)));
+                                tempMap.put(key, getValueFromField(field, initMap.get(key), dataSetDescriptor));
                             }
                             resultList.add(tempMap);
                         }
@@ -782,7 +790,7 @@ public class ComponentDataContainer {
             }
         }
 
-        private String getValueFromField(Field field, String code) {
+        private String getValueFromField(Field field, String code, DataSetDescriptor dataSetDescriptor) {
 
             code = code.substring(2, code.length() - 1).trim();
             if("code".equals(code)) {
@@ -813,8 +821,20 @@ public class ComponentDataContainer {
 //                return field.getRel().getEntityCode().replaceAll("/", ".");
             }else if("relColumns".equals(code)) {
                 if(field.getRel() != null && StringUtils.isNotBlank(field.getRel().getRelField())) {
-                    return (field.getRel().getRelField().endsWith("_PCXT") ? field.getRel().getRelField().substring(0, field.getRel().getRelField().length()-5) : field.getRel().getRelField())
-                            +  "={" + ResourceWrapper.JavaUtil.getJavaVarName(field.getRel().getRelField())+"}";
+                    String relFields = field.getRel().getRelField();
+                    String result = "";
+                    for (String relField : relFields.split(",")) {
+                        Field refField = dataSetDescriptor.getFields().get(relField);
+                        String paramName = relField;
+                        if(StringUtils.isBlank(field.getRel().getUrl()) && refField.getRel() != null && StringUtils.isNotBlank(refField.getRel().getEntityCode())) {
+                            String entityCode = refField.getRel().getEntityCode();
+                            paramName = entityCode.substring(entityCode.indexOf("/") +1, entityCode.lastIndexOf("/"));
+                        }
+                        result += (("".equals(result) ? "" : "&&")
+                                + paramName
+                                +  "={" + ResourceWrapper.JavaUtil.getJavaVarName(relField)+"}");
+                    }
+                    return result;
                 }else {
                     return null;
                 }
@@ -1324,6 +1344,7 @@ public class ComponentDataContainer {
     public enum ComponentEventAnchor{
         BOFR("BOFR", "行开始"),
         EOFR("EOFR", "行结尾"),
+        BOFC("BOFC", "组件开始"),
         EOFC("EOFC", "组件结尾");
 
         private String code;

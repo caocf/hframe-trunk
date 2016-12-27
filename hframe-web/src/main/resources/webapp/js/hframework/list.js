@@ -19,13 +19,13 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
         $this = $(this);
         valueChange($this);
     });
-    $(".breadcrumb select").live("change", function(){
+    $(".breadcrumb select:not(.hfselect)").live("change", function(){
         $this = $(this);
         valueChange($this);
     });
 
 
-    $('.hfselect').live('input', function(){
+    $('.hfselect[action=""]').live('input', function(){
         $this = $(this);
         valueChange($this);
     });
@@ -37,6 +37,9 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
         var curValue =$this.val();
 
         var lastValue = $this.attr("last-value");
+        //if(lastValue == undefined) {
+        //    $this.attr("initing","true");
+        //}
         if(lastValue == curValue) {
             return;
         }
@@ -112,7 +115,9 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
 
                         $targetValue = $targetValue.substring($targetValue.indexOf("object.") + 7, $targetValue.length-1);
                         //console.info(data.data);
-                        $target.val(data.data[$targetValue]);
+                        if(!$target.val()) {//无值的情况才进行赋值
+                            $target.val(data.data[$targetValue]);
+                        }
                         if($editable == "false") {
                             //$target.attr("disabled",true);
                             $target.attr("readonly","readonly");
@@ -134,6 +139,8 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
                 }
                 if($target[0].tagName == 'SELECT') {
                     $.selectLoad($target);
+                }else if($($target[0]).hasClass("hfcheckbox") || $this.hasClass("hfradio")) {
+                    $.checkboxOrRadioLoad($target);
                 }
 
             }
@@ -209,12 +216,14 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
                 $(this).chosen();//设置为selectx
             });
 
-            if(($(".hflist-data").children(":last").find("input[value !='']").size() == 0 ||
-                    $(".hflist-data").children(":last").find("input[value !='']").val().length == 0 )
-                && $(".hflist-data").children(":last").find("select option:checked[value!='']").size() == 0) {
-                $(".hflist-data").children(":last").remove()
+            if($(".hflist-data").children().length > 1) {
+                var $firstRow = $(".hflist-data").children(":first");
+                if(($firstRow.find("input[value !='']").size() == 0 ||
+                    $firstRow.find("input[value !='']").val().length == 0 )
+                    && $firstRow.find("select option:checked[value!='']").size() == 0) {
+                    $firstRow.remove();
+                }
             }
-
 
             //
             //$($curRow).after($newRow);

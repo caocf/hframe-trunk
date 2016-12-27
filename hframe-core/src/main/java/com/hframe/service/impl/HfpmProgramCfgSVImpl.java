@@ -4,6 +4,7 @@ import java.util.*;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import com.google.common.collect.Lists;
+import com.hframework.common.util.ExampleUtils;
 import com.hframe.domain.model.HfpmProgramCfg;
 import com.hframe.domain.model.HfpmProgramCfg_Example;
 import com.hframe.dao.HfpmProgramCfgMapper;
@@ -18,7 +19,7 @@ public class HfpmProgramCfgSVImpl  implements IHfpmProgramCfgSV {
 
 
     /**
-    * 创建椤圭洰璁剧疆
+    * 创建项目设置
     * @param hfpmProgramCfg
     * @return
     * @throws Exception
@@ -28,7 +29,7 @@ public class HfpmProgramCfgSVImpl  implements IHfpmProgramCfgSV {
     }
 
     /**
-    * 批量维护椤圭洰璁剧疆
+    * 批量维护项目设置
     * @param hfpmProgramCfgs
     * @return
     * @throws Exception
@@ -48,7 +49,7 @@ public class HfpmProgramCfgSVImpl  implements IHfpmProgramCfgSV {
     }
 
     /**
-    * 更新椤圭洰璁剧疆
+    * 更新项目设置
     * @param hfpmProgramCfg
     * @return
     * @throws Exception
@@ -58,7 +59,7 @@ public class HfpmProgramCfgSVImpl  implements IHfpmProgramCfgSV {
     }
 
     /**
-    * 通过查询对象更新椤圭洰璁剧疆
+    * 通过查询对象更新项目设置
     * @param hfpmProgramCfg
     * @param example
     * @return
@@ -69,7 +70,7 @@ public class HfpmProgramCfgSVImpl  implements IHfpmProgramCfgSV {
     }
 
     /**
-    * 删除椤圭洰璁剧疆
+    * 删除项目设置
     * @param hfpmProgramCfg
     * @return
     * @throws Exception
@@ -79,7 +80,7 @@ public class HfpmProgramCfgSVImpl  implements IHfpmProgramCfgSV {
     }
 
     /**
-    * 删除椤圭洰璁剧疆
+    * 删除项目设置
     * @param hfpmProgramCfgId
     * @return
     * @throws Exception
@@ -89,7 +90,7 @@ public class HfpmProgramCfgSVImpl  implements IHfpmProgramCfgSV {
     }
 
     /**
-    * 查找所有椤圭洰璁剧疆
+    * 查找所有项目设置
     * @return
     */
     public List<HfpmProgramCfg> getHfpmProgramCfgAll()  throws  Exception {
@@ -97,7 +98,7 @@ public class HfpmProgramCfgSVImpl  implements IHfpmProgramCfgSV {
     }
 
     /**
-    * 通过椤圭洰璁剧疆ID查询椤圭洰璁剧疆
+    * 通过项目设置ID查询项目设置
     * @param hfpmProgramCfgId
     * @return
     * @throws Exception
@@ -108,7 +109,7 @@ public class HfpmProgramCfgSVImpl  implements IHfpmProgramCfgSV {
 
 
     /**
-    * 通过MAP参数查询椤圭洰璁剧疆
+    * 通过MAP参数查询项目设置
     * @param params
     * @return
     * @throws Exception
@@ -120,7 +121,7 @@ public class HfpmProgramCfgSVImpl  implements IHfpmProgramCfgSV {
 
 
     /**
-    * 通过查询对象查询椤圭洰璁剧疆
+    * 通过查询对象查询项目设置
     * @param example
     * @return
     * @throws Exception
@@ -130,7 +131,7 @@ public class HfpmProgramCfgSVImpl  implements IHfpmProgramCfgSV {
     }
 
     /**
-    * 通过MAP参数查询椤圭洰璁剧疆数量
+    * 通过MAP参数查询项目设置数量
     * @param params
     * @return
     * @throws Exception
@@ -140,7 +141,7 @@ public class HfpmProgramCfgSVImpl  implements IHfpmProgramCfgSV {
     }
 
     /**
-    * 通过查询对象查询椤圭洰璁剧疆数量
+    * 通过查询对象查询项目设置数量
     * @param example
     * @return
     * @throws Exception

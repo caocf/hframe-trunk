@@ -20,6 +20,8 @@ public class Program   {
 	private Template template;
 	@XStreamAlias("welcome")
 	private String welcome;
+    @XStreamAlias("auth-instance")
+    private AuthInstance authInstance;
 	@XStreamAlias("superManager")
 	private SuperManager superManager;
     @XStreamAlias("company")
@@ -92,4 +94,14 @@ public class Program   {
      public void setCompany(String company) {
       this.company = company;
      }
+
+     public AuthInstance getAuthInstance() {
+      if(authInstance == null) authInstance = new AuthInstance();
+      return authInstance;
+     }
+
+     public void setAuthInstance(AuthInstance authInstance) {
+      this.authInstance = authInstance;
+     }
 }
+

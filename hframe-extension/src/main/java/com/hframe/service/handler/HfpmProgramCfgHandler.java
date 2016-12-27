@@ -2,24 +2,25 @@
 package com.hframe.service.handler;
 
 import com.hframe.domain.model.*;
-import com.hframe.service.interfaces.IHfcfgDbConnectSV;
-import com.hframe.service.interfaces.IHfpmProgramSV;
-import com.hframe.service.interfaces.IHfsecUserSV;
+import com.hframe.service.interfaces.*;
 import com.hframework.base.bean.AbstractBusinessHandler;
 import com.hframework.common.annotation.extension.AfterCreateHandler;
 import com.hframework.common.annotation.extension.AfterUpdateHandler;
+import com.hframework.common.ext.CollectionUtils;
+import com.hframework.common.ext.Fetcher;
+import com.hframework.common.ext.Mapper;
 import com.hframework.common.util.FileUtils;
 import com.hframework.common.util.message.VelocityUtil;
 import com.hframework.common.util.message.XmlUtils;
-import com.hframework.ext.datasoucce.DataSourceContextHolder;
 import com.hframework.generator.util.CreatorUtil;
 import com.hframework.generator.web.BaseGeneratorUtil;
-import com.hframework.web.bean.WebContextHelper;
 import com.hframework.web.config.bean.Program;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -34,6 +35,13 @@ public class HfpmProgramCfgHandler extends AbstractBusinessHandler<HfpmProgramCf
     private IHfsecUserSV hfsecUserSV;
     @Resource
     private IHfpmProgramSV hfpmProgramSV;
+    @Resource
+    private IHfpmModuleSV hfpmModuleSV;
+
+    @Resource
+    private IHfmdEntitySV hfmdEntitySV;
+    @Resource
+    private IHfmdEntityAttrSV hfmdEntityAttrSV;
 
     @AfterCreateHandler
     @AfterUpdateHandler(attr = "hfcfgDbConnectId")
@@ -55,26 +63,61 @@ public class HfpmProgramCfgHandler extends AbstractBusinessHandler<HfpmProgramCf
             System.out.println(content);
             FileUtils.writeFile(projectBasePath + "/hframe-core/src/main/resources/properties/dataSource.properties", content);
 
-            //管理员入库 -db变更前需要先执行ddl语句，因此走db变更功能，不用做后台连带
-//            Program program = XmlUtils.readValueFromAbsoluteFilePath(projectBasePath + "/hframe-web/src/main/resources/program/program.xml", Program.class);
-//            DataSourceContextHolder.setDbInfo(dataSourceInfo.getUrl(), dataSourceInfo.getUser(), dataSourceInfo.getPassword());
-
-
-//            HfsecUser_Example example = new HfsecUser_Example();
-//            example.createCriteria().andAccountEqualTo(program.getSuperManager().getCode());
-//            if(hfsecUserSV.getHfsecUserCountByExample(example) ==  0) {
-//                HfsecUser hfsecUser = new HfsecUser();
-//                hfsecUser.setHfsecUserName(program.getSuperManager().getName());
-//                hfsecUser.setAccount(program.getSuperManager().getCode());
-//                hfsecUser.setPassword(program.getSuperManager().getPassword());
-//                hfsecUser.setCreateTime(hfpmProgramCfg.getCreateTime());
-//                hfsecUser.setStatus(1);
-//                hfsecUser.setAvatar("http://pic.hanhande.com/files/141127/1283574_094432_8946.jpg");
-//                hfsecUserSV.create(hfsecUser);
-//            }
-
-//            DataSourceContextHolder.clear();
         }
         return true;
+    }
+
+    @AfterCreateHandler
+    @AfterUpdateHandler
+    public boolean generateAuthInstance(HfpmProgramCfg hfpmProgramCfg) throws Exception {
+
+        if(hfpmProgramCfg == null) return true;
+        String companyCode = "hframe";
+        HfpmProgram hfpmProgram = hfpmProgramSV.getHfpmProgramByPK(hfpmProgramCfg.getHfpmProgramId());
+        String programCode = hfpmProgram.getHfpmProgramCode();
+        String projectBasePath = CreatorUtil.getTargetProjectBasePath(companyCode,
+                "hframe".equals(programCode) ? "trunk" : programCode, null);
+        Program program = XmlUtils.readValueFromAbsoluteFilePath(projectBasePath + "/hframe-web/src/main/resources/program/program.xml", Program.class);
+        //用户实体
+        if(hfpmProgramCfg.getUserEntityName() != null) program.getAuthInstance().setUser(getCfgName(hfpmProgramCfg.getUserEntityName()));
+        //数据实体
+        if(hfpmProgramCfg.getDataEntityName() != null) program.getAuthInstance().setData(getCfgName(hfpmProgramCfg.getDataEntityName()));
+        //功能实体
+        if(hfpmProgramCfg.getFuncEntityName() != null) program.getAuthInstance().setFunction(getCfgName(hfpmProgramCfg.getFuncEntityName()));
+        //用户数据授权路径
+        if(hfpmProgramCfg.getUserAuthPath() != null) program.getAuthInstance().setUserDataAuth(hfpmProgramCfg.getUserAuthPath());
+        //用户功能授权路径
+        if(hfpmProgramCfg.getFuncAuthPath() != null) program.getAuthInstance().setUserFuncAuth(hfpmProgramCfg.getFuncAuthPath());
+        //超级管理员规则【实体】
+        if(hfpmProgramCfg.getSuperAuthFilterEntity() != null) program.getAuthInstance().getSuperAuthFilter().setDataSet(getCfgName(hfpmProgramCfg.getSuperAuthFilterEntity() + ""));
+        //超级管理员规则【字段】
+        HfmdEntityAttr hfmdEntityAttrByPK = hfmdEntityAttrSV.getHfmdEntityAttrByPK(hfpmProgramCfg.getSuperAuthFilterField());
+        if(hfpmProgramCfg.getSuperAuthFilterField() != null) program.getAuthInstance().getSuperAuthFilter().setDataField(hfmdEntityAttrByPK.getHfmdEntityAttrCode());
+        //超级管理员规则【字段值】
+        if(hfpmProgramCfg.getSuperAuthFilterFieldValue() != null) program.getAuthInstance().getSuperAuthFilter().setDataFieldValue(hfpmProgramCfg.getSuperAuthFilterFieldValue());
+
+        String xml = XmlUtils.writeValueAsString(program);
+        FileUtils.writeFile(projectBasePath + "/hframe-web/src/main/resources/program/program.xml", xml);
+        return true;
+    }
+
+    private String getCfgName(String userEntityName) throws Exception {
+        HfmdEntity_Example example = new HfmdEntity_Example();
+        List<Long> entityIds = CollectionUtils.fetch(Arrays.asList(userEntityName.split(",")),
+                new Fetcher<String, Long>() {
+                    public Long fetch(String s) {
+                        return Long.valueOf(s);
+                    }
+                });
+        example.createCriteria().andHfmdEntityIdIn(entityIds);
+        List<HfmdEntity> hfmdEntityList = hfmdEntitySV.getHfmdEntityListByExample(example);
+
+        for (HfmdEntity hfmdEntity : hfmdEntityList) {
+            HfpmModule hfpmModule = hfpmModuleSV.getHfpmModuleByPK(hfmdEntity.getHfpmModuleId());
+            ;
+            userEntityName = userEntityName.replaceAll(String.valueOf(hfmdEntity.getHfmdEntityId()), hfpmModule.getHfpmModuleCode() + "." + hfmdEntity.getHfmdEntityCode());
+        }
+
+        return userEntityName;
     }
 }

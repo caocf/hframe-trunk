@@ -14,6 +14,7 @@ import com.hframework.web.CreatorUtil;
 import com.hframework.web.SessionKey;
 import com.hframework.web.bean.DataSetDescriptor;
 import com.hframework.web.bean.WebContext;
+import com.hframework.web.config.bean.Program;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -54,21 +55,31 @@ import java.util.*;
 @Service
 public class DynamicAuthService implements AuthService {
 
-    private  String authUserImpl = PropertyConfigurerUtils.getProperty("hframe.auth.user.impl");
-    private  String authDataImpl = PropertyConfigurerUtils.getProperty("hframe.auth.data.impl");
-    private  String authFuncImpl = PropertyConfigurerUtils.getProperty("hframe.auth.func.impl");
-    private  String authUserDataImpl = PropertyConfigurerUtils.getProperty("hframe.auth.user.data.impl");
-    private  String authUserFuncImpl = PropertyConfigurerUtils.getProperty("hframe.auth.user.func.impl");
+    private  String authUserImpl = null;//PropertyConfigurerUtils.getProperty("hframe.auth.user.impl");
+    private  String authDataImpl = null;//PropertyConfigurerUtils.getProperty("hframe.auth.data.impl");
+    private  String authFuncImpl = null;//PropertyConfigurerUtils.getProperty("hframe.auth.func.impl");
+    private  String authUserDataImpl = null;//PropertyConfigurerUtils.getProperty("hframe.auth.user.data.impl");
+    private  String authUserFuncImpl = null;//PropertyConfigurerUtils.getProperty("hframe.auth.user.func.impl");
 
     //管理员默认权限实例
-    private  String adminDefaultAuthImpl = PropertyConfigurerUtils.getProperty("hframe.admin.default.auth.impl");
+    private  String adminDefaultAuthImpl = null;//PropertyConfigurerUtils.getProperty("hframe.admin.default.auth.impl");
     //管理员默认权限字段（域）
-    private  String adminDefaultAuthFiledName = PropertyConfigurerUtils.getProperty("hframe.admin.default.auth.filed.name");
+    private  String adminDefaultAuthFiledName = null;//PropertyConfigurerUtils.getProperty("hframe.admin.default.auth.filed.name");
     //管理员默认权限字段值
-    private  String adminDefaultAuthFiledValue = PropertyConfigurerUtils.getProperty("hframe.admin.default.auth.filed.value");
+    private  String adminDefaultAuthFiledValue = null;//PropertyConfigurerUtils.getProperty("hframe.admin.default.auth.filed.value");
 
     public AuthContext initAuthContext(HttpServletRequest request) throws Exception {
         AuthContext context = new AuthContext();
+
+        Program program = WebContext.get().getProgram();
+        authUserImpl = program.getAuthInstance().getUser();
+        authDataImpl = program.getAuthInstance().getData();
+        authFuncImpl = program.getAuthInstance().getFunction();
+        authUserDataImpl = program.getAuthInstance().getUserDataAuth();
+        authUserFuncImpl = program.getAuthInstance().getUserFuncAuth();
+        adminDefaultAuthImpl = program.getAuthInstance().getSuperAuthFilter().getDataSet();
+        adminDefaultAuthFiledName = program.getAuthInstance().getSuperAuthFilter().getDataField();
+        adminDefaultAuthFiledValue = program.getAuthInstance().getSuperAuthFilter().getDataFieldValue();
 
         //添加用户实体信息
         addUser(context, request);
@@ -116,70 +127,97 @@ public class DynamicAuthService implements AuthService {
         Class<?> adminAuthClass = getAdminAuthClass();
         Long adminAuthKeyValue = getAdminAuthKeyValue();
 
-        String[] authUserDataImpls = RegexUtils.split(authUserDataImpl, "[ ]*[>]+[ ]*");
-        String[] authUserFuncImpls = RegexUtils.split(authUserFuncImpl, "[ ]*[>]+[ ]*");
-        if(!checkDataFuncInclude(authUserDataImpls, authUserFuncImpls)) {
-            return;
-        }
+        String[] authUserDataArray = filterLongUserClass(context, RegexUtils.split(authUserDataImpl, "[ ]*[,]+[ ]*"));
+        String[] authUserFuncArray = filterLongUserClass(context, RegexUtils.split(authUserFuncImpl, "[ ]*[,]+[ ]*"));
+        for (String authUserData1 : authUserDataArray) {
+            for (String authUserFunc1 : authUserFuncArray) {
+                String[] authUserDataImpls =  RegexUtils.split(authUserData1, "[ ]*[/]+[ ]*");
+                String[] authUserFuncImpls =  RegexUtils.split(authUserFunc1, "[ ]*[/]+[ ]*");
 
-        String authUserDataImpl = authUserFuncImpls[authUserDataImpls.length];
-        String[] dataSets = RegexUtils.split(authUserDataImpl, "[ ]*[,]+[ ]*");
-        String moduleCode = dataSets[0].substring(0, dataSets[0].indexOf("."));
-        String dataSetCode = dataSets[0].substring(dataSets[0].indexOf(".") + 1);
-        Class<?> funcRootPoClass = Class.forName(CreatorUtil.getDefPoClass("",
-                WebContext.get().getProgram().getCode(), moduleCode, dataSetCode).getClassPath());
+                authUserDataImpls = Arrays.copyOfRange(authUserDataImpls, 1, authUserDataImpls.length - 1);
+                authUserFuncImpls = Arrays.copyOfRange(authUserFuncImpls, 1, authUserFuncImpls.length - 1);
+                if(!checkDataFuncInclude(authUserDataImpls, authUserFuncImpls)) {
+                    return;
+                }
 
-        DataSetDescriptor userDataSet = WebContext.get().getDataSet(context.getUser().userClass);
-        Long userId = Long.parseLong(org.apache.commons.beanutils.BeanUtils.getProperty(
-                context.getUser().userObject, ResourceWrapper.JavaUtil.getJavaVarName(userDataSet.getKeyField().getCode())));
+                String authUserDataImpl = authUserFuncImpls[authUserDataImpls.length];
+                String[] dataSets = {authUserDataImpl};// RegexUtils.split(authUserDataImpl, "[ ]*[,]+[ ]*");
+                String moduleCode = dataSets[0].substring(0, dataSets[0].indexOf("."));
+                String dataSetCode = dataSets[0].substring(dataSets[0].indexOf(".") + 1);
+                Class<?> funcRootPoClass = Class.forName(CreatorUtil.getDefPoClass("",
+                        WebContext.get().getProgram().getCode(), moduleCode, dataSetCode).getClassPath());
 
-        List authUserDatas = getEndPointListFromRoot(context.getUser().userClass, Lists.newArrayList(userId), authUserDataImpls);
-        for (Object authUserData : authUserDatas) {
-            DataSetDescriptor dataSet = WebContext.get().getDataSet(authUserData.getClass());
-            List<String> relFieldCodes = dataSet.getRelFieldCodes(context.getAuthManager().getAuthDataClass());
-            List filedValues = new ArrayList();
-            for (String relFieldCode : relFieldCodes) {
-                Object fieldValue = ReflectUtils.getFieldValue(authUserData, ResourceWrapper.JavaUtil.getJavaVarName(relFieldCode));
-                filedValues.add(fieldValue);
-            }
+                DataSetDescriptor userDataSet = WebContext.get().getDataSet(context.getUser().userClass);
+                Long userId = Long.parseLong(org.apache.commons.beanutils.BeanUtils.getProperty(
+                        context.getUser().userObject, ResourceWrapper.JavaUtil.getJavaVarName(userDataSet.getKeyField().getCode())));
 
-            String adminAuthClassFieldName = dataSet.getRelFieldCode(adminAuthClass);
-            if(adminAuthKeyValue.equals(ReflectUtils.getFieldValue(authUserData, ResourceWrapper.JavaUtil.getJavaVarName(adminAuthClassFieldName)))) {
-                List allFunctions = context.getAuthFunctionManager().getAllFunctions();
-                for (Object authUserFunc : allFunctions) {
-                    Long funcId = (Long) getObjectKeyPropertyValue(authUserFunc);
-                    for (Object filedValue : filedValues) {
-                        context.getAuthManager().add((Long) filedValue, funcId);
+                List authUserDatas = getEndPointListFromRoot(context.getUser().userClass, Lists.newArrayList(userId), authUserDataImpls);
+                for (Object authUserData : authUserDatas) {
+                    DataSetDescriptor dataSet = WebContext.get().getDataSet(authUserData.getClass());
+                    List<String> relFieldCodes = dataSet.getRelFieldCodes(context.getAuthManager().getAuthDataClass());
+                    List filedValues = new ArrayList();
+                    for (String relFieldCode : relFieldCodes) {
+                        Object fieldValue = ReflectUtils.getFieldValue(authUserData, ResourceWrapper.JavaUtil.getJavaVarName(relFieldCode));
+                        filedValues.add(fieldValue);
                     }
-                }
-                return ;
-            }else {
-                List authUserFuncs;
-                String relFieldCode = dataSet.getRelFieldCode(funcRootPoClass);
-                if(StringUtils.isNotBlank(relFieldCode)) {
-                    Long fieldValue = (Long) ReflectUtils.getFieldValue(authUserData, ResourceWrapper.JavaUtil.getJavaVarName(relFieldCode));
-                    authUserFuncs = getEndPointListFromRoot(null,
-                            Lists.newArrayList(fieldValue),
-                            Arrays.copyOfRange(authUserFuncImpls, authUserDataImpls.length, authUserFuncImpls.length));
-                }else {
-                    authUserFuncs = getEndPointListFromRoot(authUserData.getClass(),
-                            Lists.newArrayList((Long) getObjectKeyPropertyValue(authUserData)),
-                            Arrays.copyOfRange(authUserFuncImpls, authUserDataImpls.length, authUserFuncImpls.length));
-                }
 
-                for (Object authUserFunc : authUserFuncs) {
-                    List<Class> authFunctionClass = context.getAuthManager().getAuthFunctionClass();
-                    List<String> relFieldCodes1 = WebContext.get().getDataSet(authUserFunc.getClass()).getRelFieldCodes(authFunctionClass);
-                    for (String relFieldCode1 : relFieldCodes1) {
-                        String relPropertyName = ResourceWrapper.JavaUtil.getJavaVarName(relFieldCode1);
-                        Long funcId = (Long)  ReflectUtils.getFieldValue(authUserFunc, relPropertyName);
-                        for (Object filedValue : filedValues) {
-                            context.getAuthManager().add((Long) filedValue, funcId);
+                    String adminAuthClassFieldName = dataSet.getRelFieldCode(adminAuthClass);
+                    if(adminAuthKeyValue.equals(ReflectUtils.getFieldValue(authUserData, ResourceWrapper.JavaUtil.getJavaVarName(adminAuthClassFieldName)))) {
+                        List allFunctions = context.getAuthFunctionManager().getAllFunctions();
+                        for (Object authUserFunc : allFunctions) {
+                            Long funcId = (Long) getObjectKeyPropertyValue(authUserFunc);
+                            for (Object filedValue : filedValues) {
+                                context.getAuthManager().add((Long) filedValue, funcId);
+                            }
+                        }
+                        return ;
+                    }else {
+                        List authUserFuncs;
+                        String relFieldCode = dataSet.getRelFieldCode(funcRootPoClass);
+                        if(StringUtils.isNotBlank(relFieldCode)) {
+                            Long fieldValue = (Long) ReflectUtils.getFieldValue(authUserData, ResourceWrapper.JavaUtil.getJavaVarName(relFieldCode));
+                            authUserFuncs = getEndPointListFromRoot(null,
+                                    Lists.newArrayList(fieldValue),
+                                    Arrays.copyOfRange(authUserFuncImpls, authUserDataImpls.length, authUserFuncImpls.length));
+                        }else {
+                            authUserFuncs = getEndPointListFromRoot(authUserData.getClass(),
+                                    Lists.newArrayList((Long) getObjectKeyPropertyValue(authUserData)),
+                                    Arrays.copyOfRange(authUserFuncImpls, authUserDataImpls.length, authUserFuncImpls.length));
+                        }
+
+                        for (Object authUserFunc : authUserFuncs) {
+                            List<Class> authFunctionClass = context.getAuthManager().getAuthFunctionClass();
+                            List<String> relFieldCodes1 = WebContext.get().getDataSet(authUserFunc.getClass()).getRelFieldCodes(authFunctionClass);
+                            for (String relFieldCode1 : relFieldCodes1) {
+                                String relPropertyName = ResourceWrapper.JavaUtil.getJavaVarName(relFieldCode1);
+                                Long funcId = (Long)  ReflectUtils.getFieldValue(authUserFunc, relPropertyName);
+                                for (Object filedValue : filedValues) {
+                                    context.getAuthManager().add((Long) filedValue, funcId);
+                                }
+                            }
                         }
                     }
                 }
             }
         }
+
+
+    }
+
+    private String[] filterLongUserClass(AuthContext context, String[] split) throws Exception {
+        List<String> result = new ArrayList();
+        for (String authUserDatas : split) {
+            String[] authUserDataImpls = RegexUtils.split(authUserDatas, "[ ]*[/]+[ ]*");
+
+            String moduleCode = authUserDataImpls[0].substring(0, authUserDataImpls[0].indexOf("."));
+            String dataSetCode = authUserDataImpls[0].substring(authUserDataImpls[0].indexOf(".") + 1);
+            Class<?> rootClass = Class.forName(CreatorUtil.getDefPoClass("",
+                    WebContext.get().getProgram().getCode(), moduleCode, dataSetCode).getClassPath());
+            if(rootClass == context.getUser().userClass) {
+                result.add(authUserDatas);
+            }
+        };
+        return result.toArray(new String[0]);
     }
 
     private Object getObjectKeyPropertyValue(Object authUserData) {

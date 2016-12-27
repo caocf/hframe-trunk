@@ -25,6 +25,17 @@
     ##            </div>
     ##        </div>
 
+            <div class="row-fluid" style="padding-bottom:10px">
+                #if($list.BOF)
+                    #foreach($item in $list.BOF)
+                        $item.component
+                    #end
+                #end
+            </div>
+
+
+
+
         <table class="table table-bordered table-striped table-condensed">
             <thead>
             <tr>

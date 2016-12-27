@@ -33,11 +33,26 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
         doEvent(action, param, $(this));
     });
 
-    $(".hfselect").live("change", function(){
+    //select加载时change了一下，如果别的元素连带该select，导致再加载一次，因此需要需要处理hfselect-init
+    $(".hfselect").die().live("change", function(){
+        var curValue =$(this).val();
         if($(this).hasClass("hfselect-init")) {
             $(this).removeClass("hfselect-init");
+            $(this).attr("last-value", curValue);
             return;
         }
+
+        var lastValue = $(this).attr("last-value");
+        if(lastValue == curValue) {
+            return;
+        }
+        $(this).attr("last-value", curValue);
+
+        //var initing = $(this).attr("initing");
+        //if(initing == "true") {
+        //    $(this).removeAttr("initing");
+        //    return;
+        //}
         var $action =JSON.parse($(this).attr("action"));
         var $param  = formatContent($(this).attr("params"), $(this));
         var $contextValues = getPageContextInfo();
@@ -104,8 +119,8 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
 
 
     function doEvent($action, $param,  $this){
-        $type = null;
-        for(type in $action) {
+        var $type = null;
+        for(var type in $action) {
             $type = type;
             break;
         }
@@ -133,16 +148,31 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
                     //alert("字段不能为空！");
                     return;
                 }
+
+                if(!$thisForm) {
+                    $thisForm = $("body form:last");
+                }
+
                 $($thisForm).attr("action", url + "?" + $param);
                 $($thisForm).attr("method", "post");
                 $($thisForm).submit();
             }else {
-                location.href = url + "?" + $param;
+                if($($this).attr("params") == "checkIds") {
+                    var checkIds = new Array();
+                    var $thisList = $this.parents(".hflist")[0];
+                    var $allChecked = $($thisList).find("input[type=checkbox][name=checkIds]:checked");
+                    $allChecked.each(function(){
+                        var columnName = $(this).attr("value-key");
+                        var columnValue  = formatContent("{" + columnName + "}", $(this));
+                        checkIds.push(columnValue);
+                    });
+
+                    location.href = url + "?" + $param + "=" + checkIds.join();
+                }else{
+                    location.href = url + "?" + $param;
+                }
+
             }
-
-
-
-
         }else if($type == "ajaxSubmitByJson") {
             var _data;
             var targetId =$action[$type].targetId;
@@ -227,6 +257,15 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
                     //alert("字段不能为空！");
                     return;
                 }
+
+                $($thisForm).find(".boolCheckBox input[value=1]").each(function(){
+                   if($(this).is(':checked')){
+                       $.uniform.update($(this).parents(".boolCheckBox:first").prev().find("input[value=0]").removeAttr("checked"));
+                   }else {
+                       $.uniform.update($(this).parents(".boolCheckBox:first").prev().find("input[value=0]").attr("checked","true"));
+                   }
+                });
+
                 _data = parseUrlParamToObject(decodeURIComponent($($thisForm).serialize().replace(/\+/g," ")));
             }else {
                 if($($this).attr("params") == "checkIds") {
@@ -539,7 +578,12 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
                 if(key == "createTime" || key == "modifyTime") {
                     continue;
                 }
-                result[key] = value;
+                if(result[key]) {
+                    result[key] =result[key] + "," + value;
+                }else {
+                    result[key] = value;
+                }
+
                 //}
             }
         }
@@ -552,6 +596,8 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
             var position = $param.substring($param.indexOf("{") + 1, $param.indexOf("}"));
             if($this.parents("tr").find("span[code="+ position +"]").size() > 0 ) {
                 value = $this.parents("tr").find("span[code="+ position +"]").text();
+            }else if($this.parents("tr").find("[name="+ position +"]").size() > 0 ) {
+                value = $this.parents("tr").find("[name="+ position +"]").val();
             }else {
                 value = $this.parents("form").find("[name="+ position +"]").val();
             }

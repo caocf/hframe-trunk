@@ -1,4 +1,5 @@
 import com.hframework.base.service.CommonDataService;
+import com.hframework.ext.datasoucce.DataSourceContextHolder;
 import com.hframework.generator.web.bean.HfModelContainerUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,6 +54,73 @@ public class CommonMapperTest {
     @Test
     public void showCreateTable() throws Exception {
         System.out.println("==>" + commonDataService.showCreateTableSql("test"));
+    }
+
+
+    @Test
+    public void testManis_batchInsert() throws Exception {
+        long cnt = 0;
+        DataSourceContextHolder.setDbInfo("jdbc:mysql://10.20.69.135:3306/firstp2p_test?useUnicode=true", "canal", "repl@123");
+        while (true) {
+            cnt++;
+            Thread.sleep(100L);
+            commonDataService.executeDBStructChange("INSERT INTO firstp2p_user_log_47\n" +
+                    "            (log_info,\n" +
+                    "             log_time,\n" +
+                    "             log_admin_id,\n" +
+                    "             log_user_id,\n" +
+                    "             money,\n" +
+                    "             score,\n" +
+                    "             POINT,\n" +
+                    "             quota,\n" +
+                    "             lock_money,\n" +
+                    "             remaining_money,\n" +
+                    "             user_id,\n" +
+                    "             related_user_id,\n" +
+                    "             related_user_show_name,\n" +
+                    "             note,\n" +
+                    "             remaining_total_money,\n" +
+                    "             is_delete,\n" +
+                    "             item_id)\n" +
+                    "SELECT\n" +
+                    "  log_info,\n" +
+                    "  log_time,\n" +
+                    "  999,\n" +
+                    "  log_user_id,\n" +
+                    "  money,\n" +
+                    "  score,\n" +
+                    "  POINT,\n" +
+                    "  quota,\n" +
+                    "  lock_money,\n" +
+                    "  remaining_money,\n" +
+                    "  user_id,\n" +
+                    "  related_user_id,\n" +
+                    "  related_user_show_name,\n" +
+                    "  note,\n" +
+                    "  remaining_total_money,\n" +
+                    "  is_delete,\n" +
+                    "  item_id\n" +
+                    "FROM firstp2p_user_log_47\n" +
+                    "WHERE id = 19102");
+
+            if (cnt % 10000 == 0) {
+                commonDataService.executeDBStructChange("delete from  firstp2p_user_log_47 where log_admin_id = 999");
+            }
+        }
+    }
+
+    @Test
+    public void testManis_batchCfg() throws Exception {
+        long cnt = 0;
+        DataSourceContextHolder.setDbInfo("jdbc:mysql://10.20.69.216:3306/sub?useUnicode=true", "sub", "sub");
+        while (true) {
+            commonDataService.executeDBStructChange("UPDATE cfg_task_inst SET STATUS =2 WHERE param_value_1 = 23;");
+            Thread.sleep(Math.round(30) * 1000L);
+            commonDataService.executeDBStructChange("UPDATE cfg_task_inst SET STATUS =1 WHERE param_value_1 = 23;");
+            Thread.sleep(Math.round(30) * 1000L);
+        }
+
+
     }
 
 }

@@ -17,13 +17,13 @@
       <rel entity-code="hfpm_page_component/hfpm_page_component_id/hfpm_page_component_name" rel-field="hfpm_page_id"/>
     </field>
     <field code="event_source" name="事件来源" edit-type="input"/>
-    <field code="effect_field" name="作用域" edit-type="input" not-null="true">
+    <field code="effect_field" name="作用域" edit-type="select" not-null="true">
       <rel entity-code="hfmd_entity_attr/hfmd_entity_attr_id/hfmd_entity_attr_name"/>
     </field>
     <field code="from" name="条件" edit-type="input"/>
     <field code="to" name="结果" edit-type="input"/>
     <field code="hfpm_page_event_type" name="页面事件类型" edit-type="input"/>
-    <field code="target_hfpm_page_id" name="目标页面" edit-type="input">
+    <field code="target_hfpm_page_id" name="目标页面" edit-type="select">
       <rel entity-code="hfpm_page/hfpm_page_id/hfpm_page_name" rel-field="hfpm_page_id"/>
     </field>
     <field code="creator_id" name="创建人" edit-type="hidden">

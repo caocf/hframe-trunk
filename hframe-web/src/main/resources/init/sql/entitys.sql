@@ -109,29 +109,20 @@ create table hfmd_enum(
    modify_time datetime comment '修改时间',
    del_flag int(2) not null comment '删除标识') comment '字典项';
 
-alter table hfsec_organize add constraint FK_hfsec_organize_4_parent_hfsec_organize_id foreign key (parent_hfsec_organize_id)
-references hfsec_organize (hfsec_organize_id) on delete restrict on update restrict;
+alter table hfsec_organize add constraint FK_hfsec_organize_4_parent_hfsec_organize_id foreign key (parent_hfsec_organize_id) references hfsec_organize (hfsec_organize_id) on delete restrict on update restrict;
 
-alter table hfsec_role_authorize add constraint FK_hfsec_role_authorize_4_hfsec_role_id foreign key (hfsec_role_id)
-references hfsec_role (hfsec_role_id) on delete restrict on update restrict;
+alter table hfsec_role_authorize add constraint FK_hfsec_role_authorize_4_hfsec_role_id foreign key (hfsec_role_id) references hfsec_role (hfsec_role_id) on delete restrict on update restrict;
 
-alter table hfsec_role_authorize add constraint FK_hfsec_role_authorize_4_hfsec_menu_id foreign key (hfsec_menu_id)
-references hfsec_menu (hfsec_menu_id) on delete restrict on update restrict;
+alter table hfsec_role_authorize add constraint FK_hfsec_role_authorize_4_hfsec_menu_id foreign key (hfsec_menu_id) references hfsec_menu (hfsec_menu_id) on delete restrict on update restrict;
 
-alter table hfsec_user add constraint FK_hfsec_user_4_hfsec_organize_id foreign key (hfsec_organize_id)
-references hfsec_organize (hfsec_organize_id) on delete restrict on update restrict;
+alter table hfsec_user add constraint FK_hfsec_user_4_hfsec_organize_id foreign key (hfsec_organize_id) references hfsec_organize (hfsec_organize_id) on delete restrict on update restrict;
 
-alter table hfsec_user_authorize add constraint FK_hfsec_user_authorize_4_hfsec_user_id foreign key (hfsec_user_id)
-references hfsec_user (hfsec_user_id) on delete restrict on update restrict;
+alter table hfsec_user_authorize add constraint FK_hfsec_user_authorize_4_hfsec_user_id foreign key (hfsec_user_id) references hfsec_user (hfsec_user_id) on delete restrict on update restrict;
 
-alter table hfsec_user_authorize add constraint FK_hfsec_user_authorize_4_hfsec_organize_id foreign key (hfsec_organize_id)
-references hfsec_organize (hfsec_organize_id) on delete restrict on update restrict;
+alter table hfsec_user_authorize add constraint FK_hfsec_user_authorize_4_hfsec_organize_id foreign key (hfsec_organize_id) references hfsec_organize (hfsec_organize_id) on delete restrict on update restrict;
 
-alter table hfsec_user_authorize add constraint FK_hfsec_user_authorize_4_hfsec_role_id foreign key (hfsec_role_id)
-references hfsec_role (hfsec_role_id) on delete restrict on update restrict;
+alter table hfsec_user_authorize add constraint FK_hfsec_user_authorize_4_hfsec_role_id foreign key (hfsec_role_id) references hfsec_role (hfsec_role_id) on delete restrict on update restrict;
 
-alter table hfsec_menu add constraint FK_hfsec_menu_4_parent_hfsec_menu_id foreign key (parent_hfsec_menu_id)
-references hfsec_menu (hfsec_menu_id) on delete restrict on update restrict;
+alter table hfsec_menu add constraint FK_hfsec_menu_4_parent_hfsec_menu_id foreign key (parent_hfsec_menu_id) references hfsec_menu (hfsec_menu_id) on delete restrict on update restrict;
 
-alter table hfmd_enum add constraint FK_hfmd_enum_4_hfmd_enum_class_id foreign key (hfmd_enum_class_id)
-references hfmd_enum_class (hfmd_enum_class_id) on delete restrict on update restrict;
+alter table hfmd_enum add constraint FK_hfmd_enum_4_hfmd_enum_class_id foreign key (hfmd_enum_class_id) references hfmd_enum_class (hfmd_enum_class_id) on delete restrict on update restrict;

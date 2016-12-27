@@ -89,6 +89,7 @@ public interface IHfpmPageEventSV   {
     */
     public List<HfpmPageEvent> getHfpmPageEventListByExample(HfpmPageEvent_Example example) throws  Exception;
 
+
     /**
     * 通过MAP参数查询页面事件数量
     * @param params

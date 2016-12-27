@@ -51,7 +51,9 @@
         </javaClientGenerator>
 
         <!-- 表名  schema="louis" -->
-        <table schema="" tableName="beetle_article"><property name="chineseName" value="通知"></property></table>
+        <!--<table schema="" tableName="beetle_article"><property name="chineseName" value="通知"></property></table>-->
+        <table schema="" tableName="ncf_setting"><property name="chineseName" value="设置"></property></table>
+
         <!--
         <table schema="" tableName="v_test"
                domainObjectName="QTest"

@@ -657,6 +657,15 @@ public class WebContext {
         return dataSetCache;
     }
 
+    public DataSetDescriptor getOnlyDataSetDescriptor(String dataSetName) {
+        for (String dataSetNameInfo : dataSets.keySet()) {
+            if(dataSetNameInfo.endsWith("/" + dataSetName)){
+                return dataSets.get(dataSetNameInfo);
+            }
+        }
+        return null;
+    }
+
     public DataSetDescriptor getDataSet(Class clazz) {
         return dataSetCache.get(clazz);
     }

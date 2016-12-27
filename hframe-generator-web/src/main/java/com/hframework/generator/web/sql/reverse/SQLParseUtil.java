@@ -101,7 +101,7 @@ public class SQLParseUtil {
 
 //				System.out.println("==>" + tmpString);
 			}
-			if(tablesDesc.toLowerCase().indexOf(COMMENT + " ") > 0) {
+			if(tablesDesc.replaceFirst(tableName,"").toLowerCase().indexOf(COMMENT + " ") > 0) {
 //				System.out.println("==>" + tablesDesc + ";" +tablesDesc.toLowerCase().indexOf(COMMENT + "="));
 				String tmpString = tablesDesc.substring(tablesDesc.toLowerCase().indexOf(COMMENT + " ") + 8);
 				tmpString = tmpString.substring(tmpString.indexOf("'") + 1);

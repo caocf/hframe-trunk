@@ -2,6 +2,8 @@ package com.hframework.web.bean;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.hframework.common.ext.CollectionUtils;
+import com.hframework.common.ext.Mapper;
 import com.hframework.common.util.ReflectUtils;
 import com.hframework.common.util.ResourceWrapper;
 import com.hframework.common.util.StringUtils;
@@ -42,6 +44,8 @@ public class DataSetDescriptor {
     private JSONObject dataSetRulerJsonObject = new JSONObject();
 
     private IDataSet dateSetStruct;
+
+    private Map<String, Field> fields = null;
 
     public void addRelDataSet(String fieldName, String key, DataSetDescriptor descriptor) {
         relDataSetMap.put(key,descriptor);
@@ -250,17 +254,19 @@ public class DataSetDescriptor {
             List<Field> fields = dataSet.getFields().getFieldList();
             for (Field field : fields) {
                 if(field.getRel() != null && StringUtils.isNotBlank(field.getRel().getRelField())) {
-                    JSONObject object = new JSONObject();
-                    object.put("sourceCode", ResourceWrapper.JavaUtil.getJavaVarName(field.getRel().getRelField()));
-                    object.put("targetCode", ResourceWrapper.JavaUtil.getJavaVarName(field.getCode()));
+                    for (String relField : field.getRel().getRelField().split(",")) {
+                        JSONObject object = new JSONObject();
+                        object.put("sourceCode", ResourceWrapper.JavaUtil.getJavaVarName(relField));
+                        object.put("targetCode", ResourceWrapper.JavaUtil.getJavaVarName(field.getCode()));
 //                    object.put("editable",true);
-                    object.put("ruleType",3);
-                    String key = ResourceWrapper.JavaUtil.getJavaVarName(field.getRel().getRelField());
-                    if(!dataSetRulerJsonObject.containsKey(key)) {
-                        dataSetRulerJsonObject.put(key, new JSONArray());
+                        object.put("ruleType",3);
+                        String key = ResourceWrapper.JavaUtil.getJavaVarName(relField);
+                        if(!dataSetRulerJsonObject.containsKey(key)) {
+                            dataSetRulerJsonObject.put(key, new JSONArray());
+                        }
+                        JSONArray jsonArray = dataSetRulerJsonObject.getJSONArray(key);
+                        jsonArray.add(object);
                     }
-                    JSONArray jsonArray = dataSetRulerJsonObject.getJSONArray(key);
-                    jsonArray.add(object);
                 }
             }
         }
@@ -297,5 +303,24 @@ public class DataSetDescriptor {
 
     public void setKeyField(Field keyField) {
         this.keyField = keyField;
+    }
+
+    public Map<String, Field> getFields() {
+        if(fields == null) {
+            synchronized (this) {
+                if(fields == null) {
+                    fields = CollectionUtils.convert(dataSet.getFields().getFieldList(), new Mapper<String, Field>() {
+                        public <K> K getKey(Field field) {
+                            return (K) field.getCode();
+                        }
+                    });
+                }
+            }
+        }
+        return fields;
+    }
+
+    public void setFields(Map<String, Field> fields) {
+        this.fields = fields;
     }
 }

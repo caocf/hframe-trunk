@@ -10,10 +10,14 @@
                 Home
 
         #foreach($column in $breadcrumb.columns)
+            #set($href = "")
+            #if(${breadcrumb.ELE.get($column.code)})
+                #set($href = $!{breadcrumb.ELE.get($column.code)})
+            #end
             &nbsp;>&nbsp;
             #set($data = $breadcrumb.data)
             #set($value = $!data.get($column.code))
-            #set($href.params = 1)
+##            #set($href.params = 1)
             #set($elementSize = "medium")
             #parse("component/element/field.vm")
             #set($value = "" )

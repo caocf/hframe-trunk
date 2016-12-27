@@ -16,6 +16,15 @@
       <arg column="del_flag" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="hfcfg_db_connect_id" jdbcType="BIGINT" javaType="java.lang.Long" />
       <arg column="hfpm_program_id" jdbcType="BIGINT" javaType="java.lang.Long" />
+      <arg column="data_entity_name" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="dictionarys" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="func_auth_path" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="func_entity_name" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="user_auth_path" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="user_entity_name" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="super_auth_filter_entity" jdbcType="BIGINT" javaType="java.lang.Long" />
+      <arg column="super_auth_filter_field" jdbcType="BIGINT" javaType="java.lang.Long" />
+      <arg column="super_auth_filter_field_value" jdbcType="VARCHAR" javaType="java.lang.String" />
     </constructor>
   </resultMap>
   <sql id="Example_Where_Clause" >
@@ -79,7 +88,9 @@
   <sql id="Base_Column_List" >
     hfpm_program_cfg_id, show_name, hfcfg_program_template_id, hfcfg_program_skin_id, 
     hfcfg_login_page_id, bg_img_url, op_id, create_time, modify_op_id, modify_time, del_flag, 
-    hfcfg_db_connect_id, hfpm_program_id
+    hfcfg_db_connect_id, hfpm_program_id, data_entity_name, dictionarys, func_auth_path, 
+    func_entity_name, user_auth_path, user_entity_name, super_auth_filter_entity, super_auth_filter_field, 
+    super_auth_filter_field_value
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.hframe.domain.model.HfpmProgramCfg_Example" >
     select
@@ -122,12 +133,18 @@
       hfcfg_program_skin_id, hfcfg_login_page_id, bg_img_url, 
       op_id, create_time, modify_op_id, 
       modify_time, del_flag, hfcfg_db_connect_id, 
-      hfpm_program_id)
+      hfpm_program_id, data_entity_name, dictionarys, 
+      func_auth_path, func_entity_name, user_auth_path, 
+      user_entity_name, super_auth_filter_entity, super_auth_filter_field, 
+      super_auth_filter_field_value)
     values (#{showName,jdbcType=VARCHAR}, #{hfcfgProgramTemplateId,jdbcType=BIGINT}, 
       #{hfcfgProgramSkinId,jdbcType=BIGINT}, #{hfcfgLoginPageId,jdbcType=BIGINT}, #{bgImgUrl,jdbcType=VARCHAR}, 
       #{opId,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{modifyOpId,jdbcType=BIGINT}, 
       #{modifyTime,jdbcType=TIMESTAMP}, #{delFlag,jdbcType=INTEGER}, #{hfcfgDbConnectId,jdbcType=BIGINT}, 
-      #{hfpmProgramId,jdbcType=BIGINT})
+      #{hfpmProgramId,jdbcType=BIGINT}, #{dataEntityName,jdbcType=VARCHAR}, #{dictionarys,jdbcType=VARCHAR}, 
+      #{funcAuthPath,jdbcType=VARCHAR}, #{funcEntityName,jdbcType=VARCHAR}, #{userAuthPath,jdbcType=VARCHAR}, 
+      #{userEntityName,jdbcType=VARCHAR}, #{superAuthFilterEntity,jdbcType=BIGINT}, #{superAuthFilterField,jdbcType=BIGINT}, 
+      #{superAuthFilterFieldValue,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.hframe.domain.model.HfpmProgramCfg" >
     <selectKey resultType="java.lang.Long" keyProperty="hfpmProgramCfgId" order="AFTER" >
@@ -171,6 +188,33 @@
       <if test="hfpmProgramId != null" >
         hfpm_program_id,
       </if>
+      <if test="dataEntityName != null" >
+        data_entity_name,
+      </if>
+      <if test="dictionarys != null" >
+        dictionarys,
+      </if>
+      <if test="funcAuthPath != null" >
+        func_auth_path,
+      </if>
+      <if test="funcEntityName != null" >
+        func_entity_name,
+      </if>
+      <if test="userAuthPath != null" >
+        user_auth_path,
+      </if>
+      <if test="userEntityName != null" >
+        user_entity_name,
+      </if>
+      <if test="superAuthFilterEntity != null" >
+        super_auth_filter_entity,
+      </if>
+      <if test="superAuthFilterField != null" >
+        super_auth_filter_field,
+      </if>
+      <if test="superAuthFilterFieldValue != null" >
+        super_auth_filter_field_value,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="showName != null" >
@@ -208,6 +252,33 @@
       </if>
       <if test="hfpmProgramId != null" >
         #{hfpmProgramId,jdbcType=BIGINT},
+      </if>
+      <if test="dataEntityName != null" >
+        #{dataEntityName,jdbcType=VARCHAR},
+      </if>
+      <if test="dictionarys != null" >
+        #{dictionarys,jdbcType=VARCHAR},
+      </if>
+      <if test="funcAuthPath != null" >
+        #{funcAuthPath,jdbcType=VARCHAR},
+      </if>
+      <if test="funcEntityName != null" >
+        #{funcEntityName,jdbcType=VARCHAR},
+      </if>
+      <if test="userAuthPath != null" >
+        #{userAuthPath,jdbcType=VARCHAR},
+      </if>
+      <if test="userEntityName != null" >
+        #{userEntityName,jdbcType=VARCHAR},
+      </if>
+      <if test="superAuthFilterEntity != null" >
+        #{superAuthFilterEntity,jdbcType=BIGINT},
+      </if>
+      <if test="superAuthFilterField != null" >
+        #{superAuthFilterField,jdbcType=BIGINT},
+      </if>
+      <if test="superAuthFilterFieldValue != null" >
+        #{superAuthFilterFieldValue,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -259,6 +330,33 @@
       <if test="record.hfpmProgramId != null" >
         hfpm_program_id = #{record.hfpmProgramId,jdbcType=BIGINT},
       </if>
+      <if test="record.dataEntityName != null" >
+        data_entity_name = #{record.dataEntityName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dictionarys != null" >
+        dictionarys = #{record.dictionarys,jdbcType=VARCHAR},
+      </if>
+      <if test="record.funcAuthPath != null" >
+        func_auth_path = #{record.funcAuthPath,jdbcType=VARCHAR},
+      </if>
+      <if test="record.funcEntityName != null" >
+        func_entity_name = #{record.funcEntityName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.userAuthPath != null" >
+        user_auth_path = #{record.userAuthPath,jdbcType=VARCHAR},
+      </if>
+      <if test="record.userEntityName != null" >
+        user_entity_name = #{record.userEntityName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.superAuthFilterEntity != null" >
+        super_auth_filter_entity = #{record.superAuthFilterEntity,jdbcType=BIGINT},
+      </if>
+      <if test="record.superAuthFilterField != null" >
+        super_auth_filter_field = #{record.superAuthFilterField,jdbcType=BIGINT},
+      </if>
+      <if test="record.superAuthFilterFieldValue != null" >
+        super_auth_filter_field_value = #{record.superAuthFilterFieldValue,jdbcType=VARCHAR},
+      </if>
     </set>
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
@@ -278,7 +376,16 @@
       modify_time = #{record.modifyTime,jdbcType=TIMESTAMP},
       del_flag = #{record.delFlag,jdbcType=INTEGER},
       hfcfg_db_connect_id = #{record.hfcfgDbConnectId,jdbcType=BIGINT},
-      hfpm_program_id = #{record.hfpmProgramId,jdbcType=BIGINT}
+      hfpm_program_id = #{record.hfpmProgramId,jdbcType=BIGINT},
+      data_entity_name = #{record.dataEntityName,jdbcType=VARCHAR},
+      dictionarys = #{record.dictionarys,jdbcType=VARCHAR},
+      func_auth_path = #{record.funcAuthPath,jdbcType=VARCHAR},
+      func_entity_name = #{record.funcEntityName,jdbcType=VARCHAR},
+      user_auth_path = #{record.userAuthPath,jdbcType=VARCHAR},
+      user_entity_name = #{record.userEntityName,jdbcType=VARCHAR},
+      super_auth_filter_entity = #{record.superAuthFilterEntity,jdbcType=BIGINT},
+      super_auth_filter_field = #{record.superAuthFilterField,jdbcType=BIGINT},
+      super_auth_filter_field_value = #{record.superAuthFilterFieldValue,jdbcType=VARCHAR}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -322,6 +429,33 @@
       <if test="hfpmProgramId != null" >
         hfpm_program_id = #{hfpmProgramId,jdbcType=BIGINT},
       </if>
+      <if test="dataEntityName != null" >
+        data_entity_name = #{dataEntityName,jdbcType=VARCHAR},
+      </if>
+      <if test="dictionarys != null" >
+        dictionarys = #{dictionarys,jdbcType=VARCHAR},
+      </if>
+      <if test="funcAuthPath != null" >
+        func_auth_path = #{funcAuthPath,jdbcType=VARCHAR},
+      </if>
+      <if test="funcEntityName != null" >
+        func_entity_name = #{funcEntityName,jdbcType=VARCHAR},
+      </if>
+      <if test="userAuthPath != null" >
+        user_auth_path = #{userAuthPath,jdbcType=VARCHAR},
+      </if>
+      <if test="userEntityName != null" >
+        user_entity_name = #{userEntityName,jdbcType=VARCHAR},
+      </if>
+      <if test="superAuthFilterEntity != null" >
+        super_auth_filter_entity = #{superAuthFilterEntity,jdbcType=BIGINT},
+      </if>
+      <if test="superAuthFilterField != null" >
+        super_auth_filter_field = #{superAuthFilterField,jdbcType=BIGINT},
+      </if>
+      <if test="superAuthFilterFieldValue != null" >
+        super_auth_filter_field_value = #{superAuthFilterFieldValue,jdbcType=VARCHAR},
+      </if>
     </set>
     where hfpm_program_cfg_id = #{hfpmProgramCfgId,jdbcType=BIGINT}
   </update>
@@ -338,7 +472,16 @@
       modify_time = #{modifyTime,jdbcType=TIMESTAMP},
       del_flag = #{delFlag,jdbcType=INTEGER},
       hfcfg_db_connect_id = #{hfcfgDbConnectId,jdbcType=BIGINT},
-      hfpm_program_id = #{hfpmProgramId,jdbcType=BIGINT}
+      hfpm_program_id = #{hfpmProgramId,jdbcType=BIGINT},
+      data_entity_name = #{dataEntityName,jdbcType=VARCHAR},
+      dictionarys = #{dictionarys,jdbcType=VARCHAR},
+      func_auth_path = #{funcAuthPath,jdbcType=VARCHAR},
+      func_entity_name = #{funcEntityName,jdbcType=VARCHAR},
+      user_auth_path = #{userAuthPath,jdbcType=VARCHAR},
+      user_entity_name = #{userEntityName,jdbcType=VARCHAR},
+      super_auth_filter_entity = #{superAuthFilterEntity,jdbcType=BIGINT},
+      super_auth_filter_field = #{superAuthFilterField,jdbcType=BIGINT},
+      super_auth_filter_field_value = #{superAuthFilterFieldValue,jdbcType=VARCHAR}
     where hfpm_program_cfg_id = #{hfpmProgramCfgId,jdbcType=BIGINT}
   </update>
 </mapper>

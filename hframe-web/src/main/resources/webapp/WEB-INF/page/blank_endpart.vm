@@ -53,8 +53,8 @@
 <script type="text/javascript" src="/js/hframework/utils/require.config.js"></script>
 <script src="/js/hframework/fn.js"></script>
 <script src="/js/hframework/datainit.js"></script>
-<script src="/js/hframework/list.js"></script>
 <script src="/js/hframework/href.js"></script>
+<script src="/js/hframework/list.js"></script>
 <script src="/js/hframework/check.js"></script>
 
 <script src="$staticResourcePath/plugins/shapeshift/core/vendor/jquery.touch-punch.min.js"></script>

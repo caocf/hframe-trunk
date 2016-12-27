@@ -164,7 +164,6 @@ public class HfModelContainerUtil {
                 }
             }
 
-
             if(dbEntityAttr == null) {
                 addModelContainer.getEntityAttrMap().put(emtityAttrCode, targetEntityAttr);
             }else {
@@ -752,6 +751,25 @@ public class HfModelContainerUtil {
         result.addAll(tempList);
 
         tempList = new ArrayList<String>();
+        entityAttrMap = addContainer.getEntityAttrMap();
+        for (String key : entityAttrMap.keySet()) {
+            HfmdEntityAttr entityAttr = entityAttrMap.get(key);
+            if(entityAttr.getRelHfmdEntityAttrId() != null && entityAttr.getRelHfmdEntityAttrId() > 0) {
+
+                String entityName = key.substring(0, key.indexOf("."));
+                String entityAttrName = key.substring(key.indexOf(".") + 1);
+                StringBuffer sql = new StringBuffer();
+                String relEntityInfo = addContainer.getRelEntityAttr2AttrMapper().get(key);
+                String relEntityName = relEntityInfo.substring(0, relEntityInfo.indexOf("."));
+                String relEntityAttrName = relEntityInfo.substring(relEntityInfo.indexOf(".") + 1);
+                sql.append("alter table " + entityName + " add constraint FK_" + entityName + "_4_" + entityAttrName
+                        + " foreign key ( " + entityAttrName + ") references " + relEntityName +"(" + relEntityAttrName
+                        +") on delete restrict on update restrict;");
+                tempList.add(sql.toString());
+            }
+        }
+
+        entityAttrMap = modifyContainer.getEntityAttrMap();
         for (String key : entityAttrMap.keySet()) {
             HfmdEntityAttr entityAttr = entityAttrMap.get(key);
             if(entityAttr.getRelHfmdEntityAttrId() != null && entityAttr.getRelHfmdEntityAttrId() > 0

@@ -21,6 +21,7 @@
     <context:component-scan base-package="com.hframe">
         <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>
+    <context:component-scan base-package="org.activiti.explorer" />
     <context:annotation-config/>
 
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
@@ -46,6 +47,8 @@
                 <value>classpath:hframe.properties</value>
                 <value>classpath:properties/dataSource.properties</value>
                 <value>classpath:properties/projectCreate.properties</value>
+                <value>classpath:db.properties</value>
+                <value>classpath:ui.properties</value>
                 <value>classpath:properties/redis.properties</value>
                 <value>classpath:properties/kafka-producer.properties</value>
                 <value>classpath:properties/kafka-consumer.properties</value>
@@ -58,5 +61,6 @@
     <import resource="classpath:spring/spring-config-service.xml"/>
     <import resource="classpath:spring/spring-config-redis.xml"/>
     <import resource="classpath:spring/spring-config-kafka-producer.xml"/>
+    <import resource="classpath:spring/spring-config-activiti.xml"/>
     <!--<import resource="classpath:spring/spring-config-kafka-consumer.xml"/>-->
 </beans>
