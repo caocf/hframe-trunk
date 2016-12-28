@@ -125,7 +125,7 @@ public class DefaultController {
                 if(hfmdEnumClassListByExample != null && hfmdEnumClassListByExample.size() > 0) {
                     Long hfmdEnumClassId = hfmdEnumClassListByExample.get(0).getHfmdEnumClassId();
                     HfmdEnum_Example hfmdEnum_example = new HfmdEnum_Example();
-                    hfmdEnum_example.createCriteria().andHfmdEnumClassIdEqualTo(String.valueOf(hfmdEnumClassId));
+                    hfmdEnum_example.createCriteria().andHfmdEnumClassIdEqualTo(hfmdEnumClassId);
                     List<HfmdEnum> hfmdEnumList = iHfmdEnumSV.getHfmdEnumListByExample(hfmdEnum_example);
                     kvBeans = CollectionUtils.from(hfmdEnumList, new Mapping<HfmdEnum, KVBean>() {
                         public KVBean from(HfmdEnum hfmdEnum) {
@@ -183,7 +183,7 @@ public class DefaultController {
                 if(hfmdEnumClassListByExample != null && hfmdEnumClassListByExample.size() > 0) {
                     Long hfmdEnumClassId = hfmdEnumClassListByExample.get(0).getHfmdEnumClassId();
                     HfmdEnum_Example hfmdEnum_example = new HfmdEnum_Example();
-                    hfmdEnum_example.createCriteria().andHfmdEnumClassIdEqualTo(String.valueOf(hfmdEnumClassId));
+                    hfmdEnum_example.createCriteria().andHfmdEnumClassIdEqualTo(hfmdEnumClassId);
                     List<HfmdEnum> hfmdEnumList = iHfmdEnumSV.getHfmdEnumListByExample(hfmdEnum_example);
                     List<KVBean> kvBeans = CollectionUtils.from(hfmdEnumList, new Mapping<HfmdEnum, KVBean>() {
                         public KVBean from(HfmdEnum hfmdEnum) {

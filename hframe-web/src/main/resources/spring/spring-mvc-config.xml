@@ -105,8 +105,8 @@
         <property name="exposeSessionAttributes" value="true" />
     </bean>
 
-    <bean id="dataSetLoaderService" class="com.hframework.base.service.DataSetLoaderService"></bean>
-    <bean id="modelLoaderService" class="com.hframework.base.service.ModelLoaderService"></bean>
+    <!--<bean id="dataSetLoaderService" class="com.hframework.base.service.DataSetLoaderService"></bean>-->
+    <!--<bean id="modelLoaderService" class="com.hframework.base.service.ModelLoaderService"></bean>-->
 
     <!-- ①注册ConversionService -->
     <!-- ②使用 ConfigurableWebBindingInitializer 注册conversionService -->

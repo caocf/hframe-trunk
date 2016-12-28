@@ -666,62 +666,52 @@ public class HfmdEnum_Example {
             return (Criteria) this;
         }
 
-        public Criteria andHfmdEnumClassIdEqualTo(String value) {
+        public Criteria andHfmdEnumClassIdEqualTo(Long value) {
             addCriterion("hfmd_enum_class_id =", value, "hfmdEnumClassId");
             return (Criteria) this;
         }
 
-        public Criteria andHfmdEnumClassIdNotEqualTo(String value) {
+        public Criteria andHfmdEnumClassIdNotEqualTo(Long value) {
             addCriterion("hfmd_enum_class_id <>", value, "hfmdEnumClassId");
             return (Criteria) this;
         }
 
-        public Criteria andHfmdEnumClassIdGreaterThan(String value) {
+        public Criteria andHfmdEnumClassIdGreaterThan(Long value) {
             addCriterion("hfmd_enum_class_id >", value, "hfmdEnumClassId");
             return (Criteria) this;
         }
 
-        public Criteria andHfmdEnumClassIdGreaterThanOrEqualTo(String value) {
+        public Criteria andHfmdEnumClassIdGreaterThanOrEqualTo(Long value) {
             addCriterion("hfmd_enum_class_id >=", value, "hfmdEnumClassId");
             return (Criteria) this;
         }
 
-        public Criteria andHfmdEnumClassIdLessThan(String value) {
+        public Criteria andHfmdEnumClassIdLessThan(Long value) {
             addCriterion("hfmd_enum_class_id <", value, "hfmdEnumClassId");
             return (Criteria) this;
         }
 
-        public Criteria andHfmdEnumClassIdLessThanOrEqualTo(String value) {
+        public Criteria andHfmdEnumClassIdLessThanOrEqualTo(Long value) {
             addCriterion("hfmd_enum_class_id <=", value, "hfmdEnumClassId");
             return (Criteria) this;
         }
 
-        public Criteria andHfmdEnumClassIdLike(String value) {
-            addCriterion("hfmd_enum_class_id like", value, "hfmdEnumClassId");
-            return (Criteria) this;
-        }
-
-        public Criteria andHfmdEnumClassIdNotLike(String value) {
-            addCriterion("hfmd_enum_class_id not like", value, "hfmdEnumClassId");
-            return (Criteria) this;
-        }
-
-        public Criteria andHfmdEnumClassIdIn(List<String> values) {
+        public Criteria andHfmdEnumClassIdIn(List<Long> values) {
             addCriterion("hfmd_enum_class_id in", values, "hfmdEnumClassId");
             return (Criteria) this;
         }
 
-        public Criteria andHfmdEnumClassIdNotIn(List<String> values) {
+        public Criteria andHfmdEnumClassIdNotIn(List<Long> values) {
             addCriterion("hfmd_enum_class_id not in", values, "hfmdEnumClassId");
             return (Criteria) this;
         }
 
-        public Criteria andHfmdEnumClassIdBetween(String value1, String value2) {
+        public Criteria andHfmdEnumClassIdBetween(Long value1, Long value2) {
             addCriterion("hfmd_enum_class_id between", value1, value2, "hfmdEnumClassId");
             return (Criteria) this;
         }
 
-        public Criteria andHfmdEnumClassIdNotBetween(String value1, String value2) {
+        public Criteria andHfmdEnumClassIdNotBetween(Long value1, Long value2) {
             addCriterion("hfmd_enum_class_id not between", value1, value2, "hfmdEnumClassId");
             return (Criteria) this;
         }

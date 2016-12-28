@@ -1,5 +1,6 @@
 package com.hframework.common.util.protocol;
 
+import com.alibaba.fastjson.JSONObject;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -31,6 +32,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -202,4 +205,25 @@ public class HttpClientUtils {
         return null;
     }
 
+    public static void main(String[] args) throws Throwable {
+        while(true) {
+            String msg = HttpPostUtils.doHttpPost("https://cmcoins.boc.cn/CoinSeller/_bfwajax.do?_locale=zh_CN", new HashMap<String, String>() {{
+                put("json", "{\"method\":\"PsnProvincialInstitution\",\"params\":{\"productId\":\"HSB20170101\",\"province\":\"北京市\"},\"header\":{\"agent\":\"WEB15\",\"version\":\"1.0\",\"device\":\"\",\"platform\":\"Win32\",\"plugins\":\"\",\"page\":\"\",\"local\":\"zh_CN\",\"ext\":\"\"}}");
+            }});
+
+            JSONObject jsonObject = JSONObject.parseObject(msg);
+            System.out.println(jsonObject.getJSONArray("result").size());
+            if(jsonObject.getJSONArray("result").size() > 0) {
+                HttpClientUtils.post("http://itil.firstp2p.com/api/alarm/push", new ArrayList<BasicNameValuePair>() {{
+                    add(new BasicNameValuePair("type", "manis"));
+                    add(new BasicNameValuePair("title", "manis阻塞：" + "firstp2p_test"));
+                    add(new BasicNameValuePair("content", "info"));
+                }});
+                System.out.println(jsonObject.getString("result"));
+                break ;
+            }
+            Thread.sleep(1000L);
+        }
+
+    }
 }

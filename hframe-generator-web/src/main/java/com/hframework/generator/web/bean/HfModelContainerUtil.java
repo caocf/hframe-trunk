@@ -671,8 +671,11 @@ public class HfModelContainerUtil {
 
         return new String[]{key, value};
     }
-
     public static List<String> getSql(HfModelContainer addContainer, HfModelContainer modifyContainer) {
+        return getSql(addContainer, modifyContainer, true);
+    }
+
+    public static List<String> getSql(HfModelContainer addContainer, HfModelContainer modifyContainer, boolean containFk) {
 
         List<String> result = new ArrayList<String>();
 
@@ -754,7 +757,7 @@ public class HfModelContainerUtil {
         entityAttrMap = addContainer.getEntityAttrMap();
         for (String key : entityAttrMap.keySet()) {
             HfmdEntityAttr entityAttr = entityAttrMap.get(key);
-            if(entityAttr.getRelHfmdEntityAttrId() != null && entityAttr.getRelHfmdEntityAttrId() > 0) {
+            if(entityAttr.getRelHfmdEntityAttrId() != null && entityAttr.getRelHfmdEntityAttrId() > 0 && containFk) {
 
                 String entityName = key.substring(0, key.indexOf("."));
                 String entityAttrName = key.substring(key.indexOf(".") + 1);
@@ -774,7 +777,7 @@ public class HfModelContainerUtil {
             HfmdEntityAttr entityAttr = entityAttrMap.get(key);
             if(entityAttr.getRelHfmdEntityAttrId() != null && entityAttr.getRelHfmdEntityAttrId() > 0
                     && modifyContainer.getEntityAttrChangeTypeMap().containsKey(entityAttr)
-                    && modifyContainer.getEntityAttrChangeTypeMap().get(entityAttr).containFk()) {
+                    && modifyContainer.getEntityAttrChangeTypeMap().get(entityAttr).containFk() && containFk) {
 
                 String entityName = key.substring(0, key.indexOf("."));
                 String entityAttrName = key.substring(key.indexOf(".") + 1);

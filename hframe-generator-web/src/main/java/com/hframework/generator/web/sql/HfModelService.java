@@ -1,5 +1,6 @@
 package com.hframework.generator.web.sql;
 
+import com.google.common.collect.Lists;
 import com.hframe.domain.model.*;
 import com.hframe.service.interfaces.*;
 import com.hframework.common.ext.CollectionUtils;
@@ -8,9 +9,7 @@ import com.hframework.common.frame.ServiceFactory;
 import com.hframework.generator.web.bean.HfModelContainer;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by zhangquanhong on 2016/8/2.
@@ -173,12 +172,24 @@ public class HfModelService {
         Map<Long, Long> entityAttrIdChangeMap = new HashMap<Long, Long>();
         Map<String,HfmdEntityAttr> targetEntityAttrMap = hfModelContainer.getEntityAttrMap();
         if(targetEntityAttrMap != null) {
-            for (String emtityAttrCode : targetEntityAttrMap.keySet()) {
-                HfmdEntityAttr targetEntityAttr = targetEntityAttrMap.get(emtityAttrCode);
+            List<HfmdEntityAttr> entityAttrList = new ArrayList<HfmdEntityAttr>(targetEntityAttrMap.values());
+            Collections.sort(entityAttrList, new Comparator<HfmdEntityAttr>() {
+                public int compare(HfmdEntityAttr o1, HfmdEntityAttr o2) {
+                    if(o1.getRelHfmdEntityAttrId() == null && o2.getRelHfmdEntityAttrId() == null) return 0;
+                    if(o1.getRelHfmdEntityAttrId() == null) return -1;
+                    if(o2.getRelHfmdEntityAttrId() == null) return 1;
+                    return 0;
+                }
+            });
+            for (HfmdEntityAttr targetEntityAttr : entityAttrList) {
                 Long tempId = targetEntityAttr.getHfmdEntityAttrId();
                 Long hfmdEntityId = entityIdChangeMap.get(targetEntityAttr.getHfmdEntityId());
                 if (hfmdEntityId != null) {
                     targetEntityAttr.setHfmdEntityId(hfmdEntityId);
+                }
+
+                if(targetEntityAttr.getRelHfmdEntityAttrId() != null && entityAttrIdChangeMap.containsKey(targetEntityAttr.getRelHfmdEntityAttrId())){
+                    targetEntityAttr.setRelHfmdEntityAttrId(entityAttrIdChangeMap.get(targetEntityAttr.getRelHfmdEntityAttrId()));
                 }
 
                 if(operType == 1) {

@@ -325,7 +325,7 @@ public class DataSetLoaderService {
             }
             if(hfmdEntityAttr.getRelHfmdEntityAttrId() != null && hfmdEntityAttr.getRelHfmdEntityAttrId() > 0) {
                 if(relEntityAttr == null) {
-                    System.out.println("==>RelHfmdEntityAttrId【" + hfmdEntityAttr.getRelHfmdEntityAttrId() + "】没有找到对应的记录！");
+                    System.out.println("==>RelHfmdEntityAttrId【" + hfmdEntityAttr.getRelHfmdEntityAttrId() + " : " + hfmdEntityAttr.getHfmdEntityAttrCode() + "】没有找到对应的记录！");
                 }
 
                 Rel rel = getRel(relEntityAttr);
@@ -1016,7 +1016,11 @@ public class DataSetLoaderService {
 
         int index = hfpmDataFieldMap.get(dataField.getHfpmDataSetId()).indexOf(dataField);
         if(isNewField) {
-            fieldList.add(index, targetField);
+            if(index >= fieldList.size()) {
+                fieldList.add(targetField);
+            }else {
+                fieldList.add(index, targetField);
+            }
         }
 
         String dataSetXml = XmlUtils.writeValueAsString(dataSet);

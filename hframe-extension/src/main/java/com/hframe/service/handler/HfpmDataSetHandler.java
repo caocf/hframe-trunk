@@ -11,6 +11,7 @@ import com.hframework.base.service.DataSetLoaderService;
 import com.hframework.common.annotation.extension.AfterCreateHandler;
 import com.hframework.common.annotation.extension.AfterDeleteHandler;
 import com.hframework.common.annotation.extension.AfterUpdateHandler;
+import com.hframework.common.annotation.extension.BeforeDeleteHandler;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -23,6 +24,8 @@ public class HfpmDataSetHandler extends AbstractBusinessHandler<HfpmDataSet> {
 
     @Resource
     private IHfpmProgramSV hfpmProgramSV;
+    @Resource
+    private IHfpmDataSetSV hfpmDataSetSV;
 
     @AfterUpdateHandler
     @AfterCreateHandler
@@ -40,9 +43,12 @@ public class HfpmDataSetHandler extends AbstractBusinessHandler<HfpmDataSet> {
         return true;
     }
 
-    @AfterDeleteHandler
+    @BeforeDeleteHandler
     public boolean delete(HfpmDataSet hfpmDataSet) throws Exception {
 
+        if(hfpmDataSet.getHfpmProgramId() == null) {
+            hfpmDataSet = hfpmDataSetSV.getHfpmDataSetByPK(hfpmDataSet.getHfpmDataSetId());
+        }
         HfpmProgram hfpmProgram = hfpmProgramSV.getHfpmProgramByPK(hfpmDataSet.getHfpmProgramId());
 
         String companyCode = "hframe";

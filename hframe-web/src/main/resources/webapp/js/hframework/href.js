@@ -160,7 +160,7 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
                 if($($this).attr("params") == "checkIds") {
                     var checkIds = new Array();
                     var $thisList = $this.parents(".hflist")[0];
-                    var $allChecked = $($thisList).find("input[type=checkbox][name=checkIds]:checked");
+                    var $allChecked = $($thisList).find("tbody input[type=checkbox][name=checkIds]:checked");
                     $allChecked.each(function(){
                         var columnName = $(this).attr("value-key");
                         var columnValue  = formatContent("{" + columnName + "}", $(this));
@@ -271,7 +271,7 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
                 if($($this).attr("params") == "checkIds") {
                     var checkIds = new Array();
                     var $thisList = $this.parents(".hflist")[0];
-                    var $allChecked = $($thisList).find("input[type=checkbox][name=checkIds]:checked");
+                    var $allChecked = $($thisList).find("tbody input[type=checkbox][name=checkIds]:checked");
                     $allChecked.each(function(){
                         var columnName = $(this).attr("value-key");
                         var columnValue  = formatContent("{" + columnName + "}", $(this));

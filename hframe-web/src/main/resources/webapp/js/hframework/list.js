@@ -30,6 +30,20 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
         valueChange($this);
     });
 
+    $('.hfselect:not([action])').live('input', function(){
+        $this = $(this);
+        valueChange($this);
+    });
+
+    $(".hflist thead th input[type=checkbox]").live('change', function(){
+        var $this = $(this);
+        if($this.is(":checked")) {
+            $this.parents("table:first").find(".hflist-data").find("input[type=checkbox]").not(":checked").click();
+        }else {
+            $this.parents("table:first").find(".hflist-data").find("input[type=checkbox]:checked").click();
+        }
+    });
+
 
     function valueChange($this){
 

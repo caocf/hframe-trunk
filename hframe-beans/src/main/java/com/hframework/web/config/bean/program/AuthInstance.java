@@ -71,6 +71,7 @@ public class AuthInstance {
     }
 
     public SuperAuthFilter getSuperAuthFilter() {
+        if(superAuthFilter == null) superAuthFilter = new SuperAuthFilter();
         return superAuthFilter;
     }
 }

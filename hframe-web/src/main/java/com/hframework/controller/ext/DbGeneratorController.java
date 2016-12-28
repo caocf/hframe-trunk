@@ -171,7 +171,7 @@ public class DbGeneratorController extends ExtBaseController {
 
             final HfModelContainer[] resultModelContainers =
                     HfModelContainerUtil.mergerModelContainer(curDbModelContainer, targetModelContainer);
-            final List<String> result = HfModelContainerUtil.getSql(resultModelContainers[0], resultModelContainers[1]);
+            final List<String> result = HfModelContainerUtil.getSql(resultModelContainers[0], resultModelContainers[1], false);
             final List<Map<String, String>> sqls = new ArrayList<Map<String, String>>();
             for (final String sql : result) {
                 sqls.add(new HashMap<String, String>(){{
