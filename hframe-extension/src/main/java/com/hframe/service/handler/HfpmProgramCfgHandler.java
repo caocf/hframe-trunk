@@ -10,10 +10,12 @@ import com.hframework.common.ext.CollectionUtils;
 import com.hframework.common.ext.Fetcher;
 import com.hframework.common.ext.Mapper;
 import com.hframework.common.util.FileUtils;
+import com.hframework.common.util.StringUtils;
 import com.hframework.common.util.message.VelocityUtil;
 import com.hframework.common.util.message.XmlUtils;
 import com.hframework.generator.util.CreatorUtil;
 import com.hframework.generator.web.BaseGeneratorUtil;
+import com.hframework.web.bean.WebContextHelper;
 import com.hframework.web.config.bean.Program;
 import org.springframework.stereotype.Service;
 
@@ -40,6 +42,9 @@ public class HfpmProgramCfgHandler extends AbstractBusinessHandler<HfpmProgramCf
 
     @Resource
     private IHfmdEntitySV hfmdEntitySV;
+
+    @Resource
+    private IHfpmDataSetSV hfpmDataSetSV;
     @Resource
     private IHfmdEntityAttrSV hfmdEntityAttrSV;
 
@@ -78,6 +83,7 @@ public class HfpmProgramCfgHandler extends AbstractBusinessHandler<HfpmProgramCf
         String projectBasePath = CreatorUtil.getTargetProjectBasePath(companyCode,
                 "hframe".equals(programCode) ? "trunk" : programCode, null);
         Program program = XmlUtils.readValueFromAbsoluteFilePath(projectBasePath + "/hframe-web/src/main/resources/program/program.xml", Program.class);
+        if(StringUtils.isNotBlank(hfpmProgramCfg.getShowName())) program.setName(hfpmProgramCfg.getShowName());
         //用户实体
         if(hfpmProgramCfg.getUserEntityName() != null) program.getAuthInstance().setUser(getCfgName(hfpmProgramCfg.getUserEntityName()));
         //数据实体
@@ -96,10 +102,22 @@ public class HfpmProgramCfgHandler extends AbstractBusinessHandler<HfpmProgramCf
         //超级管理员规则【字段值】
         if(hfpmProgramCfg.getSuperAuthFilterFieldValue() != null) program.getAuthInstance().getSuperAuthFilter().setDataFieldValue(hfpmProgramCfg.getSuperAuthFilterFieldValue());
 
+        if(hfpmProgramCfg.getUserLoginDataSet() != null) program.getLogin().setDataSet(getDataSetName(hfpmProgramCfg.getUserLoginDataSet()));
+
         String xml = XmlUtils.writeValueAsString(program);
         FileUtils.writeFile(projectBasePath + "/hframe-web/src/main/resources/program/program.xml", xml);
+
         return true;
     }
+
+    private String getDataSetName(String dataSetId) throws Exception {
+
+        HfpmDataSet hfpmDataSet = hfpmDataSetSV.getHfpmDataSetByPK(Long.parseLong(dataSetId));
+        HfmdEntity hfmdEntity = hfmdEntitySV.getHfmdEntityByPK(hfpmDataSet.getMainHfmdEntityId());
+        HfpmModule hfpmModule = hfpmModuleSV.getHfpmModuleByPK(hfmdEntity.getHfpmModuleId());
+        return hfpmModule.getHfpmModuleCode() + "/" + hfpmDataSet.getHfpmDataSetCode();
+    }
+
 
     private String getCfgName(String userEntityName) throws Exception {
         HfmdEntity_Example example = new HfmdEntity_Example();

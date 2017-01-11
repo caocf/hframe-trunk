@@ -95,6 +95,10 @@
         <servlet-name>dispatcherServlet</servlet-name>
         <url-pattern>*.json</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>dispatcherServlet</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
     <!-- 框架加载服务 -->
     <!--<servlet>-->
         <!--<servlet-name>frameInitServlet</servlet-name>-->

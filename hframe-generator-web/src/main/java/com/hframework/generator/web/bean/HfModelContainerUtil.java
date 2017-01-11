@@ -520,7 +520,13 @@ public class HfModelContainerUtil {
         hfpmDataField.setHfpmDataFieldId(CommonUtils.uuidL());
         hfpmDataField.setHfpmDataFieldCode(hfmdEntityAttr.getHfmdEntityAttrCode());
         hfpmDataField.setHfpmFieldShowTypeId(getFieldShowTypeIdByEntityAttr(hfmdEntityAttr));
-        hfpmDataField.setFieldShowCode(getFieldShowCodeByEntityAttr(hfmdEntityAttr));
+        String showCodes = getFieldShowCodeByEntityAttr(hfmdEntityAttr);
+//        hfpmDataField.setFieldShowCode(getFieldShowCodeByEntityAttr(hfmdEntityAttr));
+        hfpmDataField.setCreateEditAuth(Byte.valueOf(String.valueOf(showCodes.charAt(0))));
+        hfpmDataField.setUpdateEditAuth(Byte.valueOf(String.valueOf(showCodes.charAt(1))));
+        hfpmDataField.setListShowAuth(Byte.valueOf(String.valueOf(showCodes.charAt(2))));
+        hfpmDataField.setDetailShowAuth(Byte.valueOf(String.valueOf(showCodes.charAt(2))));
+
         hfpmDataField.setHfmdEntityId(hfmdEntityAttr.getHfmdEntityId());
         hfpmDataField.setHfmdEntityAttrId(hfmdEntityAttr.getHfmdEntityAttrId());
         hfpmDataField.setDataGetMethod(0);
@@ -550,18 +556,30 @@ public class HfModelContainerUtil {
                     dataFieldFromEntityAttr.getHfpmDataFieldName().replaceAll("时间","开始时间"));
             dataFieldFromEntityAttr.setHfpmDataFieldCode(
                     dataFieldFromEntityAttr.getHfpmDataFieldCode() + "_GEQ");
-            dataFieldFromEntityAttr.setFieldShowCode("222");
+//            dataFieldFromEntityAttr.setFieldShowCode("222");
+            dataFieldFromEntityAttr.setCreateEditAuth((byte) 2);
+            dataFieldFromEntityAttr.setUpdateEditAuth((byte) 2);
+            dataFieldFromEntityAttr.setListShowAuth((byte) 1);
+            dataFieldFromEntityAttr.setDetailShowAuth((byte) 1);
             result.add(dataFieldFromEntityAttr);
             dataFieldFromEntityAttr = getDataFieldFromEntityAttr(hfmdEntityAttr, dataSet);
             dataFieldFromEntityAttr.setHfpmDataFieldName(
-                    dataFieldFromEntityAttr.getHfpmDataFieldName().replaceAll("时间","结束时间"));
+                    dataFieldFromEntityAttr.getHfpmDataFieldName().replaceAll("时间", "结束时间"));
             dataFieldFromEntityAttr.setHfpmDataFieldCode(
                     dataFieldFromEntityAttr.getHfpmDataFieldCode() + "_LEQ");
-            dataFieldFromEntityAttr.setFieldShowCode("222");
+//            dataFieldFromEntityAttr.setFieldShowCode("222");
+            dataFieldFromEntityAttr.setCreateEditAuth((byte) 2);
+            dataFieldFromEntityAttr.setUpdateEditAuth((byte) 2);
+            dataFieldFromEntityAttr.setListShowAuth((byte) 1);
+            dataFieldFromEntityAttr.setDetailShowAuth((byte) 1);
             result.add(dataFieldFromEntityAttr);
         }else {
             dataFieldFromEntityAttr = getDataFieldFromEntityAttr(hfmdEntityAttr, dataSet);
-            dataFieldFromEntityAttr.setFieldShowCode("222");
+//            dataFieldFromEntityAttr.setFieldShowCode("222");
+            dataFieldFromEntityAttr.setCreateEditAuth((byte) 2);
+            dataFieldFromEntityAttr.setUpdateEditAuth((byte) 2);
+            dataFieldFromEntityAttr.setListShowAuth((byte)1);
+            dataFieldFromEntityAttr.setDetailShowAuth((byte)1);
             result.add(dataFieldFromEntityAttr);
         }
 
@@ -672,10 +690,10 @@ public class HfModelContainerUtil {
         return new String[]{key, value};
     }
     public static List<String> getSql(HfModelContainer addContainer, HfModelContainer modifyContainer) {
-        return getSql(addContainer, modifyContainer, true);
+        return getSql(addContainer, modifyContainer, true, false);
     }
 
-    public static List<String> getSql(HfModelContainer addContainer, HfModelContainer modifyContainer, boolean containFk) {
+    public static List<String> getSql(HfModelContainer addContainer, HfModelContainer modifyContainer, boolean containFk, boolean backQuote) {
 
         List<String> result = new ArrayList<String>();
 
@@ -697,7 +715,7 @@ public class HfModelContainerUtil {
                 newTableMap.get(hfmdEntity).add(entityAttr);
             }else{
                 StringBuffer sql = new StringBuffer();
-                sql.append("alter table " + entityName + " add column " + getColumnInfo(entityAttr) + ";");
+                sql.append("alter table " + backQuote(entityName,backQuote) + " add column " + getColumnInfo(entityAttr, backQuote) + ";");
                 tempList.add(sql.toString());
             }
         }
@@ -707,7 +725,7 @@ public class HfModelContainerUtil {
         tempList = new ArrayList<String>();
         for (HfmdEntity hfmdEntity : newTableMap.keySet()) {
             StringBuffer sql = new StringBuffer();
-            sql.append("create table " + hfmdEntity.getHfmdEntityCode() + "(").append("\n");
+            sql.append("create table " + backQuote(hfmdEntity.getHfmdEntityCode(), backQuote) + "(").append("\n");
             List<HfmdEntityAttr> hfmdEntityAttrs = newTableMap.get(hfmdEntity);
             Collections.sort(hfmdEntityAttrs, new Comparator<HfmdEntityAttr>() {
                 public int compare(HfmdEntityAttr o1, HfmdEntityAttr o2) {
@@ -716,7 +734,7 @@ public class HfModelContainerUtil {
             });
             for (HfmdEntityAttr hfmdEntityAttr : hfmdEntityAttrs) {
                 System.out.println("->" + hfmdEntity.getHfmdEntityCode());
-                sql.append("   " + getColumnInfo(hfmdEntityAttr)).append(",").append("\n");
+                sql.append("   " + getColumnInfo(hfmdEntityAttr, backQuote)).append(",").append("\n");
             }
             sql.delete(sql.length() - 2, sql.length()).append(")");
             if(StringUtils.isNotBlank(hfmdEntity.getHfmdEntityName())) {
@@ -732,7 +750,7 @@ public class HfModelContainerUtil {
         tempList = new ArrayList<String>();
         for (HfmdEntity hfmdEntity : modifyContainer.getEntityMap().values()) {
             StringBuffer sql = new StringBuffer();
-            sql.append("alter table " + hfmdEntity.getHfmdEntityCode() + " comment '" + hfmdEntity.getHfmdEntityName() + "';");
+            sql.append("alter table " + backQuote(hfmdEntity.getHfmdEntityCode(),backQuote) + " comment '" + hfmdEntity.getHfmdEntityName() + "';");
             tempList.add(sql.toString());
         }
         Collections.sort(tempList);
@@ -746,7 +764,7 @@ public class HfModelContainerUtil {
                     && modifyContainer.getEntityAttrChangeTypeMap().get(entityAttr).containField()) {
                 String entityName = key.substring(0, key.indexOf("."));
                 StringBuffer sql = new StringBuffer();
-                sql.append("alter table " + entityName + " modify column " + getColumnInfo(entityAttr) + ";");
+                sql.append("alter table " + backQuote(entityName,backQuote)  + " modify column " + getColumnInfo(entityAttr, backQuote) + ";");
                 tempList.add(sql.toString());
             }
         }
@@ -765,7 +783,7 @@ public class HfModelContainerUtil {
                 String relEntityInfo = addContainer.getRelEntityAttr2AttrMapper().get(key);
                 String relEntityName = relEntityInfo.substring(0, relEntityInfo.indexOf("."));
                 String relEntityAttrName = relEntityInfo.substring(relEntityInfo.indexOf(".") + 1);
-                sql.append("alter table " + entityName + " add constraint FK_" + entityName + "_4_" + entityAttrName
+                sql.append("alter table " + backQuote(entityName,backQuote)  + " add constraint FK_" + entityName + "_4_" + entityAttrName
                         + " foreign key ( " + entityAttrName + ") references " + relEntityName +"(" + relEntityAttrName
                         +") on delete restrict on update restrict;");
                 tempList.add(sql.toString());
@@ -797,11 +815,14 @@ public class HfModelContainerUtil {
         return result;
     }
 
+    private static String backQuote(String entityName, boolean backQuote) {
+        return backQuote? ("`" + entityName + "`") : entityName;
+    }
 
-    private static String getColumnInfo(HfmdEntityAttr entityAttr) {
+    private static String getColumnInfo(HfmdEntityAttr entityAttr, boolean backQuote) {
         if(entityAttr !=null) {
             System.out.println("=>" + entityAttr.getHfmdEntityAttrCode() + "|" + entityAttr.getAttrType() + "|" + entityAttr.getSize() + "|" + entityAttr.getIspk() + "|" + entityAttr.getNullable());
-            return entityAttr.getHfmdEntityAttrCode() + " " + HfmdEntityAttr1AttrTypeEnum.getName(entityAttr.getAttrType())
+            return backQuote(entityAttr.getHfmdEntityAttrCode(),backQuote) + " " + HfmdEntityAttr1AttrTypeEnum.getName(entityAttr.getAttrType())
                     + (StringUtils.isNotBlank(entityAttr.getSize()) ? ("(" + entityAttr.getSize() + ")" ): "")
                     + (entityAttr.getIspk() != null && entityAttr.getIspk() == 1? " primary key auto_increment" : "")
                     + (entityAttr.getNullable() != null && entityAttr.getNullable() == 1? "" : " not null")

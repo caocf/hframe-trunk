@@ -24,6 +24,10 @@ public class Rel {
     @XStreamAlias("rel-field")
     private String relField;
 
+    @XStreamAsAttribute
+    @XStreamAlias("rel-scope")
+    private String relScope;
+
     @XStreamImplicit
     @XStreamAlias("rel")
     private List<Rel> relList;
@@ -62,5 +66,13 @@ public class Rel {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getRelScope() {
+        return relScope;
+    }
+
+    public void setRelScope(String relScope) {
+        this.relScope = relScope;
     }
 }

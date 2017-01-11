@@ -1065,6 +1065,246 @@ public class HfpmDataField_Example {
             addCriterion("del_flag not between", value1, value2, "delFlag");
             return (Criteria) this;
         }
+
+        public Criteria andCreateEditAuthIsNull() {
+            addCriterion("create_edit_auth is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreateEditAuthIsNotNull() {
+            addCriterion("create_edit_auth is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreateEditAuthEqualTo(Byte value) {
+            addCriterion("create_edit_auth =", value, "createEditAuth");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreateEditAuthNotEqualTo(Byte value) {
+            addCriterion("create_edit_auth <>", value, "createEditAuth");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreateEditAuthGreaterThan(Byte value) {
+            addCriterion("create_edit_auth >", value, "createEditAuth");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreateEditAuthGreaterThanOrEqualTo(Byte value) {
+            addCriterion("create_edit_auth >=", value, "createEditAuth");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreateEditAuthLessThan(Byte value) {
+            addCriterion("create_edit_auth <", value, "createEditAuth");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreateEditAuthLessThanOrEqualTo(Byte value) {
+            addCriterion("create_edit_auth <=", value, "createEditAuth");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreateEditAuthIn(List<Byte> values) {
+            addCriterion("create_edit_auth in", values, "createEditAuth");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreateEditAuthNotIn(List<Byte> values) {
+            addCriterion("create_edit_auth not in", values, "createEditAuth");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreateEditAuthBetween(Byte value1, Byte value2) {
+            addCriterion("create_edit_auth between", value1, value2, "createEditAuth");
+            return (Criteria) this;
+        }
+
+        public Criteria andCreateEditAuthNotBetween(Byte value1, Byte value2) {
+            addCriterion("create_edit_auth not between", value1, value2, "createEditAuth");
+            return (Criteria) this;
+        }
+
+        public Criteria andDetailShowAuthIsNull() {
+            addCriterion("detail_show_auth is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andDetailShowAuthIsNotNull() {
+            addCriterion("detail_show_auth is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andDetailShowAuthEqualTo(Byte value) {
+            addCriterion("detail_show_auth =", value, "detailShowAuth");
+            return (Criteria) this;
+        }
+
+        public Criteria andDetailShowAuthNotEqualTo(Byte value) {
+            addCriterion("detail_show_auth <>", value, "detailShowAuth");
+            return (Criteria) this;
+        }
+
+        public Criteria andDetailShowAuthGreaterThan(Byte value) {
+            addCriterion("detail_show_auth >", value, "detailShowAuth");
+            return (Criteria) this;
+        }
+
+        public Criteria andDetailShowAuthGreaterThanOrEqualTo(Byte value) {
+            addCriterion("detail_show_auth >=", value, "detailShowAuth");
+            return (Criteria) this;
+        }
+
+        public Criteria andDetailShowAuthLessThan(Byte value) {
+            addCriterion("detail_show_auth <", value, "detailShowAuth");
+            return (Criteria) this;
+        }
+
+        public Criteria andDetailShowAuthLessThanOrEqualTo(Byte value) {
+            addCriterion("detail_show_auth <=", value, "detailShowAuth");
+            return (Criteria) this;
+        }
+
+        public Criteria andDetailShowAuthIn(List<Byte> values) {
+            addCriterion("detail_show_auth in", values, "detailShowAuth");
+            return (Criteria) this;
+        }
+
+        public Criteria andDetailShowAuthNotIn(List<Byte> values) {
+            addCriterion("detail_show_auth not in", values, "detailShowAuth");
+            return (Criteria) this;
+        }
+
+        public Criteria andDetailShowAuthBetween(Byte value1, Byte value2) {
+            addCriterion("detail_show_auth between", value1, value2, "detailShowAuth");
+            return (Criteria) this;
+        }
+
+        public Criteria andDetailShowAuthNotBetween(Byte value1, Byte value2) {
+            addCriterion("detail_show_auth not between", value1, value2, "detailShowAuth");
+            return (Criteria) this;
+        }
+
+        public Criteria andListShowAuthIsNull() {
+            addCriterion("list_show_auth is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andListShowAuthIsNotNull() {
+            addCriterion("list_show_auth is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andListShowAuthEqualTo(Byte value) {
+            addCriterion("list_show_auth =", value, "listShowAuth");
+            return (Criteria) this;
+        }
+
+        public Criteria andListShowAuthNotEqualTo(Byte value) {
+            addCriterion("list_show_auth <>", value, "listShowAuth");
+            return (Criteria) this;
+        }
+
+        public Criteria andListShowAuthGreaterThan(Byte value) {
+            addCriterion("list_show_auth >", value, "listShowAuth");
+            return (Criteria) this;
+        }
+
+        public Criteria andListShowAuthGreaterThanOrEqualTo(Byte value) {
+            addCriterion("list_show_auth >=", value, "listShowAuth");
+            return (Criteria) this;
+        }
+
+        public Criteria andListShowAuthLessThan(Byte value) {
+            addCriterion("list_show_auth <", value, "listShowAuth");
+            return (Criteria) this;
+        }
+
+        public Criteria andListShowAuthLessThanOrEqualTo(Byte value) {
+            addCriterion("list_show_auth <=", value, "listShowAuth");
+            return (Criteria) this;
+        }
+
+        public Criteria andListShowAuthIn(List<Byte> values) {
+            addCriterion("list_show_auth in", values, "listShowAuth");
+            return (Criteria) this;
+        }
+
+        public Criteria andListShowAuthNotIn(List<Byte> values) {
+            addCriterion("list_show_auth not in", values, "listShowAuth");
+            return (Criteria) this;
+        }
+
+        public Criteria andListShowAuthBetween(Byte value1, Byte value2) {
+            addCriterion("list_show_auth between", value1, value2, "listShowAuth");
+            return (Criteria) this;
+        }
+
+        public Criteria andListShowAuthNotBetween(Byte value1, Byte value2) {
+            addCriterion("list_show_auth not between", value1, value2, "listShowAuth");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateEditAuthIsNull() {
+            addCriterion("update_edit_auth is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateEditAuthIsNotNull() {
+            addCriterion("update_edit_auth is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateEditAuthEqualTo(Byte value) {
+            addCriterion("update_edit_auth =", value, "updateEditAuth");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateEditAuthNotEqualTo(Byte value) {
+            addCriterion("update_edit_auth <>", value, "updateEditAuth");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateEditAuthGreaterThan(Byte value) {
+            addCriterion("update_edit_auth >", value, "updateEditAuth");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateEditAuthGreaterThanOrEqualTo(Byte value) {
+            addCriterion("update_edit_auth >=", value, "updateEditAuth");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateEditAuthLessThan(Byte value) {
+            addCriterion("update_edit_auth <", value, "updateEditAuth");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateEditAuthLessThanOrEqualTo(Byte value) {
+            addCriterion("update_edit_auth <=", value, "updateEditAuth");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateEditAuthIn(List<Byte> values) {
+            addCriterion("update_edit_auth in", values, "updateEditAuth");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateEditAuthNotIn(List<Byte> values) {
+            addCriterion("update_edit_auth not in", values, "updateEditAuth");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateEditAuthBetween(Byte value1, Byte value2) {
+            addCriterion("update_edit_auth between", value1, value2, "updateEditAuth");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateEditAuthNotBetween(Byte value1, Byte value2) {
+            addCriterion("update_edit_auth not between", value1, value2, "updateEditAuth");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {

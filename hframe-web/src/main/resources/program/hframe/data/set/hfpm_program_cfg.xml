@@ -52,5 +52,10 @@
       <rel entity-code="hfmd_entity_attr/hfmd_entity_attr_id/hfmd_entity_attr_name" rel-field="super_auth_filter_entity"/>
     </field>
     <field code="super_auth_filter_field_value" name="超级管理员规则【字段值】" edit-type="input"/>
+
+    <field code="user_login_data_set" name="用户登录数据集" edit-type="muti-select">
+      <rel entity-code="hfpm_data_set/hfpm_data_set_id/hfpm_data_set_name" rel-field="hfpm_program_id"/>
+    </field>
+
   </fields>
 </dataset>

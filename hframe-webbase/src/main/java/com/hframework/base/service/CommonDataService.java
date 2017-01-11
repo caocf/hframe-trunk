@@ -114,7 +114,7 @@ public class CommonDataService {
      */
     public String showCreateTableSql(final String tableName) throws Exception {
         Map tableName1 = commonDataMapper.showCreateTable(new HashMap() {{
-            put("tableName", tableName);
+            put("tableName", "`" + tableName + "`");
         }});
         if(tableName1 != null && tableName1.size() > 0) {
             return String.valueOf(tableName1.values().iterator().next());

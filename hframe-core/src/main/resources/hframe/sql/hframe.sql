@@ -190,10 +190,14 @@ create table hfpm_data_field(
    hfpm_data_field_id bigint(20) primary key auto_increment comment '数据列ID',
    hfpm_data_field_code varchar(64) comment '数据列编码',
    hfpm_field_show_type_id varchar(32) comment '列展示类型ID',
-   field_show_code varchar(6) comment '列展示码            ',
+   field_show_code varchar(6) comment '列展示码',
+   create_edit_auth tinyint(4) comment '新增编辑权限',
+   update_edit_auth tinyint(4) comment '修改编辑权限',
+   list_show_auth tinyint(4) comment '列表展示权限',
+   detail_show_auth tinyint(4) comment '明细展示权限',
    hfmd_entity_id bigint(20) comment '实体ID',
    hfmd_entity_attr_id bigint(20) comment '实体属性ID',
-   data_get_method int(2) comment '数据获取方式          ',
+   data_get_method int(2) comment '数据获取方式',
    hfpm_data_field_name varchar(64) comment '数据列名称',
    hfpm_data_set_id bigint(20) comment '数据集ID',
    pri numeric(6,2) comment '优先级',
@@ -400,7 +404,8 @@ create table hfpm_program_cfg(
    del_flag int(2) comment '删除标识',
    super_auth_filter_entity bigint(20) comment '超级管理员规则【实体】',
    super_auth_filter_field bigint(20) comment '超级管理员规则【字段】',
-   super_auth_filter_field_value varchar(64) comment '超级管理员规则【字段值】') comment '项目设置';
+   super_auth_filter_field_value varchar(64) comment '超级管理员规则【字段值】',
+   user_login_data_set varchar(128) comment '用户登录数据集') comment '项目设置';
 
 
 create table hfsec_menu(
@@ -737,6 +742,9 @@ alter table hfpm_program_cfg add constraint FK_hfpm_program_cfg_4_super_auth_fil
 
 
 alter table hfpm_program_cfg add constraint FK_hfpm_program_cfg_4_user_entity_name foreign key ( user_entity_name) references hfmd_entity(hfmd_entity_id) on delete restrict on update restrict;
+
+
+alter table hfpm_program_cfg add constraint FK_hfpm_program_cfg_4_user_login_data_set foreign key ( user_login_data_set) references hfpm_data_set(hfpm_data_set_id) on delete restrict on update restrict;
 
 
 alter table hfsec_menu add constraint FK_hfsec_menu_4_parent_hfsec_menu_id foreign key ( parent_hfsec_menu_id) references hfsec_menu(hfsec_menu_id) on delete restrict on update restrict;

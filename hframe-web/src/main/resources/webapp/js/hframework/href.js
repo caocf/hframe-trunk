@@ -259,11 +259,11 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
                 }
 
                 $($thisForm).find(".boolCheckBox input[value=1]").each(function(){
-                   if($(this).is(':checked')){
-                       $.uniform.update($(this).parents(".boolCheckBox:first").prev().find("input[value=0]").removeAttr("checked"));
-                   }else {
-                       $.uniform.update($(this).parents(".boolCheckBox:first").prev().find("input[value=0]").attr("checked","true"));
-                   }
+                    if($(this).is(':checked')){
+                        $.uniform.update($(this).parents(".boolCheckBox:first").prev().find("input[value=0]").removeAttr("checked"));
+                    }else {
+                        $.uniform.update($(this).parents(".boolCheckBox:first").prev().find("input[value=0]").attr("checked","true"));
+                    }
                 });
 
                 _data = parseUrlParamToObject(decodeURIComponent($($thisForm).serialize().replace(/\+/g," ")));
@@ -540,9 +540,9 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
                 if($groupElement) {
                     var groupName = $groupElement.attr("group");
                     $("[group][group='" + groupName + "']").each(function(index, element){
-                       if($(element) != $groupElement) {
-                           $(element).hide();
-                       }
+                        if($(element) != $groupElement) {
+                            $(element).hide();
+                        }
                     });
                     $groupElement.show();
                 }
@@ -563,8 +563,8 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
         if(!$paramStr) {
             return result;
         }
-        $params = $paramStr.split("&");
-        for($index in $params) {
+        var $params = $paramStr.split("&");
+        for(var $index in $params) {
             var key = $params[$index].substring(0, $params[$index].indexOf("="));
             var value = $params[$index].substring($params[$index].indexOf("=") + 1);
             if(value != '' || $containBlank) {
@@ -660,43 +660,121 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
     }
 
     (function($){
+
         $.fn.serializeJson = function(){
-            var jsonData1 = {};
+
+
+            var blankModifyElementName ={};
+            $(this).find("[data-code][data-condition][name]").each(function(){
+                blankModifyElementName[($(this).attr("name"))] = null;
+            });
+
+            var jsonObject = {};
+            var jsonArray = new Array();
             var serializeArray = this.serializeArray();
             // 先转换成{"id": ["12","14"], "name": ["aaa","bbb"], "pwd":["pwd1","pwd2"]}这种形式
+            var $lastElement;
             $(serializeArray).each(function () {
-                if (jsonData1[this.name] != null) {
-                    if ($.isArray(jsonData1[this.name])) {
-                        jsonData1[this.name].push(this.value);
-                    } else {
-                        jsonData1[this.name] = [jsonData1[this.name], this.value];
+
+                if(this.name == "EOFR_EDIT_FLAG") {
+                    for(var name in blankModifyElementName) {
+                        if(!(name in jsonObject)) {
+                            jsonObject[name] = "";
+                        }
                     }
-                } else {
-                    jsonData1[this.name] = this.value;
+                    jsonArray.push(jsonObject);
+                    jsonObject = {};
+                    $lastElement = null;
+                }else {
+                    if (jsonObject[this.name] != null) {
+
+                        if($lastElement && ($lastElement.name == this.name)) {//复选框等含有多组值的元素
+                            if ($.isArray(jsonObject[this.name])) {
+                                jsonObject[this.name][jsonObject[this.name].length-1] = jsonObject[this.name][jsonObject[this.name].length-1] + "," +  this.value;
+                            } else {
+                                jsonObject[this.name] = jsonObject[this.name] + "," +  this.value;
+                            }
+                        }else {
+                            if ($.isArray(jsonObject[this.name])) {
+                                jsonObject[this.name].push(this.value);
+                            } else {
+                                jsonObject[this.name] = [jsonObject[this.name], this.value];
+                            }
+                        }
+                    } else {
+                        jsonObject[this.name] = this.value;
+                    }
+                    $lastElement = this;
                 }
             });
-            // 再转成[{"id": "12", "name": "aaa", "pwd":"pwd1"},{"id": "14", "name": "bb", "pwd":"pwd2"}]的形式
-            var vCount = 0;
-            // 计算json内部的数组最大长度
-            for(var item in jsonData1){
-                var tmp = $.isArray(jsonData1[item]) ? jsonData1[item].length : 1;
-                vCount = (tmp > vCount) ? tmp : vCount;
+
+            if(jsonArray && jsonArray.length > 0) {
+                return JSON.stringify(jsonArray);
+            }else {
+                return "[" + JSON.stringify(jsonObject) + "]";
             }
 
-            if(vCount > 1) {
-                var jsonData2 = new Array();
-                for(var i = 0; i < vCount; i++){
-                    var jsonObj = {};
-                    for(var item in jsonData1) {
-                        jsonObj[item] = jsonData1[item][i];
-                    }
-                    jsonData2.push(jsonObj);
-                }
-                return JSON.stringify(jsonData2);
-            }else{
-                return "[" + JSON.stringify(jsonData1) + "]";
-            }
+            //// 再转成[{"id": "12", "name": "aaa", "pwd":"pwd1"},{"id": "14", "name": "bb", "pwd":"pwd2"}]的形式
+            //var vCount = 0;
+            //// 计算json内部的数组最大长度
+            //for(var item in jsonData1){
+            //    var tmp = $.isArray(jsonData1[item]) ? jsonData1[item].length : 1;
+            //    vCount = (tmp > vCount) ? tmp : vCount;
+            //}
+            //
+            //if(vCount > 1) {
+            //    var jsonData2 = new Array();
+            //    for(var i = 0; i < vCount; i++){
+            //        var jsonObj = {};
+            //        for(var item in jsonData1) {
+            //            jsonObj[item] = jsonData1[item][i];
+            //        }
+            //        jsonData2.push(jsonObj);
+            //    }
+            //    return JSON.stringify(jsonData2);
+            //}else{
+            //    return "[" + JSON.stringify(jsonData1) + "]";
+            //}
         };
+
+
+        //$.fn.serializeJson = function(){
+        //    var jsonData1 = {};
+        //    var serializeArray = this.serializeArray();
+        //    // 先转换成{"id": ["12","14"], "name": ["aaa","bbb"], "pwd":["pwd1","pwd2"]}这种形式
+        //    $(serializeArray).each(function () {
+        //        if (jsonData1[this.name] != null) {
+        //            if ($.isArray(jsonData1[this.name])) {
+        //                jsonData1[this.name].push(this.value);
+        //            } else {
+        //                jsonData1[this.name] = [jsonData1[this.name], this.value];
+        //            }
+        //        } else {
+        //            jsonData1[this.name] = this.value;
+        //        }
+        //    });
+        //    // 再转成[{"id": "12", "name": "aaa", "pwd":"pwd1"},{"id": "14", "name": "bb", "pwd":"pwd2"}]的形式
+        //    var vCount = 0;
+        //    // 计算json内部的数组最大长度
+        //    for(var item in jsonData1){
+        //        var tmp = $.isArray(jsonData1[item]) ? jsonData1[item].length : 1;
+        //        vCount = (tmp > vCount) ? tmp : vCount;
+        //    }
+        //
+        //    if(vCount > 1) {
+        //        var jsonData2 = new Array();
+        //        for(var i = 0; i < vCount; i++){
+        //            var jsonObj = {};
+        //            for(var item in jsonData1) {
+        //                jsonObj[item] = jsonData1[item][i];
+        //            }
+        //            jsonData2.push(jsonObj);
+        //        }
+        //        return JSON.stringify(jsonData2);
+        //    }else{
+        //        return "[" + JSON.stringify(jsonData1) + "]";
+        //    }
+        //};
     })(jQuery);
 });
 

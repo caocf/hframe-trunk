@@ -25,6 +25,7 @@
       <arg column="super_auth_filter_entity" jdbcType="BIGINT" javaType="java.lang.Long" />
       <arg column="super_auth_filter_field" jdbcType="BIGINT" javaType="java.lang.Long" />
       <arg column="super_auth_filter_field_value" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="user_login_data_set" jdbcType="VARCHAR" javaType="java.lang.String" />
     </constructor>
   </resultMap>
   <sql id="Example_Where_Clause" >
@@ -90,7 +91,7 @@
     hfcfg_login_page_id, bg_img_url, op_id, create_time, modify_op_id, modify_time, del_flag, 
     hfcfg_db_connect_id, hfpm_program_id, data_entity_name, dictionarys, func_auth_path, 
     func_entity_name, user_auth_path, user_entity_name, super_auth_filter_entity, super_auth_filter_field, 
-    super_auth_filter_field_value
+    super_auth_filter_field_value, user_login_data_set
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.hframe.domain.model.HfpmProgramCfg_Example" >
     select
@@ -136,7 +137,8 @@
       hfpm_program_id, data_entity_name, dictionarys, 
       func_auth_path, func_entity_name, user_auth_path, 
       user_entity_name, super_auth_filter_entity, super_auth_filter_field, 
-      super_auth_filter_field_value)
+      super_auth_filter_field_value, user_login_data_set
+      )
     values (#{showName,jdbcType=VARCHAR}, #{hfcfgProgramTemplateId,jdbcType=BIGINT}, 
       #{hfcfgProgramSkinId,jdbcType=BIGINT}, #{hfcfgLoginPageId,jdbcType=BIGINT}, #{bgImgUrl,jdbcType=VARCHAR}, 
       #{opId,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{modifyOpId,jdbcType=BIGINT}, 
@@ -144,7 +146,8 @@
       #{hfpmProgramId,jdbcType=BIGINT}, #{dataEntityName,jdbcType=VARCHAR}, #{dictionarys,jdbcType=VARCHAR}, 
       #{funcAuthPath,jdbcType=VARCHAR}, #{funcEntityName,jdbcType=VARCHAR}, #{userAuthPath,jdbcType=VARCHAR}, 
       #{userEntityName,jdbcType=VARCHAR}, #{superAuthFilterEntity,jdbcType=BIGINT}, #{superAuthFilterField,jdbcType=BIGINT}, 
-      #{superAuthFilterFieldValue,jdbcType=VARCHAR})
+      #{superAuthFilterFieldValue,jdbcType=VARCHAR}, #{userLoginDataSet,jdbcType=VARCHAR}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.hframe.domain.model.HfpmProgramCfg" >
     <selectKey resultType="java.lang.Long" keyProperty="hfpmProgramCfgId" order="AFTER" >
@@ -215,6 +218,9 @@
       <if test="superAuthFilterFieldValue != null" >
         super_auth_filter_field_value,
       </if>
+      <if test="userLoginDataSet != null" >
+        user_login_data_set,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="showName != null" >
@@ -279,6 +285,9 @@
       </if>
       <if test="superAuthFilterFieldValue != null" >
         #{superAuthFilterFieldValue,jdbcType=VARCHAR},
+      </if>
+      <if test="userLoginDataSet != null" >
+        #{userLoginDataSet,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -357,6 +366,9 @@
       <if test="record.superAuthFilterFieldValue != null" >
         super_auth_filter_field_value = #{record.superAuthFilterFieldValue,jdbcType=VARCHAR},
       </if>
+      <if test="record.userLoginDataSet != null" >
+        user_login_data_set = #{record.userLoginDataSet,jdbcType=VARCHAR},
+      </if>
     </set>
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
@@ -385,7 +397,8 @@
       user_entity_name = #{record.userEntityName,jdbcType=VARCHAR},
       super_auth_filter_entity = #{record.superAuthFilterEntity,jdbcType=BIGINT},
       super_auth_filter_field = #{record.superAuthFilterField,jdbcType=BIGINT},
-      super_auth_filter_field_value = #{record.superAuthFilterFieldValue,jdbcType=VARCHAR}
+      super_auth_filter_field_value = #{record.superAuthFilterFieldValue,jdbcType=VARCHAR},
+      user_login_data_set = #{record.userLoginDataSet,jdbcType=VARCHAR}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -456,6 +469,9 @@
       <if test="superAuthFilterFieldValue != null" >
         super_auth_filter_field_value = #{superAuthFilterFieldValue,jdbcType=VARCHAR},
       </if>
+      <if test="userLoginDataSet != null" >
+        user_login_data_set = #{userLoginDataSet,jdbcType=VARCHAR},
+      </if>
     </set>
     where hfpm_program_cfg_id = #{hfpmProgramCfgId,jdbcType=BIGINT}
   </update>
@@ -481,7 +497,8 @@
       user_entity_name = #{userEntityName,jdbcType=VARCHAR},
       super_auth_filter_entity = #{superAuthFilterEntity,jdbcType=BIGINT},
       super_auth_filter_field = #{superAuthFilterField,jdbcType=BIGINT},
-      super_auth_filter_field_value = #{superAuthFilterFieldValue,jdbcType=VARCHAR}
+      super_auth_filter_field_value = #{superAuthFilterFieldValue,jdbcType=VARCHAR},
+      user_login_data_set = #{userLoginDataSet,jdbcType=VARCHAR}
     where hfpm_program_cfg_id = #{hfpmProgramCfgId,jdbcType=BIGINT}
   </update>
 </mapper>

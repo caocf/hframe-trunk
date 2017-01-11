@@ -286,13 +286,17 @@ public class DataSetLoaderService {
         com.hframework.web.config.bean.dataset.Field field = new com.hframework.web.config.bean.dataset.Field();
         field.setName(hfpmDataField.getHfpmDataFieldName());
         field.setCode(hfpmDataField.getHfpmDataFieldCode());
+//
+//        if(hfpmDataField.getFieldShowCode().length() > 1) {
+//            field.setCreateEditType("0".equals(String.valueOf(hfpmDataField.getFieldShowCode().charAt(0))) ? "hidden"
+//                    : "1".equals(String.valueOf(hfpmDataField.getFieldShowCode().charAt(0))) ? "text" : null);
+//            field.setUpdateEditType("0".equals(String.valueOf(hfpmDataField.getFieldShowCode().charAt(1))) ? "hidden"
+//                    : "1".equals(String.valueOf(hfpmDataField.getFieldShowCode().charAt(1))) ? "text" : null);
+//        }
 
-        if(hfpmDataField.getFieldShowCode().length() > 1) {
-            field.setCreateEditType("0".equals(String.valueOf(hfpmDataField.getFieldShowCode().charAt(0))) ? "hidden"
-                    : "1".equals(String.valueOf(hfpmDataField.getFieldShowCode().charAt(0))) ? "text" : null);
-            field.setUpdateEditType("0".equals(String.valueOf(hfpmDataField.getFieldShowCode().charAt(1))) ? "hidden"
-                    : "1".equals(String.valueOf(hfpmDataField.getFieldShowCode().charAt(1))) ? "text" : null);
-        }
+        field.setCreateEditType((byte) 0 == hfpmDataField.getCreateEditAuth() ? "hidden" : (byte) 1 == hfpmDataField.getCreateEditAuth() ? "text" : null);
+        field.setUpdateEditType((byte) 0 == hfpmDataField.getUpdateEditAuth() ? "hidden" : (byte) 1 == hfpmDataField.getUpdateEditAuth() ? "text" : null);
+        field.setShowType((byte)0 == hfpmDataField.getListShowAuth() ? "hidden" : null);
 
         if(hfpmDataField.getHfmdEntityAttrId() == null) {
             field.setEditType(getShowTypesByFieldShowTypeIds(new String[]{hfpmDataField.getHfpmFieldShowTypeId()}).get(0).getType());
@@ -310,6 +314,12 @@ public class DataSetLoaderService {
         if(hfmdEntityAttr != null && hfmdEntityAttr.getIspk() != null && hfmdEntityAttr.getIspk() == 1) {
             field.setIsKey("true");
         }
+
+        if(notExistNameField(fieldList) && hfmdEntityAttr.getHfmdEntityAttrCode().toLowerCase().endsWith("name")) {
+            field.setIsName("true");
+        };
+
+
         field.setEditType(editType);
         if(column.getNullable() == 0) field.setNotNull("true");
 
@@ -350,6 +360,11 @@ public class DataSetLoaderService {
         }
 
         return field;
+    }
+
+    private boolean notExistNameField(List<Field> fieldList) {
+        for (Field field : fieldList) if("true".equals(field.getIsName())) return false;
+        return true;
     }
 
     /**
@@ -522,13 +537,24 @@ public class DataSetLoaderService {
         if (hfpmDataFieldList != null) {
             for (HfpmDataField hfpmDataField : hfpmDataFieldList) {
                 HfmdEntityAttr hfmdEntityAttr = hfmdEntityAttrIdEntityAttrMap.get(hfpmDataField.getHfmdEntityAttrId());
-                if(showTypeCodeIndex < hfpmDataField.getFieldShowCode().length() && !"0".equals(String.valueOf(hfpmDataField.getFieldShowCode().charAt(showTypeCodeIndex)))) {
+
+                if((showTypeCodeIndex == 0 && !"0".equals(String.valueOf(hfpmDataField.getCreateEditAuth()))
+                    || showTypeCodeIndex == 1 && !"0".equals(String.valueOf(hfpmDataField.getUpdateEditAuth()))
+                    || showTypeCodeIndex == 2 && !"0".equals(String.valueOf(hfpmDataField.getListShowAuth())))) {
                     com.hframe.tag.bean.Column column = getColumnFromHfmdEntityAttr(hfmdEntityAttr, hfpmDataField.getHfpmFieldShowTypeId());
                     if (StringUtils.isNotBlank(hfpmDataField.getHfpmDataFieldName())) {
                         column.setDisplayName(hfpmDataField.getHfpmDataFieldName());
                     }
                     columnList.add(column);
                 }
+
+//                if(showTypeCodeIndex < hfpmDataField.getFieldShowCode().length() && !"0".equals(String.valueOf(hfpmDataField.getFieldShowCode().charAt(showTypeCodeIndex)))) {
+//                    com.hframe.tag.bean.Column column = getColumnFromHfmdEntityAttr(hfmdEntityAttr, hfpmDataField.getHfpmFieldShowTypeId());
+//                    if (StringUtils.isNotBlank(hfpmDataField.getHfpmDataFieldName())) {
+//                        column.setDisplayName(hfpmDataField.getHfpmDataFieldName());
+//                    }
+//                    columnList.add(column);
+//                }
             }
         }
 
@@ -567,8 +593,10 @@ public class DataSetLoaderService {
                 //TODO
 //                HfpmFieldShowType showType = hfpmFieldShowTypeMap.get(Long.valueOf(hfpmDataField.getHfpmFieldShowTypeId()));
                 Long hfmdEntityAttrId = hfpmDataField.getHfmdEntityAttrId();
-                if(hfpmDataField.getFieldShowCode() !=null && hfpmDataField.getFieldShowCode().length() > 1
-                        && !"0".equals(hfpmDataField.getFieldShowCode().charAt(2))) {
+
+//                if(hfpmDataField.getFieldShowCode() !=null && hfpmDataField.getFieldShowCode().length() > 1
+//                        && !"0".equals(hfpmDataField.getFieldShowCode().charAt(2))) {
+                if(hfpmDataField.getListShowAuth() != 0L) {
                     fieldList.add(new com.hframe.tag.bean.Field(
                             String.valueOf(hfpmDataField.getHfpmDataFieldId()),
                             hfpmDataField.getHfpmDataFieldName(),
@@ -971,7 +999,11 @@ public class DataSetLoaderService {
             Iterator<HfpmDataField> iterator = hfpmDataFieldMap.get(dataField.getHfpmDataSetId()).iterator();
             while (iterator.hasNext()) {
                 HfpmDataField next = iterator.next();
-                if(next.getHfpmDataFieldCode().equals(dataField.getFieldShowCode())) {
+//                if(next.getHfpmDataFieldCode().equals(dataField.getFieldShowCode())) {
+                if(next.getCreateEditAuth() == dataField.getCreateEditAuth()
+                        && next.getUpdateEditAuth() == dataField.getUpdateEditAuth()
+                        && next.getListShowAuth() == dataField.getListShowAuth()
+                        && next.getDetailShowAuth() == dataField.getDetailShowAuth()){
                     iterator.remove();
                     return null;
                 }

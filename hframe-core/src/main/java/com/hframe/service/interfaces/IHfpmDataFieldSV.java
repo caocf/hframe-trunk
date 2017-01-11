@@ -89,6 +89,7 @@ public interface IHfpmDataFieldSV   {
     */
     public List<HfpmDataField> getHfpmDataFieldListByExample(HfpmDataField_Example example) throws  Exception;
 
+
     /**
     * 通过MAP参数查询数据列数量
     * @param params

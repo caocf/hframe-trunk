@@ -8,7 +8,7 @@
       <create-edit-type>hidden</create-edit-type>
       <update-edit-type>text</update-edit-type>
     </field>
-    <field code="hfsec_user_name" name="用户名称" edit-type="input"/>
+    <field code="hfsec_user_name" name="用户名称" edit-type="input" is-name="true"/>
     <field code="account" name="用户账号" edit-type="input"/>
     <field code="password" name="用户密码" edit-type="input"/>
     <field code="gender" name="性别" edit-type="select">

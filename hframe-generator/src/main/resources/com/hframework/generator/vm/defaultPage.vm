@@ -2,6 +2,7 @@
 #set($programName = $map.get("programName"))
 #set($menuDataSet = $map.get("menuDataSet"))
 #set($userDataSet = $map.get("userDataSet"))
+#set($userLoginDataSet = $map.get("userLoginDataSet"))
 
 <module code="">
     <page>
@@ -20,6 +21,6 @@
         <!--<component id="topFastMenu" data-set="hframe/hfsec_menu"></component>-->
     </page>
 
-    <page id="login" name="登录页" page-template="login" data-set="${userDataSet}"></page>
+    <page id="login" name="登录页" page-template="login" data-set="${userLoginDataSet}"></page>
     <page id="index" name="首页" page-template="default" data-set="${userDataSet}"></page>
 </module>

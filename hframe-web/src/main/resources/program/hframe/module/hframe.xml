@@ -203,4 +203,13 @@
   <page id="hfus_entity_store_edit" name="常用实体库修改" page-template="edit" data-set="hframe/hfus_entity_store" rel-page="hframe/hfus_entity_store_mgr"/>
   <page id="hfus_entity_store_detail" name="常用实体库明细" page-template="edit" data-set="hframe/hfus_entity_store" rel-page="hframe/hfus_entity_store_mgr"/>
 
+
+  <page id="hfpm_entity_bind_rule_mgr" name="实体捆绑规则管理" page-template="qlist" data-set="hframe/hfpm_entity_bind_rule">
+    <component id="qForm" data-set="hframe/hfpm_entity_bind_rule_DS4Q"/>
+  </page>
+  <page id="hfpm_entity_bind_rule_create" name="实体捆绑规则创建" page-template="create" data-set="hframe/hfpm_entity_bind_rule" rel-page="hframe/hfpm_entity_bind_rule_mgr"/>
+  <page id="hfpm_entity_bind_rule_edit" name="实体捆绑规则修改" page-template="edit" data-set="hframe/hfpm_entity_bind_rule" rel-page="hframe/hfpm_entity_bind_rule_mgr"/>
+  <page id="hfpm_entity_bind_rule_detail" name="实体捆绑规则明细" page-template="edit" data-set="hframe/hfpm_entity_bind_rule" rel-page="hframe/hfpm_entity_bind_rule_mgr"/>
+
+
 </module>

@@ -1534,6 +1534,76 @@ public class HfpmProgramCfg_Example {
             addCriterion("super_auth_filter_field_value not between", value1, value2, "superAuthFilterFieldValue");
             return (Criteria) this;
         }
+
+        public Criteria andUserLoginDataSetIsNull() {
+            addCriterion("user_login_data_set is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserLoginDataSetIsNotNull() {
+            addCriterion("user_login_data_set is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserLoginDataSetEqualTo(String value) {
+            addCriterion("user_login_data_set =", value, "userLoginDataSet");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserLoginDataSetNotEqualTo(String value) {
+            addCriterion("user_login_data_set <>", value, "userLoginDataSet");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserLoginDataSetGreaterThan(String value) {
+            addCriterion("user_login_data_set >", value, "userLoginDataSet");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserLoginDataSetGreaterThanOrEqualTo(String value) {
+            addCriterion("user_login_data_set >=", value, "userLoginDataSet");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserLoginDataSetLessThan(String value) {
+            addCriterion("user_login_data_set <", value, "userLoginDataSet");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserLoginDataSetLessThanOrEqualTo(String value) {
+            addCriterion("user_login_data_set <=", value, "userLoginDataSet");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserLoginDataSetLike(String value) {
+            addCriterion("user_login_data_set like", value, "userLoginDataSet");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserLoginDataSetNotLike(String value) {
+            addCriterion("user_login_data_set not like", value, "userLoginDataSet");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserLoginDataSetIn(List<String> values) {
+            addCriterion("user_login_data_set in", values, "userLoginDataSet");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserLoginDataSetNotIn(List<String> values) {
+            addCriterion("user_login_data_set not in", values, "userLoginDataSet");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserLoginDataSetBetween(String value1, String value2) {
+            addCriterion("user_login_data_set between", value1, value2, "userLoginDataSet");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserLoginDataSetNotBetween(String value1, String value2) {
+            addCriterion("user_login_data_set not between", value1, value2, "userLoginDataSet");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {

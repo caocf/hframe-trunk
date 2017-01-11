@@ -16,10 +16,7 @@ import com.hframework.web.config.bean.dataset.Field;
 import com.hframework.web.config.bean.datasethelper.Mapping;
 import com.hframework.web.config.bean.datasetruler.Rule;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by zhangquanhong on 2016/5/26.
@@ -30,8 +27,28 @@ public class DataSetDescriptor {
 
     private Field keyField;
 
+    private Field nameField;
+
+    private static final String[] orderdEditType = {"input","select","checkbox","hidden"};
+
     //<hfpm_program_id,hfpm_program/hfpm_program_id>
-    private Map<String, String> relFieldKeyMap = new HashMap<String, String>();
+    private Map<String, String> relFieldKeyMap = new TreeMap<String, String>(new Comparator() {
+        public int compare(Object o1, Object o2) {
+            String field1EditType = null, field2EditType = null;
+            for (Field field : dataSet.getFields().getFieldList()) {
+                if(field.getCode().equals(o1)) {
+                    field1EditType = field.getEditType();
+                }
+
+                if(field.getCode().equals(o2)){
+                    field2EditType = field.getEditType();
+                }
+            }
+            int distinct = Arrays.binarySearch(orderdEditType, field2EditType) - Arrays.binarySearch(orderdEditType, field1EditType);
+
+            return distinct != 0 ? distinct : (o1.hashCode() - o2.hashCode());
+        }
+    });
 
     //<hfpm_program/hfpm_program_id,ProgramDescriptor.class>
     private Map<String, DataSetDescriptor> relDataSetMap = new HashMap<String, DataSetDescriptor>();
@@ -58,6 +75,10 @@ public class DataSetDescriptor {
             for (Field field : dataSet.getFields().getFieldList()) {
                 if("true".equals(field.getIsKey())) {
                     keyField = field;
+                }
+
+                if("true".equals(field.getIsName())) {
+                    nameField = field;
                 }
             }
         }
@@ -122,7 +143,7 @@ public class DataSetDescriptor {
 
     public boolean isSelfDepend() {
         for (String relDataSetInfo : relFieldKeyMap.values()) {
-            if(relDataSetMap.get(relDataSetInfo).equals(this)) {
+            if(relDataSetMap.get(relDataSetInfo) != null && relDataSetMap.get(relDataSetInfo).equals(this)) {
                 return true;
             }
         }
@@ -260,6 +281,9 @@ public class DataSetDescriptor {
                         object.put("targetCode", ResourceWrapper.JavaUtil.getJavaVarName(field.getCode()));
 //                    object.put("editable",true);
                         object.put("ruleType",3);
+                        if(StringUtils.isNotBlank(field.getRel().getRelScope())) {
+                            object.put("scope", field.getRel().getRelScope());
+                        }
                         String key = ResourceWrapper.JavaUtil.getJavaVarName(relField);
                         if(!dataSetRulerJsonObject.containsKey(key)) {
                             dataSetRulerJsonObject.put(key, new JSONArray());
@@ -303,6 +327,14 @@ public class DataSetDescriptor {
 
     public void setKeyField(Field keyField) {
         this.keyField = keyField;
+    }
+
+    public Field getNameField() {
+        return nameField;
+    }
+
+    public void setNameField(Field nameField) {
+        this.nameField = nameField;
     }
 
     public Map<String, Field> getFields() {

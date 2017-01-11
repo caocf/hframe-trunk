@@ -102,15 +102,26 @@ public class HfpmProgramHandler extends AbstractBusinessHandler<HfpmProgram> {
 
         //4. 初始化默认页面配置
         map = new HashMap();
-        map.put("programName", programName);
-        map.put("menuDataSet", "hframe/hfsec_menu");
-        map.put("userDataSet", "hframe/hfsec_user");
+        map.put("programName", "#program.name#");
+        map.put("menuDataSet", "#program.auth-instance.function#");
+        map.put("userDataSet", "#program.auth-instance.user#");
+        map.put("userLoginDataSet", "#program.login.data-set#");
         content = VelocityUtil.produceTemplateContent("com/hframework/generator/vm/defaultPage.vm", map);
         System.out.println(content);
 
         WebContextHelper contextHelper = new WebContextHelper(companyCode,programCode,null,"default");
         String pageFilePath = contextHelper.programConfigRootDir + "/" + contextHelper.programConfigModuleDir + "/default.xml";
         FileUtils.writeFile(pageFilePath, content);
+
+        String hframeProFilePath = contextHelper.programConfigRootDir.replace("/hframe-web/src/main/resources/", "/hframe-deployer/src/main/resources/") + "hframe.properties";
+        List<String> contentLines = FileUtils.readFileToArray(hframeProFilePath);
+        String target = "";
+        for (String s : contentLines) {
+            String programIdStr = hfpmProgram.getHfpmProgramId().toString();
+            programIdStr = programIdStr.length() > 3 ? programIdStr.substring(programIdStr.length()-4) : programIdStr;
+            target += (s.replace("hframe.port=8082", "hframe.port=1" + programIdStr) + "\n");
+        }
+        FileUtils.writeFile(hframeProFilePath, target);
 
         return true;
     }

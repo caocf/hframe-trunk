@@ -20,6 +20,8 @@ public class Program   {
 	private Template template;
 	@XStreamAlias("welcome")
 	private String welcome;
+    @XStreamAlias("login")
+    private Login login;
     @XStreamAlias("auth-instance")
     private AuthInstance authInstance;
 	@XStreamAlias("superManager")
@@ -102,6 +104,15 @@ public class Program   {
 
      public void setAuthInstance(AuthInstance authInstance) {
       this.authInstance = authInstance;
+     }
+
+     public Login getLogin() {
+      if(login == null) login = new Login();
+      return login;
+     }
+
+     public void setLogin(Login login) {
+      this.login = login;
      }
 }
 

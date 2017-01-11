@@ -78,7 +78,7 @@
                     #end
 
                     #if($list.EOFR)
-                        <td class="center">
+                        <td class="center"  style="text-align: center">
                             #foreach($item in $list.EOFR)
                                 <a class="btn ${item.fillclass} hfhref" href="javascript:void(0)"  params="$!{item.params}" action='${item.action}'when='$!{item.when}'>
                                     $item.component

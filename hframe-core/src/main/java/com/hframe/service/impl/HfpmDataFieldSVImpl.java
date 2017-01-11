@@ -3,6 +3,8 @@ package com.hframe.service.impl;
 import java.util.*;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
+import com.google.common.collect.Lists;
+import com.hframework.common.util.ExampleUtils;
 import com.hframe.domain.model.HfpmDataField;
 import com.hframe.domain.model.HfpmDataField_Example;
 import com.hframe.dao.HfpmDataFieldMapper;
@@ -14,6 +16,8 @@ public class HfpmDataFieldSVImpl  implements IHfpmDataFieldSV {
 	@Resource
 	private HfpmDataFieldMapper hfpmDataFieldMapper;
   
+
+
     /**
     * 创建数据列
     * @param hfpmDataField
@@ -102,6 +106,7 @@ public class HfpmDataFieldSVImpl  implements IHfpmDataFieldSV {
     public HfpmDataField getHfpmDataFieldByPK(long hfpmDataFieldId)  throws  Exception {
         return hfpmDataFieldMapper.selectByPrimaryKey(hfpmDataFieldId);
     }
+
 
     /**
     * 通过MAP参数查询数据列

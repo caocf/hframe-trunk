@@ -9,7 +9,7 @@
       <update-edit-type>text</update-edit-type>
     </field>
     <field code="hfsec_menu_code" name="菜单编码" edit-type="input"/>
-    <field code="hfsec_menu_name" name="菜单名称" edit-type="input"/>
+    <field code="hfsec_menu_name" name="菜单名称" edit-type="input"  is-name="true"/>
     <field code="hfsec_menu_desc" name="菜单描述" edit-type="input"/>
     <field code="menu_level" name="菜单级别" edit-type="select">
       <enum-class code="hfsec_menu.menu_level"/>

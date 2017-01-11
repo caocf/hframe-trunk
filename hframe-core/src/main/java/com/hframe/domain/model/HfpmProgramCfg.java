@@ -47,7 +47,9 @@ public class HfpmProgramCfg {
 
     private String superAuthFilterFieldValue;
 
-    public HfpmProgramCfg(Long hfpmProgramCfgId, String showName, Long hfcfgProgramTemplateId, Long hfcfgProgramSkinId, Long hfcfgLoginPageId, String bgImgUrl, Long opId, Date createTime, Long modifyOpId, Date modifyTime, Integer delFlag, Long hfcfgDbConnectId, Long hfpmProgramId, String dataEntityName, String dictionarys, String funcAuthPath, String funcEntityName, String userAuthPath, String userEntityName, Long superAuthFilterEntity, Long superAuthFilterField, String superAuthFilterFieldValue) {
+    private String userLoginDataSet;
+
+    public HfpmProgramCfg(Long hfpmProgramCfgId, String showName, Long hfcfgProgramTemplateId, Long hfcfgProgramSkinId, Long hfcfgLoginPageId, String bgImgUrl, Long opId, Date createTime, Long modifyOpId, Date modifyTime, Integer delFlag, Long hfcfgDbConnectId, Long hfpmProgramId, String dataEntityName, String dictionarys, String funcAuthPath, String funcEntityName, String userAuthPath, String userEntityName, Long superAuthFilterEntity, Long superAuthFilterField, String superAuthFilterFieldValue, String userLoginDataSet) {
         this.hfpmProgramCfgId = hfpmProgramCfgId;
         this.showName = showName;
         this.hfcfgProgramTemplateId = hfcfgProgramTemplateId;
@@ -70,6 +72,7 @@ public class HfpmProgramCfg {
         this.superAuthFilterEntity = superAuthFilterEntity;
         this.superAuthFilterField = superAuthFilterField;
         this.superAuthFilterFieldValue = superAuthFilterFieldValue;
+        this.userLoginDataSet = userLoginDataSet;
     }
 
     public Long getHfpmProgramCfgId() {
@@ -160,6 +163,10 @@ public class HfpmProgramCfg {
         return superAuthFilterFieldValue;
     }
 
+    public String getUserLoginDataSet() {
+        return userLoginDataSet;
+    }
+
     public void setHfpmProgramCfgId(Long hfpmProgramCfgId) {
         this.hfpmProgramCfgId=hfpmProgramCfgId;
     }
@@ -246,6 +253,10 @@ public class HfpmProgramCfg {
 
     public void setSuperAuthFilterFieldValue(String superAuthFilterFieldValue) {
         this.superAuthFilterFieldValue=superAuthFilterFieldValue;
+    }
+
+    public void setUserLoginDataSet(String userLoginDataSet) {
+        this.userLoginDataSet=userLoginDataSet;
     }
 
     public HfpmProgramCfg() {

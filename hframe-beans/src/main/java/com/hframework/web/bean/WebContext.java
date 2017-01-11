@@ -349,13 +349,22 @@ public class WebContext {
                 continue;
             }
             for (Page page : pageList) {
+                if(StringUtils.isNotBlank(page.getDataSet()) && page.getDataSet().startsWith("#")  && page.getDataSet().endsWith("#")) {
+                    page.setDataSet(getValueByVar(page.getDataSet()));
+                }
                 if(StringUtils.isBlank(page.getId()) && StringUtils.isBlank(moduleCode)) {
                     List<com.hframework.web.config.bean.module.Component> pubComponentList = page.getComponentList();
                     for (com.hframework.web.config.bean.module.Component component : pubComponentList) {
+                        if(StringUtils.isNotBlank(component.getDataSet()) && component.getDataSet().startsWith("#")  && component.getDataSet().endsWith("#")) {
+                            component.setDataSet(getValueByVar(component.getDataSet()));
+                        }
                         defaultComponentMap.put(component.getId(), component);
                     }
                     List<com.hframework.web.config.bean.module.Element> elementList = page.getElementList();
                     for (com.hframework.web.config.bean.module.Element element : elementList) {
+                        if(StringUtils.isNotBlank(element.getValue()) && element.getValue().startsWith("#")  && element.getValue().endsWith("#")) {
+                            element.setValue(getValueByVar(element.getValue()));
+                        }
                         defaultElementMap.put(element.getId(),element);
                     }
 
@@ -365,6 +374,22 @@ public class WebContext {
                 pageSetting.get(moduleCode).put(page.getId(), parsePageDescriptor(page, moduleCode));
             }
         }
+    }
+
+    private String getValueByVar(String var) {
+        var = var.substring(1, var.length() - 1);
+        String value = var;
+        if("program.name".equals(var)) {
+            value = getProgram().getName();
+        }else if("program.auth-instance.function".equals(var)) {
+            value = getProgram().getAuthInstance().getFunction().split(",")[0].replaceAll("\\.", "/");
+        }else if("program.auth-instance.user".equals(var)) {
+            value = getProgram().getAuthInstance().getUser().replaceAll("\\.","/");
+        }else if("program.login.data-set".equals(var)) {
+            value = getProgram().getLogin().getDataSet().replaceAll("\\..", "/");
+        }
+
+        return value;
     }
 
     private PageDescriptor parsePageDescriptor(Page page, String moduleCode) throws Exception {

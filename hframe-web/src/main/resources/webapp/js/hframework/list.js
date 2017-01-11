@@ -68,11 +68,21 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
             $allRules = JSON.parse($(".breadcrumb .ruler").text());
         }
 
-        $curRules = $allRules[$code + "=" + curValue];
+        var $curRules = $allRules[$code + "=" + curValue];
         if(!$curRules) {
             $curRules = $allRules[$code];
         }
         doRulerEvent($this, $curRules, curValue);
+
+        $allRules = JSON.parse($("#globalRuler").text());
+        if(!$curRules) {
+            $curRules = $allRules[$code + "=" + curValue];
+            if(!$curRules) {
+                $curRules = $allRules[$code];
+            }
+            doGlobalRulerEvent($this, $curRules, curValue);
+        }
+
 
         var helperJson = $(" .helper").text();
         if(!helperJson) helperJson="{}";
@@ -174,6 +184,24 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
                 if($editable == "false") {
                     //$target.attr("disabled",true);
                     $target.attr("readonly","readonly");
+                }
+            }
+        }
+    }
+
+    function doGlobalRulerEvent($this, $curRules,$value) {
+        if(!$curRules || !$value) {
+            return ;
+        }
+        if($curRules[0]["ruleType"] == "3") {
+            for(var $index in $curRules) {
+                var $rule = $curRules[$index];
+                var $targetCode = $rule["targetCode"];
+                var $target = getTargetElement($("body"), "[name=" + $targetCode + "]");
+                if($target[0].tagName == 'SELECT') {
+                    $.selectLoad($target);
+                }else if($($target[0]).hasClass("hfcheckbox") || $this.hasClass("hfradio")) {
+                    $.checkboxOrRadioLoad($target);
                 }
             }
         }

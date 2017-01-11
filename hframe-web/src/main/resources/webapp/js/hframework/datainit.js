@@ -29,6 +29,10 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
                     $relElement = $this.parents(".breadcrumb").find("[name=" + elementName + "]");
                 }
 
+                if(!$relElement || $relElement.length == 0) {//取全局的
+                    $relElement = $("body [name=" + elementName + "]");
+                }
+
                 var relElementValue =$relElement.val();
                 if(!relElementValue) {//由于使用依赖的元素也是通过ajax加载，对应的value值还不能正确取出
                     relElementValue = $relElement.attr("data-value");
@@ -60,7 +64,7 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
             return ;
         }
 
-
+        $this.attr("req_dataCondition", dataCondition);
         if(_batchLoad) {
             if(loadingDictionaryKeys[_$container.attr("id") +"|" + tagName + "|" + dataCode + "|" + dataCondition] == null) {//首次加载
                 loadingDictionaryKeys[_$container.attr("id") +"|" + tagName + "|" + dataCode + "|" + dataCondition] = -1;
@@ -82,7 +86,7 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
                     loadingDictionaryKeys[_$container.attr("id") +"|" + tagName + "|" + dataCode + "|" + dataCondition] = 1;
                 }
                 if(_showEleFunc) {
-                    _showEleFunc(data);
+                    _showEleFunc(data, dataCondition);
                 }
                 if(_func) {
                     _func();
@@ -96,14 +100,16 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
         var  dataCode = $this.attr("data-code");
         var  dataCondition = $this.attr("data-condition");
 
-        $.componentLoad($this, _func, _batchLoad, _$container, function(_data){
+        $.componentLoad($this, _func, _batchLoad, _$container, function(_data,_req_dataCondition){
             if(!_data.data) return;
 
             var isBooleanElements = false;
             if(_data.data.length == 2) {
                 var booleanElements = {"0":"否","1":"是"};
                 for (var i = 0; i < _data.data.length; i++) {
-                    if(booleanElements[_data.data[i].value] == _data.data[i].text) {
+                    //if(booleanElements[_data.data[i].value] == _data.data[i].text) {
+
+                    if(booleanElements[_data.data[i].value]) {
                         delete booleanElements[_data.data[i].value];
                     }
                 }
@@ -146,14 +152,18 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
             $trueCheckBox.css("display","");
             _$this.after($trueCheckBox);
         }else {
-            _$this.after(_inputArray);
+            var inputArray = [];
+            $(_inputArray).each(function(){
+                inputArray.push($(this).clone());
+            });
+            _$this.after(inputArray);
         }
         _$this.parent().find("input[name=" + name + "]").uniform();
 
         if(values) {
             var valueArray = values.split(",");
             for(var index in valueArray){
-               var $input =  _$this.parent().find("input[name=" + name + "][value=" + valueArray[index] + "]");
+                var $input =  _$this.parent().find("input[name=" + name + "][value=" + valueArray[index] + "]");
                 if($input) $.uniform.update($input.attr("checked","true"));
             }
         }
@@ -169,7 +179,7 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
         var  dataCode = $this.attr("data-code");
         var  dataCondition = $this.attr("data-condition");
 
-        $.componentLoad($this, _func, _batchLoad, _$container, function(_data){
+        $.componentLoad($this, _func, _batchLoad, _$container, function(_data,_req_dataCondition){
             if($tagName == 'SELECT') {
                 if(!_data.data) return;
 
@@ -179,11 +189,15 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
                 }
                 var htmlStr = _html.join('');
                 if(_batchLoad) {
-                    _$container.find("select[data-code='" + dataCode + "'][data-condition='" + dataCondition + "']").each(function(){
+                    _$container.find("select[data-code='" + dataCode + "'][data-condition='" + dataCondition + "']" +
+                        "[req_dataCondition='" + _req_dataCondition + "']").each(function(){
                         initSelect($(this), htmlStr,dataCode,_data);
                     });
                 }else {
-                    initSelect($this, htmlStr,dataCode,_data);
+                    $this.each(function(){
+                        initSelect($(this), htmlStr,dataCode,_data);
+                    });
+                    //initSelect($this, htmlStr,dataCode,_data);
                 }
 
             }else {
@@ -213,7 +227,8 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
 
         }
 
-        if(_$this.attr("multiple") || (_dataCode.startsWith("URL:") || _dataCode.split(".").length > 2) && _data.data.length > 10) { //选择框设置为selectx元素
+        //如果是多选框，或者已经是selectx框
+        if(_$this.attr("multiple") || _$this.hasClass("hfselectx") || (_dataCode.startsWith("URL:") || _dataCode.split(".").length > 2) && _data.data.length > 10) { //选择框设置为selectx元素
             _$this.addClass("hfselectx");
             _$this.chosen();//设置为selectx
             _$this.trigger("chosen:updated");

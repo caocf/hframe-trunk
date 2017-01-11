@@ -34,7 +34,15 @@ public class HfpmDataField {
 
     private Integer delFlag;
 
-    public HfpmDataField(Long hfpmDataFieldId, String hfpmDataFieldCode, String hfpmFieldShowTypeId, String fieldShowCode, Long hfmdEntityId, Long hfmdEntityAttrId, Integer dataGetMethod, String hfpmDataFieldName, Long hfpmDataSetId, BigDecimal pri, Long opId, Date createTime, Long modifyOpId, Date modifyTime, Integer delFlag) {
+    private Byte createEditAuth;
+
+    private Byte detailShowAuth;
+
+    private Byte listShowAuth;
+
+    private Byte updateEditAuth;
+
+    public HfpmDataField(Long hfpmDataFieldId, String hfpmDataFieldCode, String hfpmFieldShowTypeId, String fieldShowCode, Long hfmdEntityId, Long hfmdEntityAttrId, Integer dataGetMethod, String hfpmDataFieldName, Long hfpmDataSetId, BigDecimal pri, Long opId, Date createTime, Long modifyOpId, Date modifyTime, Integer delFlag, Byte createEditAuth, Byte detailShowAuth, Byte listShowAuth, Byte updateEditAuth) {
         this.hfpmDataFieldId = hfpmDataFieldId;
         this.hfpmDataFieldCode = hfpmDataFieldCode;
         this.hfpmFieldShowTypeId = hfpmFieldShowTypeId;
@@ -50,6 +58,10 @@ public class HfpmDataField {
         this.modifyOpId = modifyOpId;
         this.modifyTime = modifyTime;
         this.delFlag = delFlag;
+        this.createEditAuth = createEditAuth;
+        this.detailShowAuth = detailShowAuth;
+        this.listShowAuth = listShowAuth;
+        this.updateEditAuth = updateEditAuth;
     }
 
     public Long getHfpmDataFieldId() {
@@ -112,6 +124,22 @@ public class HfpmDataField {
         return delFlag;
     }
 
+    public Byte getCreateEditAuth() {
+        return createEditAuth;
+    }
+
+    public Byte getDetailShowAuth() {
+        return detailShowAuth;
+    }
+
+    public Byte getListShowAuth() {
+        return listShowAuth;
+    }
+
+    public Byte getUpdateEditAuth() {
+        return updateEditAuth;
+    }
+
     public void setHfpmDataFieldId(Long hfpmDataFieldId) {
         this.hfpmDataFieldId=hfpmDataFieldId;
     }
@@ -170,6 +198,22 @@ public class HfpmDataField {
 
     public void setDelFlag(Integer delFlag) {
         this.delFlag=delFlag;
+    }
+
+    public void setCreateEditAuth(Byte createEditAuth) {
+        this.createEditAuth=createEditAuth;
+    }
+
+    public void setDetailShowAuth(Byte detailShowAuth) {
+        this.detailShowAuth=detailShowAuth;
+    }
+
+    public void setListShowAuth(Byte listShowAuth) {
+        this.listShowAuth=listShowAuth;
+    }
+
+    public void setUpdateEditAuth(Byte updateEditAuth) {
+        this.updateEditAuth=updateEditAuth;
     }
 
     public HfpmDataField() {

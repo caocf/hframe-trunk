@@ -1,6 +1,6 @@
 <program>
   <code>hframe</code>
-  <name>功夫平台</name>
+  <name>hframework</name>
   <description>Hframe管理平台</description>
   <modules>
     <module code="hframe" name="框架"/>
@@ -10,6 +10,7 @@
     <code>default</code>
   </template>
   <welcome>uc/login.html</welcome>
+  <login url="/login.html" data-set="hframe/hfsec_user_4_login" />
   <auth-instance>
     <user>hframe.hfsec_user</user>
     <data>hframe.hfsec_organize</data>

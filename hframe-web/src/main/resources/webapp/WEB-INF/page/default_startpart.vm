@@ -25,7 +25,7 @@
         </div>
     </div>
 </div>
-
+<span id="globalRuler" style="display: none;">$!{globalRuler}</span>
 <!-- start: Header -->
 <div class="container-fluid-full">
     <div class="row-fluid">

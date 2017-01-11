@@ -18,7 +18,20 @@ public class WebTemplateGenerator {
     private static final String PREFIX_FILE_COPY_KEY = "hframe.file.copy.";
     private static final String PREFIX_FILE_CLEAN_KEY = "hframe.file.clean.";
 
-    private static Map<String, String> configs = new HashMap();
+    private static final String[] ordered= {PREFIX_DIR_COPY_KEY,PREFIX_DIR_CREATE_KEY,PREFIX_FILE_COPY_KEY,PREFIX_FILE_CLEAN_KEY};
+    private static Map<String, String> configs = new TreeMap(new Comparator() {
+        public int compare(Object o1, Object o2) {
+            int distinct = getIndex(o1) - getIndex(o2);
+            return distinct == 0 ? o1.hashCode() -o2.hashCode() : distinct;
+        }
+
+        private int getIndex(Object o1) {
+            for (int i = 0; i < ordered.length; i++) {
+                if(((String)o1).startsWith(ordered[i])) return i;
+            }
+            return -1;
+        }
+    });
 
     private static String parentRootDir = null;
     private static String childRootDir = null;

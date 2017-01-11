@@ -3,7 +3,7 @@
 
     <event name="create.submit">
         <attach anchor="EOFC">
-            <appendElement type="button" param='{btnclass:"btn-primary",btnText:" 提 交 "}'></appendElement>
+            <appendElement type="button" param='{btnclass:"btn-primary",btnText:" 提 交 ", iconclass:"icon-file-alt"}'></appendElement>
         </attach>
         <source scope="EOC" param="thisForm"></source>
         <effect type="ajaxSubmit" action="${createByAjax}"></effect>

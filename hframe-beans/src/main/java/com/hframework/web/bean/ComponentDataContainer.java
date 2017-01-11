@@ -201,36 +201,44 @@ public class ComponentDataContainer {
 
         String value = mapping.getValue();
         List<String> varList = RegexUtils.findVarList(value);
-        for (String var : varList) {
-            DataSet dataSet = dataSetDescriptor.getDataSet();
-            if("id".equals(var)) {
-                value = ResourceWrapper.JavaUtil.getJavaVarName(value.replace("${" + var + "}",dataSet.getEventObjectCode() + "_" + var));
-            }else if("name".equals(var)) {
-                value = ResourceWrapper.JavaUtil.getJavaVarName(value.replace("${" + var + "}", dataSet.getEventObjectCode() + "_" + var));
-            }else if(var != null && var.endsWith("ByAjax")) {//"createByAjax".equals(var) || "updateByAjax".equals(var)|| "deleteByAjax".equals(var)
-                value = value.replace("${" + var + "}", /*ResourceWrapper.JavaUtil.getJavaVarName(dataSet.getModule())
+
+        if(varList.size() > 0) {
+            String propertyName = getReallyProperty(varList.get(0), dataSetDescriptor);
+            if(propertyName != null) {
+                value = propertyName;
+            }else {
+                for (String var : varList) {
+                    DataSet dataSet = dataSetDescriptor.getDataSet();
+                    if("id".equals(var)) {
+                        value = ResourceWrapper.JavaUtil.getJavaVarName(value.replace("${" + var + "}",dataSet.getEventObjectCode() + "_" + var));
+                    }else if("name".equals(var)) {
+                        value = ResourceWrapper.JavaUtil.getJavaVarName(value.replace("${" + var + "}", dataSet.getEventObjectCode() + "_" + var));
+                    }else if(var != null && var.endsWith("ByAjax")) {//"createByAjax".equals(var) || "updateByAjax".equals(var)|| "deleteByAjax".equals(var)
+                        value = value.replace("${" + var + "}", /*ResourceWrapper.JavaUtil.getJavaVarName(dataSet.getModule())
                         + "/" + */ResourceWrapper.JavaUtil.getJavaVarName(dataSet.getEventObjectCode()) + "/" + var);
-            }else if(var != null && var.contains(":")) {
+                    }else if(var != null && var.contains(":")) {
 
-                String type = var.substring(0,var.indexOf(":"));
-                String endChars = var.substring(var.indexOf(":") + 1);
+                        String type = var.substring(0,var.indexOf(":"));
+                        String endChars = var.substring(var.indexOf(":") + 1);
 //                ComponentDescriptor componentDescriptor = WebContext.get(type);
-                if(componentDescriptor.getPageDescriptor().
-                        getComponentDescriptor(type) != null) {
-                    DataSet relDataSet = componentDescriptor.getPageDescriptor().
-                            getComponentDescriptor(type).getDataSetDescriptor().getDataSet();
-                    value = value.replace("${" + var + "}", relDataSet.getEventObjectCode() + "_" + endChars);
-                }else {
-                    value = value.replace("${" + var + "}", dataSet.getEventObjectCode() + "_" + var);
+                        if(componentDescriptor.getPageDescriptor().
+                                getComponentDescriptor(type) != null) {
+                            DataSet relDataSet = componentDescriptor.getPageDescriptor().
+                                    getComponentDescriptor(type).getDataSetDescriptor().getDataSet();
+                            value = value.replace("${" + var + "}", relDataSet.getEventObjectCode() + "_" + endChars);
+                        }else {
+                            value = value.replace("${" + var + "}", dataSet.getEventObjectCode() + "_" + var);
+                        }
+
+
+                    }else {//create, edit , detail, batchDelete
+                        value = value.replace("${" + var + "}", dataSet.getEventObjectCode() + "_" + var);
+                    }
                 }
-
-
-            }else {//create, edit , detail, batchDelete
-                value = value.replace("${" + var + "}", dataSet.getEventObjectCode() + "_" + var);
             }
-
-
         }
+
+
 
 
         for (EventElement eventElement : eventElementList) {
@@ -248,6 +256,17 @@ public class ComponentDataContainer {
                     eventElement.getAnchorName().replace("${" + mapping.getId() + "}", tmpValue));
 
         }
+    }
+
+    private String getReallyProperty(String val, DataSetDescriptor dataSetDescriptor) {
+        if("KEY_FIELD".equals(val) && dataSetDescriptor.getKeyField() != null) {
+            return dataSetDescriptor.getKeyField().getCode();
+        }else if("NAME_FIELD".equals(val) && dataSetDescriptor.getNameField() != null) {
+            return dataSetDescriptor.getNameField().getCode();
+        }else if("P_KEY_FIELD".equals(val) && dataSetDescriptor.getSelfDependPropertyName() != null) {
+            return dataSetDescriptor.getSelfDependPropertyName();
+        }
+        return null;
     }
 
     public ComponentDataContainer getDataInstance(Object data) {
@@ -291,16 +310,16 @@ public class ComponentDataContainer {
                 map.remove("pager");
             }
 
-                JsonSegmentParser jsonSegmentParser = runtimeDataMap.get("${data}");
-                if (jsonSegmentParser instanceof ObjectTreeJsonSegmentParser) {
-                    ObjectTreeJsonSegmentParser segmentParser = (ObjectTreeJsonSegmentParser) jsonSegmentParser;
-                    if(map.size() > 0) {
-                        Map map1 = transMapKeyStringType(map);
-                        segmentParser.setData(map1);
-                    }else {
-                        segmentParser.setData(new HashMap<String, Object>());
-                    }
+            JsonSegmentParser jsonSegmentParser = runtimeDataMap.get("${data}");
+            if (jsonSegmentParser instanceof ObjectTreeJsonSegmentParser) {
+                ObjectTreeJsonSegmentParser segmentParser = (ObjectTreeJsonSegmentParser) jsonSegmentParser;
+                if(map.size() > 0) {
+                    Map map1 = transMapKeyStringType(map);
+                    segmentParser.setData(map1);
+                }else {
+                    segmentParser.setData(new HashMap<String, Object>());
                 }
+            }
 
 
 
@@ -676,6 +695,10 @@ public class ComponentDataContainer {
                     for (String showCode : expressesMap.keySet()) {
                         String dataPropertyName = expressesMap.get(showCode);
                         String propertyName = dataPropertyName.substring(2, dataPropertyName.length() - 1);
+                        String reallyProperty = getReallyProperty(propertyName, dataSetDescriptor);
+                        if(reallyProperty != null) {
+                            propertyName = reallyProperty;
+                        }
                         resultMap.put(showCode, getPropertyValue(data, ResourceWrapper.JavaUtil.getJavaVarName(propertyName)));
                     }
 
@@ -775,15 +798,24 @@ public class ComponentDataContainer {
                         }
                     }
 
-                    int visibleColumnCount = 0;
+                    float visibleColumnCount = 0;
                     for (Map<String, String> stringStringMap : resultList) {
                         if(stringStringMap.containsKey("editType") && !"hidden".equals(stringStringMap.get("editType"))) {
-                            visibleColumnCount ++;
+                            if(stringStringMap.get("width") != null) {
+                                visibleColumnCount += Float.parseFloat(stringStringMap.get("width"));
+                            }else {
+                                visibleColumnCount++;
+                            }
+
                         }
                     }
                     for (Map<String, String> stringStringMap : resultList) {
                         if(stringStringMap.containsKey("editType") && !"hidden".equals(stringStringMap.get("editType"))) {
-                            stringStringMap.put("width",100/(visibleColumnCount + (visibleColumnCount/5 + 1)) + "%");
+                            if(stringStringMap.get("width") != null) {
+                                stringStringMap.put("width",100/(visibleColumnCount + (visibleColumnCount/5 + 1))*Float.parseFloat(stringStringMap.get("width")) + "%");
+                            }else {
+                                stringStringMap.put("width",100/(visibleColumnCount + (visibleColumnCount/5 + 1)) + "%");
+                            }
                         }
                     }
                 }
@@ -802,7 +834,7 @@ public class ComponentDataContainer {
             }else if("tipinfo".equals(code)) {
                 return field.getTipinfo();
             }else if("width".equals(code)) {
-                return null;
+                return field.getWidth() == null ? "1" : field.getWidth();
             }else if("showType".equals(code)) {
                 return field.getShowType();
             }else if("editType".equals(code)) {
@@ -826,7 +858,7 @@ public class ComponentDataContainer {
                     for (String relField : relFields.split(",")) {
                         Field refField = dataSetDescriptor.getFields().get(relField);
                         String paramName = relField;
-                        if(StringUtils.isBlank(field.getRel().getUrl()) && refField.getRel() != null && StringUtils.isNotBlank(refField.getRel().getEntityCode())) {
+                        if(StringUtils.isBlank(field.getRel().getUrl()) && refField != null && refField.getRel() != null && StringUtils.isNotBlank(refField.getRel().getEntityCode())) {
                             String entityCode = refField.getRel().getEntityCode();
                             paramName = entityCode.substring(entityCode.indexOf("/") +1, entityCode.lastIndexOf("/"));
                         }
@@ -1014,6 +1046,12 @@ public class ComponentDataContainer {
                         String resultVal = propertyNameExp;
                         for (String var : varList) {
                             String propertyName = ResourceWrapper.JavaUtil.getJavaVarName(var);
+
+
+                            String reallyProperty = getReallyProperty(var, this.getDataSetDescriptor());
+                            if(reallyProperty != null) {
+                                propertyName = ResourceWrapper.JavaUtil.getJavaVarName(reallyProperty);
+                            }
                             try {
                                 String stringVal = org.apache.commons.beanutils.BeanUtils.getProperty(object,propertyName);
                                 resultVal = resultVal.replace("${" + var + "}", stringVal);
@@ -1267,10 +1305,11 @@ public class ComponentDataContainer {
                         .replace("${iconclass}", (String) jsonObject.get("iconclass"));
             }else if("button".equals(appendElement.getType())) {
                 JSONObject jsonObject = JSONObject.parseObject(appendElement.getParam());
-
+                String iconClass = StringUtils.isNotBlank(jsonObject.getString("iconclass")) ? "<i class=\"${iconclass}\"></i>"
+                        .replace("${iconclass}", (String) jsonObject.get("iconclass")) : "";
                 return "<button  class=\"btn hfhref ${btnclass}\" onclick=\"javascript:void(0)\"  params=\"${params}\" action='${action}'>${btnText}</button>"
                         .replace("${btnclass}", (String) jsonObject.get("btnclass"))
-                        .replace("${btnText}", (String) jsonObject.get("btnText"))
+                        .replace("${btnText}", iconClass + (String) jsonObject.get("btnText"))
                         .replace("${params}", StringUtils.isNotBlank(params) ? params : "")
                         .replace("${action}", StringUtils.isNotBlank(action) ? action : "");
             }else if("checkbox".equals(appendElement.getType())) {

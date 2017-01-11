@@ -197,6 +197,10 @@ public class DefaultController {
                 }
                 return ResultData.error(ResultCode.RECODE_IS_NOT_EXISTS);
             }else {
+                if(!validDataCondition(dataCondition)) {
+                    logger.warn("dataCode : [{}], dataCondition : [{}] invalid !", dataCode, dataCondition);
+                    return ResultData.success();
+                }
                 DataSetDescriptor dataSetDescriptor = WebContext.get().getOnlyDataSetDescriptor(split[0]);
                 if(dataSetDescriptor != null) {
                     if(dataSetDescriptor.getFields().containsKey("pri")) {
@@ -222,6 +226,10 @@ public class DefaultController {
             logger.error("error : ", e);
             return ResultData.error(ResultCode.ERROR);
         }
+    }
+
+    private boolean validDataCondition(String dataCondition) {
+        return !dataCondition.matches(".*=[ ]*") && !dataCondition.matches(".*=[ ]*&.*");
     }
 
     /**
@@ -329,6 +337,23 @@ public class DefaultController {
             return ResultData.error(ResultCode.ERROR);
         }
     }
+
+    /**
+     * 数据保存
+     * @return
+     */
+    @RequestMapping(value = "/")
+    @ResponseBody
+    public ModelAndView root(HttpServletRequest request,
+                               HttpServletResponse response) throws Throwable {
+        ModelAndView mav = new ModelAndView();
+        Object attribute = request.getSession().getAttribute(SessionKey.USER);
+        if(attribute != null) {
+            return gotoPage("index", null, null, null, request, response);
+        }else {
+            return gotoPage("login", null, null, null, request, response);
+        }
+    }
     /**
      * 数据保存
      * @return
@@ -339,10 +364,16 @@ public class DefaultController {
                             HttpServletResponse response){
         ModelAndView mav = new ModelAndView();
         request.getSession().setAttribute("context", null);
-        mav.addObject("staticResourcePath", "/static");
-        mav.setViewName("/login");
-        return mav;
+//        mav.addObject("staticResourcePath", "/static");
+//        mav.setViewName("/login");
+        try {
+            return gotoPage("login",null,null,null,request,response);
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
+        return null;
     }
+
     /**
      * 数据保存
      * @return
@@ -350,49 +381,96 @@ public class DefaultController {
     @RequestMapping(value = "/login.json")
     @ResponseBody
     public ResultData login(HttpServletRequest request,
-                               HttpServletResponse response){
+                            HttpServletResponse response){
         WebContext.clear();
+        String dc = request.getParameter("dc");
         Component login = WebContext.get().getDefaultComponentMap().get("login");
-        Mapper mapper = WebContext.get().getMapper(login.getDataSet(), login.getId());
-        HashMap<String , String> inputs = new HashMap<String, String>();
-        if(mapper != null) {
-            List<com.hframework.web.config.bean.mapper.Mapping> mappingList = mapper.getBaseMapper().getMappingList();
-            for (com.hframework.web.config.bean.mapper.Mapping mapping : mappingList) {
-                String value = request.getParameter(mapping.getId());
-                inputs.put(mapping.getValue(), value);
-            }
-        }
-        if(!inputs.isEmpty()) {
-            String moduleCode = mapper.getDataSet().substring(0, mapper.getDataSet().indexOf("/"));
-            String dataSetCode = mapper.getDataSet().substring(mapper.getDataSet().indexOf("/") + 1);
-            try {
-                Class defPoClass = CreatorUtil.getDefPoClass("",
-                        WebContext.get().getProgram().getCode(), moduleCode, dataSetCode);
-                Class defControllerClass = CreatorUtil.getDefControllerClass("",
-                        WebContext.get().getProgram().getCode(), moduleCode, dataSetCode);
-                Object controller= ServiceFactory.getService(defControllerClass.getClassName().substring(0, 1).toLowerCase()
-                        + defControllerClass.getClassName().substring(1));
-                Object po = java.lang.Class.forName(defPoClass.getClassPath()).newInstance();
-                for (String propertyName : inputs.keySet()) {
-                    org.apache.commons.beanutils.BeanUtils.setProperty(po,propertyName,inputs.get(propertyName));
-                }
-                ResultData resultData = invokeMethod(controller,"search",
-                        new java.lang.Class[]{java.lang.Class.forName(defPoClass.getClassPath())},
-                        new Object[]{po});
+        String dataSet = login.getDataSet();
 
-                if(resultData.isSuccess()) {
-                    Object data = resultData.getData();
-                    request.getSession().setAttribute(java.lang.Class.forName(defPoClass.getClassPath()).getName(),data);
-                    request.getSession().setAttribute(SessionKey.USER,data);
-                    authServiceProxy.auth(request);
+        String moduleCode = dataSet.substring(0, dataSet.indexOf("/"));
+        String dataSetCode = dataSet.substring(dataSet.indexOf("/") + 1);
+        try {
+            Class defPoClass = CreatorUtil.getDefPoClass("",
+                    WebContext.get().getProgram().getCode(), moduleCode, dataSetCode);
+            Class defControllerClass = CreatorUtil.getDefControllerClass("",
+                    WebContext.get().getProgram().getCode(), moduleCode, dataSetCode);
+            Object controller= ServiceFactory.getService(defControllerClass.getClassName().substring(0, 1).toLowerCase()
+                    + defControllerClass.getClassName().substring(1));
+            Object po = java.lang.Class.forName(defPoClass.getClassPath()).newInstance();
+            Map<String, String[]> parameterMap = request.getParameterMap();
+            for (String propertyName : parameterMap.keySet()) {
+                if("dc".equals(propertyName) || parameterMap.get(propertyName) == null || parameterMap.get(propertyName).length == 0) continue;
+                try{
+                    org.apache.commons.beanutils.BeanUtils.setProperty(po,propertyName,parameterMap.get(propertyName)[0]);
+                }catch (Exception e ) {
                 }
-                return resultData;
-            } catch (Exception e) {
-                e.printStackTrace();
             }
+            ResultData resultData = invokeMethod(controller,"search",
+                    new java.lang.Class[]{java.lang.Class.forName(defPoClass.getClassPath())},
+                    new Object[]{po});
+
+            if(resultData.isSuccess()) {
+                Object data = resultData.getData();
+                request.getSession().setAttribute(java.lang.Class.forName(defPoClass.getClassPath()).getName(),data);
+                request.getSession().setAttribute(SessionKey.USER,data);
+                authServiceProxy.auth(request);
+            }
+            return resultData;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return ResultData.error(ResultCode.UNKNOW);
     };
+//    /**
+//     * 数据保存
+//     * @return
+//     */
+//    @RequestMapping(value = "/login.json")
+//    @ResponseBody
+//    public ResultData login(HttpServletRequest request,
+//                               HttpServletResponse response){
+//        WebContext.clear();
+//        Component login = WebContext.get().getDefaultComponentMap().get("login");
+//        Mapper mapper = WebContext.get().getMapper(login.getDataSet(), login.getId());
+//        HashMap<String , String> inputs = new HashMap<String, String>();
+//        if(mapper != null) {
+//            List<com.hframework.web.config.bean.mapper.Mapping> mappingList = mapper.getBaseMapper().getMappingList();
+//            for (com.hframework.web.config.bean.mapper.Mapping mapping : mappingList) {
+//                String value = request.getParameter(mapping.getId());
+//                inputs.put(mapping.getValue(), value);
+//            }
+//        }
+//        if(!inputs.isEmpty()) {
+//            String moduleCode = mapper.getDataSet().substring(0, mapper.getDataSet().indexOf("/"));
+//            String dataSetCode = mapper.getDataSet().substring(mapper.getDataSet().indexOf("/") + 1);
+//            try {
+//                Class defPoClass = CreatorUtil.getDefPoClass("",
+//                        WebContext.get().getProgram().getCode(), moduleCode, dataSetCode);
+//                Class defControllerClass = CreatorUtil.getDefControllerClass("",
+//                        WebContext.get().getProgram().getCode(), moduleCode, dataSetCode);
+//                Object controller= ServiceFactory.getService(defControllerClass.getClassName().substring(0, 1).toLowerCase()
+//                        + defControllerClass.getClassName().substring(1));
+//                Object po = java.lang.Class.forName(defPoClass.getClassPath()).newInstance();
+//                for (String propertyName : inputs.keySet()) {
+//                    org.apache.commons.beanutils.BeanUtils.setProperty(po,propertyName,inputs.get(propertyName));
+//                }
+//                ResultData resultData = invokeMethod(controller,"search",
+//                        new java.lang.Class[]{java.lang.Class.forName(defPoClass.getClassPath())},
+//                        new Object[]{po});
+//
+//                if(resultData.isSuccess()) {
+//                    Object data = resultData.getData();
+//                    request.getSession().setAttribute(java.lang.Class.forName(defPoClass.getClassPath()).getName(),data);
+//                    request.getSession().setAttribute(SessionKey.USER,data);
+//                    authServiceProxy.auth(request);
+//                }
+//                return resultData;
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
+//        return ResultData.error(ResultCode.UNKNOW);
+//    };
 
     /**
      * 数据保存
@@ -877,6 +955,7 @@ public class DefaultController {
 
 
         Map<String, Object> result = new LinkedHashMap<String, Object>();
+        JSONObject globalDataSetRulerJsonObject = new JSONObject();
         Map<String, ComponentDescriptor> components = pageInfo.getComponents();
         for (ComponentDescriptor componentDescriptor : components.values()) {
             if(StringUtils.isBlank(componentId) || componentId.equals(componentDescriptor.getId())) {
@@ -1054,9 +1133,10 @@ public class DefaultController {
                             Object data = request.getSession().getAttribute(java.lang.Class.forName(defPoClass.getClassPath()).getName());
                             System.out.println("session data " + data);
                             if (data == null) {
-                                mav.addObject("staticResourcePath", "/static");
-                                mav.setViewName("/login");
-                                return mav;
+//                                mav.addObject("staticResourcePath", "/static");
+//                                mav.setViewName("/login");
+//                                return mav;
+                                return gotoPage("login",null,null,null,request,response);
                             }
                             resultData = ResultData.success(data);
                         } else if ("detail".equals(action)) {
@@ -1172,8 +1252,11 @@ public class DefaultController {
                     jsonObject.put("title",componentDescriptor.getTitle());
                 }
 
+
+
+                mergeGlobalRuler(globalDataSetRulerJsonObject, componentDescriptor.getDataSetDescriptor().getDataSetRulerJsonObject());
 //                jsonObject.put("icon","icon-edit");
-                jsonObject.put("ruler",componentDescriptor.getDataSetDescriptor().getDataSetRulerJsonObject().toJSONString());
+                        jsonObject.put("ruler", componentDescriptor.getDataSetDescriptor().getDataSetRulerJsonObject().toJSONString());
                 jsonObject.put("helper",componentDescriptor.getDataSetDescriptor().getDynamicHelper());
                 jsonObject.put("dc",componentDescriptor.getDataSetDescriptor().getDataSet().getCode());
 
@@ -1197,6 +1280,7 @@ public class DefaultController {
             }
         }
 
+        mav.addObject("globalRuler", globalDataSetRulerJsonObject.toJSONString());
         mav.addObject("ExtMap",extendData);
         mav.addObject("elements", result);
         mav.addAllObjects(result);
@@ -1216,6 +1300,20 @@ public class DefaultController {
 
         return mav;
 
+    }
+
+    private void mergeGlobalRuler(JSONObject globalDataSetRulerJsonObject, JSONObject dataSetRulerJsonObject) {
+        for (String key : dataSetRulerJsonObject.keySet()) {
+            JSONArray jsonArray = dataSetRulerJsonObject.getJSONArray(key);
+            for (Object o : jsonArray) {
+                if(((JSONObject) o).containsKey("scope")) {
+                    if(!globalDataSetRulerJsonObject.containsKey(key)) {
+                        globalDataSetRulerJsonObject.put(key, new JSONArray());
+                    }
+                    globalDataSetRulerJsonObject.getJSONArray(key).add(o);
+                }
+            }
+        }
     }
 
     private void setDataSetInstanceComponentData(DataSetContainer rootContainer, String module,String parentDataSetCode, String subPageCode) {

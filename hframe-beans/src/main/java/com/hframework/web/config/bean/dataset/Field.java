@@ -49,6 +49,9 @@ public class Field {
     private String notNull;
     @XStreamAlias("tipinfo")
     private String tipinfo;
+    @XStreamAsAttribute
+    @XStreamAlias("width")
+    private String width;
 
  public Field() {
     }
@@ -164,5 +167,13 @@ public class Field {
 
     public void setShowType(String showType) {
         this.showType = showType;
+    }
+
+    public String getWidth() {
+        return width;
+    }
+
+    public void setWidth(String width) {
+        this.width = width;
     }
 }

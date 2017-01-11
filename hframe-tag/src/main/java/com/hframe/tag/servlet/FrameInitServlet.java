@@ -257,7 +257,10 @@ public class FrameInitServlet extends HttpServlet {
         if (hfpmDataFieldList != null) {
             for (HfpmDataField hfpmDataField : hfpmDataFieldList) {
                 HfmdEntityAttr hfmdEntityAttr = hfmdEntityAttrIdEntityAttrMap.get(hfpmDataField.getHfmdEntityAttrId());
-                if(!"0".equals(String.valueOf(hfpmDataField.getFieldShowCode().charAt(showTypeCodeIndex)))) {
+                if((showTypeCodeIndex == 0 && !"0".equals(String.valueOf(hfpmDataField.getCreateEditAuth()))
+                        || showTypeCodeIndex == 1 && !"0".equals(String.valueOf(hfpmDataField.getUpdateEditAuth()))
+                        || showTypeCodeIndex == 2 && !"0".equals(String.valueOf(hfpmDataField.getListShowAuth())))) {
+//                if(!"0".equals(String.valueOf(hfpmDataField.getFieldShowCode().charAt(showTypeCodeIndex)))) {
                     Column column = getColumnFromHfmdEntityAttr(hfmdEntityAttr, hfpmDataField.getHfpmFieldShowTypeId());
                     if (StringUtils.isNotBlank(hfpmDataField.getHfpmDataFieldName())) {
                         column.setDisplayName(hfpmDataField.getHfpmDataFieldName());
@@ -302,7 +305,7 @@ public class FrameInitServlet extends HttpServlet {
                 //TODO
                 HfpmFieldShowType showType = hfpmFieldShowTypeMap.get(Long.valueOf(hfpmDataField.getHfpmFieldShowTypeId()));
                 Long hfmdEntityAttrId = hfpmDataField.getHfmdEntityAttrId();
-                if(!"0".equals(hfpmDataField.getFieldShowCode().charAt(2))) {
+                if(!"0".equals(hfpmDataField.getListShowAuth())) {
                     fieldList.add(new Field(
                             String.valueOf(hfpmDataField.getHfpmDataFieldId()),
                             hfpmDataField.getHfpmDataFieldName(),

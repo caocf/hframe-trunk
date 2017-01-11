@@ -16,11 +16,25 @@
     </field>
     <field code="hfpm_data_field_code" name="数据列编码" edit-type="input"/>
     <field code="hfpm_data_field_name" name="数据列名称" edit-type="input"/>
+    <field code="data_get_method" name="数据获取方式          " edit-type="select">
+      <enum-class code="hfpm_data_field.data_get_method"/>
+    </field>
     <field code="hfpm_field_show_type_id" name="列展示类型ID" edit-type="select">
       <rel entity-code="hfpm_field_show_type/hfpm_field_show_type_id/hfpm_field_show_type_name"/>
     </field>
-    <field code="field_show_code" name="列展示码            " edit-type="input"/>
-    <field code="data_get_method" name="数据获取方式          " edit-type="input"/>
+    <!--<field code="field_show_code" name="列展示码            " edit-type="input"/>-->
+    <field code="create_edit_auth" name="新增编辑权限" edit-type="select">
+      <enum-class code="hfpm_data_field.edit_auth"/>
+    </field>
+    <field code="update_edit_auth" name="修改编辑权限" edit-type="select">
+      <enum-class code="hfpm_data_field.edit_auth"/>
+    </field>
+    <field code="list_show_auth" name="列表展示权限" edit-type="checkbox">
+      <enum-class code="DEFAULT.BOOLEAN-EXISTS"/>
+    </field>
+    <field code="detail_show_auth" name="明细展示权限" edit-type="checkbox">
+      <enum-class code="DEFAULT.BOOLEAN-EXISTS"/>
+    </field>
     <field code="hfpm_data_set_id" name="数据集ID" edit-type="select">
       <rel entity-code="hfpm_data_set/hfpm_data_set_id/hfpm_data_set_name" rel-field="hfmd_entity_id"/>
       <create-edit-type>hidden</create-edit-type>

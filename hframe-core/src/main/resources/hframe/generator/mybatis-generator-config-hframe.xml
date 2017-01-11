@@ -51,17 +51,10 @@
             <property name="rootInterface" value=""/>
         </javaClientGenerator>
 
-         <table schema="" tableName="hfpm_page_event">
-            <property name="chineseName" value="页面事件"></property>
+         <table schema="" tableName="hfpm_data_field">
+            <property name="chineseName" value="数据列"></property>
             <property name="parentId" value=""></property>
-            <generatedKey column="hfpm_page_event_id" sqlStatement="MySql" identity="true" />
-
-
-        </table>
-        <table schema="" tableName="hfpm_program_cfg">
-            <property name="chineseName" value="项目设置"></property>
-            <property name="parentId" value=""></property>
-            <generatedKey column="hfpm_program_cfg_id" sqlStatement="MySql" identity="true" />
+            <generatedKey column="hfpm_data_field_id" sqlStatement="MySql" identity="true" />
 
 
         </table>

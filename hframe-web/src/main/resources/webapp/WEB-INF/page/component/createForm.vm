@@ -1,4 +1,4 @@
-<div class="box span12 hfform" id='$form.id'  module="$module" page="$page" component="$form.component"  style="$!style">
+<div class="box span12 hfform" id='$form.id'  module="$module" page="$page" component="$form.component"  style="$!style;overflow:inherit">
     <span  class="ruler" style="display: none;">$!form.ruler</span>
     <div class="box-header">
         <h2><i class="$form.icon"></i>$form.title</h2>
