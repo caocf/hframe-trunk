@@ -1,27 +1,47 @@
 package com.hframework.web.bean;
 
 import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.collect.Lists;
+import com.hframework.common.ext.CollectionUtils;
+import com.hframework.common.ext.Fetcher;
 import com.hframework.common.util.EnumUtils;
+import com.hframework.common.util.FileUtils;
 import com.hframework.common.util.ReflectUtils;
 import com.hframework.common.util.StringUtils;
 import com.hframework.common.util.message.XmlUtils;
 import com.hframework.web.CreatorUtil;
 import com.hframework.web.config.bean.*;
+import com.hframework.web.config.bean.Component;
 import com.hframework.web.config.bean.component.Event;
+import com.hframework.web.config.bean.component.PreHandle;
 import com.hframework.web.config.bean.dataset.Entity;
 import com.hframework.web.config.bean.dataset.Field;
 import com.hframework.web.config.bean.dataset.Fields;
 import com.hframework.web.config.bean.dataset.Node;
-import com.hframework.web.config.bean.module.Page;
+import com.hframework.web.config.bean.module.*;
 import com.hframework.web.config.bean.pagetemplates.Element;
 import com.hframework.web.config.bean.pagetemplates.Pagetemplate;
 import com.hframework.web.enums.ElementType;
+import com.sun.org.apache.xerces.internal.impl.XMLStreamReaderImpl;
+import org.activiti.bpmn.converter.BpmnXMLConverter;
+import org.activiti.bpmn.converter.IndentingXMLStreamWriter;
+import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.SequenceFlow;
+import org.activiti.bpmn.model.StartEvent;
+import org.activiti.editor.language.json.converter.BpmnJsonConverter;
+import org.activiti.engine.ProcessEngines;
+import org.activiti.engine.repository.Deployment;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.IOException;
+import javax.xml.stream.*;
+import java.io.*;
 import java.util.*;
 
 /**
@@ -33,6 +53,20 @@ public class WebContext {
 
     private static WebContext context = new WebContext();
 
+    private static  Map<String, String> chineseAndButtonMapping;
+    {
+        chineseAndButtonMapping = new HashMap<String, String>();
+        chineseAndButtonMapping.put(null,"#EOFR.confirm.play");
+        chineseAndButtonMapping.put("","#EOFR.confirm.play");
+        chineseAndButtonMapping.put("启动","#EOFR.confirm.play");
+        chineseAndButtonMapping.put("暂停", "#EOFR.confirm.pause");
+        chineseAndButtonMapping.put("恢复", "#EOFR.confirm.play");
+        chineseAndButtonMapping.put("关闭", "#EOFR.confirm.stop");
+        chineseAndButtonMapping.put("process-diagram", "#EOFR.openPage.process.diagram");
+        chineseAndButtonMapping.put("process-start", "#EOFR.confirm.process.start");
+
+
+    }
 
     private Map<String, com.hframework.web.config.bean.module.Component> defaultComponentMap
             = new HashMap<String, com.hframework.web.config.bean.module.Component>();
@@ -60,6 +94,8 @@ public class WebContext {
     private Map<String, DataSetDescriptor> dataSets = new HashMap<String, DataSetDescriptor>();
 
     private Map<Class, DataSetDescriptor> dataSetCache = new HashMap<Class, DataSetDescriptor>();
+
+    private Map<String,Object[]> processsCache = new HashMap<String, Object[]>();
 
     private Map<DataSetDescriptor, List<ComponentDescriptor>> dataSetComponentApplyCache = new HashMap<DataSetDescriptor, List<ComponentDescriptor>>();
 
@@ -103,6 +139,9 @@ public class WebContext {
         //加载数据集连带规则信息
         loadDataSetRuler();
 
+        //加载流程
+        loadProcess();
+
         for (DataSetDescriptor dataSetDescriptor : dataSets.values()) {
             dataSetDescriptor.setDataSetRulers();
         }
@@ -114,6 +153,85 @@ public class WebContext {
         WebContextMonitor webContextMonitor = new WebContextMonitor(this);
         webContextMonitor.addRootConfMap(DataSet.class, contextHelper.programConfigRootDir + "/" + contextHelper.programConfigDataSetDir);
         webContextMonitor.start();
+
+    }
+
+    private void loadProcess() throws IOException, XMLStreamException {
+        File dictionaryFile = null;
+        if(new File(contextHelper.programConfigRootDir).exists()) {
+            dictionaryFile = new File(contextHelper.programConfigRootDir + "/" + contextHelper.programConfigDataSetDir + "/" + "process");
+        }else {
+            dictionaryFile = new File(XmlUtils.class.getResource("/").getPath() + "/" + contextHelper.programConfigDataSetDir + "/" + "process");
+        }
+        File[] fileList = FileUtils.getFileList(dictionaryFile);
+        if(fileList == null) return;
+        for (File file : fileList) {
+            String fileName = file.getName();
+            String reallyFileName = fileName.replace(".bpmn20.xml", "");
+            String dataSetCode = reallyFileName.substring(0, reallyFileName.lastIndexOf("."));
+            String dataFieldCode = reallyFileName.substring(reallyFileName.lastIndexOf(".") + 1);
+            String processContext = FileUtils.readFile(file.getPath());
+            InputStream bpmnStream = new ByteArrayInputStream(processContext.getBytes());
+            XMLInputFactory xif = org.activiti.explorer.util.XmlUtil.createSafeXmlInputFactory();
+            InputStreamReader in = new InputStreamReader(bpmnStream, "UTF-8");
+            XMLStreamReader xtr = xif.createXMLStreamReader(in);
+            BpmnModel bpmnModel = new BpmnXMLConverter().convertToBpmnModel(xtr);
+            Collection<FlowElement> flowElements = bpmnModel.getProcesses().get(0).getFlowElements();
+
+            List<Event> workflowEvents = new ArrayList<Event>();
+            Event workflowStartEvent = new com.hframework.web.config.bean.component.Event();
+            StartEvent startEvent = new StartEvent();
+            for (FlowElement flowElement : flowElements) {
+                if (flowElement instanceof SequenceFlow) {
+                    SequenceFlow sequenceFlow = (SequenceFlow) flowElement;
+                    com.hframework.web.config.bean.component.Event event;
+                    if(sequenceFlow.getSourceRef().equals(startEvent.getId())) {
+                        event = workflowStartEvent;
+                        event.setRel(chineseAndButtonMapping.get("process-start"));
+                    }else {
+                        event = new com.hframework.web.config.bean.component.Event();
+                        event.setRel(chineseAndButtonMapping.get(sequenceFlow.getName()));
+                    }
+
+                    String when = sequenceFlow.getSourceRef().matches("value-\\d+") ? sequenceFlow.getSourceRef().replaceFirst("value-","").trim() : "";
+                    String then = sequenceFlow.getTargetRef().matches("value-\\d+") ? sequenceFlow.getTargetRef().replaceFirst("value-","").trim() : "";
+                    PreHandle preHandle = new PreHandle();
+                    preHandle.setCase1(String.valueOf(dataFieldCode));
+                    preHandle.setWhen(when);
+                    preHandle.setThen(then);
+                    event.setPreHandleList(Lists.newArrayList(preHandle));
+                    workflowEvents.add(event);
+                }else if(flowElement instanceof StartEvent) {
+                    startEvent = (StartEvent) flowElement;
+                }
+            }
+
+            com.hframework.web.config.bean.component.Event event = new com.hframework.web.config.bean.component.Event();
+            event.setRel(chineseAndButtonMapping.get("process-diagram"));
+            workflowEvents.add(event);
+            processsCache.put(dataSetCode, new Object[]{fileName, dataSetCode, dataFieldCode, flowElements, workflowEvents, workflowStartEvent});
+
+            List<Deployment> list = ProcessEngines.getDefaultProcessEngine().getRepositoryService().
+                    createDeploymentQuery().deploymentName(dataSetCode).list();
+            if(list != null && list.size() > 0) {
+                List<ProcessDefinition> processDefinitions = ProcessEngines.getDefaultProcessEngine().getRepositoryService().
+                        createProcessDefinitionQuery().deploymentIds(new HashSet<String>(CollectionUtils.fetch(list, new Fetcher<Deployment, String>() {
+                    public String fetch(Deployment deployment) {
+                        return deployment.getId();
+                    }
+                }))).latestVersion().list();
+                if(processDefinitions != null && processDefinitions.size() > 0) {
+                    for (ProcessDefinition processDefinition : processDefinitions) {
+                    }
+                }
+            }else {
+                ProcessEngines.getDefaultProcessEngine().getRepositoryService().createDeployment()
+                        .name(dataSetCode)
+                        .addClasspathResource(contextHelper.programConfigDataSetDir + "/process/" + fileName)
+                        .deploy();
+            }
+        }
+
 
     }
 
@@ -369,6 +487,39 @@ public class WebContext {
                     }
 
                     continue;
+                }
+
+                com.hframework.web.config.bean.module.Component targetComponent = null;
+                if(page.getDataSet() != null && page.getPageTemplate().equals("qlist")) {
+                    String dataSet = page.getDataSet().substring(page.getDataSet().indexOf("/") + 1);
+                    if(processsCache.containsKey(dataSet) ) {
+                        List<com.hframework.web.config.bean.module.Component> componentList = page.getComponentList();
+                        for (com.hframework.web.config.bean.module.Component component : componentList) {
+                            if (component.getId().equals("qList") && component.getDataSet().equals(page.getDataSet())) {
+                                targetComponent = component;
+                            }
+                        }
+
+                        if (targetComponent == null) {
+                            targetComponent = new com.hframework.web.config.bean.module.Component();
+                            targetComponent.setId("qList");
+                            targetComponent.setDataSet(page.getDataSet());
+                            page.getComponentList().add(targetComponent);
+                        }
+                    }
+                }else {
+                    List<com.hframework.web.config.bean.module.Component> componentList = page.getComponentList();
+                    for (com.hframework.web.config.bean.module.Component component : componentList) {
+                        if (component.getId().equals("qList") && processsCache.containsKey(component.getDataSet().substring(component.getDataSet().indexOf("/") + 1)) ) {
+                            targetComponent = component;
+                        }
+                    }
+                }
+
+                if(targetComponent != null) {
+                    Object[] objects = processsCache.get(targetComponent.getDataSet().substring(targetComponent.getDataSet().indexOf("/") + 1));
+                    if(targetComponent.getEventList() == null) targetComponent.setEventList(new ArrayList<Event>());
+                    targetComponent.getEventList().addAll((List<Event>)objects[4]);
                 }
 
                 pageSetting.get(moduleCode).put(page.getId(), parsePageDescriptor(page, moduleCode));
@@ -949,5 +1100,9 @@ public class WebContext {
 
     public void setEvents(Map<String, Event> events) {
         this.events = events;
+    }
+
+    public  Object[] getProcess(String dataSet) {
+        return processsCache.get(dataSet);
     }
 }

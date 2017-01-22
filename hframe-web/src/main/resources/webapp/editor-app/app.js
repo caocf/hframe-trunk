@@ -49,7 +49,7 @@ activitiModeler
         });
 
         //mod by zqh
-        //$translateProvider.preferredLanguage('en');
+        $translateProvider.preferredLanguage('en');
         var language = navigator.language;
         if("zh-CN" == language){
             $translateProvider.preferredLanguage('zh-CN');

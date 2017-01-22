@@ -22,9 +22,12 @@ function componentinit(){
         for(var key in conditions) {
             var $span = $(this).parent("td").parent("tr").find("span[code='"+ key +"']");
             var value = conditions[key];
-            if($span.attr("value") == value || $span.text() == value) {
+            if("NotBlank" == value && ($span.attr("value") || $span.text())) {
+                $(this).show();
+            }else if($span.attr("value") == value || $span.text() == value) {
                 $(this).show();
             }
+
         }
     });
 

@@ -173,6 +173,23 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
                 }
 
             }
+        }else if($type == "openPage") {
+
+            if($($this).attr("params") == "checkIds") {
+                var checkIds = new Array();
+                var $thisList = $this.parents(".hflist")[0];
+                var $allChecked = $($thisList).find("tbody input[type=checkbox][name=checkIds]:checked");
+                $allChecked.each(function(){
+                    var columnName = $(this).attr("value-key");
+                    var columnValue  = formatContent("{" + columnName + "}", $(this));
+                    checkIds.push(columnValue);
+                });
+
+                window.open( url + "?" + $param + "=" + checkIds.join());
+            }else{
+                window.open( url + "?" + $param);
+            }
+
         }else if($type == "ajaxSubmitByJson") {
             var _data;
             var targetId =$action[$type].targetId;
@@ -601,7 +618,7 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
             }else {
                 value = $this.parents("form").find("[name="+ position +"]").val();
             }
-            return $param.replace("{" + position +"}",value);
+            return $param.replace(new RegExp("{" + position +"}", "gm"),value);
         }
         return null;
     }

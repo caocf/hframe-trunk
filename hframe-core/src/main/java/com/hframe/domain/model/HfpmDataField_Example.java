@@ -1305,6 +1305,76 @@ public class HfpmDataField_Example {
             addCriterion("update_edit_auth not between", value1, value2, "updateEditAuth");
             return (Criteria) this;
         }
+
+        public Criteria andWorkfowModelIdIsNull() {
+            addCriterion("workfow_model_id is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andWorkfowModelIdIsNotNull() {
+            addCriterion("workfow_model_id is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andWorkfowModelIdEqualTo(String value) {
+            addCriterion("workfow_model_id =", value, "workfowModelId");
+            return (Criteria) this;
+        }
+
+        public Criteria andWorkfowModelIdNotEqualTo(String value) {
+            addCriterion("workfow_model_id <>", value, "workfowModelId");
+            return (Criteria) this;
+        }
+
+        public Criteria andWorkfowModelIdGreaterThan(String value) {
+            addCriterion("workfow_model_id >", value, "workfowModelId");
+            return (Criteria) this;
+        }
+
+        public Criteria andWorkfowModelIdGreaterThanOrEqualTo(String value) {
+            addCriterion("workfow_model_id >=", value, "workfowModelId");
+            return (Criteria) this;
+        }
+
+        public Criteria andWorkfowModelIdLessThan(String value) {
+            addCriterion("workfow_model_id <", value, "workfowModelId");
+            return (Criteria) this;
+        }
+
+        public Criteria andWorkfowModelIdLessThanOrEqualTo(String value) {
+            addCriterion("workfow_model_id <=", value, "workfowModelId");
+            return (Criteria) this;
+        }
+
+        public Criteria andWorkfowModelIdLike(String value) {
+            addCriterion("workfow_model_id like", value, "workfowModelId");
+            return (Criteria) this;
+        }
+
+        public Criteria andWorkfowModelIdNotLike(String value) {
+            addCriterion("workfow_model_id not like", value, "workfowModelId");
+            return (Criteria) this;
+        }
+
+        public Criteria andWorkfowModelIdIn(List<String> values) {
+            addCriterion("workfow_model_id in", values, "workfowModelId");
+            return (Criteria) this;
+        }
+
+        public Criteria andWorkfowModelIdNotIn(List<String> values) {
+            addCriterion("workfow_model_id not in", values, "workfowModelId");
+            return (Criteria) this;
+        }
+
+        public Criteria andWorkfowModelIdBetween(String value1, String value2) {
+            addCriterion("workfow_model_id between", value1, value2, "workfowModelId");
+            return (Criteria) this;
+        }
+
+        public Criteria andWorkfowModelIdNotBetween(String value1, String value2) {
+            addCriterion("workfow_model_id not between", value1, value2, "workfowModelId");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {

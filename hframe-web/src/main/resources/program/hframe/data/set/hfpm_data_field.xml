@@ -19,6 +19,8 @@
     <field code="data_get_method" name="数据获取方式          " edit-type="select">
       <enum-class code="hfpm_data_field.data_get_method"/>
     </field>
+    <field code="workfow_model_id" name="流程ID" edit-type="hidden">
+    </field>
     <field code="hfpm_field_show_type_id" name="列展示类型ID" edit-type="select">
       <rel entity-code="hfpm_field_show_type/hfpm_field_show_type_id/hfpm_field_show_type_name"/>
     </field>

@@ -868,38 +868,6 @@ public class DefaultController {
      * @return
      * @throws Throwable
      */
-    @RequestMapping(value = "/modeler.html")
-    public ModelAndView modeler(@ModelAttribute("modelId") String modelId,
-
-                                 HttpServletRequest request, HttpServletResponse response) throws Throwable {
-        ModelAndView mav = new ModelAndView();
-        mav.addObject("modelId",modelId);
-        mav.setViewName("/modeler");
-        return mav;
-    }
-
-    /**
-     * 页面跳转
-     * @return
-     * @throws Throwable
-     */
-    @RequestMapping(value = "/editor-app/editor.html")
-    public ModelAndView editor(@ModelAttribute("modelId") String modelId,
-
-                                HttpServletRequest request, HttpServletResponse response) throws Throwable {
-        ModelAndView mav = new ModelAndView();
-        mav.addObject("modelId",modelId);
-        mav.setViewName("/editor");
-        return mav;
-    }
-
-
-
-    /**
-     * 页面跳转
-     * @return
-     * @throws Throwable
-     */
     @RequestMapping(value = "/{page}.html")
     public ModelAndView gotoPage(@PathVariable("page") String pageCode,
                                  @ModelAttribute("component") String componentId,

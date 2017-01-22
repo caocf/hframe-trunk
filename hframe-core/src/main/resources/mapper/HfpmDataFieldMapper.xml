@@ -22,6 +22,7 @@
       <arg column="detail_show_auth" jdbcType="TINYINT" javaType="java.lang.Byte" />
       <arg column="list_show_auth" jdbcType="TINYINT" javaType="java.lang.Byte" />
       <arg column="update_edit_auth" jdbcType="TINYINT" javaType="java.lang.Byte" />
+      <arg column="workfow_model_id" jdbcType="VARCHAR" javaType="java.lang.String" />
     </constructor>
   </resultMap>
   <sql id="Example_Where_Clause" >
@@ -86,7 +87,7 @@
     hfpm_data_field_id, hfpm_data_field_code, hfpm_field_show_type_id, field_show_code, 
     hfmd_entity_id, hfmd_entity_attr_id, data_get_method, hfpm_data_field_name, hfpm_data_set_id, 
     pri, op_id, create_time, modify_op_id, modify_time, del_flag, create_edit_auth, detail_show_auth, 
-    list_show_auth, update_edit_auth
+    list_show_auth, update_edit_auth, workfow_model_id
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.hframe.domain.model.HfpmDataField_Example" >
     select
@@ -131,14 +132,14 @@
       pri, op_id, create_time, 
       modify_op_id, modify_time, del_flag, 
       create_edit_auth, detail_show_auth, list_show_auth, 
-      update_edit_auth)
+      update_edit_auth, workfow_model_id)
     values (#{hfpmDataFieldCode,jdbcType=VARCHAR}, #{hfpmFieldShowTypeId,jdbcType=VARCHAR}, 
       #{fieldShowCode,jdbcType=VARCHAR}, #{hfmdEntityId,jdbcType=BIGINT}, #{hfmdEntityAttrId,jdbcType=BIGINT}, 
       #{dataGetMethod,jdbcType=INTEGER}, #{hfpmDataFieldName,jdbcType=VARCHAR}, #{hfpmDataSetId,jdbcType=BIGINT}, 
       #{pri,jdbcType=DECIMAL}, #{opId,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, 
       #{modifyOpId,jdbcType=BIGINT}, #{modifyTime,jdbcType=TIMESTAMP}, #{delFlag,jdbcType=INTEGER}, 
       #{createEditAuth,jdbcType=TINYINT}, #{detailShowAuth,jdbcType=TINYINT}, #{listShowAuth,jdbcType=TINYINT}, 
-      #{updateEditAuth,jdbcType=TINYINT})
+      #{updateEditAuth,jdbcType=TINYINT}, #{workfowModelId,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.hframe.domain.model.HfpmDataField" >
     <selectKey resultType="java.lang.Long" keyProperty="hfpmDataFieldId" order="AFTER" >
@@ -200,6 +201,9 @@
       <if test="updateEditAuth != null" >
         update_edit_auth,
       </if>
+      <if test="workfowModelId != null" >
+        workfow_model_id,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="hfpmDataFieldCode != null" >
@@ -255,6 +259,9 @@
       </if>
       <if test="updateEditAuth != null" >
         #{updateEditAuth,jdbcType=TINYINT},
+      </if>
+      <if test="workfowModelId != null" >
+        #{workfowModelId,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -324,6 +331,9 @@
       <if test="record.updateEditAuth != null" >
         update_edit_auth = #{record.updateEditAuth,jdbcType=TINYINT},
       </if>
+      <if test="record.workfowModelId != null" >
+        workfow_model_id = #{record.workfowModelId,jdbcType=VARCHAR},
+      </if>
     </set>
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
@@ -349,7 +359,8 @@
       create_edit_auth = #{record.createEditAuth,jdbcType=TINYINT},
       detail_show_auth = #{record.detailShowAuth,jdbcType=TINYINT},
       list_show_auth = #{record.listShowAuth,jdbcType=TINYINT},
-      update_edit_auth = #{record.updateEditAuth,jdbcType=TINYINT}
+      update_edit_auth = #{record.updateEditAuth,jdbcType=TINYINT},
+      workfow_model_id = #{record.workfowModelId,jdbcType=VARCHAR}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -411,6 +422,9 @@
       <if test="updateEditAuth != null" >
         update_edit_auth = #{updateEditAuth,jdbcType=TINYINT},
       </if>
+      <if test="workfowModelId != null" >
+        workfow_model_id = #{workfowModelId,jdbcType=VARCHAR},
+      </if>
     </set>
     where hfpm_data_field_id = #{hfpmDataFieldId,jdbcType=BIGINT}
   </update>
@@ -433,7 +447,8 @@
       create_edit_auth = #{createEditAuth,jdbcType=TINYINT},
       detail_show_auth = #{detailShowAuth,jdbcType=TINYINT},
       list_show_auth = #{listShowAuth,jdbcType=TINYINT},
-      update_edit_auth = #{updateEditAuth,jdbcType=TINYINT}
+      update_edit_auth = #{updateEditAuth,jdbcType=TINYINT},
+      workfow_model_id = #{workfowModelId,jdbcType=VARCHAR}
     where hfpm_data_field_id = #{hfpmDataFieldId,jdbcType=BIGINT}
   </update>
 </mapper>

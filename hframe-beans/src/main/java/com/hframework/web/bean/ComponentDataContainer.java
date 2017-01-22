@@ -213,6 +213,8 @@ public class ComponentDataContainer {
                         value = ResourceWrapper.JavaUtil.getJavaVarName(value.replace("${" + var + "}",dataSet.getEventObjectCode() + "_" + var));
                     }else if("name".equals(var)) {
                         value = ResourceWrapper.JavaUtil.getJavaVarName(value.replace("${" + var + "}", dataSet.getEventObjectCode() + "_" + var));
+                    }else if("DS".equals(var)) {
+                        value = value.replace("${" + var + "}", dataSet.getEventObjectCode());
                     }else if(var != null && var.endsWith("ByAjax")) {//"createByAjax".equals(var) || "updateByAjax".equals(var)|| "deleteByAjax".equals(var)
                         value = value.replace("${" + var + "}", /*ResourceWrapper.JavaUtil.getJavaVarName(dataSet.getModule())
                         + "/" + */ResourceWrapper.JavaUtil.getJavaVarName(dataSet.getEventObjectCode()) + "/" + var);
@@ -247,11 +249,26 @@ public class ComponentDataContainer {
             eventElement.setComponent(eventElement.getComponent() == null ? null :
                     eventElement.getComponent().replace("${" + mapping.getId() + "}", value));
             String tmpValue = value;
-            if (tmpValue.contains("_")) {
-                tmpValue = ResourceWrapper.JavaUtil.getJavaVarName(value);
+            if("DS".equals(mapping.getId())) {
+                if(eventElement.getParams() != null) {
+                    String params = eventElement.getParams();
+                    params = params.replace("=${" + mapping.getId() + "}", "=" + tmpValue + "");
+                    params = params.replace("${" + mapping.getId() + "}", tmpValue + "=" + tmpValue + "");
+                    eventElement.setParams(params);
+                }
+            }else {
+                if (tmpValue.contains("_")) {
+                    tmpValue = ResourceWrapper.JavaUtil.getJavaVarName(value);
+                }
+                if(eventElement.getParams() != null) {
+                    String params = eventElement.getParams();
+                    params = params.replace("=${" + mapping.getId() + "}", "={" + tmpValue + "}");
+                    params = params.replace("${" + mapping.getId() + "}", tmpValue + "={" + tmpValue + "}");
+                    eventElement.setParams(params);
+                }
             }
-            eventElement.setParams(eventElement.getParams() == null ? null :
-                    eventElement.getParams().replace("${" + mapping.getId() + "}", tmpValue + "={" + tmpValue + "}"));
+
+
             eventElement.setAnchorName(eventElement.getAnchorName() == null ? null :
                     eventElement.getAnchorName().replace("${" + mapping.getId() + "}", tmpValue));
 
@@ -1259,7 +1276,7 @@ public class ComponentDataContainer {
                     if(StringUtils.isNotBlank(preHandle.getThen())) {
                         if(params == null) params= "";
                         if(!"".equals(params)) params +="&";
-                        params +=(preHandle.getCase1() + "=" + preHandle.getThen());
+                        params +=(preHandle.getCase1() + "=" + preHandle.getThen() + "&_" + preHandle.getCase1() + "=" + preHandle.getWhen());
                     }
                 }
             }

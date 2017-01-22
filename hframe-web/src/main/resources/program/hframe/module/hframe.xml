@@ -61,6 +61,13 @@
   </page>
   <page id="hfpm_data_set_mgr" name="数据集管理" page-template="qlist" data-set="hframe/hfpm_data_set">
     <component id="qForm" data-set="hframe/hfpm_data_set_DS4Q"/>
+    <component id="qList" data-set="hframe/hfpm_data_set" event-extend="true">
+      <!--<event rel="#BOFC.goto.create"/>-->
+      <!--<event rel="#EOFR.goto.edit"/>-->
+      <!--<event rel="#EOFR.confirm.delete"/>-->
+
+      <event rel="#ELE.goto.detail"></event>
+    </component>
   </page>
   <page id="hfpm_data_set_create" name="数据集添加" page-template="cComb" data-set="hframe/hfpm_data_set">
     <component id="cForm" data-set="hframe/hfpm_data_set"/>
@@ -72,7 +79,17 @@
   </page>
   <page id="hfpm_data_set_detail" name="数据集查看" page-template="dComb" data-set="hframe/hfpm_data_set">
     <component id="dForm" data-set="hframe/hfpm_data_set"/>
-    <component id="qList" data-set="hframe/hfpm_data_field"/>
+    <component id="qList" data-set="hframe/hfpm_data_field">
+      <event name="goto_event_page">
+        <pre-handle case="workfowModelId" when="NotBlank"></pre-handle>
+        <attach anchor="EOFR">
+          <appendElement type="icon" param='{fillclass:"btn-info",iconclass:"icon-retweet"}'></appendElement>
+        </attach>
+        <source scope="CROW" param="modelId={workfowModelId}"></source>
+        <effect type="openPage" action='/modeler.html' isStack="true"></effect>
+        <effect type="component.reload"></effect>
+      </event>
+    </component>
   </page>
   <page id="hfpm_page_mgr" name="页面管理" page-template="qlist" data-set="hframe/hfpm_page">
     <component id="qForm" data-set="hframe/hfpm_page_DS4Q"/>

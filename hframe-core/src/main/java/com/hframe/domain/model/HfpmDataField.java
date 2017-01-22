@@ -42,7 +42,9 @@ public class HfpmDataField {
 
     private Byte updateEditAuth;
 
-    public HfpmDataField(Long hfpmDataFieldId, String hfpmDataFieldCode, String hfpmFieldShowTypeId, String fieldShowCode, Long hfmdEntityId, Long hfmdEntityAttrId, Integer dataGetMethod, String hfpmDataFieldName, Long hfpmDataSetId, BigDecimal pri, Long opId, Date createTime, Long modifyOpId, Date modifyTime, Integer delFlag, Byte createEditAuth, Byte detailShowAuth, Byte listShowAuth, Byte updateEditAuth) {
+    private String workfowModelId;
+
+    public HfpmDataField(Long hfpmDataFieldId, String hfpmDataFieldCode, String hfpmFieldShowTypeId, String fieldShowCode, Long hfmdEntityId, Long hfmdEntityAttrId, Integer dataGetMethod, String hfpmDataFieldName, Long hfpmDataSetId, BigDecimal pri, Long opId, Date createTime, Long modifyOpId, Date modifyTime, Integer delFlag, Byte createEditAuth, Byte detailShowAuth, Byte listShowAuth, Byte updateEditAuth, String workfowModelId) {
         this.hfpmDataFieldId = hfpmDataFieldId;
         this.hfpmDataFieldCode = hfpmDataFieldCode;
         this.hfpmFieldShowTypeId = hfpmFieldShowTypeId;
@@ -62,6 +64,7 @@ public class HfpmDataField {
         this.detailShowAuth = detailShowAuth;
         this.listShowAuth = listShowAuth;
         this.updateEditAuth = updateEditAuth;
+        this.workfowModelId = workfowModelId;
     }
 
     public Long getHfpmDataFieldId() {
@@ -140,6 +143,10 @@ public class HfpmDataField {
         return updateEditAuth;
     }
 
+    public String getWorkfowModelId() {
+        return workfowModelId;
+    }
+
     public void setHfpmDataFieldId(Long hfpmDataFieldId) {
         this.hfpmDataFieldId=hfpmDataFieldId;
     }
@@ -214,6 +221,10 @@ public class HfpmDataField {
 
     public void setUpdateEditAuth(Byte updateEditAuth) {
         this.updateEditAuth=updateEditAuth;
+    }
+
+    public void setWorkfowModelId(String workfowModelId) {
+        this.workfowModelId=workfowModelId;
     }
 
     public HfpmDataField() {

@@ -52,7 +52,7 @@
         <attach anchor="EOFR">
             <appendElement type="icon" param='{fillclass:"btn-danger",iconclass:"icon-unlock"}'></appendElement>
         </attach>
-        <source scope="CROW" param="${id}"></source>
+        <source scope="CROW" param="${id}&amp;_DI=${id}&amp;_DS=${DS}&amp;_WFB=1"></source>
         <effect type="confirm" content="是否生效 &lt;span style=&quot;color:red&quot;&gt;{${name}}&lt;/span&gt; ?"></effect>
         <effect type="ajaxSubmit" action="${updateByAjax}"></effect>
         <effect type="component.reload"></effect>
@@ -61,7 +61,7 @@
         <attach anchor="EOFR">
             <appendElement type="icon" param='{fillclass:"btn-danger",iconclass:"icon-lock"}'></appendElement>
         </attach>
-        <source scope="CROW" param="${id}"></source>
+        <source scope="CROW" param="${id}&amp;_DI=${id}&amp;_DS=${DS}&amp;_WFB=1"></source>
         <effect type="confirm" content="是否失效 &lt;span style=&quot;color:red&quot;&gt;{${name}}&lt;/span&gt; ?"></effect>
         <effect type="ajaxSubmit" action="${updateByAjax}"></effect>
         <effect type="component.reload"></effect>
@@ -70,7 +70,7 @@
         <attach anchor="EOFR">
             <appendElement type="icon" param='{fillclass:"btn-danger",iconclass:"icon-play"}'></appendElement>
         </attach>
-        <source scope="CROW" param="${id}"></source>
+        <source scope="CROW" param="${id}&amp;_DI=${id}&amp;_DS=${DS}&amp;_WFB=1"></source>
         <effect type="confirm" content="是否启动 &lt;span style=&quot;color:red&quot;&gt;{${name}}&lt;/span&gt; ?"></effect>
         <effect type="ajaxSubmit" action="${updateByAjax}"></effect>
         <effect type="component.reload"></effect>
@@ -80,7 +80,7 @@
         <attach anchor="EOFR">
             <appendElement type="icon" param='{fillclass:"btn-danger",iconclass:"icon-pause"}'></appendElement>
         </attach>
-        <source scope="CROW" param="${id}"></source>
+        <source scope="CROW" param="${id}&amp;_DI=${id}&amp;_DS=${DS}&amp;_WFB=1"></source>
         <effect type="confirm" content="是否暂停 &lt;span style=&quot;color:red&quot;&gt;{${name}}&lt;/span&gt; ?"></effect>
         <effect type="ajaxSubmit" action="${updateByAjax}"></effect>
         <effect type="component.reload"></effect>
@@ -89,7 +89,7 @@
         <attach anchor="EOFR">
             <appendElement type="icon" param='{fillclass:"btn-danger",iconclass:"icon-stop"}'></appendElement>
         </attach>
-        <source scope="CROW" param="${id}"></source>
+        <source scope="CROW" param="${id}&amp;_DI=${id}&amp;_DS=${DS}&amp;_WFB=1"></source>
         <effect type="confirm" content="是否停止 &lt;span style=&quot;color:red&quot;&gt;{${name}}&lt;/span&gt; ?"></effect>
         <effect type="ajaxSubmit" action="${updateByAjax}"></effect>
         <effect type="component.reload"></effect>
@@ -128,6 +128,24 @@
         <effect type="confirm" content="是否删除 &lt;span style=&quot;color:red&quot;&gt;{${name}}&lt;/span&gt; ?"></effect>
         <effect type="ajaxSubmit" action="${delete}"></effect>
         <!--<effect type="component.reload"></effect>-->
+    </event>
+
+
+    <event name="confirm.process.start">
+        <attach anchor="EOFR">
+            <appendElement type="icon" param='{fillclass:"btn-danger",iconclass:"icon-play-circle"}'></appendElement>
+        </attach>
+        <source scope="CROW" param="${id}&amp;_DI=${id}&amp;_DS=${DS}&amp;_WFB=1"></source>
+        <effect type="confirm" content="是否启动 &lt;span style=&quot;color:red&quot;&gt;{${name}}&lt;/span&gt; ?"></effect>
+        <effect type="ajaxSubmit" action="${updateByAjax}"></effect>
+        <effect type="component.reload"></effect>
+    </event>
+    <event name="openPage.process.diagram">
+        <attach anchor="EOFR">
+            <appendElement type="icon" param='{fillclass:"btn-info",iconclass:"icon-retweet"}'></appendElement>
+        </attach>
+        <source scope="CROW" param="_DI=${id}&amp;_DS=${DS}"></source>
+        <effect type="openPage" action='/diagram-viewer/forwarder.html' isStack="true"></effect>
     </event>
 
 </event-store>

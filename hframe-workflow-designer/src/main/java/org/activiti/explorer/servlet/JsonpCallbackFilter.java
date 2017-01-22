@@ -24,7 +24,7 @@ public class JsonpCallbackFilter implements Filter {
   public void init(FilterConfig fConfig) throws ServletException {}
 
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-    HttpServletRequest httpRequest = (HttpServletRequest) request;
+      HttpServletRequest httpRequest = (HttpServletRequest) request;
     HttpServletResponse httpResponse = (HttpServletResponse) response;
 
     Map<String, String[]> parms = httpRequest.getParameterMap();

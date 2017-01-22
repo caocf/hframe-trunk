@@ -21,6 +21,7 @@
     </baseMapper>
     <eventMapper>
         <mapping id="id" value="${id}"></mapping>
+        <mapping id="DS" value="${DS}"></mapping>
         <mapping id="ids" value="${id}"></mapping>
         <mapping id="name" value="${name}"></mapping>
         <mapping id="create" value="${create}.html"></mapping>
