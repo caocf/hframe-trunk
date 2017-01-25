@@ -49,7 +49,7 @@
                 <value>classpath:hframe.properties</value>
                 <value>classpath:properties/dataSource.properties</value>
                 <value>classpath:properties/projectCreate.properties</value>
-                <value>classpath:db.properties</value>
+                <!--<value>classpath:db.properties</value>-->
                 <value>classpath:ui.properties</value>
                 <value>classpath:properties/redis.properties</value>
                 <value>classpath:properties/kafka-producer.properties</value>

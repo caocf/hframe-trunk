@@ -42,23 +42,23 @@ public class ActivitiEngineConfiguration {
   protected Environment environment;
   
   @Bean
-  public DataSource dataSource() { 
+  public DataSource dataSource() {
     SimpleDriverDataSource ds = new SimpleDriverDataSource();
-    
+
     try {
       @SuppressWarnings("unchecked")
       Class<? extends Driver> driverClass = (Class<? extends Driver>) Class.forName(environment.getProperty("jdbc.driver", "org.h2.Driver"));
       ds.setDriverClass(driverClass);
-      
+
     } catch (Exception e) {
       log.error("Error loading driver class", e);
     }
-    
+
     // Connection settings
     ds.setUrl(environment.getProperty("jdbc.url", "jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000"));
-    ds.setUsername(environment.getProperty("jdbc.username", "sa"));
+    ds.setUsername(environment.getProperty("jdbc.user", "sa"));
     ds.setPassword(environment.getProperty("jdbc.password", ""));
-    
+
     return ds;
   }
 
