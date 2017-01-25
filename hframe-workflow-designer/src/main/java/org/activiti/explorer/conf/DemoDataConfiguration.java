@@ -79,6 +79,11 @@ public class DemoDataConfiguration {
   
   @PostConstruct
   public void init() {
+    System.setProperty("create.demo.users","false");
+    System.setProperty("create.demo.definitions","false");
+    System.setProperty("create.demo.models","false");
+    System.setProperty("create.demo.reports","false");
+
     if (Boolean.valueOf(environment.getProperty("create.demo.users", "true"))) {
       LOGGER.info("Initializing demo groups");
       initDemoGroups();

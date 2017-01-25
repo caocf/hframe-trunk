@@ -15,6 +15,7 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.form.AbstractFormType;
+import org.activiti.engine.impl.IdentityService4HframeImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.explorer.form.MonthFormType;
 import org.activiti.explorer.form.ProcessDefinitionFormType;
@@ -93,12 +94,15 @@ public class ActivitiEngineConfiguration {
   	processEngineConfiguration.setDatabaseSchemaUpdate(environment.getProperty("engine.schema.update", "true"));
   	processEngineConfiguration.setTransactionManager(annotationDrivenTransactionManager());
   	processEngineConfiguration.setJobExecutorActivate(Boolean.valueOf(
-  	    environment.getProperty("engine.activate.jobexecutor", "false")));
+            environment.getProperty("engine.activate.jobexecutor", "false")));
   	processEngineConfiguration.setAsyncExecutorEnabled(Boolean.valueOf(
-        environment.getProperty("engine.asyncexecutor.enabled", "true")));
+            environment.getProperty("engine.asyncexecutor.enabled", "true")));
   	processEngineConfiguration.setAsyncExecutorActivate(Boolean.valueOf(
-        environment.getProperty("engine.asyncexecutor.activate", "true")));
+            environment.getProperty("engine.asyncexecutor.activate", "true")));
   	processEngineConfiguration.setHistory(environment.getProperty("engine.history.level", "full"));
+
+    //用户认证服务
+    processEngineConfiguration.setIdentityService(new IdentityService4HframeImpl());
   	
   	String mailEnabled = environment.getProperty("engine.email.enabled");
   	if ("true".equals(mailEnabled)) {

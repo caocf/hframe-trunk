@@ -8,8 +8,12 @@
        http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.0.xsd
        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
        
-  <bean id="activitiLoginHandler" class="org.activiti.explorer.ui.login.DefaultLoginHandler">
-    <property name="identityService" ref="identityService" />
-  </bean>
-  
+  <!--<bean id="activitiLoginHandler" class="org.activiti.explorer.ui.login.DefaultLoginHandler">-->
+    <!--<property name="identityService" ref="identityService" />-->
+  <!--</bean>-->
+    <bean id="activitiLoginHandler" class="com.hframework.ext.activiti.handler.ActivitiLoginHandler">
+    </bean>
+
+
+
 </beans>

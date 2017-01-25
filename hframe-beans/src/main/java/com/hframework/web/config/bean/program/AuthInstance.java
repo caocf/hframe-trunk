@@ -11,6 +11,8 @@ public class AuthInstance {
     private String user;
     @XStreamAlias("data")
     private String data;
+    @XStreamAlias("role")
+    private String role;
     @XStreamAlias("function")
     private String function;
 
@@ -73,5 +75,13 @@ public class AuthInstance {
     public SuperAuthFilter getSuperAuthFilter() {
         if(superAuthFilter == null) superAuthFilter = new SuperAuthFilter();
         return superAuthFilter;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }

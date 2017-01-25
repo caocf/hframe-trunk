@@ -69,6 +69,12 @@
     <property name="navigationFragmentChangeListener" ref="navigationFragmentChangeListener" />
     <property name="i18nManager" ref="i18nManager" />
   </bean>
+  <bean name="blankWindow" class="com.hframe.activiti.ext.explorer.BlankWindow" scope="session">
+    <property name="navigationFragmentChangeListener" ref="navigationFragmentChangeListener" />
+    <property name="i18nManager" ref="i18nManager" />
+  </bean>
+
+
   
   <bean name="explorerApp" class="org.activiti.explorer.ExplorerApp" scope="session">
     <property name="environment" value="${activiti.ui.environment}" />
@@ -105,11 +111,17 @@
     <property name="mainWindow" ref="mainWindow" />
     <property name="i18nManager" ref="i18nManager" />
   </bean>
-  
+
+
   <bean name="viewManager" class="org.activiti.explorer.ViewManagerFactoryBean" scope="session">
     <property name="mainWindow" ref="mainWindow" />
     <property name="environment" value="${activiti.ui.environment}" />
   </bean>
+  <!--<bean name="viewManager" class="com.hframe.activiti.ext.explorer.ViewManagerFactoryBean" scope="session">-->
+    <!--<property name="mainWindow" ref="mainWindow" />-->
+    <!--<property name="blankWindow" ref="blankWindow" />-->
+    <!--<property name="environment" value="${activiti.ui.environment}" />-->
+  <!--</bean>-->
 
   <bean name="workflowDefinitionConversionFactory" class="org.activiti.workflow.simple.converter.WorkflowDefinitionConversionFactory" />
   

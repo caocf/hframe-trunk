@@ -14,6 +14,7 @@
   <auth-instance>
     <user>hframe.hfsec_user</user>
     <data>hframe.hfsec_organize</data>
+    <role>hframe.hfsec_role</role>
     <function>hframe.hfsec_menu</function>
     <user-data-auth>hframe.hfsec_user / hframe.hfsec_user_authorize / hframe.hfsec_organize</user-data-auth>
     <user-func-auth>hframe.hfsec_user / hframe.hfsec_user_authorize / hframe.hfsec_role / hframe.hfsec_role_authorize / hframe.hfsec_menu</user-func-auth>

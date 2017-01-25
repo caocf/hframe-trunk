@@ -19,6 +19,7 @@ public class AuthContext {
 
     private AuthFunctionManager authFunctionManager = new AuthFunctionManager();
 
+    private AuthRoleManager authRoleManager = new AuthRoleManager();
 
     public class AuthManager extends HashMap<Long, List<AuthDataUnit>> {
 
@@ -140,6 +141,63 @@ public class AuthContext {
 
     }
 
+    public class AuthRoleManager extends HashMap<String, List<AuthDataUnit>> {
+        private List allRoles ;
+        private Map<String, String> roleIdNameMap;
+
+        public void add(Long dataUnitId, String roleId) {
+            if(!this.containsKey(roleId)) {
+                this.put(roleId, new ArrayList<AuthDataUnit>());
+            }
+
+            Iterator<AuthDataUnit> iterator = this.get(roleId).iterator();
+            boolean isChild = false;
+            while (iterator.hasNext()) {
+                AuthDataUnit next = iterator.next();
+                if(authDataUnitRelManager.isChild(next.dataUnitId, dataUnitId)){
+                    iterator.remove();
+                }
+
+                if(authDataUnitRelManager.isParent(next.dataUnitId, dataUnitId)){
+                    return;//添加的节点对应的父节点已经在授权数据列表中，直接返回
+                }
+            }
+
+            this.get(roleId).add(AuthDataUnit.valueOf(dataUnitId));
+        }
+
+        public List<Long> getDataUnitIds(String roleId) {
+            Set<Long> dataUnitIds = new HashSet<Long>();
+            if(this.containsKey(roleId)) {
+                List<AuthDataUnit> authDataUnits = this.get(roleId);
+                for (AuthDataUnit authDataUnit : authDataUnits) {
+                    dataUnitIds.add(authDataUnit.dataUnitId);
+                    dataUnitIds.addAll(authDataUnitRelManager.getChildren(authDataUnit.dataUnitId));
+
+                }
+                return Lists.newArrayList(dataUnitIds);
+            }
+            return Lists.newArrayList();
+        }
+
+        public List getAllRoles() {
+            return allRoles;
+        }
+
+        public void setAllRoles(List allRoles) {
+            this.allRoles = allRoles;
+        }
+
+        public Map<String, String> getRoleIdNameMap() {
+            if(roleIdNameMap == null) roleIdNameMap = new HashMap<String, String>();
+            return roleIdNameMap;
+        }
+
+        public void setRoleIdNameMap(Map<String, String> roleIdNameMap) {
+            this.roleIdNameMap = roleIdNameMap;
+        }
+    }
+
     public class AuthFunctionManager extends HashMap<String, Long> {
         private List allFunctions ;
 
@@ -153,7 +211,7 @@ public class AuthContext {
     }
 
     public static class AuthUser{
-        public Class userClass;
+        public static Class userClass;
         public Object userObject;
         public Long userId;
 
@@ -227,5 +285,13 @@ public class AuthContext {
 
     public void setAuthFunctionManager(AuthFunctionManager authFunctionManager) {
         this.authFunctionManager = authFunctionManager;
+    }
+
+    public AuthRoleManager getAuthRoleManager() {
+        return authRoleManager;
+    }
+
+    public void setAuthRoleManager(AuthRoleManager authRoleManager) {
+        this.authRoleManager = authRoleManager;
     }
 }

@@ -1,11 +1,17 @@
 package com.hframework.interceptor;
 
+import com.hframework.common.frame.ServiceFactory;
 import com.hframework.web.bean.WebContext;
 import com.hframework.web.config.bean.component.Event;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.engine.ProcessEngines;
+import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
+import org.activiti.explorer.Constants;
+import org.activiti.explorer.ExplorerApp;
+import org.activiti.explorer.identity.LoggedInUser;
+import org.activiti.explorer.ui.login.LoginHandler;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -44,6 +50,18 @@ public class WorkflowInterceptor implements HandlerInterceptor {
         String dataSet = request.getParameter("_DS");
         String dataId = request.getParameter("_DI");
 
+        if(request.getSession().getAttribute(Constants.AUTHENTICATED_USER_ID) == null) {
+            LoginHandler loginHandler = (LoginHandler) ServiceFactory.getService("activitiLoginHandler");
+            LoggedInUser user = loginHandler.authenticate(request, response);
+            if(user != null) {
+                ExplorerApp.get().setUser(user);
+                loginHandler.onRequestStart(request, response);
+            }
+        }else {
+            Authentication.setAuthenticatedUserId(String.valueOf(request.getSession().getAttribute(Constants.AUTHENTICATED_USER_ID)));
+        }
+
+
         if(StringUtils.isNotBlank(workflowButton) && StringUtils.isNotBlank(dataSet) && StringUtils.isNotBlank(dataId) && WebContext.get().getProcess(dataSet) != null) {
             Object[] objects = WebContext.get().getProcess(dataSet);
             Event workflowStartEvent = (Event) objects[5];
@@ -64,6 +82,9 @@ public class WorkflowInterceptor implements HandlerInterceptor {
                 List<Task> list = ProcessEngines.getDefaultProcessEngine().getTaskService().createTaskQuery().processDefinitionKey(dataSet).processInstanceBusinessKey(dataId).active().list();
                 for (Task task : list) {
                     if(("value-" + oldWorkflowValue).equals(task.getTaskDefinitionKey())) {
+                        if(StringUtils.isBlank(task.getAssignee())) {
+                            ProcessEngines.getDefaultProcessEngine().getTaskService().setAssignee(task.getId(), Authentication.getAuthenticatedUserId());
+                        }
                         ProcessEngines.getDefaultProcessEngine().getTaskService().complete(task.getId(),new HashMap<String, Object>(){{
                             put(case1, curWorkflowValue);
                             put(case1.toUpperCase(), curWorkflowValue);
@@ -114,6 +135,6 @@ public class WorkflowInterceptor implements HandlerInterceptor {
      * @throws Exception in case of errors
      */
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-
+        Authentication.setAuthenticatedUserId(null);
     }
 }

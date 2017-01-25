@@ -57,6 +57,7 @@ public class DynamicAuthService implements AuthService {
 
     private  String authUserImpl = null;//PropertyConfigurerUtils.getProperty("hframe.auth.user.impl");
     private  String authDataImpl = null;//PropertyConfigurerUtils.getProperty("hframe.auth.data.impl");
+    private  String authRoleImpl = null;//PropertyConfigurerUtils.getProperty("hframe.auth.data.impl");
     private  String authFuncImpl = null;//PropertyConfigurerUtils.getProperty("hframe.auth.func.impl");
     private  String authUserDataImpl = null;//PropertyConfigurerUtils.getProperty("hframe.auth.user.data.impl");
     private  String authUserFuncImpl = null;//PropertyConfigurerUtils.getProperty("hframe.auth.user.func.impl");
@@ -74,6 +75,7 @@ public class DynamicAuthService implements AuthService {
         Program program = WebContext.get().getProgram();
         authUserImpl = program.getAuthInstance().getUser();
         authDataImpl = program.getAuthInstance().getData();
+        authRoleImpl = program.getAuthInstance().getRole();
         authFuncImpl = program.getAuthInstance().getFunction();
         authUserDataImpl = program.getAuthInstance().getUserDataAuth();
         authUserFuncImpl = program.getAuthInstance().getUserFuncAuth();
@@ -93,9 +95,40 @@ public class DynamicAuthService implements AuthService {
         //添加用户的所有权限（数据与功能对应）
         addAuthRelation(context);
 
+        //添加角色
+        addRoles(context);
+
+        //添加用户所有的角色 （作废，合并进入addAuthRelation（））
+        addRoleRelation(context);
+
+
         request.getSession().setAttribute(SessionKey.AUTH, context);
 
         return context;
+    }
+
+    private void addRoleRelation(AuthContext context) {
+
+    }
+
+    private void addRoles(AuthContext context) throws Exception {
+        String[] authRoleImpls = RegexUtils.split(authRoleImpl, "[ ]*[;,]+[ ]*");
+        for (String authRoleImpl : authRoleImpls) {
+            String moduleCode = authRoleImpl.substring(0, authRoleImpl.indexOf("."));
+            String dataSetCode = authRoleImpl.substring(authRoleImpl.indexOf(".") + 1);
+            Class<?> defPoClass = Class.forName(CreatorUtil.getDefPoClass("",
+                    WebContext.get().getProgram().getCode(), moduleCode, dataSetCode).getClassPath());
+            DataSetDescriptor dataSet = WebContext.get().getDataSet(defPoClass);
+            List list = getAll(moduleCode, dataSetCode);
+            for (Object roleObject : list) {
+                Long roleId = Long.parseLong(org.apache.commons.beanutils.BeanUtils.getProperty(
+                        roleObject, ResourceWrapper.JavaUtil.getJavaVarName(dataSet.getKeyField().getCode())));
+                String roleName = String.valueOf(org.apache.commons.beanutils.BeanUtils.getProperty(
+                        roleObject, ResourceWrapper.JavaUtil.getJavaVarName(dataSet.getNameField().getCode())));
+                context.getAuthRoleManager().getRoleIdNameMap().put(String.valueOf(roleId), roleName);
+            }
+            context.getAuthRoleManager().setAllRoles(list);
+        }
     }
 
     private Long getAdminAuthKeyValue() throws Exception {
@@ -162,6 +195,12 @@ public class DynamicAuthService implements AuthService {
                     }
 
                     String adminAuthClassFieldName = dataSet.getRelFieldCode(adminAuthClass);
+
+                    //添加角色关系
+                    for (Object filedValue : filedValues) {
+                        context.getAuthRoleManager().add((Long) filedValue, String.valueOf(ReflectUtils.getFieldValue(authUserData, ResourceWrapper.JavaUtil.getJavaVarName(adminAuthClassFieldName))));
+                    }
+
                     if(adminAuthKeyValue.equals(ReflectUtils.getFieldValue(authUserData, ResourceWrapper.JavaUtil.getJavaVarName(adminAuthClassFieldName)))) {
                         List allFunctions = context.getAuthFunctionManager().getAllFunctions();
                         for (Object authUserFunc : allFunctions) {
@@ -170,6 +209,7 @@ public class DynamicAuthService implements AuthService {
                                 context.getAuthManager().add((Long) filedValue, funcId);
                             }
                         }
+
                         return ;
                     }else {
                         List authUserFuncs;
@@ -197,6 +237,8 @@ public class DynamicAuthService implements AuthService {
                             }
                         }
                     }
+
+
                 }
             }
         }
