@@ -354,6 +354,7 @@ public class DataSetLoaderService {
             }
             if(Arrays.asList(new String[]{"op_id", "modify_op_id", "creator_id", "modifier_id"}).contains(hfmdEntityAttr.getHfmdEntityAttrCode())) {
                 Rel rel = new Rel();
+                rel.setAddByGlobal("true");
                 rel.setEntityCode("hfsec_user/hfsec_user_id/hfsec_user_name");
                 field.setRel(rel);
             }

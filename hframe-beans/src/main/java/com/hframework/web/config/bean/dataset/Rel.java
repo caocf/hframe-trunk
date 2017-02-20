@@ -32,6 +32,10 @@ public class Rel {
     @XStreamAlias("rel")
     private List<Rel> relList;
 
+    @XStreamAsAttribute
+    @XStreamAlias("add-by-global")
+    private String AddByGlobal;
+
     public Rel() {
     }
    
@@ -74,5 +78,13 @@ public class Rel {
 
     public void setRelScope(String relScope) {
         this.relScope = relScope;
+    }
+
+    public String getAddByGlobal() {
+        return AddByGlobal;
+    }
+
+    public void setAddByGlobal(String addByGlobal) {
+        AddByGlobal = addByGlobal;
     }
 }

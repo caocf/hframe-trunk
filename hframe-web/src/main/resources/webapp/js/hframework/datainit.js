@@ -104,12 +104,14 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
             if(!_data.data) return;
 
             var isBooleanElements = false;
+            var booleanData = {};
             if(_data.data.length == 2) {
                 var booleanElements = {"0":"否","1":"是"};
                 for (var i = 0; i < _data.data.length; i++) {
                     //if(booleanElements[_data.data[i].value] == _data.data[i].text) {
 
                     if(booleanElements[_data.data[i].value]) {
+                        booleanData[_data.data[i].value] = _data.data[i].text;
                         delete booleanElements[_data.data[i].value];
                     }
                 }
@@ -127,19 +129,21 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
                 inputArray.push($newInput);
             }
             if(_batchLoad) {
-                _$container.find(".hfcheckbox[data-code='" + dataCode + "'][data-condition='" + dataCondition + "']").each(function(){
-                    initCheckboxOrRadio($(this), inputArray, isBooleanElements);
+                _$container.find(".hfcheckbox[data-code='" + dataCode + "'][data-condition='" + dataCondition + "']"+
+                    "[req_dataCondition='" + _req_dataCondition + "']").each(function(){
+                    initCheckboxOrRadio($(this), inputArray, isBooleanElements, booleanData);
                 });
-                _$container.find(".hfradio[data-code='" + dataCode + "'][data-condition='" + dataCondition + "']").each(function(){
-                    initCheckboxOrRadio($(this), inputArray, isBooleanElements);
+                _$container.find(".hfradio[data-code='" + dataCode + "'][data-condition='" + dataCondition + "']"+
+                    "[req_dataCondition='" + _req_dataCondition + "']").each(function(){
+                    initCheckboxOrRadio($(this), inputArray, isBooleanElements, booleanData);
                 });
             }else {
-                initCheckboxOrRadio($this, inputArray, isBooleanElements);
+                initCheckboxOrRadio($this, inputArray, isBooleanElements, booleanData);
             }
         });
     }
 
-    function initCheckboxOrRadio(_$this, _inputArray, _isBooleanElements) {
+    function initCheckboxOrRadio(_$this, _inputArray, _isBooleanElements, _booleanData) {
         var values = _$this.attr("data-value");
         var name = _$this.find("input").attr("name");
 
@@ -149,8 +153,18 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
 
             var $trueCheckBox = _$this.clone();
             $trueCheckBox.find("input").val(1);
+
             $trueCheckBox.css("display","");
             _$this.after($trueCheckBox);
+
+            if($trueCheckBox.hasClass("hfswitch")){
+                $trueCheckBox.find("input").attr("data-off-text", _booleanData["0"]);
+                $trueCheckBox.find("input").attr("data-on-text",  _booleanData["1"]);
+                if(values == "1") {
+                    $trueCheckBox.find("input").attr("checked", "checked");
+                }
+                $trueCheckBox.find("input").bootstrapSwitch();
+            }
         }else {
             var inputArray = [];
             $(_inputArray).each(function(){
@@ -163,7 +177,7 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
         if(values) {
             var valueArray = values.split(",");
             for(var index in valueArray){
-                var $input =  _$this.parent().find("input[name=" + name + "][value=" + valueArray[index] + "]");
+                var $input =  _$this.parent().find("input[name=" + name + "][value='" + valueArray[index] + "']");
                 if($input) $.uniform.update($input.attr("checked","true"));
             }
         }
@@ -172,6 +186,23 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
         }
 
         _$this.change();
+    }
+
+    $.resetChosenWidth = function(){
+        $(".hfTreeList").each(function(){
+            var maxWidth = 0;
+            $(this).find(".chosen-container").each(function(){
+                var width = $(this).css("width")
+                if(width) {
+                    if(parseInt(width.substr(0,width.length-2)) > maxWidth) {
+                        maxWidth = parseInt(width.substr(0,width.length-2))
+                    }
+                }
+            });
+            if(maxWidth > 0) {
+                $(this).find(".chosen-container").css("width", maxWidth + "px");
+            }
+        });
     }
 
     $.selectLoad = function ($this, _func, _batchLoad, _$container) {
@@ -199,7 +230,7 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
                     });
                     //initSelect($this, htmlStr,dataCode,_data);
                 }
-
+                $.resetChosenWidth();
             }else {
                 for (var i = 0; i < _data.data.length; i++) {
                     var $newNode = $($this.prop("outerHTML").replace("#text", _data.data[i].text));

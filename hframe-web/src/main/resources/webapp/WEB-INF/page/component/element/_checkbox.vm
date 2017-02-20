@@ -11,7 +11,7 @@
 ##/>
 
 
-<label class="checkbox hfcheckbox inline" data-code="$column.dataCode" data-condition="1=1"  data-value="$!value" not-null="$!column.notNull" style="display: none">
+<label class="checkbox hfcheckbox inline" data-code="$column.dataCode" data-condition="1=1"  data-value="$!value" not-null="$!column.notNull" style="display: none"  relat-element="$!column.dataCondition"  >
     <input type="checkbox" name="$column.code" value="" />
 </label>
 

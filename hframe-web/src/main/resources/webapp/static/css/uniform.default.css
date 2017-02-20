@@ -340,6 +340,13 @@ div.selector {
 div.checker {
   margin-right: 5px; }
 
+/** add by zqh for bootstrap-switch**/
+.bootstrap-switch-container div.checker {
+  margin-right: 0px;
+  display:none;
+  width:0px;}
+
+
 /* Radio */
 div.radio {
   margin-right: 3px; }

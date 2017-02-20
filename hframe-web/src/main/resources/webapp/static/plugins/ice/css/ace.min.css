@@ -82,6 +82,19 @@
     border-width: 0 0 0 1px
 }
 
+.tree td .tree-folder-content:before {
+    display: inline-block;
+    content: "";
+    position: absolute;
+    z-index: 1;
+    top: -24px;
+    bottom: 16px;
+    left: -16px;
+    border: 1px dotted #67b2dd;
+    border-width: 0 0 0 1px;
+}
+
+
 .tree .tree-item {
     position: relative;
     height: 20px;

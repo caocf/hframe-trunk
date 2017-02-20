@@ -16,7 +16,7 @@
     <pagetemplate id="qlist" path="list.vm" parent-id = "default" name="列表页" type="forward">
         <element id="qForm" type="component"  event-extend="false">
             <events>
-                <event name="query">
+                <event name="query" description="查询">
                     <attach anchor="EOFC">
                         <appendElement type="button" param='{btnclass:"btn-primary",btnText:"查询"}'></appendElement>
                     </attach>
@@ -45,7 +45,7 @@
         <element id="cForm" type="component" event-extend="false"></element>
         <element id="cList" type="component" event-extend="false">
             <events>
-                <event name="submit">
+                <event name="submit" description="提交">
                     <attach anchor="EOFC">
                         <appendElement type="button" param='{btnclass:"btn-primary",btnText:" 提 交 "}'></appendElement>
                     </attach>
@@ -60,7 +60,7 @@
         <element id="eForm" type="component" event-extend="false"></element>
         <element id="eList" type="component" event-extend="false">
             <events>
-                <event name="submit">
+                <event name="submit" description="提交">
                     <attach anchor="EOFC">
                         <appendElement type="button" param='{btnclass:"btn-primary",btnText:" 提 交 "}'></appendElement>
                     </attach>

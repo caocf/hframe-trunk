@@ -70,6 +70,129 @@ function componentinit(){
     });
 
 
+    $(".hfTreeList").each(function(){
+        var $tree = $(this).find(".tree");
+        //$(".tree-folder-header").click();
+        var $templateTable = $(this).find($("table"));
+        var $templateTableRow =  $templateTable.find(".hflist-data tr:first").clone();
+
+        $templateTableRow.children("td:first").find("select,input").each(function(){
+            $templateTableRow.children("td:first").append($("<input name='" + $(this).attr("name") + "' id='" + $(this).attr("id") + "' type='hidden' />"))
+            $(this).remove();
+        });
+
+        var $table = $templateTable.clone();
+        $table.children(".hflist-data").empty();
+        $tree.prepend($table);
+
+        var $treeItems = $tree.children("div:visible");
+        recursionNestTable($tree, $table, $treeItems, $templateTable, $templateTableRow, 0);
+        $templateTable.hide();
+
+        $(this).find('input.switch-checkbox[type="checkbox"], input.switch-radio[type="radio"]').not(".switch-checkbox-not-init")
+            .bootstrapSwitch();
+        ////样式冲突
+        //$(this).find(".bootstrap-switch-container .checker").css("width", "0px");
+        //$(this).find(".bootstrap-switch-container .checker").css("margin-right", "0px");
+
+    });
+
+
+    /**
+     * 循环递归 嵌套table
+     * @param $table
+     * @param $treeItems
+     * @param $templateTable
+     * @param $templateTableRow
+     */
+    function recursionNestTable(_$tree, _$table, _$treeItems, _$templateTable, _$templateTableRow, deepIndex){
+        _$treeItems.each(function(){
+            var $newRow = _$templateTableRow.clone();
+            var $contentDiv = $("<div class='tree-folder-content' style='position:relative;margin-left: " + deepIndex * 23 + "px;'></div>");
+            var data = $(this).data()["additionalParameters"];
+            if($(this).hasClass("tree-folder")) {
+                data = $(this).children().data()["additionalParameters"];
+            }
+            //var data = _$tree.tree('getAdditionalParameters', $(this));
+            $contentDiv.append($(this));
+            //$newRow.children("td:first").empty();
+            $newRow.find("select,input").each(function(){
+               if(data[$(this).attr("name")]) {
+                   if($(this).is("select")){
+                       $(this).attr("data-value", data[$(this).attr("name")]);
+                   }else {
+                       if($(this).is("[type=checkbox]") || $(this).is("[type=radio]")) {
+                           $(this).parents("label.hfcheckbox").attr("data-value", data[$(this).attr("name")]);
+                       }else {
+                           $(this).val(data[$(this).attr("name")]);
+                       }
+                   }
+                }
+            });
+            $newRow.children("td:first").append($contentDiv);
+            _$table.children(".hflist-data").append($newRow);
+            if($(this).hasClass("tree-folder")) {
+                var $subTreeItems = $(this).children(".tree-folder-content").children("div:visible");
+                recursionNestTable(_$tree, _$table, $subTreeItems, _$templateTable, _$templateTableRow, deepIndex + 1)
+                $(this).remove(".tree-folder-content");
+            }
+        });
+    }
+
+    ///**
+    // * 循环递归 嵌套table
+    // * @param $table
+    // * @param $treeItems
+    // * @param $templateTable
+    // * @param $templateTableRow
+    // */
+    //function recursionNestTable(_$table, _$treeItems, _$templateTable, _$templateTableRow){
+    //    _$treeItems.each(function(){
+    //        var $newRow = _$templateTableRow.clone();
+    //        $newRow.children(":first").append($(this));
+    //        if($(this).hasClass("tree-folder")) {
+    //            var $subTable = _$templateTable.clone();
+    //            $subTable.children(".hflist-data").empty();
+    //            $subTable.children(".hflist-data").append($newRow);
+    //            $subTable.children("thead").hide();
+    //            var $container = $("<tr><td colspan='100%' style='border: 0px;padding: 0px'></td></tr>");
+    //            $container.children(":first").append($subTable)
+    //            _$table.children(".hflist-data").append($container);
+    //            var $subTreeItems = $(this).children(".tree-folder-content").children("div:visible");
+    //            recursionNestTable($subTable, $subTreeItems, _$templateTable, _$templateTableRow)
+    //        }else {
+    //            _$table.children(".hflist-data").append($newRow);
+    //        }
+    //    });
+    //}
+
+    ///**
+    // * 循环递归 嵌套table
+    // * @param $table
+    // * @param $treeItems
+    // * @param $templateTable
+    // * @param $templateTableRow
+    // */
+    //function recursionNestTable(_$table, _$treeItems, _$templateTable, _$templateTableRow){
+    //    _$treeItems.each(function(){
+    //        var $newRow = _$templateTableRow.clone();
+    //        $newRow.children(":first").append($(this));
+    //        if($(this).hasClass("tree-folder")) {
+    //            var $subTable = _$templateTable.clone();
+    //            $subTable.children(".hflist-data").empty();
+    //            $subTable.children("thead").hide();
+    //            var $container = $("<tr><td colspan='100%' style='border: 0px;padding: 0px'></td></tr>");
+    //            $container.children(":first").append($(this));
+    //            $(this).children(".tree-folder-content").append($subTable);
+    //            //$container.children(":first").append($subTable)
+    //            _$table.children(".hflist-data").append($container);
+    //            var $subTreeItems = $(this).children(".tree-folder-content").children("div:visible");
+    //            recursionNestTable($subTable, $subTreeItems, _$templateTable, _$templateTableRow)
+    //        }else {
+    //            _$table.children(".hflist-data").append($newRow);
+    //        }
+    //    });
+    //}
 
 
 

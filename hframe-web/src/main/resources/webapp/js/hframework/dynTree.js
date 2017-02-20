@@ -19,8 +19,14 @@ DataSource.prototype.data = function(options, callback) {
         else $data = {}//no data
     }
 
-    if($data != null)//this setTimeout is only for mimicking some random delay
-        setTimeout(function(){callback({ data: $data });} , parseInt(Math.random() * 500) + 200);
+    if($data != null) {//this setTimeout is only for mimicking some random delay
+        if(true ||options.delay <= 0) {
+            callback({ data: $data });
+        }else {
+            setTimeout(function(){callback({ data: $data });} , parseInt(Math.random() * 500) + 200);
+        }
+    }
+
 };
 
 //DataSource.prototype.data = function(options, callback) {
@@ -74,7 +80,7 @@ DataSource.prototype.data = function(options, callback) {
 
 var treeDataSource = new DataSource({
     data: transferDataToIceTreeData(JSON.parse($("#dyn-tree-data").text())),
-    delay: 400
+    delay: 0
 });
 
 function transferDataToIceTreeData(origData){
@@ -94,7 +100,13 @@ function transferDataToIceTreeData(origData){
         }else {
             name = '<i class="icon-file-text blue"></i>' + name;// + "<div style='float:right;'><a href='javascript:alert(1)'><i class='icon-file-alt blue'></i></a><div>";
         }
-        result.push({name : name,type : type,additionalParameters :{ id : orig.id},data: transferDataToIceTreeData(orig.children),'icon-class':iconClass});
+
+        if(!orig.data) {
+            orig.data = {}
+        }
+        orig.data["id"] = orig.id;
+
+        result.push({name : name,type : type, additionalParameters :orig.data,data: transferDataToIceTreeData(orig.children),'icon-class':iconClass});
     }
     return result;
 }

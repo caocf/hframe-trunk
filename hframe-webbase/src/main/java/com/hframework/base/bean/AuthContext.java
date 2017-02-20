@@ -3,6 +3,7 @@ package com.hframework.base.bean;
 import com.google.common.collect.Lists;
 import com.hframework.common.ext.CollectionUtils;
 import com.hframework.common.ext.Fetcher;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 
@@ -26,10 +27,23 @@ public class AuthContext {
         private List<Class> authDataClass;
         private List<Class> authFunctionClass;
 
+        //<funcId, <dataUnit, eventList>>
+        private Map<Long, Map<AuthDataUnit, String>>  eventAuth;
+
 
         public void add(Long dataUnitId, Long functionId) {
+            this.add(dataUnitId, functionId, null);
+        }
+
+        public void add(Long dataUnitId, Long functionId, String eventList) {
             if(!this.containsKey(functionId)) {
                 this.put(functionId, new ArrayList<AuthDataUnit>());
+            }
+            if(this.eventAuth == null) {
+                this.eventAuth = new HashMap<Long, Map<AuthDataUnit, String>>();
+            }
+            if(!this.eventAuth.containsKey(functionId)) {
+                this.eventAuth.put(functionId, new HashMap<AuthDataUnit, String>());
             }
 
             Iterator<AuthDataUnit> iterator = this.get(functionId).iterator();
@@ -44,8 +58,27 @@ public class AuthContext {
                     return;//添加的节点对应的父节点已经在授权数据列表中，直接返回
                 }
             }
-
             this.get(functionId).add(AuthDataUnit.valueOf(dataUnitId));
+
+            Iterator<Map.Entry<AuthDataUnit, String>> dataEventRel = this.eventAuth.get(functionId).entrySet().iterator();
+            while (dataEventRel.hasNext()) {
+                Map.Entry<AuthDataUnit, String> next = dataEventRel.next();
+                if(authDataUnitRelManager.isChild(next.getKey().dataUnitId, dataUnitId)){
+                    if(StringUtils.isNotBlank(eventList) && eventList.trim().equals(next.getValue())) {
+                        dataEventRel.remove();
+                    }
+                }
+
+                if(authDataUnitRelManager.isParent(next.getKey().dataUnitId, dataUnitId)){
+                    if(StringUtils.isNotBlank(eventList) && eventList.trim().equals(next.getValue())) {
+                        return;//添加的节点对应的父节点已经在授权数据列表中，直接返回
+                    }
+                }
+            }
+            if(StringUtils.isNotBlank(eventList)) {
+                eventAuth.get(functionId).put(AuthDataUnit.valueOf(dataUnitId), eventList);
+            }
+
         }
 
         public List<Long> getDataUnitIds(Long functionId) {
@@ -100,6 +133,13 @@ public class AuthContext {
             this.authFunctionClass.add(authFunctionClass);
         }
 
+        public Map<Long, Map<AuthDataUnit, String>> getEventAuth() {
+            return eventAuth;
+        }
+
+        public void setEventAuth(Map<Long, Map<AuthDataUnit, String>> eventAuth) {
+            this.eventAuth = eventAuth;
+        }
     }
 
     public class AuthDataUnitRelManager extends HashMap<Long, Set<Long>> {

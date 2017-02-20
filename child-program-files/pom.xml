@@ -16,6 +16,7 @@
         <module>hframe-extension</module>
         <module>hframe-web</module>
         <module>hframe-deployer</module>
+        <module>hframe-workflow-designer</module>
     </modules>
 
     <properties>
@@ -27,6 +28,7 @@
         <mybatis_version>3.3.0</mybatis_version>
         <mybatis_spring>1.1.1</mybatis_spring>
     </properties>
+
 
     <dependencies>
         <dependency>
@@ -202,9 +204,19 @@
             <version>1.5.0-b01</version>
         </dependency>
         <dependency>
-            <groupId>velocity</groupId>
+            <groupId>org.apache.velocity</groupId>
             <artifactId>velocity</artifactId>
-            <version>1.4-rc1</version>
+            <version>1.7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.velocity</groupId>
+            <artifactId>velocity-tools</artifactId>
+            <version>2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ucfgroup.component</groupId>
+            <artifactId>velocity-extend</artifactId>
+            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>

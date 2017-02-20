@@ -204,9 +204,18 @@
     <component id="cForm" data-set="hframe/hfsec_role"/>
     <component id="cList" data-set="hframe/hfsec_role_authorize"/>
   </page>
-  <page id="hfsec_role_edit" name="角色修改" page-template="eComb" data-set="hframe/hfsec_role">
+  <page id="hfsec_role_edit" name="角色修改" page-template="dynamic" data-set="hframe/hfsec_role">
     <component id="eForm" data-set="hframe/hfsec_role"/>
-    <component id="eList" data-set="hframe/hfsec_role_authorize"/>
+    <component id="eTList" data-set="hframe/hfsec_role_authorize" event-extend="false">
+      <event name="submit" description="提交">
+        <attach anchor="EOFC">
+          <appendElement type="button" param='{btnclass:"btn-primary",btnText:" 提 交 "}'></appendElement>
+        </attach>
+        <source scope="EOC" param="thisForm"></source>
+        <effect type="ajaxSubmitByJson" action="ajaxSubmits.json" target-id="eForm,eTList"></effect>
+        <effect type="page.reload"></effect>
+      </event>
+    </component>
   </page>
   <page id="hfsec_role_detail" name="角色查看" page-template="dComb" data-set="hframe/hfsec_role">
     <component id="dForm" data-set="hframe/hfsec_role"/>

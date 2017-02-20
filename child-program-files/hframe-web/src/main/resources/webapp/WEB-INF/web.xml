@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
 	http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 
-    <display-name>app</display-name>
+  <display-name>app</display-name>
     <!-- Spring容器启动监听器配置 -->
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
@@ -20,53 +20,53 @@
         <listener-class>org.springframework.web.util.IntrospectorCleanupListener</listener-class>
     </listener>
 
-    <!--<listener>-->
-    <!--<listener-class>org.activiti.explorer.servlet.WebConfigurer</listener-class>-->
-    <!--</listener>-->
+    <listener>
+        <listener-class>org.activiti.explorer.servlet.WebConfigurer</listener-class>
+    </listener>
 
     <!-- To allow session-scoped beans in Spring -->
     <listener>
         <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
     </listener>
 
-    <!--<filter>-->
-    <!--<filter-name>UIFilter</filter-name>-->
-    <!--<filter-class>com.hframe.activiti.ext.filter.ActivitiExplorerFilter</filter-class>-->
-    <!--</filter>-->
+    <filter>
+        <filter-name>UIFilter</filter-name>
+        <filter-class>com.hframe.activiti.ext.filter.ActivitiExplorerFilter</filter-class>
+    </filter>
 
-    <!--<filter>-->
-    <!--<filter-name>JSONPFilter</filter-name>-->
-    <!--<filter-class>org.activiti.explorer.servlet.JsonpCallbackFilter</filter-class>-->
-    <!--</filter>-->
+    <filter>
+        <filter-name>JSONPFilter</filter-name>
+        <filter-class>org.activiti.explorer.servlet.JsonpCallbackFilter</filter-class>
+    </filter>
 
-    <!--<filter-mapping>-->
-    <!--<filter-name>UIFilter</filter-name>-->
-    <!--<url-pattern>/*</url-pattern>-->
-    <!--</filter-mapping>-->
+    <filter-mapping>
+        <filter-name>UIFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
 
-    <!--<filter-mapping>-->
-    <!--<filter-name>JSONPFilter</filter-name>-->
-    <!--<url-pattern>/service/*</url-pattern>-->
-    <!--</filter-mapping>-->
+    <filter-mapping>
+        <filter-name>JSONPFilter</filter-name>
+        <url-pattern>/service/*</url-pattern>
+    </filter-mapping>
 
-    <!--<servlet>-->
-    <!--<servlet-name>Vaadin Application Servlet</servlet-name>-->
-    <!--<servlet-class>org.activiti.explorer.servlet.ExplorerApplicationServlet</servlet-class>-->
-    <!--<init-param>-->
-    <!--<param-name>widgetset</param-name>-->
-    <!--<param-value>org.activiti.explorer.CustomWidgetset</param-value>-->
-    <!--</init-param>-->
-    <!--</servlet>-->
+    <servlet>
+        <servlet-name>Vaadin Application Servlet</servlet-name>
+        <servlet-class>org.activiti.explorer.servlet.ExplorerApplicationServlet</servlet-class>
+        <init-param>
+            <param-name>widgetset</param-name>
+            <param-value>org.activiti.explorer.CustomWidgetset</param-value>
+        </init-param>
+    </servlet>
 
-    <!--<servlet-mapping>-->
-    <!--<servlet-name>Vaadin Application Servlet</servlet-name>-->
-    <!--<url-pattern>/ui/*</url-pattern>-->
-    <!--</servlet-mapping>-->
+    <servlet-mapping>
+        <servlet-name>Vaadin Application Servlet</servlet-name>
+        <url-pattern>/ui/*</url-pattern>
+    </servlet-mapping>
 
-    <!--<servlet-mapping>-->
-    <!--<servlet-name>Vaadin Application Servlet</servlet-name>-->
-    <!--<url-pattern>/VAADIN/*</url-pattern>-->
-    <!--</servlet-mapping>-->
+    <servlet-mapping>
+        <servlet-name>Vaadin Application Servlet</servlet-name>
+        <url-pattern>/VAADIN/*</url-pattern>
+    </servlet-mapping>
 
     <context-param>
         <param-name>contextConfigLocation</param-name>
@@ -101,14 +101,14 @@
     </servlet-mapping>
     <!-- 框架加载服务 -->
     <!--<servlet>-->
-    <!--<servlet-name>frameInitServlet</servlet-name>-->
-    <!--<servlet-class>com.hframe.tag.servlet.FrameInitServlet</servlet-class>-->
-    <!--<load-on-startup>2</load-on-startup>-->
+        <!--<servlet-name>frameInitServlet</servlet-name>-->
+        <!--<servlet-class>com.hframe.tag.servlet.FrameInitServlet</servlet-class>-->
+        <!--<load-on-startup>2</load-on-startup>-->
     <!--</servlet>-->
 
     <!--<servlet-mapping>-->
-    <!--<servlet-name>frameInitServlet</servlet-name>-->
-    <!--<url-pattern>/servlet/frameInitServlet</url-pattern>-->
+        <!--<servlet-name>frameInitServlet</servlet-name>-->
+        <!--<url-pattern>/servlet/frameInitServlet</url-pattern>-->
     <!--</servlet-mapping>-->
 
     <filter>

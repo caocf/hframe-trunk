@@ -31,6 +31,11 @@
                 #set($list = $element.value)
                 #parse("component/editList.vm")
             </div>
+        #elseif($element.value.component == "eTList")
+            <div class="#if("$!element.value.container" !="") $element.value.container #end" group="$!element.value.group">
+                #set($list = $element.value)
+                #parse("component/editTreeList.vm")
+            </div>
         #elseif($element.value.component == "qList")
             <div class="#if("$!element.value.container" !="") $element.value.container #end" group="$!element.value.group">
                 #set($list = $element.value)

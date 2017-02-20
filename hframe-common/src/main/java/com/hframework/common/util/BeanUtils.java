@@ -112,8 +112,6 @@ public class BeanUtils {
         Map<String, String> parmMap = new HashMap<String, String>();
         // 属性的名称及类型
         Field[] fileds = obj.getClass().getDeclaredFields();
-        // 方法名称及方法
-        Map<String, Method> methods = getMethods(obj.getClass());
         try {
             for (Field field : fileds) {
                 // 属性名称
@@ -121,24 +119,27 @@ public class BeanUtils {
                 field.setAccessible(true);
                 ;
                 parmMap.put(filedName,field.get(obj) != null ? String.valueOf(field.get(obj)) : null);
-//                // 转换成GET方法(首字母大写)
-//                StringBuffer sub = new StringBuffer("get");
-//                sub.append(StringUtils.upperCaseFirstChar(filedName));
-//                // GET方法名称
-//                String setFiled = sub.toString();
-//                // 获取GET方法
-//                Method getMethod = (Method) methods.get(setFiled);
-//                getMethod.setAccessible(true);
-//                if (getMethod != null) {
-//                    // 从baseForm中取出对应的值
-//                    Object o = getMethod.invoke(obj, new Object[0]);
-//                    if (o != null) {
-//                        String temp = String.valueOf(o);
-//                        if (!temp.equals("") || bool) {
-//                            parmMap.put(filedName, temp);
-//                        }
-//                    }
-//                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return parmMap;
+    }
+
+    public static Map<String, String> convertMapAndFormat(Object obj, boolean bool) {
+        Map<String, String> parmMap = new HashMap<String, String>();
+        // 属性的名称及类型
+        Field[] fileds = obj.getClass().getDeclaredFields();
+        try {
+            for (Field field : fileds) {
+                // 属性名称
+                String filedName = field.getName();
+                field.setAccessible(true);
+                if(field.getType() == Date.class) {
+                    parmMap.put(filedName,field.get(obj) != null ? DateUtils.getDateYYYYMMDDHHMMSS((Date) field.get(obj)) : null);
+                }else {
+                    parmMap.put(filedName,field.get(obj) != null ? String.valueOf(field.get(obj)) : null);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

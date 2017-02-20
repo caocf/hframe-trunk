@@ -30,6 +30,8 @@
 	#parse("component/element/_checkbox.vm")
 #elseif($column.editType=='radio')
 	#parse("component/element/_radio.vm")
+#elseif($column.editType=='switch')
+	#parse("component/element/_switch.vm")
 #elseif($column.editType=='openwin')
 	#parse("component/element/_openwin.vm")
 #elseif($column.editType=='textarea')

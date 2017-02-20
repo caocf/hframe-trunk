@@ -31,6 +31,7 @@ public class ComponentDataContainer {
 
     private Map<String ,JsonSegmentParser> elements = new HashMap<String, JsonSegmentParser>();
 
+    private List<Event> allEvent = new ArrayList<Event>();
     //每一行开始(如：添加复选框)
     private List<EventElement> beforeOfRowList = new ArrayList<EventElement>();
     //每一行结尾(如：添加操作图标)
@@ -70,7 +71,7 @@ public class ComponentDataContainer {
             }
         }
 
-        List<Event> allEvent = new ArrayList<Event>();
+        allEvent = new ArrayList<Event>();
         allEvent.addAll(component.getBaseEvents().getEventList());
 
         //组件自身事件
@@ -158,6 +159,10 @@ public class ComponentDataContainer {
         }
         if(targetEvent.getName() == null && storeEvent.getName() != null) {
             targetEvent.setName(storeEvent.getName());
+        }
+
+        if(targetEvent.getDescription() == null && storeEvent.getDescription() != null) {
+            targetEvent.setDescription(storeEvent.getDescription());
         }
     }
 
@@ -971,7 +976,8 @@ public class ComponentDataContainer {
                     }
                 }
             }
-            return endOfRowHtml;
+
+            return !"eTList".equals(this.componentType) ? endOfRowHtml : "";
         }
 
         public ObjectTreeJsonSegmentParser(ComponentDataContainer componentDataContainer, Element element, String type) {
@@ -1059,19 +1065,26 @@ public class ComponentDataContainer {
 
                     String propertyNameExp = initMap.get(code);
                     List<String> varList = RegexUtils.findVarList(propertyNameExp);
-                    if(varList != null && varList.size() > 0) {
+                    if("${row}".equals(propertyNameExp)) {
+                        map.put(code, object);
+                    }else if(varList != null && varList.size() > 0) {
                         String resultVal = propertyNameExp;
                         for (String var : varList) {
                             String propertyName = ResourceWrapper.JavaUtil.getJavaVarName(var);
 
-
-                            String reallyProperty = getReallyProperty(var, this.getDataSetDescriptor());
-                            if(reallyProperty != null) {
-                                propertyName = ResourceWrapper.JavaUtil.getJavaVarName(reallyProperty);
+                            if (object instanceof Map && ("KEY_FIELD".equals(var) || "NAME_FIELD".equals(var)) && ((Map) object).containsKey(var)) {
+                            }else {
+                                String reallyProperty = getReallyProperty(var, this.getDataSetDescriptor());
+                                if(reallyProperty != null) {
+                                    propertyName = ResourceWrapper.JavaUtil.getJavaVarName(reallyProperty);
+                                }
                             }
+
+
                             try {
                                 String stringVal = org.apache.commons.beanutils.BeanUtils.getProperty(object,propertyName);
-                                resultVal = resultVal.replace("${" + var + "}", stringVal);
+                                if(stringVal == null) stringVal = org.apache.commons.beanutils.BeanUtils.getProperty(object,var);
+                                if(stringVal != null)  resultVal = resultVal.replace("${" + var + "}", stringVal);
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -1240,6 +1253,7 @@ public class ComponentDataContainer {
         private String params;
         private String action;
         private String when;
+        private String name;
         private String fillclass;
         private JSONObject conditionObject = new JSONObject(true);
         private JSONObject actionJsonObject = new JSONObject(true);
@@ -1250,6 +1264,8 @@ public class ComponentDataContainer {
             if(event.getSource() != null) {
                 params = event.getSource().getParam();
             }
+            name = event.getName();
+
             for (Effect effect : event.getEffectList()) {
                 JSONObject subJsonObject = new JSONObject();
                 subJsonObject.put("action",effect.getAction());
@@ -1360,6 +1376,14 @@ public class ComponentDataContainer {
         public void setAction(String action) {
             this.action = action;
         }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
     }
 
     public enum ComponentElementType{
@@ -1426,5 +1450,13 @@ public class ComponentDataContainer {
         public void setName(String name) {
             this.name = name;
         }
+    }
+
+    public List<Event> getAllEvent() {
+        return allEvent;
+    }
+
+    public void setAllEvent(List<Event> allEvent) {
+        this.allEvent = allEvent;
     }
 }

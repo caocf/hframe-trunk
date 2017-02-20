@@ -15,6 +15,7 @@ import com.hframework.web.SessionKey;
 import com.hframework.web.bean.DataSetDescriptor;
 import com.hframework.web.bean.WebContext;
 import com.hframework.web.config.bean.Program;
+import com.hframework.web.config.bean.dataset.Field;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -174,6 +175,7 @@ public class DynamicAuthService implements AuthService {
                 }
 
                 String authUserDataImpl = authUserFuncImpls[authUserDataImpls.length];
+                if(StringUtils.isBlank(authRoleImpl))  authRoleImpl = authUserDataImpl;
                 String[] dataSets = {authUserDataImpl};// RegexUtils.split(authUserDataImpl, "[ ]*[,]+[ ]*");
                 String moduleCode = dataSets[0].substring(0, dataSets[0].indexOf("."));
                 String dataSetCode = dataSets[0].substring(dataSets[0].indexOf(".") + 1);
@@ -226,13 +228,20 @@ public class DynamicAuthService implements AuthService {
                         }
 
                         for (Object authUserFunc : authUserFuncs) {
+                            DataSetDescriptor dataSet1 = WebContext.get().getDataSet(authUserFunc.getClass());
+                            String urlFieldCode = dataSet1.getUrlFieldCode("/frame/getEventsByFuncId.json");
+                            String eventList = null;
+                            if(StringUtils.isNotBlank(urlFieldCode)) {
+                                String relPropertyName = ResourceWrapper.JavaUtil.getJavaVarName(urlFieldCode);
+                                eventList = (String) ReflectUtils.getFieldValue(authUserFunc, relPropertyName);
+                            }
                             List<Class> authFunctionClass = context.getAuthManager().getAuthFunctionClass();
-                            List<String> relFieldCodes1 = WebContext.get().getDataSet(authUserFunc.getClass()).getRelFieldCodes(authFunctionClass);
+                            List<String> relFieldCodes1 = dataSet1.getRelFieldCodes(authFunctionClass);
                             for (String relFieldCode1 : relFieldCodes1) {
                                 String relPropertyName = ResourceWrapper.JavaUtil.getJavaVarName(relFieldCode1);
                                 Long funcId = (Long)  ReflectUtils.getFieldValue(authUserFunc, relPropertyName);
                                 for (Object filedValue : filedValues) {
-                                    context.getAuthManager().add((Long) filedValue, funcId);
+                                    context.getAuthManager().add((Long) filedValue, funcId, eventList);
                                 }
                             }
                         }
@@ -296,9 +305,18 @@ public class DynamicAuthService implements AuthService {
 
                     Object service = ServiceFactory.getService(childServiceImplClass);
                     final Object example = childPoExampleClass.newInstance();
+
                     Object newCriteria = ReflectUtils.invokeMethod(example, "createCriteria", new Class[]{}, new Object[]{});
                     ReflectUtils.invokeMethod(newCriteria, "and" + ResourceWrapper.JavaUtil.getJavaClassName(relFieldCode)+ "In",
                             new Class[]{List.class}, new Object[]{parentPoIds});
+
+                    if(childDataSet.getFields().containsKey("status")) {
+                        Field field = childDataSet.getFields().get("status");
+                        if(field.getEnumClass() != null && StringUtils.isNotBlank(field.getEnumClass().getCode())) {
+                            ReflectUtils.invokeMethod(newCriteria, "andStatusEqualTo",
+                                    new Class[]{Byte.class}, new Object[]{(byte)1});
+                        }
+                    }
                     List list = (List) ReflectUtils.invokeMethod(service,
                             "get" + ResourceWrapper.JavaUtil.getJavaClassName(dataSetCode)
                                     + "ListByExample", new Class[]{childPoExampleClass},new Object[]{example});
@@ -349,7 +367,11 @@ public class DynamicAuthService implements AuthService {
                         funcObject, ResourceWrapper.JavaUtil.getJavaVarName(dataSet.getKeyField().getCode())));
                 String url = String.valueOf(org.apache.commons.beanutils.BeanUtils.getProperty(
                         funcObject, "url"));
-                context.getAuthFunctionManager().put(url, funcId);
+
+                if(!context.getAuthFunctionManager().containsKey(url)) {
+                    context.getAuthFunctionManager().put(url, funcId);
+                }
+
                 context.getAuthManager().addAuthFunctionClass(funcObject.getClass());
             }
             context.getAuthFunctionManager().setAllFunctions(list);
@@ -421,7 +443,7 @@ public class DynamicAuthService implements AuthService {
         for (Object dataUnit : dataUnits) {
 
             Long dataUnitId = Long.parseLong(org.apache.commons.beanutils.BeanUtils.getProperty(
-                            dataUnit, ResourceWrapper.JavaUtil.getJavaVarName(dataSet.getKeyField().getCode())));
+                    dataUnit, ResourceWrapper.JavaUtil.getJavaVarName(dataSet.getKeyField().getCode())));
             Long parentDataUnitId = Long.parseLong(org.apache.commons.beanutils.BeanUtils.getProperty(
                     dataUnit, ResourceWrapper.JavaUtil.getJavaVarName(dataSet.getSelfDependPropertyName())));
 

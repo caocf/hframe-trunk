@@ -28,7 +28,7 @@
       <rel entity-code="hfsec_organize/hfsec_organize_id/hfsec_organize_name"/>
     </field>
     <field code="creator_id" name="创建人" edit-type="input">
-      <rel entity-code="hfsec_user/hfsec_user_id/hfsec_user_name"/>
+      <rel entity-code="hfsec_user/hfsec_user_id/hfsec_user_name"  add-by-global="true"/>
       <create-edit-type>hidden</create-edit-type>
       <update-edit-type>text</update-edit-type>
     </field>
@@ -37,7 +37,7 @@
       <update-edit-type>text</update-edit-type>
     </field>
     <field code="modifier_id" name="修改人" edit-type="input">
-      <rel entity-code="hfsec_user/hfsec_user_id/hfsec_user_name"/>
+      <rel entity-code="hfsec_user/hfsec_user_id/hfsec_user_name"  add-by-global="true"/>
       <create-edit-type>hidden</create-edit-type>
       <update-edit-type>hidden</update-edit-type>
     </field>

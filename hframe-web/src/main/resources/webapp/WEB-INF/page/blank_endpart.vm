@@ -72,5 +72,8 @@
 <script type="text/javascript" src="$staticResourcePath/plugins/ice/js/ace-elements.min.js"></script>
 <script type="text/javascript" src="$staticResourcePath/plugins/ice/js/ace.min.js"></script>
 <script type="text/javascript" src="$staticResourcePath/plugins/fuelux/fuelux.tree.min.js"></script>
+
+<script type="text/javascript" src="$staticResourcePath/plugins/bootstrapSwitch/js/bootstrap-switch.min.js"></script>
+<script type="text/javascript" src="$staticResourcePath/plugins/bootstrapSwitch/js/switch.js"></script>
 <script src="/js/hframework/dynTree.js"></script>
 <script src="/js/hframework/componentinit.js"></script>

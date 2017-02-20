@@ -19,10 +19,12 @@ import com.hframework.beans.controller.ResultCode;
 import com.hframework.beans.controller.ResultData;
 import com.hframework.common.bean.MyFile;
 import com.hframework.common.ext.CollectionUtils;
+import com.hframework.common.ext.Fetcher;
 import com.hframework.common.ext.Grouper;
 import com.hframework.common.ext.Mapping;
 import com.hframework.common.frame.ServiceFactory;
 import com.hframework.common.util.*;
+import com.hframework.common.util.BeanUtils;
 import com.hframework.common.util.message.Dom4jUtils;
 import com.hframework.ext.datasoucce.DataSourceContextHolder;
 import com.hframework.web.CreatorUtil;
@@ -33,6 +35,20 @@ import com.hframework.web.config.bean.Mapper;
 import com.hframework.web.config.bean.dataset.Field;
 import com.hframework.web.config.bean.datasethelper.Mappings;
 import com.hframework.web.config.bean.module.Component;
+import com.vaadin.terminal.StreamResource;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Embedded;
+import com.vaadin.ui.Label;
+import org.activiti.engine.ProcessEngines;
+import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.impl.util.IoUtil;
+import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.explorer.ExplorerApp;
+import org.activiti.explorer.ui.Images;
+import org.activiti.explorer.ui.custom.PrettyTimeLabel;
+import org.activiti.explorer.ui.custom.UserProfileLink;
+import org.apache.commons.beanutils.*;
 import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
@@ -58,6 +74,7 @@ import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import org.springframework.web.servlet.mvc.method.annotation.ServletModelAttributeMethodProcessor;
 import org.springframework.web.servlet.mvc.method.annotation.ServletRequestDataBinderFactory;
+import sun.misc.BASE64Encoder;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -505,10 +522,20 @@ public class DefaultController {
             Object parentObject = null;
             for (String componentId : componentIds) {
                 ComponentDescriptor componentDescriptor = components.get(componentId);
+                if(componentDescriptor == null) {
+                    for (ComponentDescriptor descriptor : components.values()) {
+                        if(descriptor.getId().equals(componentId)) {
+                            componentDescriptor = descriptor;
+                        }
+                    }
+
+                }
                 if(componentDescriptor.getDataSetDescriptor() == null) {
                     logger.warn("component {} is not set data set",componentDescriptor.getId());
                     continue;
                 }
+
+
                 String moduleCode = componentDescriptor.getDataSetDescriptor().getDataSet().getModule();
                 String eventObjectCode = componentDescriptor.getDataSetDescriptor().getDataSet().getEventObjectCode();
                 String type = componentDescriptor.getComponent().getType();
@@ -943,6 +970,8 @@ public class DefaultController {
                      action = "list";
                  }else if("cList".equals(type)) {
                      action = null;
+                 }else if("eTList".equals(type)) {
+                     action = "tree";
                  }else if(!"cForm".equals(type) && !"qForm".equals(type)) {
                      action = type;
                  }
@@ -1122,12 +1151,80 @@ public class DefaultController {
                             WebContext.add(resultData.getData());
                         } else if ("tree".equals(action)) {
 
-                            po = getPoInstance(request, controller, action, new java.lang.Class[]{java.lang.Class.forName(defPoClass.getClassPath()),
-                                    java.lang.Class.forName(defPoExampleClass.getClassPath())});
-                            resultData = invokeMethod(controller, action,
-                                    new java.lang.Class[]{java.lang.Class.forName(defPoClass.getClassPath()),
-                                            java.lang.Class.forName(defPoExampleClass.getClassPath())},
-                                    new Object[]{po, poExample});
+                            if(componentDescriptor.getDataSetDescriptor().isSelfDepend()) {
+                                po = getPoInstance(request, controller, action, new java.lang.Class[]{java.lang.Class.forName(defPoClass.getClassPath()),
+                                        java.lang.Class.forName(defPoExampleClass.getClassPath())});
+                                resultData = invokeMethod(controller, action,
+                                        new java.lang.Class[]{java.lang.Class.forName(defPoClass.getClassPath()),
+                                                java.lang.Class.forName(defPoExampleClass.getClassPath())},
+                                        new Object[]{po, poExample});
+                            }else {
+                                for (final String relFieldName : componentDescriptor.getDataSetDescriptor().getRelFieldKeyMap().keySet()) {
+                                    final DataSetDescriptor dataSetDescriptor = componentDescriptor.getDataSetDescriptor().getRelDataSetMap().get(componentDescriptor.getDataSetDescriptor().getRelFieldKeyMap().get(relFieldName));
+                                    if(dataSetDescriptor.isSelfDepend()) {
+                                        String selfDependEventObjectCode = dataSetDescriptor.getDataSet().getEventObjectCode();
+                                        String selfDependModule = dataSetDescriptor.getDataSet().getModule();
+                                        Class selfDependDefPoClass = CreatorUtil.getDefPoClass("",
+                                                WebContext.get().getProgram().getCode(), selfDependModule, selfDependEventObjectCode);
+                                        Class selfDependDefPoExampleClass = CreatorUtil.getDefPoExampleClass("",
+                                                WebContext.get().getProgram().getCode(), selfDependModule, selfDependEventObjectCode);
+                                        Class selfDependDefControllerClass = CreatorUtil.getDefControllerClass("",
+                                                WebContext.get().getProgram().getCode(), selfDependModule, selfDependEventObjectCode);
+                                        Object selfDependController = ServiceFactory.getService(
+                                                selfDependDefControllerClass.getClassName().substring(0, 1).toLowerCase()
+                                                        + selfDependDefControllerClass.getClassName().substring(1));
+                                        ResultData baseResultData = invokeMethod(selfDependController, action,
+                                                new java.lang.Class[]{java.lang.Class.forName(selfDependDefPoClass.getClassPath()),
+                                                        java.lang.Class.forName(selfDependDefPoExampleClass.getClassPath())},
+                                                new Object[]{getPoInstance(request, selfDependController, action,
+                                                        new java.lang.Class[]{java.lang.Class.forName(selfDependDefPoClass.getClassPath()),
+                                                        java.lang.Class.forName(selfDependDefPoExampleClass.getClassPath())})
+                                                        , java.lang.Class.forName(selfDependDefPoExampleClass.getClassPath()).newInstance()});
+
+                                        po = getPoInstance(request, controller, "list", new java.lang.Class[]{java.lang.Class.forName(defPoClass.getClassPath()),
+                                                java.lang.Class.forName(defPoExampleClass.getClassPath()), Pagination.class});
+                                        Map<String, String> pageFlowParams = WebContext.get(HashMap.class.getName());
+                                        ReflectUtils.setFieldValue(po, pageFlowParams);
+
+                                        Map<String, String> params = BeanUtils.convertMap(po, false);
+                                        componentQueryString = UrlHelper.getUrlQueryString(params);
+                                        System.out.println("=======> " + componentQueryString);
+                                        ResultData reallyResultData = invokeMethod(controller, "list",
+                                                new java.lang.Class[]{java.lang.Class.forName(defPoClass.getClassPath()),
+                                                        java.lang.Class.forName(defPoExampleClass.getClassPath()), Pagination.class},
+                                                new Object[]{po, poExample, pagination});
+                                        Map baseTreeData = (Map) baseResultData.getData();
+                                        final Map reallyData = CollectionUtils.convert((List) ((Map)reallyResultData.getData()).get("list"), new com.hframework.common.ext.Mapper() {
+                                            public String getKey(Object o) {
+                                                return String.valueOf(ReflectUtils.getFieldValue(o, ResourceWrapper.JavaUtil.getJavaVarName(relFieldName)));
+                                            }
+                                        });
+
+                                        Map resultTreeData = new LinkedHashMap();
+                                        for (Object parentObjectId : baseTreeData.keySet()) {
+                                            String parentId = String.valueOf(parentObjectId);
+                                            resultTreeData.put(parentId, CollectionUtils.fetch((List<Object>) baseTreeData.get(parentObjectId), new Fetcher<Object, Map<String, String>>() {
+                                                public Map<String, String> fetch(Object o) {
+                                                    Map<String, String> map = BeanUtils.convertMapAndFormat(o, true);
+                                                    String keyPropertyValue = String.valueOf(ReflectUtils.getFieldValue(o, ResourceWrapper.JavaUtil.getJavaVarName(dataSetDescriptor.getKeyField().getCode())));
+                                                    String namePropertyValue = String.valueOf(ReflectUtils.getFieldValue(o, ResourceWrapper.JavaUtil.getJavaVarName(dataSetDescriptor.getNameField().getCode())));
+                                                    map.put("NAME_FIELD", namePropertyValue);
+                                                    map.put("KEY_FIELD", keyPropertyValue);
+                                                    map.remove(ResourceWrapper.JavaUtil.getJavaVarName(dataSetDescriptor.getNameField().getCode()));
+                                                    if(reallyData.containsKey(String.valueOf(keyPropertyValue))) {
+                                                        map.putAll(BeanUtils.convertMapAndFormat(reallyData.get(keyPropertyValue), true));
+                                                    }
+                                                    return map;
+                                                }
+                                            }));
+                                        }
+                                        resultData = ResultData.success(resultTreeData);
+                                        break;
+                                    }
+                                }
+                            }
+
+
                         } else {
                             if (pagination.getPageNo() == 0) pagination.setPageNo(1);
                             if (pagination.getPageSize() == 0) pagination.setPageSize(5);
@@ -1182,7 +1279,7 @@ public class DefaultController {
                         jsonObject.put("data",JSONObject.toJSON(WebContext.get(HashMap.class.getName())));
                     }
                 }
-                if("list".equals(type) || "cList".equals(type) || "eList".equals(type)) {
+                if("list".equals(type) || "cList".equals(type) || "eList".equals(type) || "eTList".equals(type)) {
                     if(jsonObject.get("data") == null) {
                         jsonObject.put("data", new JSONArray());
                     }
@@ -1225,6 +1322,20 @@ public class DefaultController {
                 mergeGlobalRuler(globalDataSetRulerJsonObject, componentDescriptor.getDataSetDescriptor().getDataSetRulerJsonObject());
 //                jsonObject.put("icon","icon-edit");
                         jsonObject.put("ruler", componentDescriptor.getDataSetDescriptor().getDataSetRulerJsonObject().toJSONString());
+
+
+                AuthContext authContext = authServiceProxy.getAuthContext(request);
+                if(authContext != null) {
+                    Long funcId = authContext.getAuthFunctionManager().get("/" + module + "/" + pageCode + ".html");
+                    Map<AuthContext.AuthDataUnit, String> authDataUnitStringMap = authContext.getAuthManager().getEventAuth().get(funcId);
+                    if(authDataUnitStringMap != null && authDataUnitStringMap.size() > 0) {
+                        removeNonAuthEvent(authDataUnitStringMap, jsonObject, "EOFR");
+                        removeNonAuthEvent(authDataUnitStringMap, jsonObject, "EOF");
+                        removeNonAuthEvent(authDataUnitStringMap, jsonObject, "BOF");
+                    }
+                }
+
+
                 jsonObject.put("helper",componentDescriptor.getDataSetDescriptor().getDynamicHelper());
                 jsonObject.put("dc",componentDescriptor.getDataSetDescriptor().getDataSet().getCode());
 
@@ -1268,6 +1379,27 @@ public class DefaultController {
 
         return mav;
 
+    }
+
+    private void removeNonAuthEvent(Map<AuthContext.AuthDataUnit, String> authDataUnitStringMap, JSONObject jsonObject, String eventType) {
+        JSONArray events = jsonObject.getJSONArray(eventType);
+        JSONArray newArray = new JSONArray();
+        if(events == null) return ;
+        for (Object event : events) {
+            String name = ((JSONObject) event).getString("name");
+            boolean contain = false;
+            for (Map.Entry<AuthContext.AuthDataUnit, String> authDataUnitStringEntry : authDataUnitStringMap.entrySet()) {
+                if(("," + authDataUnitStringEntry.getValue() + ",").contains("," + name + ",")) {
+                    contain = true;
+                    break;
+                }
+            }
+
+            if(contain) {
+                newArray.add(event);
+            }
+        }
+        jsonObject.put(eventType, newArray);
     }
 
     private void mergeGlobalRuler(JSONObject globalDataSetRulerJsonObject, JSONObject dataSetRulerJsonObject) {
@@ -1964,4 +2096,114 @@ public class DefaultController {
 
         return null;
     }
+
+    /**
+     * 页面跳转
+     * @return
+     * @throws Throwable
+     */
+    @RequestMapping(value = "/editor-app/editor.html")
+    public ModelAndView editor(@ModelAttribute("modelId") String modelId,
+
+                               HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        ModelAndView mav = new ModelAndView();
+        mav.addObject("modelId",modelId);
+        mav.setViewName("/editor");
+        return mav;
+    }
+
+    /**
+     * 页面跳转
+     * @return
+     * @throws Throwable
+     */
+    @RequestMapping(value = "/diagram-viewer/forwarder.html")
+    public ModelAndView diagramForwarder(@ModelAttribute("_DS") String dataSet, @ModelAttribute("_DI") String dataId,
+
+                                         HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        ModelAndView mav = new ModelAndView();
+        String processKey = String.valueOf(WebContext.get().getProcess(dataSet)[1]);
+        ProcessDefinition processDefinition = ProcessEngines.getDefaultProcessEngine().getRepositoryService().
+                createProcessDefinitionQuery().processDefinitionKey(processKey).singleResult();
+        String processDefinitionId = "", processInstanceId = "";
+        if(processDefinition != null) {
+            processDefinitionId = processDefinition.getId();
+            HistoricProcessInstance historicProcessInstance = ProcessEngines.getDefaultProcessEngine().getHistoryService()
+                    .createHistoricProcessInstanceQuery().processInstanceBusinessKey(dataId)
+                    .processDefinitionId(processDefinition.getId())
+                    .singleResult();
+            if(historicProcessInstance != null) {
+
+                processInstanceId = historicProcessInstance.getId();
+            }
+        }
+        mav.setViewName("redirect:/diagram-viewer/index.html?processDefinitionId="
+                + processDefinitionId + "&processInstanceId=" + processInstanceId);
+        return mav;
+    }
+
+    /**
+     * 页面跳转
+     * @return
+     * @throws Throwable
+     */
+    @RequestMapping(value = "/diagram-viewer/index.html")
+    public ModelAndView diagramViewer(HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        ModelAndView mav = new ModelAndView();
+//                List<HistoricProcessInstance> processInstances = historyService .createHistoricProcessInstanceQuery() .startedBy(ExplorerApp.get().getLoggedInUser().getId()) .unfinished() .list();
+        String processInstanceId = request.getParameter("processInstanceId");
+        if(StringUtils.isNotBlank(processInstanceId)) {
+            //自己创建的未完成流程单
+            List<HistoricTaskInstance> tasks = ProcessEngines.getDefaultProcessEngine().getHistoryService().createHistoricTaskInstanceQuery()
+                    .processInstanceId(processInstanceId)
+//                    .orderByHistoricTaskInstanceEndTime().desc()
+                    .orderByHistoricTaskInstanceStartTime().desc()
+                    .list();
+
+            List<Map<String, Object>> taskDisplays = new ArrayList<Map<String, Object>>();
+            if(tasks != null) {
+                ServiceFactory.getService(ExplorerApp.class).onRequestStart(request, response);
+                for (HistoricTaskInstance task : tasks) {
+
+                    Map<String ,Object> item = new HashMap<String, Object>();
+                    taskDisplays.add(item);
+
+                    if(task.getEndTime() != null) {
+                        item.put("finished", "/VAADIN/themes/activiti/" + new Embedded(null, Images.TASK_FINISHED_22).getSource());
+                    } else {
+                        item.put("finished","/VAADIN/themes/activiti/" + new Embedded(null, Images.TASK_22).getSource());
+                    }
+
+                    item.put("name", task.getName());
+                    item.put("priority",task.getPriority());
+
+                    item.put("startDate", new PrettyTimeLabel(task.getStartTime(), true));
+                    item.put("endDate", new PrettyTimeLabel(task.getEndTime(), true));
+
+                    if(task.getDueDate() != null) {
+                        Label dueDateLabel = new PrettyTimeLabel(task.getEndTime(), "尚未完成", true);
+                        item.put("dueDate", dueDateLabel);
+                    }
+
+
+
+                    if(task.getAssignee() != null) {
+                        UserProfileLink taskAssigneeComponent = new UserProfileLink(ProcessEngines.getDefaultProcessEngine().getIdentityService(), true, task.getAssignee());
+                        if(taskAssigneeComponent != null) {
+                            item.put("assigneeName", ((Button) taskAssigneeComponent.getComponent(1)).getCaption());
+                            item.put("assigneePhoto","data:image/gif;base64," +
+                                    new BASE64Encoder().encode(IoUtil.readInputStream(((StreamResource) ((Embedded) taskAssigneeComponent.getComponent(0)).getSource()).getStreamSource().getStream(), "")));
+                        }
+                    }
+                }
+            }
+
+            mav.addObject("tasks", taskDisplays);
+        }
+
+
+        mav.setViewName("/diagram-viewer/index");
+        return mav;
+    }
+
 }

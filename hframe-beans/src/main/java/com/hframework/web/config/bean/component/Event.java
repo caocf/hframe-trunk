@@ -30,6 +30,9 @@ public class Event   {
     @XStreamAlias("name")
 	private String name;
     @XStreamAsAttribute
+    @XStreamAlias("description")
+    private String description;
+    @XStreamAsAttribute
     @XStreamAlias("rel")
     private String rel;
     public Event() {
@@ -102,5 +105,13 @@ public class Event   {
 
     public void setRel(String rel) {
         this.rel = rel;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

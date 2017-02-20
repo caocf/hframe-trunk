@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <event-store group="EOFC">
 
-    <event name="create.submit">
+    <event name="create.submit" description="提交">
         <attach anchor="EOFC">
             <appendElement type="button" param='{btnclass:"btn-primary",btnText:" 提 交 ", iconclass:"icon-file-alt"}'></appendElement>
         </attach>
@@ -10,7 +10,7 @@
         <effect type="confirm" content='创建成功，是否返回列表页？'></effect>
         <effect type="pageFwd" action='${mgr}' isStack="true"></effect>
     </event>
-    <event name="update.submit">
+    <event name="update.submit" description="提交">
         <attach anchor="EOFC">
             <appendElement type="button" param='{btnclass:"btn-primary",btnText:" 提 交 "}'></appendElement>
         </attach>
@@ -20,7 +20,7 @@
         <effect type="pageFwd" action='${mgr}' isStack="true"></effect>
     </event>
 
-    <event name="batch.delete">
+    <event name="batch.delete"  description="批量删除">
         <attach anchor="EOFC">
             <appendElement type="button" param='{btnclass:"btn-primary",btnText:"批量删除"}'></appendElement>
         </attach>
@@ -30,7 +30,7 @@
         <effect type="ajaxSubmit" action='${batchDelete}' param="ids" isStack="true"></effect>
         <effect type="component.reload"></effect>
     </event>
-    <event name="batch.save">
+    <event name="batch.save" description="批量提交">
         <attach anchor="EOFC">
             <appendElement type="button" param='{btnclass:"btn-primary",btnText:" 提 交 "}'></appendElement>
         </attach>

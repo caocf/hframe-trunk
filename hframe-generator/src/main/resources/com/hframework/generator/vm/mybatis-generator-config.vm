@@ -10,6 +10,13 @@
     <properties url="file:///D:/my_workspace/hframe-trunk/hframe-core/src/main/resources/properties/dataSource.properties"></properties>
     <!-- <classPathEntry location="E:\\Users\\zhangqh6\\.m2\\repository\\mysql\\mysql-connector-java\\5.1.21\\mysql-connector-java-5.1.21.jar"/> -->
     <context id="default" targetRuntime="MyBatis3">
+        <!-- 自动识别数据库关键字，默认false，如果设置为true，根据SqlReservedWords中定义的关键字列表；
+               一般保留默认值，遇到数据库关键字（Java关键字），使用columnOverride覆盖
+            -->
+        <property name="autoDelimitKeywords" value="true"/>
+        <!-- beginningDelimiter和endingDelimiter：指明数据库的用于标记数据库对象名的符号，比如ORACLE就是双引号，MYSQL默认是`反引号； -->
+        <property name="beginningDelimiter" value="`"/>
+        <property name="endingDelimiter" value="`"/>
 
         <plugin type="org.mybatis.generator.plugins.RenameExampleClassPlugin">
             <property name="searchString" value="Example$" />
@@ -56,7 +63,7 @@
         </javaClientGenerator>
 
  #foreach($table in $tables)
-        <table schema="" tableName="$!table.get("tableName")">
+        <table schema="" tableName="$!table.get("tableName")" delimitIdentifiers="true">
             <property name="chineseName" value="$!table.get("tableDesc")"></property>
             <property name="parentId" value="$!table.get("parentId")"></property>
             <generatedKey column="$!table.get("generatedKey")" sqlStatement="MySql" identity="true" />

@@ -132,4 +132,12 @@ public class ComponentDescriptor extends ElementDescriptor{
     public void setEventExtend(String eventExtend) {
         this.eventExtend = eventExtend;
     }
+
+    public ComponentDataContainer getDataContainer() {
+        return dataContainer;
+    }
+
+    public void setDataContainer(ComponentDataContainer dataContainer) {
+        this.dataContainer = dataContainer;
+    }
 }

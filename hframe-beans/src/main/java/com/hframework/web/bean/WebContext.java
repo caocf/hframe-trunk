@@ -171,7 +171,7 @@ public class WebContext {
             String dataSetCode = reallyFileName.substring(0, reallyFileName.lastIndexOf("."));
             String dataFieldCode = reallyFileName.substring(reallyFileName.lastIndexOf(".") + 1);
             String processContext = FileUtils.readFile(file.getPath());
-            InputStream bpmnStream = new ByteArrayInputStream(processContext.getBytes());
+            InputStream bpmnStream = new ByteArrayInputStream(processContext.getBytes("UTF-8"));
             XMLInputFactory xif = org.activiti.explorer.util.XmlUtil.createSafeXmlInputFactory();
             InputStreamReader in = new InputStreamReader(bpmnStream, "UTF-8");
             XMLStreamReader xtr = xif.createXMLStreamReader(in);

@@ -112,6 +112,16 @@ public class DataSetDescriptor {
         return result;
     }
 
+    public String getUrlFieldCode(String url) {
+        for (String fieldName : this.fields.keySet()) {
+            Field field = this.fields.get(fieldName);
+            if(field.getRel() != null && StringUtils.isNotBlank(field.getRel().getUrl()) && field.getRel().getUrl().equals(url)) {
+                return fieldName;
+            }
+        }
+        return null;
+    }
+
     public String getRelFieldCode(Class relPoClass) throws Exception {
         for (String fieldCode : relFieldKeyMap.keySet()) {
             DataSetDescriptor relDataSetDescriptor = relDataSetMap.get(relFieldKeyMap.get(fieldCode));
@@ -142,9 +152,12 @@ public class DataSetDescriptor {
     }
 
     public boolean isSelfDepend() {
-        for (String relDataSetInfo : relFieldKeyMap.values()) {
+        for (String fieldName : relFieldKeyMap.keySet()) {
+            String relDataSetInfo = relFieldKeyMap.get(fieldName);
             if(relDataSetMap.get(relDataSetInfo) != null && relDataSetMap.get(relDataSetInfo).equals(this)) {
-                return true;
+                if(!"true".equals(getFields().get(fieldName).getRel().getAddByGlobal())) {
+                    return true;
+                }
             }
         }
         return false;

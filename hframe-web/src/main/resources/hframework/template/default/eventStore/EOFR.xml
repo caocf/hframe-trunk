@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <event-store group="EOFR">
     <!--qlist事件-->
-    <event name="goto.create">
+    <event name="goto.create" description="新建">
         <attach anchor="EOFR">
             <appendElement type="icon" param='{fillclass:"btn-info",iconclass:"icon-zoom-in"}'></appendElement>
         </attach>
         <effect type="pageFwd" action='${create}' isStack="true"></effect>
         <effect type="component.reload"></effect>
     </event>
-    <event name="goto.edit">
+    <event name="goto.edit" description="修改">
         <attach anchor="EOFR">
             <appendElement type="icon" param='{fillclass:"btn-success",iconclass:"icon-edit"}'></appendElement>
         </attach>
@@ -16,21 +16,21 @@
         <effect type="pageFwd" action='${edit}' isStack="true"></effect>
         <effect type="component.reload"></effect>
     </event>
-    <event name="refresh.create">
+    <event name="refresh.create" description="新建">
         <attach anchor="EOFR">
             <appendElement type="icon" param='{fillclass:"btn-success",iconclass:"icon-zoom-in"}'></appendElement>
         </attach>
         <source scope="CROW" param="${pid}"></source>
         <effect type="component.reload" target-id="cForm"></effect>
     </event>
-    <event name="refresh.edit">
+    <event name="refresh.edit" description="修改">
         <attach anchor="EOFR">
             <appendElement type="icon" param='{fillclass:"btn-info",iconclass:"icon-edit"}'></appendElement>
         </attach>
         <source scope="CROW" param="${id}"></source>
         <effect type="component.reload" target-id="eForm"></effect>
     </event>
-    <event name="tree.confirm.delete">
+    <event name="tree.confirm.delete" description="删除">
         <attach anchor="EOFR">
             <appendElement type="icon" param='{fillclass:"btn-danger",iconclass:"icon-trash"}'></appendElement>
         </attach>
@@ -39,7 +39,7 @@
         <effect type="ajaxSubmit" action="${delete}"></effect>
         <effect type="page.reload"></effect>
     </event>
-    <event name="confirm.delete">
+    <event name="confirm.delete" description="删除">
         <attach anchor="EOFR">
             <appendElement type="icon" param='{fillclass:"btn-danger",iconclass:"icon-trash"}'></appendElement>
         </attach>
@@ -48,7 +48,7 @@
         <effect type="ajaxSubmit" action="${delete}"></effect>
         <effect type="component.reload"></effect>
     </event>
-    <event name="confirm.on">
+    <event name="confirm.on" description="生效">
         <attach anchor="EOFR">
             <appendElement type="icon" param='{fillclass:"btn-danger",iconclass:"icon-unlock"}'></appendElement>
         </attach>
@@ -57,7 +57,7 @@
         <effect type="ajaxSubmit" action="${updateByAjax}"></effect>
         <effect type="component.reload"></effect>
     </event>
-    <event name="confirm.off">
+    <event name="confirm.off" description="失效">
         <attach anchor="EOFR">
             <appendElement type="icon" param='{fillclass:"btn-danger",iconclass:"icon-lock"}'></appendElement>
         </attach>
@@ -66,7 +66,7 @@
         <effect type="ajaxSubmit" action="${updateByAjax}"></effect>
         <effect type="component.reload"></effect>
     </event>
-    <event name="confirm.play">
+    <event name="confirm.play" description="启动">
         <attach anchor="EOFR">
             <appendElement type="icon" param='{fillclass:"btn-danger",iconclass:"icon-play"}'></appendElement>
         </attach>
@@ -75,7 +75,7 @@
         <effect type="ajaxSubmit" action="${updateByAjax}"></effect>
         <effect type="component.reload"></effect>
     </event>
-    <event name="confirm.pause">
+    <event name="confirm.pause" description="暂停">
         <pre-handle case="status" when="2" then="3"></pre-handle>
         <attach anchor="EOFR">
             <appendElement type="icon" param='{fillclass:"btn-danger",iconclass:"icon-pause"}'></appendElement>
@@ -85,7 +85,7 @@
         <effect type="ajaxSubmit" action="${updateByAjax}"></effect>
         <effect type="component.reload"></effect>
     </event>
-    <event name="confirm.stop">
+    <event name="confirm.stop" description="停止">
         <attach anchor="EOFR">
             <appendElement type="icon" param='{fillclass:"btn-danger",iconclass:"icon-stop"}'></appendElement>
         </attach>
@@ -96,31 +96,31 @@
     </event>
 
     <!--eList 常用事件-->
-    <event name="row.insert">
+    <event name="row.insert" description="新建行">
         <attach anchor="EOFR">
             <appendElement type="icon" param='{fillclass:"btn-success",iconclass:" icon-file-alt"}'></appendElement>
         </attach>
         <effect type="component.row.add"></effect>
     </event>
-    <event name="row.copy">
+    <event name="row.copy" description="复制行">
         <attach anchor="EOFR">
             <appendElement type="icon" param='{fillclass:"btn-success",iconclass:" icon-copy"}'></appendElement>
         </attach>
         <effect type="component.row.copy"></effect>
     </event>
-    <event name="row.down">
+    <event name="row.down" description="下移一行">
         <attach anchor="EOFR">
             <appendElement type="icon" param='{fillclass:"btn-info",iconclass:"icon-circle-arrow-down"}'></appendElement>
         </attach>
         <effect type="component.row.down"></effect>
     </event>
-    <event name="row.up">
+    <event name="row.up" description="上移一行">
         <attach anchor="EOFR">
             <appendElement type="icon" param='{fillclass:"btn-info",iconclass:" icon-circle-arrow-up"}'></appendElement>
         </attach>
         <effect type="component.row.up"></effect>
     </event>
-    <event name="row.delete">
+    <event name="row.delete" description="删除行">
         <attach anchor="EOFR">
             <appendElement type="icon" param='{fillclass:"btn-danger",iconclass:"icon-trash"}'></appendElement>
         </attach>
@@ -131,7 +131,7 @@
     </event>
 
 
-    <event name="confirm.process.start">
+    <event name="confirm.process.start" description="启动">
         <attach anchor="EOFR">
             <appendElement type="icon" param='{fillclass:"btn-danger",iconclass:"icon-play-circle"}'></appendElement>
         </attach>
@@ -140,7 +140,7 @@
         <effect type="ajaxSubmit" action="${updateByAjax}"></effect>
         <effect type="component.reload"></effect>
     </event>
-    <event name="openPage.process.diagram">
+    <event name="openPage.process.diagram" description="查看流程">
         <attach anchor="EOFR">
             <appendElement type="icon" param='{fillclass:"btn-info",iconclass:"icon-retweet"}'></appendElement>
         </attach>

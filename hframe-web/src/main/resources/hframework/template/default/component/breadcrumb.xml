@@ -9,14 +9,14 @@
     </element>
     <element id="data" type="object"  default-value=""></element>
     <events>
-        <event name="submit">
-            <attach anchor="EOFC">
-                <appendElement type="button" param='{btnclass:"btn-primary",btnText:" 确 定 "}'></appendElement>
-            </attach>
-            <source scope="EOC" param="thisForm"></source>
-            <effect type="ajaxSubmit" action="${createByAjax}"></effect>
-            <effect type="component.reload" target-id="list"></effect>
-        </event>
+        <!--<event name="submit">-->
+            <!--<attach anchor="EOFC">-->
+                <!--<appendElement type="button" param='{btnclass:"btn-primary",btnText:" 确 定 "}'></appendElement>-->
+            <!--</attach>-->
+            <!--<source scope="EOC" param="thisForm"></source>-->
+            <!--<effect type="ajaxSubmit" action="${createByAjax}"></effect>-->
+            <!--<effect type="component.reload" target-id="list"></effect>-->
+        <!--</event>-->
     </events>
     <example>
         <![CDATA[
