@@ -40,7 +40,7 @@ public class RedisService {
      * @return
      */
     public <T> Boolean add(final String key, final T t) {
-          return (Boolean) redisTemplate.execute(new RedisCallback<Boolean>() {
+        return (Boolean) redisTemplate.execute(new RedisCallback<Boolean>() {
             public Boolean doInRedis(RedisConnection connection)
                     throws DataAccessException {
                 RedisSerializer<String> serializer = getRedisSerializer();
@@ -117,6 +117,57 @@ public class RedisService {
     }
 
     /**
+     * 保存或更新
+     * @param key
+     * @param t
+     * @param <T>
+     * @return
+     */
+    public <T> boolean saveOrUpdate(final String key, final T t, final Long seconds) {
+        if (!contains(key)) {
+            //如果值不存在，则添加入库
+            return this.add(key, t);
+        }
+        return (Boolean) redisTemplate.execute(new RedisCallback<Boolean>() {
+            public Boolean doInRedis(RedisConnection connection)
+                    throws DataAccessException {
+                RedisSerializer<String> serializer = getRedisSerializer();
+                byte[] keyTemp = serializer.serialize(key);
+                String value = null;
+                try {
+                    value = JsonUtils.writeValueAsString(t);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                byte[] json = serializer.serialize(value);
+                connection.setEx(keyTemp, seconds, json);
+                return true;
+            }
+        });
+    }
+
+    /**
+     * map， 值递增
+     * @param key
+     * @param field
+     * @param delta
+     * @param <T>
+     * @return
+     */
+    public <T> boolean hIncrBy(final String key, final T field,final Long delta) {
+        return (Boolean) redisTemplate.execute(new RedisCallback<Boolean>() {
+            public Boolean doInRedis(RedisConnection connection)
+                    throws DataAccessException {
+                RedisSerializer<String> serializer = getRedisSerializer();
+                byte[] keyTemp = serializer.serialize(key);
+                byte[] fieldTemp = serializer.serialize(String.valueOf(field));
+                connection.hIncrBy(keyTemp, fieldTemp, delta);
+                return true;
+            }
+        });
+    }
+
+    /**
      * 删除
      * @param key
      */
@@ -143,12 +194,31 @@ public class RedisService {
                 if (value == null) {
                     return false;
                 }
-               return true;
+                return true;
             }
         });
         return result;
     }
-
+    public <T> T get(final String key, final Class... cls) {
+        T result = (T) redisTemplate.execute(new RedisCallback<T>() {
+            public T doInRedis(RedisConnection connection)
+                    throws DataAccessException {
+                RedisSerializer<String> serializer = getRedisSerializer();
+                byte[] keybt = serializer.serialize(key);
+                byte[] value = connection.get(keybt);
+                if (value == null) {
+                    return null;
+                }
+                try {
+                    return (T) JsonUtils.readValue(serializer.deserialize(value),cls);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        });
+        return result;
+    }
 
     public <T> T get(final String key, final Class<T> cls) {
         T result = (T) redisTemplate.execute(new RedisCallback<T>() {

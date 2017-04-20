@@ -2,6 +2,9 @@ package com.hframework.common.service;
 
 
 import com.hframework.ext.template.DynamicKafkaTemplate;
+import kafka.admin.TopicCommand;
+import kafka.utils.ZkUtils;
+import org.apache.kafka.common.security.JaasUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,4 +54,43 @@ public class KafkaService {
                     ",current is {} instance !",server, kafkaTemplate.getClass());
         }
     }
+
+    public void getTopicDescribe(String server, String topic) {
+        String[] options = new String[]{
+                "--describe",
+                "--zookeeper",
+                server,
+                "--topic",
+                topic,
+        };
+        TopicCommand.TopicCommandOptions opts = new TopicCommand.TopicCommandOptions(options);
+        ZkUtils zkUtils = ZkUtils.apply(server, 30000, 30000, JaasUtils.isZkSecurityEnabled());
+        try {
+            TopicCommand.describeTopic(zkUtils, opts);
+        }finally {
+            zkUtils.close();
+        }
+    }
+
+    public void createTopic(String server, String topic, int partitions, int replicationFactor) {
+        String[] options = new String[]{
+                "--create",
+                "--zookeeper",
+                server,
+                "--partitions",
+                String.valueOf(partitions),
+                "--topic",
+                topic,
+                "--replication-factor",
+                String.valueOf(replicationFactor),
+        };
+        TopicCommand.TopicCommandOptions opts = new TopicCommand.TopicCommandOptions(options);
+        ZkUtils zkUtils = ZkUtils.apply(server, 30000, 30000, JaasUtils.isZkSecurityEnabled());
+        try {
+            TopicCommand.createTopic(zkUtils, opts);
+        }finally {
+            zkUtils.close();
+        }
+    }
+
 }

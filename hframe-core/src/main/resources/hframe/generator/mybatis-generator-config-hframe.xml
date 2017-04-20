@@ -6,6 +6,13 @@
     <properties url="file:///D:/my_workspace/hframe-trunk/hframe-core/src/main/resources/properties/dataSource.properties"></properties>
     <!-- <classPathEntry location="E:\\Users\\zhangqh6\\.m2\\repository\\mysql\\mysql-connector-java\\5.1.21\\mysql-connector-java-5.1.21.jar"/> -->
     <context id="default" targetRuntime="MyBatis3">
+        <!-- 自动识别数据库关键字，默认false，如果设置为true，根据SqlReservedWords中定义的关键字列表；
+               一般保留默认值，遇到数据库关键字（Java关键字），使用columnOverride覆盖
+            -->
+        <property name="autoDelimitKeywords" value="true"/>
+        <!-- beginningDelimiter和endingDelimiter：指明数据库的用于标记数据库对象名的符号，比如ORACLE就是双引号，MYSQL默认是`反引号； -->
+        <property name="beginningDelimiter" value="`"/>
+        <property name="endingDelimiter" value="`"/>
 
         <plugin type="org.mybatis.generator.plugins.RenameExampleClassPlugin">
             <property name="searchString" value="Example$" />
@@ -51,10 +58,10 @@
             <property name="rootInterface" value=""/>
         </javaClientGenerator>
 
-         <table schema="" tableName="hfpm_data_field">
-            <property name="chineseName" value="数据列"></property>
+         <table schema="" tableName="hfsec_role_authorize" delimitIdentifiers="true">
+            <property name="chineseName" value="角色授权"></property>
             <property name="parentId" value=""></property>
-            <generatedKey column="hfpm_data_field_id" sqlStatement="MySql" identity="true" />
+            <generatedKey column="hfsec_role_authorize_id" sqlStatement="MySql" identity="true" />
 
 
         </table>

@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
  * Created by zhangquanhong on 2016/10/10.
  */
 public class KafkaConsumer implements InitializingBean {
-    private Logger logger = LoggerFactory.getLogger("kafka");
+    private Logger logger = LoggerFactory.getLogger(KafkaConsumer.class);
 
     @Autowired
     private KafkaMessageListenerContainer kafkaMessageListenerContainer;

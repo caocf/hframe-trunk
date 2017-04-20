@@ -1284,7 +1284,7 @@ public class DefaultController {
                         jsonObject.put("data", new JSONArray());
                     }
 
-                    if(((JSONArray) jsonObject.get("data")).size() == 0) {
+                    if(((JSONArray) jsonObject.get("data")).size() == 0 &&  jsonObject.get("columns") != null ) {
                         int cnt = 0;
                         String[] defaultNullData = new String[((JSONArray) jsonObject.get("columns")).size()];
                         Map<String, String> pageFlowParams = WebContext.get(HashMap.class.getName());

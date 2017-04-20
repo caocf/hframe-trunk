@@ -18,6 +18,17 @@ public class JsonUtils {
         objectMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
     }
 
+    /**
+     * Json内容转化为对象
+     * @param content
+     * @param valueType
+     * @param <T>
+     * @return
+     * @throws IOException
+     */
+    public static  <T> T  readValue(String content, Class... valueType) throws IOException {
+        return objectMapper.readValue(content,objectMapper.getTypeFactory().constructParametricType(valueType[0],valueType[1]));
+    }
 
     /**
      * Json内容转化为对象

@@ -35,9 +35,6 @@
                 <effect type="pageFwd" action='/hframe/general_entity_add_diff.html' isStack="true"></effect>
             </event>
         </component>
-
-
-
     </page>
     <page id="general_entity_add_diff" name="快速模型差异" page-template="dynamic" >
         <component id="qList" data-set="hframe/sql"  dataid="sql"  title="快速模型-差异结果">
@@ -194,6 +191,10 @@
     <page id="compare.feditor#config.services.service.ruleCenter.rule#"  page-template="dynamic">
         <component id="eForm" data-set="hffile/compare.feditor#config.services.service.ruleCenter.rule" title="数据集"/>
         <component id="eList" data-set="hffile/compare.feditor#config.services.service.ruleCenter.rule.datanode" title="节点"/>
+    </page>
+
+    <page id="chartDemo" name="图表"  page-template="dynamic">
+        <component id="chart" data-set="hframe/manis_statistics_second" title="chartDemo"/>
     </page>
 
 </module>

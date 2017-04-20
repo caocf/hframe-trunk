@@ -609,16 +609,20 @@ require(['layer','ajax','js/hframework/errormsg'], function () {
 
     function formatContent($param, $this){
         if($param) {
-            var value;
-            var position = $param.substring($param.indexOf("{") + 1, $param.indexOf("}"));
-            if($this.parents("tr").find("span[code="+ position +"]").size() > 0 ) {
-                value = $this.parents("tr").find("span[code="+ position +"]").text();
-            }else if($this.parents("tr").find("[name="+ position +"]").size() > 0 ) {
-                value = $this.parents("tr").find("[name="+ position +"]").val();
-            }else {
-                value = $this.parents("form").find("[name="+ position +"]").val();
+            var result =$param;
+            while(result.indexOf("{") > -1 && result.indexOf("}") > -1){
+                var value;
+                var position = result.substring(result.indexOf("{") + 1, result.indexOf("}"));
+                if($this.parents("tr").find("span[code="+ position +"]").size() > 0 ) {
+                    value = $this.parents("tr").find("span[code="+ position +"]").text();
+                }else if($this.parents("tr").find("[name="+ position +"]").size() > 0 ) {
+                    value = $this.parents("tr").find("[name="+ position +"]").val();
+                }else {
+                    value = $this.parents("form").find("[name="+ position +"]").val();
+                }
+                result = result.replace(new RegExp("{" + position +"}", "gm"),value)
             }
-            return $param.replace(new RegExp("{" + position +"}", "gm"),value);
+            return result;
         }
         return null;
     }

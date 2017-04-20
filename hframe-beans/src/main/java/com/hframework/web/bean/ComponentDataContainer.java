@@ -387,11 +387,11 @@ public class ComponentDataContainer {
             pageNoStart =pageNoEnd- 4 > 0 ? (pageNoEnd- 4) : 1;
         }
 
-        list.add(new Pager("上一页",pageNoStart,pageNoStart == pageNo ? "disabled" : null ,pageNoStart == pageNo ? "active" : null));
+        list.add(new Pager("上一页", pageNoStart, pageNoStart == pageNo ? "disabled" : null, pageNoStart == pageNo ? "active" : null));
         for(int i = pageNoStart; i <= pageNoEnd; i++) {
             list.add(new Pager(i + "",i,i == pageNo ? "disabled" : null ,i == pageNo ? "active" : null));
         }
-        list.add(new Pager("下一页",pageNoEnd,pageNoEnd == pageNo ? "disabled" : null ,pageNoEnd == pageNo ? "active" : null));
+        list.add(new Pager("下一页", pageNoEnd, pageNoEnd == pageNo ? "disabled" : null, pageNoEnd == pageNo ? "active" : null));
 
         return list;
     }
@@ -1182,7 +1182,23 @@ public class ComponentDataContainer {
         }
 
         public String getJsonObject() {
-            return value;
+            if(value == null) {
+                express = mapping.getValue();
+                List<String> varList = RegexUtils.findVarList(express);
+                String runtimeValue = express;
+                for (String var : varList) {
+                    if (var.startsWith("req:")) {
+                        Map request = WebContext.get(HashMap.class.getName());
+                        String requestValue = (String) request.get(var.substring(4));
+                        if(StringUtils.isNotBlank(requestValue)) {
+                            runtimeValue = runtimeValue.replace("${" + var + "}", requestValue);
+                        }
+                    }
+                }
+                return runtimeValue;
+            }else {
+                return value;
+            }
         }
 
         public void clear() {
@@ -1212,7 +1228,17 @@ public class ComponentDataContainer {
 
                 }else if("module".equals(var)) {
                     express = express.replace("${module}",dataSet.getModule());
-                }
+                }/*else if("legendCode".equals(var)) {
+                    Map request = WebContext.get(HashMap.class.getName());
+                    String code = (String) request.get("code");
+                    String id = (String) request.get("id");
+                    express = express.replace("${legendCode}","['" +code + "_" + id + "']");
+                }else if("legendName".equals(var)) {
+                    Map request = WebContext.get(HashMap.class.getName());
+                    String code = (String) request.get("code");
+                    String id = (String) request.get("id");
+                    express = express.replace("${legendCode}","['" +code + "_" + id + "']");
+                }*/
             }
             if(!express.contains("${") && !express.contains("}")) {
                 value = express;

@@ -48,7 +48,7 @@
 
 <script type="text/javascript" src="/static/plugins/timepicker/jquery-ui-timepicker-addon.min.js"></script>
 <script type="text/javascript" src="/static/plugins/timepicker/i18n/jquery-ui-timepicker-zh-CN.js"></script>
-
+<script type="text/javascript" src="$staticResourcePath/plugins/echarts/echarts.common.min.js"></script>
 <script type="text/javascript" src="/static/plugins/require/require.js"></script>
 <script type="text/javascript" src="/js/hframework/utils/require.config.js"></script>
 <script src="/js/hframework/fn.js"></script>
@@ -56,6 +56,7 @@
 <script src="/js/hframework/href.js"></script>
 <script src="/js/hframework/list.js"></script>
 <script src="/js/hframework/check.js"></script>
+<script src="/js/hframework/chart.js"></script>
 
 <script src="$staticResourcePath/plugins/shapeshift/core/vendor/jquery.touch-punch.min.js"></script>
 <script src="$staticResourcePath/plugins/shapeshift/core/jquery.shapeshift.js"></script>
@@ -75,5 +76,6 @@
 
 <script type="text/javascript" src="$staticResourcePath/plugins/bootstrapSwitch/js/bootstrap-switch.min.js"></script>
 <script type="text/javascript" src="$staticResourcePath/plugins/bootstrapSwitch/js/switch.js"></script>
+
 <script src="/js/hframework/dynTree.js"></script>
 <script src="/js/hframework/componentinit.js"></script>
